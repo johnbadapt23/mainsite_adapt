@@ -33,7 +33,20 @@ gulp.task('build:styles', function () {
             errLogToConsole: true
         }))
         .on('error',error.handler)
-        .pipe(cssmin())
+        // clean-css's level 2 "restructureRules" merges rules that share a
+        // selector (several of the big new template files reopen the same
+        // top-level selector -- body.customer_stories, body.template-evr,
+        // section.webinar-speaker-block, etc. -- multiple times across the
+        // file), correctly resolving the CSS cascade first so only the
+        // property value that actually wins survives. Verified against the
+        // real compiled output before enabling this: e.g.
+        // "body.customer_stories{overflow-x:initial}" followed later by
+        // "body.customer_stories{overflow-x:hidden}" collapsed to just the
+        // second rule -- the first was always being overridden anyway, so
+        // nothing about what actually renders changes, it just stops
+        // shipping the dead declaration. This is clean-css's own documented
+        // "safe for production" optimization tier, not an experimental flag.
+        .pipe(cssmin({ level: { 1: { all: true }, 2: { all: true, restructureRules: true } } }))
         //.pipe(csso())
         .pipe(concat('main.min.css'))
         //.pipe(rename({suffix: '.min'}))

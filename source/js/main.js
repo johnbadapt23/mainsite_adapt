@@ -1,4 +1,25 @@
 (function($){
+
+	// Coalesces a handler so it runs at most once per animation frame,
+	// instead of once per raw scroll event (which can fire many times per
+	// frame on trackpads/high-polling-rate mice). Still updates every frame
+	// (~60fps), so nothing looks different -- it just skips redundant reads
+	// of offset()/outerHeight() etc. that would otherwise re-run multiple
+	// times before the browser even repaints.
+	function rafThrottle(fn) {
+		var ticking = false;
+		return function() {
+			var args = arguments, ctx = this;
+			if (!ticking) {
+				ticking = true;
+				window.requestAnimationFrame(function() {
+					fn.apply(ctx, args);
+					ticking = false;
+				});
+			}
+		};
+	}
+
 	$(document).ready(function (){
 
 		// STANDARD
@@ -163,9 +184,9 @@
 		   lastScrollTop = st;
 		});
 
-		// parallax 
+		// parallax
 
-		$(window).on('scroll', function() {
+		$(window).on('scroll', rafThrottle(function() {
 			var scrollTop = $(window).scrollTop();
 			var windowHeight = $(window).height();
 			var $parallax = $('.parallax-image-module');
@@ -197,7 +218,7 @@
 				// 	'margin-top': '0px'
 				// });
 			}
-		});
+		}));
 
 
 
@@ -638,7 +659,6 @@
 				mainClass: 'download-container',
 				callbacks: {
 				  open: function() {
-					  console.log('open');
 					  $(window).trigger('resize');
 				  }
 				}
@@ -682,7 +702,6 @@
 		$(document).on("click",'a.download-switcher',function(e) {
 			e.preventDefault();
 		    var href = $(this).attr('href');
-			console.log(href);
 		    $(href).addClass("active");
 			$('li.download-switch').removeClass("show");
 			$('li.download-switch').removeClass("open");
@@ -1108,7 +1127,6 @@
 			if (!page) {
 				page = 1; // Default to page 1 if not found
 			}
-			console.log(page); // Debugging
 			fetchSpeakers(page); // Fetch speakers for the selected page
 		});
 
@@ -1135,7 +1153,6 @@
 		function fetchSpeakers(page) {
 			page = page || 1; // Default page to 1 if undefined
 			var expertise = getSelectedFilters(); // Get selected filters
-			console.log('page: ', page)
 			var data = {
 				action: 'filter_speakers',
 				paged: page, // Pass paged as parameter
@@ -1203,7 +1220,6 @@
 			if (!page) {
 				page = 1; // Default to page 1 if not found
 			}
-			console.log(page); // Debugging
 			fetchPartners(page); // Fetch speakers for the selected page
 		});
 
@@ -1230,7 +1246,6 @@
 		function fetchPartners(page) {
 			page = page || 1; // Default page to 1 if undefined
 			var expertise = getSelectedFiltersPartners(); // Get selected filters
-			console.log('page: ', page)
 			var data = {
 				action: 'filter_partners',
 				paged: page, // Pass paged as parameter
@@ -1298,7 +1313,6 @@
 			if (!page) {
 				page = 1; // Default to page 1 if not found
 			}
-			console.log(page); // Debugging
 			fetchPartners(page); // Fetch speakers for the selected page
 		});
 
@@ -1325,7 +1339,6 @@
 		function edgeFetchPartners(page) {
 			page = page || 1; // Default page to 1 if undefined
 			var expertise = getSelectedFiltersEdgePartners(); // Get selected filters
-			console.log('page: ', page)
 			var data = {
 				action: 'edge_filter_partners',
 				paged: page, // Pass paged as parameter
@@ -1507,7 +1520,7 @@
 		var $steps = $('.steps-container .step');
 		var $window = $(window);
 
-		$window.on('scroll', function () {
+		$window.on('scroll', rafThrottle(function () {
 			var scrollTop = $window.scrollTop();
 			var windowHeight = $window.height();
 			var windowWidth = $window.width();
@@ -1552,7 +1565,7 @@
 			} else {
 				$trackingLine.css('height', (lastStepBottom - firstStepTop + (isSmallScreen ? 175 : 0)) + 'px');
 			}
-		});
+		}));
 
 		// Form popup slider
 
@@ -2275,7 +2288,7 @@
 
 
 		if($('.scrolling-card').length){
-			$(window).on('scroll', function() {
+			$(window).on('scroll', rafThrottle(function() {
 				$('.scrolling-card').each(function() {
 					var cardTop = $(this).offset().top;
 					var windowScrollTop = $(window).scrollTop();
@@ -2288,7 +2301,7 @@
 						$(this).removeClass('active');
 					}
 				});
-			});
+			}));
 		}
 
 
@@ -2297,7 +2310,7 @@
 		if ($('.slider-scrolling-content').length && $(window).width() > 767) {
 			var $bgContainers = $('.slider-bg-container.bg-container');
 			var $scrollingNav = $('.slide-nav-container .slide-nav-item');
-			$(window).on('scroll', function() {
+			$(window).on('scroll', rafThrottle(function() {
 				$('.slider-scrolling-content').each(function(index) {
 					var $this = $(this);
 					var elementTop = $this.offset().top;
@@ -2341,7 +2354,7 @@
 						bottom: 'auto'
 					});
 				}
-			});
+			}));
 
 			 // Click event handler for $scrollingNav
 			$scrollingNav.on('click', function() {
@@ -2411,7 +2424,7 @@
 		});
 
 		// Trigger on scroll + initial load
-		$(window).on('scroll', updateActiveCard);
+		$(window).on('scroll', rafThrottle(updateActiveCard));
 		updateActiveCard();
 
 		// Flexible content image after code
@@ -2698,7 +2711,6 @@
 		      get_prev_slick_img();
 		    });
 		    $(document).on('click', '.peer-featured-slider .slick-next', function() {
-				console.log('next');
 			    get_next_slick_img();
 		    });
 		    $('.peer-featured-slider').on('swipe', function(event, slick, direction) {
@@ -2781,7 +2793,6 @@
 			 get_prev_slick_img_expert();
 		   });
 		   $(document).on('click', '.expert-featured-slider .slick-next', function() {
-			   console.log('next');
 			   get_next_slick_img_expert();
 		   });
 		   $('.expert-featured-slider').on('swipe', function(event, slick, direction) {
@@ -3306,7 +3317,7 @@
 			}
 
 			// Listen to scroll events to update the active year button
-			$(window).on('scroll', function () {
+			$(window).on('scroll', rafThrottle(function () {
 				var currentYear = null;
 				var windowTop = $(window).scrollTop() + 81; // Adjusted to be 81 pixels from the top
 
@@ -3336,7 +3347,7 @@
 						updateActiveButton(currentYear);
 					}
 				}
-			});
+			}));
 
 			// Initial check on page load
 			var initialYear = eventItems.first().data('date');
@@ -3638,7 +3649,6 @@
     });
 
 	$(window).on('load',function (){
-		console.log('loaded');
 		$('.loading-animation').addClass('loaded');
 		timer = setTimeout(function(){
 			$('.loading-animation').hide();
@@ -3946,12 +3956,11 @@ function animateOverlappingCards() {
 
         $card.css('transform', 'translateY(' + yOffset + 'px) scale(' + scale + ')');
 
-        console.log('Card', i, 'scale:', scale.toFixed(3));
     });
 }
 
 if ($('.overlapping-card-wrapper').length && $(window).width() > 767) {
-    $(window).on('scroll resize', animateOverlappingCards);
+    $(window).on('scroll resize', rafThrottle(animateOverlappingCards));
     $(document).ready(animateOverlappingCards);
 }
 
@@ -3983,7 +3992,7 @@ if ($('.overlapping-card-wrapper').length && $(window).width() > 767) {
 	    progressBar.css({ width: getWidth() });
 	  };
 
-	  $(document).on("scroll", setWidth);
+	  $(document).on("scroll", rafThrottle(setWidth));
 	  $(window).on("resize", function () {
 	    // Need to reset max
 	    max = getMax();

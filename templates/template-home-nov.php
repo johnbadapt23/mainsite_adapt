@@ -1,6 +1,11 @@
 <?php
 /**
- * Template Name: Home Template
+ * Template Name: Home Template (Nov)
+ *
+ * Renamed so this is distinguishable from templates/template-home.php in the
+ * wp-admin page-template dropdown -- both previously declared the identical
+ * "Home Template" name, making it impossible to tell them apart when
+ * assigning a page template. No functional change.
  */
 
 get_header();
