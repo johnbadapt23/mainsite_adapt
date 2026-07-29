@@ -54,7 +54,8 @@ _archive/                               Retired/dead files kept for reference, n
                                          (old functions.php snapshots, unused legacy templates, the
                                          old bower.json/gulp-install packages task from before the
                                          theme's dependency manager was dropped).
-.github/workflows/deploy.yml            CI/CD: build + SFTP deploy on push to `dev` (see below).
+.github/workflows/deploy.yml            CI/CD: build + SFTP deploy on push to the configured
+                                         deploy branch (see Deployment below).
 ```
 
 ## Build system
@@ -67,28 +68,26 @@ Gulp 4, dart-sass (via `gulp-sass`), all dependencies on actively-maintained, Co
 
 ## Deployment (CI/CD)
 
-`.github/workflows/deploy.yml` runs on every push to the `dev` branch:
+`.github/workflows/deploy.yml` runs on every push to whichever branch is configured in its `on.push.branches` list:
 1. `npm install`
 2. `npx gulp build:styles build:scripts` (compiles fresh CSS/JS from `source/`)
 3. Deploys the built theme over SFTP — everything except `.git`, `.github`, `node_modules`, `source/`, `_archive/`, and the build tooling files (`package.json`, `gulpfile.js`, etc.)
 
-It deploys to a **separate folder** (`adapt_optimize`, a sibling of the live `adapt` theme folder) rather than overwriting the live theme, so it can be tested/activated independently in wp-admin without needing to revert anything if something's wrong.
+Configuration lives in a GitHub **environment** referenced by the workflow's `environment:` key (Settings → Environments), which supplies:
 
-Configuration lives in the GitHub repo's **"staging" environment** (Settings → Environments → staging):
-
-| Name | Type | Current value |
+| Name | Type | Purpose |
 |---|---|---|
-| `STAGING_HOST` | variable | `170.64.171.69` |
-| `STAGING_PORT` | variable | `2222` |
-| `STAGING_REMOTE_PATH` | variable | `/public_html/wp-content/themes/adapt_optimize` |
-| `STAGING_USERNAME` | secret | — |
-| `STAGING_PASS` | secret | — |
+| `STAGING_HOST` | variable | Server hostname/IP to deploy to |
+| `STAGING_PORT` | variable | SFTP port |
+| `STAGING_REMOTE_PATH` | variable | Absolute path on the server to deploy the theme into |
+| `STAGING_USERNAME` | secret | SFTP username |
+| `STAGING_PASS` | secret | SFTP password |
 
-To point deployment at a different server/path, just update these — no workflow file changes needed.
+`STAGING_REMOTE_PATH` can point at either the live theme folder or a separate parallel folder (e.g. a `-test`/`-optimize` copy) so a build can be tested/activated independently in wp-admin before it replaces what's live — update the environment's values to change target server, port, or path; no workflow file changes needed.
 
 ## Working with external content updates
 
-If someone outside this repo sends over an updated copy of theme content (new SCSS, JS, images), **only pull in the specific `source/scss/`, `source/js/`, and `source/images/` files that actually changed** — don't wholesale-replace the entire `source/` folder. `source/gulp/` (the build tooling) and `source/components/` (vendored libraries) don't change from content updates, and copying an old snapshot of them back in will silently undo build-system fixes (this has happened before — see git history around commit `d5a3bff`). If a wholesale folder replacement does happen, diff `source/gulp/` against the previous commit before pushing to catch it.
+If someone outside this repo sends over an updated copy of theme content (new SCSS, JS, images), **only pull in the specific `source/scss/`, `source/js/`, and `source/images/` files that actually changed** — don't wholesale-replace the entire `source/` folder. `source/gulp/` (the build tooling) and `source/components/` (vendored libraries) don't change from content updates, and copying an old snapshot of them back in will silently undo build-system fixes. If a wholesale folder replacement does happen, diff `source/gulp/` against the previous commit before pushing to catch it.
 
 ## Known quirks
 
