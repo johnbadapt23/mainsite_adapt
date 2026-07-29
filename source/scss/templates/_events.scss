@@ -2237,7 +2237,8 @@ section.events-listing-module {
                         width: 70px;
                         text-align: center;
 
-                        a {
+                        a,
+                        .back-to-top-sticky {
                             font-size: 0px;
                             width: 32px;
                             height: 32px;
@@ -2245,8 +2246,14 @@ section.events-listing-module {
                             background-size: contain;
                             background-repeat: no-repeat;
                             background-position: center;
+                            background-color: transparent;
                             display: block;
                             margin: 0 auto 6px;
+                            border: none;
+                            padding: 0;
+                            cursor: pointer;
+                            -webkit-appearance: none;
+                            appearance: none;
                         }
 
                         span.text {

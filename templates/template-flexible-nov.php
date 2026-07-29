@@ -93,7 +93,12 @@ get_header();
 					<div class="container">
 						 <?php if ( get_sub_field ( 'feature_image_or_infogram' ) == 'image' ) { ?>
 							 <div class="featureBlock">
-								 <img class="featureImage" src="<?php the_sub_field( 'image' ); ?>"/>
+								 <?php
+								 $feature_image_url = get_sub_field( 'image' );
+								 $feature_image_id = $feature_image_url ? attachment_url_to_postid( $feature_image_url ) : 0;
+								 $feature_image_alt = $feature_image_id ? get_post_meta( $feature_image_id, '_wp_attachment_image_alt', true ) : '';
+								 ?>
+								 <img class="featureImage" src="<?php echo esc_url( $feature_image_url ); ?>" alt="<?php echo esc_attr( $feature_image_alt ); ?>"/>
 							 </div>
 						 <?php } else { ?>
 							 <div class="infogram-container">

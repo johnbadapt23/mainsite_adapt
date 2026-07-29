@@ -4,7 +4,7 @@
 			<h2 class="text-white bold-grey"><?php echo get_sub_field( 'title' ); ?></h2>
 			<?php if(get_sub_field( 'learn_more_link' )){ ?>
 				<span class="link-container">
-					<a class="red-text text-link large-link-text red-underline-link external-link" href="<?php echo get_sub_field( 'learn_more_link' ); ?>" target="_self">Learn more</a>				
+					<a class="red-text text-link large-link-text red-underline-link external-link" href="<?php echo get_sub_field( 'learn_more_link' ); ?>" target="_self" aria-label="Learn more about <?php echo esc_attr( wp_strip_all_tags( get_sub_field( 'title' ) ) ); ?>">Learn more</a>				
 				</span>	 
 			<?php } ?>					
 		</div>
@@ -42,7 +42,7 @@
 											<?php if (get_sub_field( 'card_link' )){ ?> 
 												<span class="link-container">
 													<?php if ( get_sub_field ('standard_card') == '1' ) { ?>
-														<a class="red-text text-link medium-link-text red-underline-link external-link" href="<?php echo get_sub_field( 'card_link' ); ?>" target="_self">Learn more</a>
+														<a class="red-text text-link medium-link-text red-underline-link external-link" href="<?php echo get_sub_field( 'card_link' ); ?>" target="_self" aria-label="Learn more about <?php echo esc_attr( wp_strip_all_tags( get_sub_field( 'card_title' ) ) ); ?>">Learn more</a>
 													<?php } else { ?>
 														<a class="white-text text-link medium-link-text white-underline-link external-link" href="<?php echo get_sub_field( 'card_link' ); ?>" target="_self"><?php the_sub_field('card_link_text'); ?></a>
 													<?php } ?>	
@@ -83,7 +83,7 @@
 											<?php if (get_sub_field( 'card_link' )){ ?> 
 												<span class="link-container">
 													<?php if ( get_sub_field ('standard_card') == '1' ) { ?>
-														<a class="red-text text-link medium-link-text red-underline-link external-link" href="<?php echo get_sub_field( 'card_link' ); ?>" target="_self">Learn more</a>
+														<a class="red-text text-link medium-link-text red-underline-link external-link" href="<?php echo get_sub_field( 'card_link' ); ?>" target="_self" aria-label="Learn more about <?php echo esc_attr( wp_strip_all_tags( get_sub_field( 'card_title' ) ) ); ?>">Learn more</a>
 													<?php } else { ?>
 														<a class="white-text text-link medium-link-text white-underline-link external-link" href="<?php echo get_sub_field( 'card_link' ); ?>" target="_self"><?php the_sub_field('card_link_text'); ?></a>
 													<?php } ?>													</span>

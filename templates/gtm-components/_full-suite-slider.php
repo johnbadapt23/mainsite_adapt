@@ -8,7 +8,7 @@
             <?php if ( have_rows( 'slides' ) ) : ?>
                 <span class="slide-link-container">
                     <?php while ( have_rows( 'slides' ) ) : the_row(); ?>
-                        <a class="slide-link" href="#"><?php echo get_sub_field( 'slide_link_title' ); ?></a>
+                        <button type="button" class="slide-link"><?php echo get_sub_field( 'slide_link_title' ); ?></button>
                     <?php endwhile; ?>
                 </span>
 			<?php else : ?>
@@ -29,7 +29,7 @@
                                 </span>
                                 <p class="p-xsmall"><?php echo get_sub_field( 'text' ); ?></p>
                                 <?php if (get_sub_field( 'link' )) { ?>
-                                    <a class="red-text red-underline-link red-arrow external-link text-link" href="<?php echo get_sub_field( 'link' ); ?>" target="_self">Learn more</a>
+                                    <a class="red-text red-underline-link red-arrow external-link text-link" href="<?php echo get_sub_field( 'link' ); ?>" target="_self" aria-label="Learn more about <?php echo esc_attr( wp_strip_all_tags( get_sub_field( 'title' ) ) ); ?>">Learn more</a>
                                 <?php } else { ?>
                                     <?php 
                                     $page = get_sub_field('page_link'); // Post Object
@@ -47,9 +47,9 @@
 
                                         <?php else : ?>
 
-                                            <a class="red-text red-underline-link red-arrow external-link text-link" 
-                                            href="<?php echo esc_url($page_link); ?>" 
-                                            target="_self">
+                                            <a class="red-text red-underline-link red-arrow external-link text-link"
+                                            href="<?php echo esc_url($page_link); ?>"
+                                            target="_self" aria-label="Learn more about <?php echo esc_attr( wp_strip_all_tags( get_sub_field( 'title' ) ) ); ?>">
                                                 Learn more
                                             </a>
 

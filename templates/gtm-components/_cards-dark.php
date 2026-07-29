@@ -40,7 +40,7 @@
             <?php if ( have_rows( 'icon_slider' ) ) : ?>
                 <span class="icon-slide-link-container">
                     <?php while ( have_rows( 'icon_slider' ) ) : the_row(); ?>
-                        <a class="icon-slide-link labelSmall" href="#"><?php echo get_sub_field( 'slide_title' ); ?></a>
+                        <button type="button" class="icon-slide-link labelSmall"><?php echo get_sub_field( 'slide_title' ); ?></button>
                     <?php endwhile; ?>
                 </span>
 			<?php else : ?>

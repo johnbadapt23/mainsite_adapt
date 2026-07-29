@@ -79,7 +79,7 @@
                                                             <?php // no rows found ?>
                                                         <?php endif; ?>
                                                         <span class="button-container">
-                                                            <span class="std-button-span red-button">Watch full video <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/video-circle-white.svg" width="16"/></span>
+                                                            <span class="std-button-span red-button">Watch full video <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/video-circle-white.svg" alt="" width="16"/></span>
                                                         </span>
                                                     </span>
                                                 <?php } else { ?>
@@ -176,7 +176,7 @@
                                                             <?php // no rows found ?>
                                                         <?php endif; ?>
                                                         <span class="button-container">
-                                                            <span class="std-button-span red-button">Watch full video <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/video-circle-white.svg" width="16"/></span>
+                                                            <span class="std-button-span red-button">Watch full video <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/video-circle-white.svg" alt="" width="16"/></span>
                                                         </span>
                                                     </span>
                                                 <?php } else { ?>

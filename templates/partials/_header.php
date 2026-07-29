@@ -100,7 +100,7 @@
 					<a class="back resources-lisiting" href="/all-resources/">Resources</a>
 				</span>
 				<span class="close-container">
-					<a class="close-menu" href="#"></a>
+					<button type="button" class="close-menu"></button>
 				</span>
 			</div>
 		</div>
@@ -122,7 +122,7 @@
 			<div class="container">
 				<form action="/search-results" method="get">
 					<input class="searchInput" type="text" name="searchWords" id="mobilesearch" placeholder="Search" value="" />
-					<button type="submit" class="search-button-mobile"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify-placeholder.svg" width="20"/></button>
+					<button type="submit" class="search-button-mobile"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify-placeholder.svg" alt="" width="20"/></button>
 					<input type="hidden" value="1" name="sentence" />
 					<a class="search-clear" onclick="ClearFields();"></a>
 				</form>
@@ -204,7 +204,7 @@
 							<div class="subscribe-sidebar-form mobile-menu-subscribe-form background-pink">
 								<span class="icon-container">
 									<span class="icon-inner">
-										<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+										<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg" alt=""/>
 									</span>
 								</span>
 								<span class="form-content">
@@ -517,11 +517,11 @@
 				<div class="sticky-menu-right">
 					<span class="search-button-container">
 						<?php if($typePost == 'insights' || $typePost == 'expert' ){ ?>
-							<a class="search-button" href="#searchDropdown"><img loading="lazy" class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image-white.svg" width="28"/></a>
+							<a class="search-button" href="#searchDropdown"><img loading="lazy" class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image-white.svg" alt="Search" width="28"/></a>
 						<?php } else if($q && ( $q->slug == 'peer-insights' || $q->slug == 'expert-presentations') ){ ?>
-							<a class="search-button" href="#searchDropdown"><img loading="lazy" class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image-white.svg" width="28"/></a>
+							<a class="search-button" href="#searchDropdown"><img loading="lazy" class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image-white.svg" alt="Search" width="28"/></a>
 						<?php } else { ?>
-							<a class="search-button" href="#searchDropdown"><img loading="lazy" class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image.svg" width="28"/></a>
+							<a class="search-button" href="#searchDropdown"><img loading="lazy" class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image.svg" alt="Search" width="28"/></a>
 						<?php } ?>
 					</span>
 					<span class="subscribe-button-container">
@@ -554,8 +554,8 @@
 		                            <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
 		                            <a onclick="copyJobLink()">
 										<span class="image-icon-container">
-		                                    <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
-		                                    <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
+		                                    <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
+		                                    <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
 											<span class="job-link-text"></span>
 										</span>
 		                            </a>
@@ -595,7 +595,7 @@
 									<a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
 										<span class="image-icon-container">
 	                                        <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
-											<img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
+											<img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" alt="Share via Email" width="24px"/>
 									</a>
 								</span>
 							</span>
@@ -669,7 +669,7 @@
 		}
 		</script>
 		<span class="close-clear-container" id="searchClear">
-			<a class="search-close" href="#"></a>
+			<button type="button" class="search-close"></button>
 			<a class="search-clear" onclick="ClearFields();">Clear</a>
 		</span>
 	</div>

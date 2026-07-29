@@ -176,7 +176,7 @@ if($keyword != '') {
                             <span class="subscribe-sidebar-form background-pink">
                                 <span class="icon-container">
                                     <span class="icon-inner">
-                                        <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+                                        <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg" alt=""/>
                                     </span>
                                 </span>
                                 <h2 class="labelXXLarge text-black h5-style"><?php echo get_field( 'title', 'options' ); ?></h2>
@@ -303,7 +303,7 @@ if($keyword != '') {
                                 <span class="subscribe-sidebar-form background-pink">
                                     <span class="icon-container">
                                         <span class="icon-inner">
-                                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+                                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg" alt=""/>
                                         </span>
                                     </span>
                                     <h2 class="labelXXLarge text-black h5-style"><?php echo get_field( 'title', 'options' ); ?></h2>

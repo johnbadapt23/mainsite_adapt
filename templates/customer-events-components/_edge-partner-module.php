@@ -105,7 +105,7 @@
                                                     </span>
                                                     <span class="text">
                                                         <h2><?php the_title(); ?></h2>                                                    
-                                                        <a class="website" href="<?php echo get_field('website_url'); ?>" target="_blank"><img loading="lazy" class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/website.svg" width="28" /></a>
+                                                        <a class="website" href="<?php echo get_field('website_url'); ?>" target="_blank"><img loading="lazy" class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/website.svg" alt="Website" width="28" /></a>
                                                     </span>
                                                 </span>
                                                 <span class="bio-bottom">
@@ -113,10 +113,10 @@
                                                 </span>                                               
                                             </div>
                                              <span class="speaker-button-container">
-                                                    <a href="#"                                                        
-                                                        data-company="<?php the_title(); ?>" 
+                                                    <button type="button"
+                                                        data-company="<?php the_title(); ?>"
                                                         class="open-form std-button red-button white-text text-white" style="color: #fff;">Request an Introduction
-                                                        </a>                                                                                                        
+                                                        </button>
                                                     </span>
                                                 </span>
                                         </div>

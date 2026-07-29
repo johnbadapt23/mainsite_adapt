@@ -44,7 +44,7 @@
 									<?php if ($slide['video'][0]['vimeo_code_popup']){ ?>
 										<a href="https://vimeo.com/<?php echo $slide['video'][0]['vimeo_code_popup']; ?>" class="image popup-vimeo">
 									<?php } else { ?>
-										<a href="#" class="playBtn">
+										<button type="button" class="playBtn">
 									<?php }?>
 										<span class="icon">
 											<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
@@ -53,7 +53,11 @@
 											<span><?php if($slide['video'][0]['video_button_text']) { ?><?php echo $slide['video'][0]['video_button_text']; ?><?php } else { ?>Watch Video<?php } ?></span>
 											<span><?php echo $slide['video'][0]['duration']; ?></span>
 										</span>
+									<?php if ($slide['video'][0]['vimeo_code_popup']){ ?>
 									</a>
+									<?php } else { ?>
+									</button>
+									<?php }?>
 								</span>
 							<?php } ?>
 						</div>
@@ -428,7 +432,7 @@
 						<?php if( get_field('vimeo_code_popup')){ ?>
 		                    <a href="https://vimeo.com/<?php the_field('vimeo_code_popup'); ?>" class="image popup-vimeo">
 		                <?php } else { ?>
-							<a href="#" class="playBtnVideoBlock">
+							<button type="button" class="playBtnVideoBlock">
 		                <?php } ?>
 							<span class="icon">
 								<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
@@ -437,7 +441,11 @@
 								<span><?php if( get_sub_field('video_button_text')) { ?><?php the_sub_field('video_button_text') ?><?php } else { ?>Watch Video<?php } ?></span>
 								<span><?php the_sub_field('video_duration') ?></span>
 							</span>
+						<?php if( get_field('vimeo_code_popup')){ ?>
 						</a>
+						<?php } else { ?>
+						</button>
+						<?php } ?>
 					</span>
 				</div>
 			</div>

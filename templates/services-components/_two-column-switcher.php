@@ -8,14 +8,14 @@
 				<?php if ( have_rows( 'modules' ) ) : ?>
 					<?php $switchCounter=1; ?>
 					<?php while ( have_rows( 'modules' ) ) : the_row(); ?>
-						<a class="module-switcher<?php if($switchCounter == 1){?> active<?php } ?>" href="#">
+						<button type="button" class="module-switcher<?php if($switchCounter == 1){?> active<?php } ?>">
 							<?php if (get_sub_field('switch_label')){ ?>
-								<?php echo get_sub_field( 'switch_label' ); ?> 
+								<?php echo get_sub_field( 'switch_label' ); ?>
 							<?php } else { ?>
 								<?php echo get_sub_field( 'title' ); ?>
 							<?php }?>
 
-						</a>
+						</button>
 					<?php $switchCounter++; ?>
 					<?php endwhile; ?>
 				<?php else : ?>

@@ -81,8 +81,8 @@
                             <input type="text" value="<?php echo the_permalink(); ?>" id="jobLink" style="display: none;">
                             <a onclick="copyJobLink()">
                                 <span class="image-icon-container">
-                                    <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="32px"/>
-                                    <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="32px"/>
+                                    <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="" width="32px"/>
+                                    <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="" width="32px"/>
                                 </span>
                                 <span class="job-link-text">Copy Link</span>
                             </a>
@@ -105,8 +105,8 @@
                         <span class="email-link">
                             <a class="email-button" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
                                 <span class="image-icon-container">
-                                    <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" width="32px"/>
-                                    <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="32px"/>
+                                    <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="" width="32px"/>
+                                    <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" alt="" width="32px"/>
                                 </span>
 
                                 <span class="job-link-text">Email Me</span>
@@ -115,7 +115,7 @@
                     </span>
                     <span class="share-job-container mobile">
                         <button class="share-button" type="button" title="Share this article">
-                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/post-share.svg" width="32px"/>
+                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/post-share.svg" alt="" width="32px"/>
                             <span class="job-link-text">Share</span>
                         </button>
                         <script>
@@ -137,10 +137,10 @@
                         </script>
                     </span>
                     <span class="back-top-link">
-                        <a class="back-to-top" href="#">
-                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-back-top.svg" width="32px"/>
+                        <button type="button" class="back-to-top">
+                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-back-top.svg" alt="" width="32px"/>
                             <span class="job-link-text">Back to Top</span>
-                        </a>
+                        </button>
                     </span>
                 </span>
             </div>
@@ -183,7 +183,7 @@ if( $posts->have_posts() ): ?>
         <div class="container">
             <div class="title-column column">
                 <h2 class="text-black">Open Positions</h2>
-                <span class="curly-arrow-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/curved-arrows-right.svg" width="200"/></span>
+                <span class="curly-arrow-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/curved-arrows-right.svg" alt="" width="200"/></span>
             </div>
             <div class="positions-column column">
                 <?php while( $posts->have_posts() ) : $posts->the_post(); ?>

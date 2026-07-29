@@ -16,7 +16,7 @@
                 </span>
                  <?php if ( get_field ( 'linked_in_url' ) ) { ?>
                     <span class="button-container">
-                        <a class="linkedin-button" href="<?php echo get_field('linked_in_url'); ?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-white-new.svg" width="20"/>Follow on LinkedIn</a>
+                        <a class="linkedin-button" href="<?php echo get_field('linked_in_url'); ?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-white-new.svg" alt="" width="20"/>Follow on LinkedIn</a>
                     </span>
                 <?php } ?>                
             </div>
@@ -164,7 +164,7 @@
                     if ($group_count > 1) {
                         echo '<div class="pagination-container">';
                         for ($i = 1; $i <= $group_count; $i++) {
-                            echo '<a href="#" class="pagination-link" data-page="' . $i . '">' . $i . '</a>';
+                            echo '<button type="button" class="pagination-link" data-page="' . $i . '">' . $i . '</button>';
                         }
                         echo '</div>';
                     }                

@@ -44,7 +44,7 @@
                                     <?php the_sub_field( 'text' ); ?>
                                 </span>
                                 <span class="text-link-container">
-                                    <a class="red-text external-link text-link red-underline-link" href="<?php the_sub_field( 'link_url' ); ?>" target="<?php the_sub_field( 'link_target' ); ?>">Learn more</a>
+                                    <a class="red-text external-link text-link red-underline-link" href="<?php the_sub_field( 'link_url' ); ?>" target="<?php the_sub_field( 'link_target' ); ?>" aria-label="Learn more about <?php echo esc_attr( wp_strip_all_tags( get_sub_field( 'title' ) ) ); ?>">Learn more</a>
                                 </span>
                             </span>
                         </span>

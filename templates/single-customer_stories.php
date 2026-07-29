@@ -75,7 +75,7 @@ $displayed_posts[] = get_the_ID();
                     <?php } ?>     
                     <span class="labelMedium text-black"><?php echo get_field( 'company_name' ); ?></span>
                     <span class="sector-container">
-                        <span class="sector-icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/sector.svg" width="20"/></span>
+                        <span class="sector-icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/sector.svg" alt="" width="20"/></span>
                         <span class="sector-name labelMedium text-dark-grey"><?php echo get_field( 'sector' ); ?></span>
                     </span>
                     <span class="divider-line"></span>
@@ -116,8 +116,8 @@ $displayed_posts[] = get_the_ID();
                                     <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
                                     <a onclick="copyJobLink()">
                                         <span class="image-icon-container">
-                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
-                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
+                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
+                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
                                             <span class="job-link-text"></span>
                                         </span>
                                     </a>
@@ -149,7 +149,7 @@ $displayed_posts[] = get_the_ID();
                                     <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
                                         <span class="image-icon-container">
                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
-                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
+                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" alt="Share via Email" width="24px"/>
                                     </a>
                                 </span>
                             </span>
@@ -215,7 +215,7 @@ $displayed_posts[] = get_the_ID();
                         <span class="divider-line"></span>
                         <span class="labelMedium text-black"><?php echo get_field( 'company_name' ); ?></span>
                         <span class="sector-container">
-                            <span class="sector-icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/sector.svg" width="20"/></span>
+                            <span class="sector-icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/sector.svg" alt="" width="20"/></span>
                             <span class="sector-name labelMedium text-dark-grey"><?php echo get_field( 'sector' ); ?></span>
                         </span>
                         <span class="divider-line"></span>
@@ -309,8 +309,8 @@ $displayed_posts[] = get_the_ID();
                                     <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
                                     <a onclick="copyJobLink()">
                                         <span class="image-icon-container">
-                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
-                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
+                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
+                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
                                             <span class="job-link-text"></span>
                                         </span>
                                     </a>
@@ -342,7 +342,7 @@ $displayed_posts[] = get_the_ID();
                                     <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
                                         <span class="image-icon-container">
                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
-                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
+                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" alt="Share via Email" width="24px"/>
                                     </a>
                                 </span>
                             </span>
@@ -570,7 +570,7 @@ $displayed_posts[] = get_the_ID();
                         <?php if ( have_rows( 'slides' ) ) : ?>
                             <span class="slide-link-container">
                                 <?php while ( have_rows( 'slides' ) ) : the_row(); ?>
-                                    <a class="slide-link" href="#"><?php echo get_sub_field( 'slide_link_title' ); ?></a>
+                                    <button type="button" class="slide-link"><?php echo get_sub_field( 'slide_link_title' ); ?></button>
                                 <?php endwhile; ?>
                             </span>
                         <?php else : ?>
@@ -590,7 +590,7 @@ $displayed_posts[] = get_the_ID();
                                                 </span>
                                             </span>
                                             <p class="p-xsmall"><?php echo get_sub_field( 'text' ); ?></p>
-                                            <a class="red-text red-underline-link red-arrow text-link" href="<?php echo get_sub_field( 'link' ); ?>" target="_self">Learn more</a>
+                                            <a class="red-text red-underline-link red-arrow text-link" href="<?php echo get_sub_field( 'link' ); ?>" target="_self" aria-label="Learn more about <?php echo esc_attr( wp_strip_all_tags( get_sub_field( 'title' ) ) ); ?>">Learn more</a>
                                         </div>
                                         <div class="column one-half image-column hide-mobile">
                                             <span class="image-container">

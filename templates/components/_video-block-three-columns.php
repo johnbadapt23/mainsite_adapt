@@ -14,7 +14,7 @@
                                 <?php if( get_sub_field('vimeo_code_popup')){ ?>
                                     <a href="https://vimeo.com/<?php the_sub_field('vimeo_code_popup'); ?>" class="image popup-vimeo">
                                 <?php } else { ?>
-                                    <a href="#" class="playBtnGrid">
+                                    <button type="button" class="playBtnGrid">
                                 <?php } ?>
                                     <span class="icon">
                                         <img src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
@@ -23,7 +23,11 @@
                                         <span><?php the_sub_field( 'button_text' ); ?></span>
                                         <span><?php the_sub_field( 'duration' ); ?></span>
                                     </span>
-                                </a>
+                                <?php if( get_sub_field('vimeo_code_popup')){ ?>
+                                    </a>
+                                <?php } else { ?>
+                                    </button>
+                                <?php } ?>
                             </span>
                         </div>
                         <?php if(get_sub_field( 'listing_title' )){ ?>

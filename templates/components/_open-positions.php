@@ -10,7 +10,7 @@ if( $posts->have_posts() ): ?>
         <div class="container">
             <div class="title-column column">
                 <h2 class="text-black"><?php echo get_sub_field( 'title' ); ?></h2>
-                <span class="curly-arrow-container"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/curved-arrows-right.svg" width="200"/></span>
+                <span class="curly-arrow-container"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/curved-arrows-right.svg" alt="" width="200"/></span>
             </div>
             <div class="positions-column column">
                 <?php while( $posts->have_posts() ) : $posts->the_post(); ?>

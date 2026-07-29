@@ -9,7 +9,7 @@
                 <?php if ( have_rows( 'points' ) ) : ?>
                     <span class="points-container">
                         <?php while ( have_rows( 'points' ) ) : the_row(); ?>
-                           <span class="points black-text"><img class="arrow-right-circle" src="<?php echo get_template_directory_uri(); ?>/assets/images/arrow-circle-black-right.svg" width="20"/><?php echo get_sub_field( 'text' ); ?></span>                            
+                           <span class="points black-text"><img class="arrow-right-circle" src="<?php echo get_template_directory_uri(); ?>/assets/images/arrow-circle-black-right.svg" alt="" width="20"/><?php echo get_sub_field( 'text' ); ?></span>                            
                         <?php endwhile; ?>
                     </span>
                 <?php else : ?>

@@ -9,7 +9,7 @@
                     <span class="speaker">
                         <span class="authorSingle">
                             <span class="authorImage" style="background-image: url(<?php echo get_field( 'speaker_image' ); ?>);">
-                                <img class="delete-no" style="display: none;" src="<?php echo get_field( 'speaker_image' ); ?>"/>
+                                <img class="delete-no" style="display: none;" src="<?php echo get_field( 'speaker_image' ); ?>" alt=""/>
                             </span>
                             <span class="authorText">
                                 <span class="authorName">

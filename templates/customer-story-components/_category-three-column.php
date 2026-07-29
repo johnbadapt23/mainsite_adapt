@@ -191,8 +191,8 @@
                                                     <input type="text" value="<?php echo get_term_link( $termTax ); ?>?story=<?php echo $slug; ?>" id="postLink" style="display: none;">
                                                     <a onclick="copyJobLink()">
                                                         <span class="image-icon-container">
-                                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
-                                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
+                                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
+                                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
                                                             <span class="job-link-text"></span>
                                                         </span>
                                                     </a>
@@ -219,7 +219,7 @@
                                                     <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo get_term_link( $termTax ); ?>?story=<?php echo $slug; ?>" target="_blank">
                                                         <span class="image-icon-container">
                                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
-                                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
+                                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" alt="Share via Email" width="24px"/>
                                                         </span>
                                                     </a>
                                                 </span>

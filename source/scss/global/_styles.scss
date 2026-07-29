@@ -217,6 +217,10 @@ span.std-button-span {
 	color: #fff;
 	padding: 20px 32px;
 	cursor: pointer;
+	border: none;
+	margin: 0;
+	-webkit-appearance: none;
+	appearance: none;
 	@include transition(all, 300ms);
 
 	@media (max-width:767px) {
@@ -2137,6 +2141,31 @@ a {
 		outline: 0;
 	}
 }
+
+// Play buttons that were converted from <a href="#"> to <button type="button">
+// (video play controls that never had a real destination). These classes have
+// no other CSS matching them, so they previously relied purely on the browser's
+// default <a> rendering (inline, color/cursor from the global "a" rule above).
+// Replicate that here since <button> has different UA defaults (background,
+// border, padding, appearance, and inline-block instead of inline display).
+.playBtnVideoBlock,
+.playBtnGrid {
+	display: inline;
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	color: #e7534f;
+	text-decoration: none;
+	text-align: left;
+	cursor: pointer;
+	-webkit-appearance: none;
+	appearance: none;
+}
+// Note: .playBtn (banner video buttons) is intentionally not reset here -
+// its <button> chrome defaults (background/border/padding/appearance) are
+// already neutralized alongside the real float/color/margin rules it needs,
+// in templates/_single-events.scss and templates/_home.scss ("a, .playBtn").
 
 a[data-toggle],
 a[data-top] {

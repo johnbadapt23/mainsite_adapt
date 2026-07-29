@@ -51,7 +51,7 @@
                                         <span class="read-more-container column">
                                             <span class="v-wrap">
                                                 <span class="v-box">
-                                                    <a href="<?php the_permalink(); ?>" class="read-more text-link text-red">Read more</a>
+                                                    <a href="<?php the_permalink(); ?>" class="read-more text-link text-red" aria-label="Read more about <?php echo esc_attr( wp_strip_all_tags( get_the_title() ) ); ?>">Read more</a>
                                                 </span>
                                             </span>
                                         </span>
@@ -94,7 +94,7 @@
                                 <span class="read-more-container column">
                                     <span class="v-wrap">
                                         <span class="v-box">
-                                            <a href="<?php the_permalink(); ?>" class="read-more text-link text-red">Read more</a>
+                                            <a href="<?php the_permalink(); ?>" class="read-more text-link text-red" aria-label="Read more about <?php echo esc_attr( wp_strip_all_tags( get_the_title() ) ); ?>">Read more</a>
                                         </span>
                                     </span>
                                 </span>

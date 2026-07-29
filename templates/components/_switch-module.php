@@ -19,7 +19,7 @@
                     <span class="module-switcher">
                         <?php $buttonCounter=1;?>
                     	<?php while ( have_rows( 'module' ) ) : the_row(); ?>
-                            <a class="module-switch-button std-button <?php if($buttonCounter==1){ ?>active<?php } ?>" href="#" data-background="<?php echo get_sub_field( 'background_colour' );?>"><?php echo get_sub_field( 'title' ); ?></a>
+                            <button type="button" class="module-switch-button std-button <?php if($buttonCounter==1){ ?>active<?php } ?>" data-background="<?php echo get_sub_field( 'background_colour' );?>"><?php echo get_sub_field( 'title' ); ?></button>
                             <?php $buttonCounter++;?>
                         <?php endwhile; ?>
                     </span>

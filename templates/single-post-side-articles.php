@@ -1805,7 +1805,7 @@
                                            </div>
                                        <?php } ?>
                                        <span class="videoLink">
-                                           <a href="#" class="playBtnVideoBlock">
+                                           <button type="button" class="playBtnVideoBlock">
                                                <span class="icon">
                                                    <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
                                                </span>
@@ -1813,7 +1813,7 @@
                                                    <span><?php if( get_sub_field('video_button_text')) { ?><?php the_sub_field('video_button_text') ?><?php } else { ?>Watch Video<?php } ?></span>
                                                    <span><?php the_sub_field('video_duration') ?></span>
                                                </span>
-                                           </a>
+                                           </button>
                                        </span>
                                    </div>
                                </div>
@@ -1852,7 +1852,7 @@
                                     </div>
                                 <?php } ?>
                                 <span class="videoLink">
-                                    <a href="#" class="playBtnVideoBlock">
+                                    <button type="button" class="playBtnVideoBlock">
                                         <span class="icon">
                                             <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
                                         </span>
@@ -1860,7 +1860,7 @@
                                             <span><?php if( get_sub_field('video_button_text')) { ?><?php the_sub_field('video_button_text') ?><?php } else { ?>Watch Video<?php } ?></span>
                                             <span><?php the_sub_field('video_duration') ?></span>
                                         </span>
-                                    </a>
+                                    </button>
                                 </span>
                             </div>
                         </div>
@@ -2007,7 +2007,7 @@
                     <?php } ?>
                     <?php if( has_term( 'watch', 'article-type' ) ) { ?>
                         <span class="watchIcon">
-                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/video.svg"/>
+                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/video.svg" alt=""/>
                         </span>
                     <?php } ?>
                 </div>

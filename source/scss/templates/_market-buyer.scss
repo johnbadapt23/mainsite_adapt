@@ -92,10 +92,16 @@ body.template-market-buyer {
                             background-size: contain;
                             background-repeat: no-repeat;
                             background-position: center;
+                            background-color: transparent;
+                            border: none;
+                            padding: 0;
+                            margin: 0;
+                            -webkit-appearance: none;
+                            appearance: none;
                             cursor: pointer;
                             position: absolute;
                             bottom: 20px;
-                            right: 20px;          
+                            right: 20px;
 
                             &.paused {
                                 background-image: url('../images/gtm-play.svg');

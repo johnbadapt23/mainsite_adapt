@@ -52,7 +52,7 @@
     			<span class="text"><?php echo get_sub_field( 'text' ); ?></span>
                 <?php if(get_sub_field('form_embed')){ ?> 
                     <span class="form-container-outer">
-                        <span class="pre-form-text"><span class="icon-container"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/form-arrow-down.svg" width="16"/></span><span class="medium-grey labelXXsmall"><?php echo get_sub_field('pre_form_text'); ?></span></span>
+                        <span class="pre-form-text"><span class="icon-container"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/form-arrow-down.svg" alt="" width="16"/></span><span class="medium-grey labelXXsmall"><?php echo get_sub_field('pre_form_text'); ?></span></span>
                         <span class="form-container-inner">
                             <span class="form-popup" id="animationForm">
                                 <span class="form-container">

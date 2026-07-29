@@ -60,7 +60,7 @@ get_header();
 								<?php } ?>
 								<?php if($slide['video']) { ?>
 									<span class="videoLink">
-										<a href="#" class="playBtn">
+										<button type="button" class="playBtn">
 											<span class="icon">
 												<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
 											</span>
@@ -68,7 +68,7 @@ get_header();
 												<span><?php if($slide['video'][0]['video_button_text']) { ?><?php echo $slide['video'][0]['video_button_text']; ?><?php } else { ?>Watch Video<?php } ?></span>
 												<span><?php echo $slide['video'][0]['duration']; ?></span>
 											</span>
-										</a>
+										</button>
 									</span>
 								<?php } ?>
 
@@ -165,7 +165,12 @@ get_header();
 					<div class="container">
 						 <?php if ( get_sub_field ( 'feature_image_or_infogram' ) == 'image' ) { ?>
 							 <div class="featureBlock">
-								 <img loading="lazy" class="featureImage" src="<?php the_sub_field( 'image' ); ?>"/>
+								 <?php
+								 $feature_image_url = get_sub_field( 'image' );
+								 $feature_image_id = $feature_image_url ? attachment_url_to_postid( $feature_image_url ) : 0;
+								 $feature_image_alt = $feature_image_id ? get_post_meta( $feature_image_id, '_wp_attachment_image_alt', true ) : '';
+								 ?>
+								 <img loading="lazy" class="featureImage" src="<?php echo esc_url( $feature_image_url ); ?>" alt="<?php echo esc_attr( $feature_image_alt ); ?>"/>
 							 </div>
 						 <?php } else { ?>
 							 <div class="infogram-container">
@@ -600,7 +605,7 @@ get_header();
 								</div>
 							<?php } ?>
 							<span class="videoLink">
-								<a href="#" class="playBtnVideoBlock">
+								<button type="button" class="playBtnVideoBlock">
 									<span class="icon">
 										<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
 									</span>
@@ -608,7 +613,7 @@ get_header();
 										<span><?php if( get_sub_field('video_button_text')) { ?><?php the_sub_field('video_button_text') ?><?php } else { ?>Watch Video<?php } ?></span>
 										<span><?php the_sub_field('video_duration') ?></span>
 									</span>
-								</a>
+								</button>
 							</span>
 						</div>
 					</div>

@@ -426,7 +426,7 @@
                                 <div class="subscribe-sidebar-form mobile-menu-subscribe-form background-pink">
                                     <span class="icon-container">
                                         <span class="icon-inner">
-                                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+                                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg" alt=""/>
                                         </span>
                                     </span>
                                     <span class="form-content">

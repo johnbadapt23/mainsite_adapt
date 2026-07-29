@@ -160,7 +160,7 @@
                                     <?php $image = get_field('icon', $term); ?>
                                     <span class="checkboxButton">
                                         <label>
-                                          <input type="checkbox" name="types[]" <?php if($filterType == '') { } else { if (in_array( $term -> slug, $filterType )) { ?> checked <?php }}?> value="<?php echo $term -> slug; ?>"><span class="checkbox-text"><img src="<?php echo $image; ?>"/><?php echo $term -> name; ?></span>
+                                          <input type="checkbox" name="types[]" <?php if($filterType == '') { } else { if (in_array( $term -> slug, $filterType )) { ?> checked <?php }}?> value="<?php echo $term -> slug; ?>"><span class="checkbox-text"><img src="<?php echo $image; ?>" alt=""/><?php echo $term -> name; ?></span>
                                         </label>
                                     </span>
                                 <?php } ?>

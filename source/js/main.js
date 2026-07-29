@@ -1408,7 +1408,7 @@
 			var groupCount = $('.post-group').length;
 			var paginationHtml = '<div class="pagination-links">';
 			for (var i = 1; i <= groupCount; i++) {
-				paginationHtml += '<a href="#" class="pagination-link" data-page="' + i + '">' + i + '</a> ';
+				paginationHtml += '<button type="button" class="pagination-link" data-page="' + i + '">' + i + '</button> ';
 			}
 			paginationHtml += '</div>';
 			$('.pagination-container').html(paginationHtml);

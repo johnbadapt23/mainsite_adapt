@@ -16,7 +16,7 @@
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>                                
                                 <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>"></a>
                             <?php } ?>
-                            <a class="pause-autoplay" href="#"></a>
+                            <button type="button" class="pause-autoplay"></button>
                         </div>
                     </div>
                 <?php } else { ?>

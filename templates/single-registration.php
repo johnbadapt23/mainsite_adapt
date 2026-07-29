@@ -49,7 +49,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 				<?php if(get_field( 'banner_logo' )) { ?>
 					<?php $bannerLogo = get_field('banner_logo'); ?>
 					<span class="banner-icon" <?php if( get_field( 'banner_logo_height' )){ ?>style="height: <?php echo get_field( 'banner_logo_height' ); ?>px;"<?php } ?>>
-						<img loading="lazy" src="<?php echo $bannerLogo['url']; ?>"/>
+						<img loading="lazy" src="<?php echo $bannerLogo['url']; ?>" alt="<?php echo $bannerLogo['alt']; ?>"/>
 					</span>
 				<?php } ?>
 				<h1 class="text-white"><?php the_title(); ?></h1>
@@ -71,7 +71,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 			<span class="register-container">
 				<span class="sticky-container">
 					<span class="upper-container">
-						<img loading="lazy" class="calendar-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/calendar.svg"/ width="26">
+						<img loading="lazy" class="calendar-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/calendar.svg" alt=""/ width="26">
 						<span class="date-title small-text-grey">Date</span>
 						<span class="date text-black"><?php echo $date->format('l, j F, Y'); ?></span>
 						<span class="time-title small-text-grey">Time</span>
@@ -157,7 +157,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 														<h3 class="title">
 															<?php the_title(); ?>
 															<?php if ( get_field('linked_in_url')) { ?>
-																<a class="linkedin-link" href="<?php echo get_field('linked_in_url');?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" width="20"/></a>
+																<a class="linkedin-link" href="<?php echo get_field('linked_in_url');?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" alt="LinkedIn" width="20"/></a>
 															<?php } ?>
 														</h3>
 														<p class="job-title"><?php echo get_field( 'speaker_description' ); ?></p>

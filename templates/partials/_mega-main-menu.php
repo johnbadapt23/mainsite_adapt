@@ -51,7 +51,7 @@
                                     <span class="hover-title">
                                         <?php echo $itTitle; ?>
                                     </span>
-                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg"/></span>
+                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg" alt=""/></span>
                                     <?php if ( $itLink ) { ?>
                                         </a>
                                     <?php } ?>
@@ -71,7 +71,7 @@
                                     <span class="hover-title">
                                         <?php echo $techTitle; ?>
                                     </span>
-                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg"/></span>
+                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg" alt=""/></span>
                                      <?php if ( $techLink ) { ?>
                                         </a>
                                     <?php } ?>
@@ -117,12 +117,12 @@
                                                                     <span class="compare-text"><?php echo get_sub_field( 'text' ); ?></span>
                                                                     <span class="columnTitle">
                                                                         <?php echo get_sub_field( 'title' ); ?>
-                                                                        <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg"/></span>
+                                                                        <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg" alt=""/></span>
                                                                     </span>
                                                                 <?php } else { ?> 
                                                                     <span class="columnTitle small-margin">
                                                                         <?php echo get_sub_field( 'title' ); ?>
-                                                                        <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg"/></span>
+                                                                        <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg" alt=""/></span>
                                                                     </span>
                                                                     <span class="columnText no-margin">
                                                                         <?php echo get_sub_field( 'text' ); ?>
@@ -173,7 +173,7 @@
                                                             <?php } ?>
                                                                 <span class="columnTitle small-margin">
                                                                     <?php echo get_sub_field( 'title' ); ?>
-                                                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg"/></span>
+                                                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg" alt=""/></span>
                                                                 </span>
                                                                 <span class="columnText no-margin">
                                                                     <?php echo get_sub_field( 'text' ); ?>
@@ -303,7 +303,7 @@
                                             <?php } ?>
                                                 <span class="columnTitle small-margin">
                                                     <?php echo get_sub_field( 'title' ); ?>
-                                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg"/></span>
+                                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg" alt=""/></span>
                                                 </span>
                                                 <span class="columnText no-margin">
                                                     <?php echo get_sub_field( 'text' ); ?>
@@ -393,7 +393,7 @@
                                             <?php } ?>
                                                 <span class="columnTitle small-margin">
                                                     <?php echo get_sub_field( 'title' ); ?>
-                                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg"/></span>
+                                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg" alt=""/></span>
                                                 </span>
                                                 <span class="columnText">
                                                     <?php echo get_sub_field( 'text' ); ?>
@@ -446,7 +446,7 @@
                                 <div class="subscribe-sidebar-form background-pink">
                                     <span class="icon-container">
                                         <span class="icon-inner">
-                                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+                                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg" alt=""/>
                                         </span>
                                     </span>
                 					<h5 class="labelMedium text-red"><?php echo get_sub_field( 'title' ); ?></h5>
@@ -482,7 +482,7 @@
                                         <?php } ?>
                                             <span class="columnTitle small-margin">
                                                 <?php echo get_sub_field( 'title' ); ?>
-                                                <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg"/></span>
+                                                <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg" alt=""/></span>
                                             </span>
                                             <span class="columnText">
                                                 <?php echo get_sub_field( 'text' ); ?>
@@ -569,7 +569,7 @@
                                             <a href="<?php echo get_sub_field( 'title_link' ); ?>" target="_self">
                                                 <span class="columnTitle small-margin">
                                                     <?php echo get_sub_field( 'title' ); ?>
-                                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg"/></span>
+                                                    <span class="hover-icon-container"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/menu-arrow-red.svg" alt=""/></span>
                                                 </span>
                                             </a>
                                             <span class="columnText">

@@ -31,27 +31,27 @@
                                                 <span class="font-ibm tertiary-white"><?php echo get_sub_field( 'company_name' ); ?></span>
                                             </span>
                                             <span class="small-details">
-                                                <span class="role"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-role.svg" width="12"/></span><?php  echo get_sub_field( 'role' ); ?></span>
-                                                <span class="industry"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-industry.svg" width="12"/></span><?php  echo get_sub_field( 'industry' ); ?></span>
-                                                <span class="level"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-level.svg" width="12"/></span><?php  echo get_sub_field( 'level' ); ?></span>
+                                                <span class="role"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-role.svg" alt="" width="12"/></span><?php  echo get_sub_field( 'role' ); ?></span>
+                                                <span class="industry"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-industry.svg" alt="" width="12"/></span><?php  echo get_sub_field( 'industry' ); ?></span>
+                                                <span class="level"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-level.svg" alt="" width="12"/></span><?php  echo get_sub_field( 'level' ); ?></span>
                                             </span>
                                             <span class="bottom-details">
                                                 <span class="bottom-detail">
-                                                    <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-dollar.svg" width="32"/></span>
+                                                    <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-dollar.svg" alt="" width="32"/></span>
                                                     <span class="detail">
                                                         <span class="detail-title font-ibm tertiary-white">Investment Priorty</span>
                                                         <span class="detail-text font-ibm primary-white"><?php  echo get_sub_field( 'investment_priority' ); ?></span>
                                                     </span>
                                                 </span>
                                                 <span class="bottom-detail">
-                                                    <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-alert.svg" width="32"/></span>
+                                                    <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-alert.svg" alt="" width="32"/></span>
                                                     <span class="detail">
                                                         <span class="detail-title font-ibm tertiary-white">Top Challenge</span>
                                                         <span class="detail-text font-ibm primary-white"><?php  echo get_sub_field( 'top_challenge' ); ?></span>
                                                     </span>
                                                 </span>
                                                 <span class="bottom-detail">
-                                                    <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-ticket.svg" width="32"/></span>
+                                                    <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-ticket.svg" alt="" width="32"/></span>
                                                     <span class="detail">
                                                         <span class="detail-title font-ibm tertiary-white">Attending</span>
                                                         <span class="detail-text font-ibm primary-white"><?php  echo get_sub_field( 'attending' ); ?></span>
@@ -125,27 +125,27 @@
                                             <span class="font-ibm tertiary-white"><?php echo get_sub_field( 'company_name' ); ?></span>
                                         </span>
                                         <span class="small-details">
-                                            <span class="role"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-role.svg" width="12"/></span><?php  echo get_sub_field( 'role' ); ?></span>
-                                            <span class="industry"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-industry.svg" width="12"/></span><?php  echo get_sub_field( 'industry' ); ?></span>
-                                            <span class="level"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-level.svg" width="12"/></span><?php  echo get_sub_field( 'level' ); ?></span>
+                                            <span class="role"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-role.svg" alt="" width="12"/></span><?php  echo get_sub_field( 'role' ); ?></span>
+                                            <span class="industry"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-industry.svg" alt="" width="12"/></span><?php  echo get_sub_field( 'industry' ); ?></span>
+                                            <span class="level"><span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-level.svg" alt="" width="12"/></span><?php  echo get_sub_field( 'level' ); ?></span>
                                         </span>
                                         <span class="bottom-details">
                                             <span class="bottom-detail">
-                                                <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-dollar.svg" width="32"/></span>
+                                                <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-dollar.svg" alt="" width="32"/></span>
                                                 <span class="detail">
                                                     <span class="detail-title font-ibm tertiary-white">Investment Priorty</span>
                                                     <span class="detail-text font-ibm primary-white"><?php  echo get_sub_field( 'investment_priority' ); ?></span>
                                                 </span>
                                             </span>
                                             <span class="bottom-detail">
-                                                <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-alert.svg" width="32"/></span>
+                                                <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-alert.svg" alt="" width="32"/></span>
                                                 <span class="detail">
                                                     <span class="detail-title font-ibm tertiary-white">Top Challenge</span>
                                                     <span class="detail-text font-ibm primary-white"><?php  echo get_sub_field( 'top_challenge' ); ?></span>
                                                 </span>
                                             </span>
                                             <span class="bottom-detail">
-                                                <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-ticket.svg" width="32"/></span>
+                                                <span class="icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/gtm-ticket.svg" alt="" width="32"/></span>
                                                 <span class="detail">
                                                     <span class="detail-title font-ibm tertiary-white">Attending</span>
                                                     <span class="detail-text font-ibm primary-white"><?php  echo get_sub_field( 'attending' ); ?></span>

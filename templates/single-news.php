@@ -75,7 +75,7 @@
 						<span class="subscribe-sidebar-form background-pink">
 							<span class="icon-container">
 								<span class="icon-inner">
-									<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+									<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg" alt=""/>
 								</span>
 							</span>
 							<h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>
@@ -113,7 +113,7 @@
     			<span class="subscribe-sidebar-form background-pink">
 					<span class="icon-container">
 						<span class="icon-inner">
-							<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+							<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg" alt=""/>
 						</span>
 					</span>
     				<h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>

@@ -74,7 +74,7 @@ if($years){
          				<?php // no rows found ?>
          			<?php endif; ?>
                     <span class="back-top-mobile-sticky">
-                        <a class="back-to-top-sticky" href="#"></a>
+                        <button type="button" class="back-to-top-sticky"></button>
                         <span class="text">Back to top</span>
                     </span>
                  </span>
