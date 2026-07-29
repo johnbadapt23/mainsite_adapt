@@ -3,7 +3,7 @@ var browserSync = require("browser-sync");
 
 var config = require('../../config.js');
 
-gulp.task('serve:proxy', function () {
+gulp.task('serve:proxy', function (done) {
     browserSync({
         proxy: config.serve.url,
         host: config.serve.host,
@@ -13,4 +13,5 @@ gulp.task('serve:proxy', function () {
         tunnel: config.serve.tunnel,
         logPrefix: config.serve.log
     });
+    done();
 });

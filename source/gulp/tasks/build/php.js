@@ -8,6 +8,6 @@ var reload = browserSync.reload;
 var path = require('../../paths.js');
 
 gulp.task('build:php', function () {
-    gulp.src(path.src.php)
+    return gulp.src(path.src.php)
         .pipe(reload({stream: true}));
 });

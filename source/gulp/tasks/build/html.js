@@ -7,7 +7,7 @@ var reload = browserSync.reload;
 var path = require('../../paths.js');
 
 gulp.task('build:html', function () {
-    gulp.src(path.src.html)
+    return gulp.src(path.src.html)
         .pipe(fileinclude({
             prefix: '@@',
             basepath: './source/templates/'

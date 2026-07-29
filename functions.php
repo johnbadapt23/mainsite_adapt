@@ -180,19 +180,35 @@ add_action('template_redirect', function() {
 
 
 function my_enqueue_scripts() {
+    // filemtime() needs a filesystem path, not the public URL. Passing
+    // get_template_directory_uri() here silently failed (filemtime() can't
+    // stat a remote http:// URL), so $ver was always false and WP fell back
+    // to the generic WP-core version string as the cache-busting query arg --
+    // meaning CSS/JS changes never busted browser/proxy caches after a
+    // deploy. get_template_directory() (filesystem path) fixes that; the
+    // enqueued src URL is unchanged.
     wp_enqueue_style(
         'main-styles',
         get_template_directory_uri(). '/assets/css/main.min.css',
         [],
-        filemtime(get_template_directory_uri(). '/assets/css/main.min.css')
+        filemtime(get_template_directory(). '/assets/css/main.min.css')
     );
     wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js', array(), null, true);
     wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js', array(), null, true);
+
+    // Previously loaded as raw <script> tags in header.php ahead of wp_head().
+    // Moved into the enqueue system and pinned to the exact version "@latest"
+    // was resolving to at time of writing, so behavior today is unchanged but
+    // the site no longer silently picks up a new, unreviewed release the next
+    // time unpkg's @latest alias moves.
+    wp_enqueue_script('lottie-player', 'https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js', array(), '2.0.12', false);
+    wp_enqueue_script('lottie-interactivity', 'https://unpkg.com/@lottiefiles/lottie-interactivity@1.6.2/dist/lottie-interactivity.min.js', array(), '1.6.2', false);
+
     wp_enqueue_script(
         'main-js',
         get_template_directory_uri() . '/assets/js/main.min.js',
         array('jquery'),
-        filemtime(get_template_directory_uri(). '/assets/js/main.min.js'),
+        filemtime(get_template_directory(). '/assets/js/main.min.js'),
         true
     );
 
@@ -590,7 +606,11 @@ add_filter( 'rocket_delay_js_exclusions', function( $exclusions ) {
         $exclusions[] = 'jquery.min.js';
         $exclusions[] = 'gsap.min.js';
         $exclusions[] = 'mediaelement-and-player.min.js';
-        $exclusions[] = '/themes/adapt/assets/js/main.min.js';
+        // Built from get_template() instead of a hardcoded folder name, so
+        // this keeps matching main.min.js correctly if the theme folder is
+        // ever renamed (e.g. a parallel "adapt_optimize" deploy folder used
+        // for testing before switching the active theme).
+        $exclusions[] = '/themes/' . get_template() . '/assets/js/main.min.js';
     }
 
     return $exclusions;

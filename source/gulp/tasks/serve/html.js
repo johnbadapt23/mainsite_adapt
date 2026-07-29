@@ -1,9 +1,12 @@
 var gulp = require('gulp');
 var browserSync = require("browser-sync");
 
-var path = require('../../config.js');
+// Was assigned to "path" but referenced as "config" below (pre-existing bug,
+// meaning this specific task never actually ran under gulp3 either since
+// "config" was undefined) — fixed the name so it matches what's used.
+var config = require('../../config.js');
 
-gulp.task('serve:html', function () {
+gulp.task('serve:html', function (done) {
     browserSync({
         server: {
             baseDir: config.serve.base
@@ -13,4 +16,5 @@ gulp.task('serve:html', function () {
         port: config.serve.port,
         logPrefix: config.serve.log
     });
+    done();
 });

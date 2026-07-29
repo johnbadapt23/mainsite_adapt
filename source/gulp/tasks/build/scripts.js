@@ -10,7 +10,8 @@ var path = require('../../paths.js');
 var error = require('../../error.js');
 
 gulp.task('build:scripts', function () {
-    gulp.src(path.src.scripts)
+    // gulp4 requires a task to return its stream to know when it's done.
+    return gulp.src(path.src.scripts)
         //.pipe(rigger())
         .pipe(fileinclude({
             prefix: '@@',

@@ -19,10 +19,19 @@
 <link rel="mask-icon" href="<?php echo get_template_directory_uri(); ?>/assets/images/safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#000000">
 <meta name="theme-color" content="#000000">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<!-- The hardcoded jQuery 2.1.4 tag that used to be here was dead weight: it ran
+     and set window.jQuery, but WP's own bundled jquery (registered as the
+     'jquery' handle and printed a few lines below by wp_head(), since core
+     jquery is not opted into the footer here) always loaded straight after it
+     in the same <head> pass and overwrote window.jQuery before any theme code
+     ran. main-js declares 'jquery' as its dependency, so it was always running
+     against WP's bundled jQuery, never this one. Removed -- one fewer
+     synchronous cross-origin script fetched, parsed, and thrown away on every
+     page load; nothing that actually ran changes. -->
 <link rel="preconnect" href="https://fonts.gstatic.com">
-<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-<script src="https://unpkg.com/@lottiefiles/lottie-interactivity@latest/dist/lottie-interactivity.min.js"></script>
+<!-- lottie-player / lottie-interactivity moved to wp_enqueue_script() in
+     functions.php (my_enqueue_scripts), pinned to their current resolved
+     versions instead of "@latest". Output below by wp_head(). -->
 <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDss6XUuPFsJgunJJ6dZZjzuR9d39WtjRU"></script> -->
 <?php if ( get_field ( 'featured_image' ) ) { ?>
     <?php $image_seo = get_field( 'seo_image' ); ?>

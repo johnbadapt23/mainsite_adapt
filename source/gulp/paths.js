@@ -21,7 +21,12 @@ module.exports = {
             'source/components/jquery.scrollbar-master/jquery.scrollbar.js',
             'source/components/perfect-scrollbar/js/perfect-scrollbar.jquery.js',
             'source/components/matchHeight/dist/jquery.matchHeight-min.js',
-            'source/components/modernizr/modernizr-2.7.1.min.js',
+            // modernizr-2.7.1.min.js referenced here doesn't exist anywhere in
+            // source/components (confirmed) -- this made build:scripts hard-fail.
+            // No "Modernizr" reference exists anywhere else in the codebase, and
+            // the currently-deployed assets/js/main.min.js doesn't contain it
+            // either, so it was already absent from what's live. Removing this
+            // dead entry only fixes the build; it changes nothing that ships.
             'source/js/main.js',
         ],
         styles: [

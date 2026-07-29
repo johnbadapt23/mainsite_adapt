@@ -6,7 +6,7 @@ var reload = browserSync.reload;
 var path = require('../../paths.js');
 
 gulp.task('build:fonts', function() {
-    gulp.src(path.src.fonts)
+    return gulp.src(path.src.fonts)
         .pipe(fontgen({
             dest: path.build.fonts,
             css_fontpath: '../fonts/'

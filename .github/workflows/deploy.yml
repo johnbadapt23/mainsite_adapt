@@ -1,0 +1,74 @@
+name: Build and Deploy Theme
+
+# Runs on every push to the "dev" branch:
+#   1. Installs Node deps and compiles CSS/JS from source/ via gulp
+#      (build:styles compiles source/scss -> assets/css/main.min.css,
+#       build:scripts bundles source/js + vendor libs -> assets/js/main.min.js)
+#   2. Uploads the theme to the server over SFTP.
+#
+# Uses the "staging" GitHub environment (Settings -> Environments -> staging),
+# which has all required values configured:
+#   STAGING_HOST         (environment variable) 170.64.171.69
+#   STAGING_PORT         (environment variable) 2222
+#   STAGING_REMOTE_PATH  (environment variable) should be set to
+#                        /public_html/wp-content/themes/adapt_optimize
+#   STAGING_USERNAME     (environment secret)
+#   STAGING_PASS         (environment secret)
+#
+# STAGING_REMOTE_PATH deliberately points at a *separate* theme folder
+# ("adapt_optimize") rather than the live "adapt" folder -- this deploys a
+# parallel copy of the theme so it can be tested/activated independently in
+# wp-admin without touching (or needing to revert) the currently-live theme.
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # npm ci is normally preferred for CI, but it requires package-lock.json
+      # to already be in sync with package.json. Using npm install here so the
+      # first run (and any future dependency changes) resolve correctly without
+      # needing a manually regenerated lockfile first.
+      - name: Install dependencies
+        run: npm install
+
+      - name: Compile CSS and JS
+        run: npx gulp build:styles build:scripts
+
+      - name: Deploy over SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
+        with:
+          username: ${{ secrets.STAGING_USERNAME }}
+          server: ${{ vars.STAGING_HOST }}
+          port: ${{ vars.STAGING_PORT || 22 }}
+          password: ${{ secrets.STAGING_PASS }}
+          local_path: './'
+          remote_path: ${{ vars.STAGING_REMOTE_PATH || secrets.STAGING_REMOTE_PATH }}
+          sftp_only: true
+          # Only the built theme goes to the server -- dev/build tooling stays out.
+          rsyncArgs: >-
+            --exclude=.git
+            --exclude=.github
+            --exclude=node_modules
+            --exclude=source
+            --exclude=_archive
+            --exclude=package.json
+            --exclude=package-lock.json
+            --exclude=gulpfile.js
+            --exclude=bower.json
+            --exclude=.bowerrc
+            --exclude=.gitignore
+          sftpArgs: '-o ConnectTimeout=5'
