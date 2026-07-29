@@ -38,12 +38,12 @@
                                     <div class="bg-container">
                                         <?php $image = get_sub_field( 'image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                            <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                                         <?php } ?>
                                     </div>
                                     <?php $post_image_image = get_sub_field( 'post_image_image' ); ?>
                         			<?php if ( $post_image_image ) { ?>
-                        				<img class="post-image" src="<?php echo $post_image_image['url']; ?>" alt="<?php echo $post_image_image['alt']; ?>" />
+                        				<img loading="lazy" class="post-image" src="<?php echo $post_image_image['url']; ?>" alt="<?php echo $post_image_image['alt']; ?>" />
                         			<?php } ?>
                                 </div>
                             </div>
@@ -61,15 +61,15 @@
                                     <?php if ( $pre_image_image ) { ?>
                                         <span class="pre-image-container">
                                             <span class="pre-image-inner">
-                                                <img class="pre-image" src="<?php echo $pre_image_image['url']; ?>" alt="<?php echo $pre_image_image['alt']; ?>" />
+                                                <img loading="lazy" class="pre-image" src="<?php echo $pre_image_image['url']; ?>" alt="<?php echo $pre_image_image['alt']; ?>" />
                                             </span>
                                         </span>
                                     <?php } ?>
                                     <?php if ( $image ) { ?>
-                                        <img class="main-image<?php if ( $pre_image_image ) { ?> full-width-image<?php } ?>" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                        <img loading="lazy" class="main-image<?php if ( $pre_image_image ) { ?> full-width-image<?php } ?>" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                                     <?php } ?>
                                     <?php if ( $post_image_image ) { ?>
-                        				<img class="post-image" src="<?php echo $post_image_image['url']; ?>" alt="<?php echo $post_image_image['alt']; ?>" />
+                        				<img loading="lazy" class="post-image" src="<?php echo $post_image_image['url']; ?>" alt="<?php echo $post_image_image['alt']; ?>" />
                         			<?php } ?>
                                 </div>
                                 <span class="text"><?php echo get_sub_field( 'text' ); ?></span>

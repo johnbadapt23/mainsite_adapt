@@ -38,7 +38,7 @@ get_header();
 						<?php if( $slide['dark_overlay'] == 'yes') { ?>
 							<span class="dark-overlay"></span>
 						<?php } ?>
-						<img src="<?php echo $slide['image']; ?>" style="visibility:hidden; position:absolute; top:-10000px; left:-10000px;" alt="Adapt - <?php echo the_title(); ?>" />
+						<img loading="lazy" src="<?php echo $slide['image']; ?>" style="visibility:hidden; position:absolute; top:-10000px; left:-10000px;" alt="Adapt - <?php echo the_title(); ?>" />
 						<div class="container">
 							<div class="content <?php echo $slide['text_layout']; ?>">
 								<?php if($slide['title']) { ?>
@@ -62,7 +62,7 @@ get_header();
 									<span class="videoLink">
 										<a href="#" class="playBtn">
 											<span class="icon">
-												<img src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
+												<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
 											</span>
 											<span class="text">
 												<span><?php if($slide['video'][0]['video_button_text']) { ?><?php echo $slide['video'][0]['video_button_text']; ?><?php } else { ?>Watch Video<?php } ?></span>
@@ -92,7 +92,7 @@ get_header();
 				<?php foreach($bannerSlides as $slide) { ?>
 					<?php if($slide['video']) { ?>
 						<div class="videoPlayerContainer">
-							<span class="closeVideo"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" alt="Close" width="25"/></span>
+							<span class="closeVideo"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" alt="Close" width="25"/></span>
 							<div class="videoWrapper">
 								<video width="100%" id="popupVideo" controls controlsList="nodownload">
 									<source type="video/mp4" src="<?php echo $slide['video'][0]['vimeo_code']; ?>" />
@@ -165,7 +165,7 @@ get_header();
 					<div class="container">
 						 <?php if ( get_sub_field ( 'feature_image_or_infogram' ) == 'image' ) { ?>
 							 <div class="featureBlock">
-								 <img class="featureImage" src="<?php the_sub_field( 'image' ); ?>"/>
+								 <img loading="lazy" class="featureImage" src="<?php the_sub_field( 'image' ); ?>"/>
 							 </div>
 						 <?php } else { ?>
 							 <div class="infogram-container">
@@ -205,7 +205,7 @@ get_header();
 	                                                    <div class="image" style="background-image: url('<?php the_field( 'video_poster' ); ?>');">
 	                                                        <?php if ( get_field ( 'podcast_file' ) ) { ?>
 	                                                            <span class="podcast">
-	                                                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
+	                                                                <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
 	                                                            </span>
 	                                                        <?php } ?>
 	                                                    </div>
@@ -213,7 +213,7 @@ get_header();
 														<div class="image" <?php if ( get_field( 'listing_page_grid_image' )) { ?>style="background-image: url('<?php the_field( 'listing_page_grid_image' ); ?>');" <?php } else { ?>style="background-image: url('<?php the_field( 'featured_image' ); ?>');"<?php } ?>>
 	                                                        <?php if ( get_field ( 'podcast_file' ) ) { ?>
 	                                                            <span class="podcast">
-	                                                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
+	                                                                <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
 	                                                            </span>
 	                                                        <?php } ?>
 	                                                    </div>
@@ -343,7 +343,7 @@ get_header();
 													<div class="image" style="background-image: url('<?php the_field( 'video_poster' ); ?>');">
 														<?php if ( get_field ( 'podcast_file' ) ) { ?>
 															<span class="podcast">
-																<img src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
+																<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
 															</span>
 														<?php } ?>
 													</div>
@@ -351,7 +351,7 @@ get_header();
 													<div class="image" style="background-image: url('<?php the_field( 'featured_image' ); ?>');">
 														<?php if ( get_field ( 'podcast_file' ) ) { ?>
 															<span class="podcast">
-																<img src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
+																<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
 															</span>
 														<?php } ?>
 													</div>
@@ -602,7 +602,7 @@ get_header();
 							<span class="videoLink">
 								<a href="#" class="playBtnVideoBlock">
 									<span class="icon">
-										<img src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
+										<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
 									</span>
 									<span class="text">
 										<span><?php if( get_sub_field('video_button_text')) { ?><?php the_sub_field('video_button_text') ?><?php } else { ?>Watch Video<?php } ?></span>
@@ -613,7 +613,7 @@ get_header();
 						</div>
 					</div>
 					<div class="videoPlayerContainer videoBlock">
-						<span class="closeVideo"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" alt="Close" width="25"/></span>
+						<span class="closeVideo"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" alt="Close" width="25"/></span>
 						<div class="videoWrapper">
 							<video width="100%" id="popupVideo" controls controlsList="nodownload">
 								<source type="video/mp4" src="<?php the_sub_field('vimeo_code'); ?>" />

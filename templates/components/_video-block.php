@@ -33,7 +33,7 @@
         </div>
     </div>
     <div class="videoPlayerContainer videoBlock">
-        <span class="closeVideo"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" alt="Close" width="25"/></span>
+        <span class="closeVideo"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" alt="Close" width="25"/></span>
         <div class="videoWrapper">
             <video width="100%" id="popupVideo" controls controlsList="nodownload">
                 <source type="video/mp4" src="<?php the_sub_field('vimeo_code'); ?>" />

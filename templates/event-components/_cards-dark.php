@@ -19,7 +19,7 @@
 								<span class="bg-container hover-bg">
 									<?php $hover_icon = get_sub_field( 'hover_icon' ); ?>
 									<?php if ( $hover_icon ) { ?>
-										<img src="<?php echo $hover_icon['url']; ?>" alt="<?php echo $hover_icon['alt']; ?>" />
+										<img loading="lazy" src="<?php echo $hover_icon['url']; ?>" alt="<?php echo $hover_icon['alt']; ?>" />
 									<?php } ?>
 								</span>
 							</span>

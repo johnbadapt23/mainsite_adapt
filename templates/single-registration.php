@@ -33,7 +33,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 	<div class="imageSizeContainer">
 		<div class="bgContainer">
 			<?php $banner_image = get_field( 'banner_background_image' ); ?>
-			<img class="desktop" src="<?php echo $banner_image['url']; ?>" alt="<?php echo $banner_image['alt']; ?>"/>
+			<img loading="lazy" class="desktop" src="<?php echo $banner_image['url']; ?>" alt="<?php echo $banner_image['alt']; ?>"/>
 			<?php if( get_field('banner_opacity_overlay') == 'no-overlay'){ ?>
 			<?php } else { ?>
 				<span class="opacity-overlay"></span>
@@ -49,7 +49,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 				<?php if(get_field( 'banner_logo' )) { ?>
 					<?php $bannerLogo = get_field('banner_logo'); ?>
 					<span class="banner-icon" <?php if( get_field( 'banner_logo_height' )){ ?>style="height: <?php echo get_field( 'banner_logo_height' ); ?>px;"<?php } ?>>
-						<img src="<?php echo $bannerLogo['url']; ?>"/>
+						<img loading="lazy" src="<?php echo $bannerLogo['url']; ?>"/>
 					</span>
 				<?php } ?>
 				<h1 class="text-white"><?php the_title(); ?></h1>
@@ -71,7 +71,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 			<span class="register-container">
 				<span class="sticky-container">
 					<span class="upper-container">
-						<img class="calendar-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/calendar.svg"/ width="26">
+						<img loading="lazy" class="calendar-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/calendar.svg"/ width="26">
 						<span class="date-title small-text-grey">Date</span>
 						<span class="date text-black"><?php echo $date->format('l, j F, Y'); ?></span>
 						<span class="time-title small-text-grey">Time</span>
@@ -131,7 +131,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 													<span class="speaker-container-inner flex-container">
 														<span class="speaker-image">
 															<span class="bg-image">
-																<img src="<?php echo get_field('speaker_image'); ?>" alt="<?php echo the_title(); ?>"/>
+																<img loading="lazy" src="<?php echo get_field('speaker_image'); ?>" alt="<?php echo the_title(); ?>"/>
 															</span>
 														</span>
 														<span class="description">
@@ -149,7 +149,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 															<span class="bg-container">
 																<?php $speaker_image = get_field( 'speaker_image' ); ?>
 																<?php if ( $speaker_image ) { ?>
-																	<img src="<?php echo $speaker_image; ?>" alt="<?php the_title(); ?>" />
+																	<img loading="lazy" src="<?php echo $speaker_image; ?>" alt="<?php the_title(); ?>" />
 																<?php } ?>
 															</span>
 															<span class="border-offset"></span>
@@ -157,14 +157,14 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 														<h3 class="title">
 															<?php the_title(); ?>
 															<?php if ( get_field('linked_in_url')) { ?>
-																<a class="linkedin-link" href="<?php echo get_field('linked_in_url');?>" target="_blank"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" width="20"/></a>
+																<a class="linkedin-link" href="<?php echo get_field('linked_in_url');?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" width="20"/></a>
 															<?php } ?>
 														</h3>
 														<p class="job-title"><?php echo get_field( 'speaker_description' ); ?></p>
 														<?php $company_logo = get_field( 'company_logo' ); ?>
 														<?php if ( $company_logo ) { ?>
 															<span class="company-logo">
-															<img src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+															<img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
 														</span>
 														<?php } ?>
 													</div>
@@ -383,7 +383,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 								<?php setup_postdata( $post ); ?>
 									<div class="speaker-container-inner">
 										<span class="speaker-image">
-											<img src="<?php echo get_field('speaker_image'); ?>" alt="<?php echo the_title(); ?>"/>
+											<img loading="lazy" src="<?php echo get_field('speaker_image'); ?>" alt="<?php echo the_title(); ?>"/>
 										</span>
 										<span class="description">
 											<span class="speaker-name"><?php echo the_title(); ?></span>
@@ -456,7 +456,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 												<span class="icon-container">
 													<?php $icon = get_sub_field( 'icon' ); ?>
 													<?php if ( $icon ) { ?>
-														<img src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+														<img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
 													<?php } ?>
 												</span>
 												<span class="resources-item-title"><?php echo get_sub_field( 'title' ); ?></span>
@@ -497,7 +497,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 									<div class="logo-container" <?php if( get_sub_field( 'logo_height' )){ ?>style="height: <?php echo get_sub_field( 'logo_height' ); ?>px;"<?php } ?>>
 										<?php $image_logo = get_sub_field( 'image_logo' ); ?>
 										<?php if ( $image_logo ) { ?>
-											<img src="<?php echo $image_logo['url']; ?>" alt="<?php echo $image_logo['alt']; ?>" />
+											<img loading="lazy" src="<?php echo $image_logo['url']; ?>" alt="<?php echo $image_logo['alt']; ?>" />
 										<?php } ?>
 									</div>
 									<?php if ($columnCount == 1){ ?>

@@ -14,7 +14,7 @@
                             <span class="logo-container">
                                 <?php $logo = get_sub_field( 'logo' ); ?>
                                 <?php if ( $logo ) { ?>
-                                    <img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                    <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                                 <?php } ?>
                             </span>
                             <span class="quote-container">
@@ -24,7 +24,7 @@
                                     <span class="image-column">
                                         <?php $quote_image = get_sub_field( 'quote_image' ); ?>
                                         <?php if ( $quote_image ) { ?>
-                                            <img src="<?php echo $quote_image['url']; ?>" alt="<?php echo $quote_image['alt']; ?>" />
+                                            <img loading="lazy" src="<?php echo $quote_image['url']; ?>" alt="<?php echo $quote_image['alt']; ?>" />
                                         <?php } ?>
                                     </span>
                                     <span class="name-role">

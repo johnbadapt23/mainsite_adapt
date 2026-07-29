@@ -177,18 +177,18 @@ if($keyword != '') {
                                                 <span class="bg-container">
                                                     <?php $best_practice_listing_image = get_field( 'best_practice_listing_image' ); ?>
                                                     <?php if ( $best_practice_listing_image ) { ?>
-                                                        <img src="<?php echo $best_practice_listing_image['url']; ?>" alt="<?php echo $best_practice_listing_image['alt']; ?>" />
+                                                        <img loading="lazy" src="<?php echo $best_practice_listing_image['url']; ?>" alt="<?php echo $best_practice_listing_image['alt']; ?>" />
                                                     <?php } else { ?>
                                                         <?php $featured_image = get_field( 'featured_image' ); ?>
                                                         <?php if ( $featured_image ) { ?>
-                                                            <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                            <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                         <?php } ?>
                                                     <?php  }?>
                                                 </span>
                                                 <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                                 <?php if ( $listing_hover_image ) { ?>
                                                     <span class="bg-container bg-container-hover">
-                                                        <img src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
+                                                        <img loading="lazy" src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
                                                     </span>
                                                 <?php } ?>
                                             </a>

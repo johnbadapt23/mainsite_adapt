@@ -17,7 +17,7 @@
                                  <span class="bg-container">
                                      <?php $arrow_image = get_sub_field( 'arrow_image' ); ?>
                          			<?php if ( $arrow_image ) { ?>
-                         				<img src="<?php echo $arrow_image['url']; ?>" alt="<?php echo $arrow_image['alt']; ?>" />
+                         				<img loading="lazy" src="<?php echo $arrow_image['url']; ?>" alt="<?php echo $arrow_image['alt']; ?>" />
                          			<?php } ?>
                                 </span>
                             </span>

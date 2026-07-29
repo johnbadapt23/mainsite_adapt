@@ -3607,7 +3607,8 @@ section.speakers-block {
                         }
                     }
 
-                    h3.title {
+                    h3.title,
+                    h2.title {
                         color: #000;
                         font-size: 24px;
                         line-height: 30px;
@@ -3616,6 +3617,12 @@ section.speakers-block {
                         width: 100%;
                         position: relative;
                         margin-bottom: 20px;
+                        // Explicit here because h2's own base tag rule uses a
+                        // different $h2-spacing than h3's $h3-spacing (0px) --
+                        // pinning it keeps this identical whichever tag is
+                        // actually used (this element was changed from h3 to
+                        // h2 to fix a heading-hierarchy skip).
+                        letter-spacing: 0px;
 
                         a.linkedin-link {
                             line-height: 30px;
@@ -6334,8 +6341,16 @@ section.form-popup-slider-module {
                     width: 40px;
                 }
 
-                h4 {
+                h2.h4-style {
                     margin-bottom: 0px;
+                    // Pins the color explicitly: an h2 carrying the
+                    // .h4-style utility class has higher specificity
+                    // (element+class) than the plain .text-white /
+                    // .white-text utility (class-only), which would
+                    // otherwise be overridden back to $heading-color.
+                    // This element was changed from h4 to h2 to fix
+                    // a heading-hierarchy skip.
+                    color: $color-text-white;
                 }
             }
 
@@ -6347,7 +6362,7 @@ section.form-popup-slider-module {
         .thank-you-message {
             padding: 40px;
             float :left;
-            width: 100%;            
+            width: 100%;
             flex-direction: column;
             gap: 16px;
 
@@ -6359,8 +6374,11 @@ section.form-popup-slider-module {
                 width: 40px;
             }
 
-            h4 {
+            h2.h4-style {
                 margin-bottom: 0px;
+                // Same specificity fix as above -- was h4, changed to
+                // h2 to fix a heading-hierarchy skip.
+                color: $color-text-white;
             }
 
         }

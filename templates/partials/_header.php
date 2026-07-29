@@ -20,9 +20,9 @@
 				<span class="logo">
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logoHeader">
 						<?php $imagedark = get_field( 'icon', 'options' ); ?>
-						<img class="dark" src="<?php echo $imagedark['url']; ?>" alt="<?php echo $imagedark['alt']; ?>" class="logo" alt="Adapt" />
+						<img class="dark" src="<?php echo $imagedark['url']; ?>" alt="<?php echo $imagedark['alt'] ?: 'Adapt'; ?>" />
 						<?php $imageLight = get_field( 'logo_dark_theme', 'options' ); ?>
-						<img class="light" src="<?php echo $imageLight['url']; ?>" alt="<?php echo $imageLight['alt']; ?>" class="logo" alt="Adapt" />
+						<img class="light" src="<?php echo $imageLight['url']; ?>" alt="<?php echo $imageLight['alt'] ?: 'Adapt'; ?>" />
 					</a>
 				</span>
 			</span>
@@ -110,7 +110,7 @@
 					<span class="logo">
 						<a href="/all-resources" class="logoHeader">
 							<?php $imagedarksmall = get_field( 'logo_small', 'options' ); ?>
-							<img class="dark" src="<?php echo $imagedarksmall['url']; ?>" alt="<?php echo $imagedarksmall['alt']; ?>" class="logo" alt="Adapt" />
+							<img loading="lazy" class="dark" src="<?php echo $imagedarksmall['url']; ?>" alt="<?php echo $imagedarksmall['alt']; ?>" />
 						</a>
 						<a class="resources-link-mobile" href="/all-resources" target="_self">Resources</a>
 					</span>
@@ -122,7 +122,7 @@
 			<div class="container">
 				<form action="/search-results" method="get">
 					<input class="searchInput" type="text" name="searchWords" id="mobilesearch" placeholder="Search" value="" />
-					<button type="submit" class="search-button-mobile"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify-placeholder.svg" width="20"/></button>
+					<button type="submit" class="search-button-mobile"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify-placeholder.svg" width="20"/></button>
 					<input type="hidden" value="1" name="sentence" />
 					<a class="search-clear" onclick="ClearFields();"></a>
 				</form>
@@ -204,7 +204,7 @@
 							<div class="subscribe-sidebar-form mobile-menu-subscribe-form background-pink">
 								<span class="icon-container">
 									<span class="icon-inner">
-										<img src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+										<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
 									</span>
 								</span>
 								<span class="form-content">
@@ -242,9 +242,9 @@
 					<span class="logo">
 						<a href="/all-resources" class="logoHeader">
 							<?php $imagedarksmall = get_field( 'logo_small', 'options' ); ?>
-							<img class="dark" src="<?php echo $imagedarksmall['url']; ?>" alt="<?php echo $imagedarksmall['alt']; ?>" class="logo" alt="Adapt" />
+							<img loading="lazy" class="dark" src="<?php echo $imagedarksmall['url']; ?>" alt="<?php echo $imagedarksmall['alt']; ?>" />
 							<?php $imageLightSmall = get_field( 'logo_small_dark_theme', 'options' ); ?>
-							<img class="light" src="<?php echo $imageLightSmall['url']; ?>" alt="<?php echo $imageLightSmall['alt']; ?>" class="logo" alt="Adapt" />
+							<img loading="lazy" class="light" src="<?php echo $imageLightSmall['url']; ?>" alt="<?php echo $imageLightSmall['alt']; ?>" />
 						</a>
 						<a class="resources-link-mobile" href="/all-resources" target="_self">Resources</a>
 					</span>
@@ -312,11 +312,11 @@
 																				<span class="bg-container">
 																					<?php $video_poster_image = get_field( 'video_poster' ); ?>
 							                                                        <?php if ( $video_poster_image ) { ?>
-							                                                        	<img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+							                                                        	<img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
 							                                                        <?php } else { ?>
 																						<?php $featured_image = get_field( 'featured_image' ); ?>
 													                                    <?php if ( $featured_image ) { ?>
-													                                    	<img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+													                                    	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
 													                                    <?php } ?>
 																					<?php }?>
 																				</span>
@@ -359,11 +359,11 @@
 																				<span class="bg-container">
 																					<?php $video_poster_image = get_field( 'video_poster' ); ?>
 							                                                        <?php if ( $video_poster_image ) { ?>
-							                                                        	<img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+							                                                        	<img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
 							                                                        <?php } else { ?>
 																						<?php $featured_image = get_field( 'featured_image' ); ?>
 													                                    <?php if ( $featured_image ) { ?>
-													                                    	<img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+													                                    	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
 													                                    <?php } ?>
 																					<?php }?>
 																				</span>
@@ -414,11 +414,11 @@
 																				<span class="bg-container">
 																					<?php $video_poster_image = get_field( 'video_poster' ); ?>
 							                                                        <?php if ( $video_poster_image ) { ?>
-							                                                        	<img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+							                                                        	<img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
 							                                                        <?php } else { ?>
 																						<?php $featured_image = get_field( 'featured_image' ); ?>
 													                                    <?php if ( $featured_image ) { ?>
-													                                    	<img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+													                                    	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
 													                                    <?php } ?>
 																					<?php }?>
 																				</span>
@@ -464,11 +464,11 @@
 																				<span class="bg-container">
 																					<?php $video_poster_image = get_field( 'video_poster' ); ?>
 							                                                        <?php if ( $video_poster_image ) { ?>
-							                                                        	<img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+							                                                        	<img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
 							                                                        <?php } else { ?>
 																						<?php $featured_image = get_field( 'featured_image' ); ?>
 													                                    <?php if ( $featured_image ) { ?>
-													                                    	<img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+													                                    	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
 													                                    <?php } ?>
 																					<?php }?>
 																				</span>
@@ -517,11 +517,11 @@
 				<div class="sticky-menu-right">
 					<span class="search-button-container">
 						<?php if($typePost == 'insights' || $typePost == 'expert' ){ ?>
-							<a class="search-button" href="#searchDropdown"><img class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image-white.svg" width="28"/></a>
+							<a class="search-button" href="#searchDropdown"><img loading="lazy" class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image-white.svg" width="28"/></a>
 						<?php } else if($q && ( $q->slug == 'peer-insights' || $q->slug == 'expert-presentations') ){ ?>
-							<a class="search-button" href="#searchDropdown"><img class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image-white.svg" width="28"/></a>
+							<a class="search-button" href="#searchDropdown"><img loading="lazy" class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image-white.svg" width="28"/></a>
 						<?php } else { ?>
-							<a class="search-button" href="#searchDropdown"><img class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image.svg" width="28"/></a>
+							<a class="search-button" href="#searchDropdown"><img loading="lazy" class="search-image" src="<?php echo get_template_directory_uri(); ?>/assets/images/search-image.svg" width="28"/></a>
 						<?php } ?>
 					</span>
 					<span class="subscribe-button-container">
@@ -554,8 +554,8 @@
 		                            <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
 		                            <a onclick="copyJobLink()">
 										<span class="image-icon-container">
-		                                    <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
-		                                    <img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
+		                                    <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
+		                                    <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
 											<span class="job-link-text"></span>
 										</span>
 		                            </a>
@@ -578,24 +578,24 @@
 								<span class="share-linked-in share">
 									<a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
 										<span class="image-icon-container">
-	                                        <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
-											<img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
+	                                        <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
+											<img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
 										</span>
 									</a>
 								</span>
 								<span class="share-twitter share">
 									<a class="twitterShare" href="https://twitter.com/intent/tweet?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&text=<?php the_excerpt(); ?>" target="_blank">
 										<span class="image-icon-container">
-	                                        <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-black.svg" alt="Tweet" width="24px"/>
-											<img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-hover.svg" alt="Tweet" width="24px"/>
+	                                        <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-black.svg" alt="Tweet" width="24px"/>
+											<img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-hover.svg" alt="Tweet" width="24px"/>
 										</span>
 									</a>
 								</span>
 								<span class="share-email share">
 									<a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
 										<span class="image-icon-container">
-	                                        <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
-											<img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
+	                                        <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
+											<img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
 									</a>
 								</span>
 							</span>
@@ -620,7 +620,7 @@
 				<span class="logo">
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logoHeader">
 						<?php $imagedarksmall = get_field( 'logo_small', 'options' ); ?>
-						<img class="dark" src="<?php echo $imagedarksmall['url']; ?>" alt="<?php echo $imagedarksmall['alt']; ?>" class="logo" alt="Adapt" />
+						<img loading="lazy" class="dark" src="<?php echo $imagedarksmall['url']; ?>" alt="<?php echo $imagedarksmall['alt']; ?>" />
 					</a>
 				</span>
 				<span class="search-title">

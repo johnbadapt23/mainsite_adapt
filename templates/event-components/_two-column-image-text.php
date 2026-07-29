@@ -19,7 +19,7 @@
                                 <span class="absolute-overlay-image">
                                     <span class="image-container">
                                         <span class="bg-container">
-                                			<img src="<?php echo $small_overlay_image['url']; ?>" alt="<?php echo $small_overlay_image['alt']; ?>" />
+                                			<img loading="lazy" src="<?php echo $small_overlay_image['url']; ?>" alt="<?php echo $small_overlay_image['alt']; ?>" />
                                         </span>
                                     </span>
                                 </span>

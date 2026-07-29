@@ -38,7 +38,7 @@
                             <span class="card-image-container image-container">
                                 <?php $image = get_sub_field('image'); ?>
                                 <?php if ($image): ?>
-                                    <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                    <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                                 <?php endif; ?>
                             </span>
                             <span class="text-container">

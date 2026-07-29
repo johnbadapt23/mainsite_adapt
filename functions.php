@@ -193,8 +193,26 @@ function my_enqueue_scripts() {
         [],
         filemtime(get_template_directory(). '/assets/css/main.min.css')
     );
-    wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js', array(), null, true);
-    wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js', array(), null, true);
+    // GSAP/ScrollTrigger are only actually used by main.js's fixed-scroller /
+    // sticky-slider-cards animations, which only these 8 templates can ever
+    // render (each get_template_part() call for those ACF flexible-content
+    // layouts is hardcoded inside these specific templates' dispatch code --
+    // confirmed no other template references them). Loading ~2 CDN scripts
+    // on the other 60+ templates that never touch GSAP was pure waste.
+    $gsap_templates = array(
+        'templates/template-benchmarking.php',
+        'templates/template-comparison.php',
+        'templates/template-customer-events.php',
+        'templates/template-ecosystem-advisors.php',
+        'templates/template-ecosystem-consulting.php',
+        'templates/template-edge-consulting.php',
+        'templates/template-evr.php',
+        'templates/template-partnered-research.php',
+    );
+    if ( is_page_template( $gsap_templates ) ) {
+        wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js', array(), null, true);
+        wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js', array(), null, true);
+    }
 
     // Previously loaded as raw <script> tags in header.php ahead of wp_head().
     // Moved into the enqueue system and pinned to the exact version "@latest"
@@ -624,6 +642,53 @@ add_filter('wpseo_use_page_analysis', '__return_false');
 add_filter('wpseo_metabox_prio', function () {
     return 'low';
 });
+
+// header.php already outputs its own og:image, driven by the ACF fields
+// editors actually use (featured_image / seo_image / video_poster). Yoast's
+// own Open Graph output would otherwise add a second, conflicting og:image
+// (and og:title/og:description/og:url) with no de-duplication, so Yoast's
+// Open Graph module is disabled here in favour of the theme's version.
+add_filter('wpseo_opengraph', '__return_false');
+
+// Yoast SEO already builds the site's JSON-LD structured-data graph
+// (Organization/WebSite/Article, etc.) automatically, so the theme should
+// not output a second, competing schema block. This only fills in the
+// Organization "logo" property -- using the same ACF logo field the header
+// already renders -- as a fallback for when a logo hasn't been separately
+// set in Yoast's own Site Identity / Company Logo setting. If Yoast already
+// has a logo configured, this leaves Yoast's value untouched.
+add_filter( 'wpseo_schema_organization', function ( $data ) {
+    if ( ! empty( $data['logo']['url'] ) ) {
+        return $data;
+    }
+
+    $logo = get_field( 'icon', 'options' );
+    if ( empty( $logo['url'] ) ) {
+        $logo = get_field( 'logo_dark_theme', 'options' );
+    }
+
+    if ( empty( $logo['url'] ) ) {
+        return $data;
+    }
+
+    $data['logo'] = array(
+        '@type'      => 'ImageObject',
+        'url'        => $logo['url'],
+        'contentUrl' => $logo['url'],
+    );
+
+    if ( ! empty( $logo['width'] ) ) {
+        $data['logo']['width'] = (int) $logo['width'];
+    }
+    if ( ! empty( $logo['height'] ) ) {
+        $data['logo']['height'] = (int) $logo['height'];
+    }
+    if ( ! empty( $logo['alt'] ) ) {
+        $data['logo']['caption'] = $logo['alt'];
+    }
+
+    return $data;
+} );
 
 add_filter(
     'post_search_columns',

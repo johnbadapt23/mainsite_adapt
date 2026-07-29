@@ -12,7 +12,7 @@
                 <span class="headerLarge bold-black secondary-dark"><?php echo get_sub_field( 'quote' ); ?></span>
                 <?php $graphic = get_sub_field( 'graphic' ); ?>
                 <?php if ( $graphic ) { ?>
-                    <img class="mobile-image" src="<?php echo $graphic['url']; ?>" alt="<?php echo $graphic['alt']; ?>" />
+                    <img loading="lazy" class="mobile-image" src="<?php echo $graphic['url']; ?>" alt="<?php echo $graphic['alt']; ?>" />
                 <?php } ?>
                 <span class="name-role">
                     <span class="labelXL text-black"><?php echo get_sub_field( 'name' ); ?></span>
@@ -43,7 +43,7 @@
                 <?php } else { ?>
                     <?php $graphic = get_sub_field( 'graphic' ); ?>
                     <?php if ( $graphic ) { ?>
-                        <img class="desktop-image" src="<?php echo $graphic['url']; ?>" alt="<?php echo $graphic['alt']; ?>" />
+                        <img loading="lazy" class="desktop-image" src="<?php echo $graphic['url']; ?>" alt="<?php echo $graphic['alt']; ?>" />
                     <?php } ?>
                 <?php } ?>
             </div>

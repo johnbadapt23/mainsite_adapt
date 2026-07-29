@@ -68,17 +68,22 @@ jobs:
           local_path: './'
           remote_path: ${{ vars.STAGING_REMOTE_PATH || secrets.STAGING_REMOTE_PATH }}
           sftp_only: true
-          # Only the built theme goes to the server -- dev/build tooling stays out.
+          # Only files WordPress actually needs at runtime go to the server --
+          # repo/git metadata, build tooling, and build-time-only inputs stay
+          # out. (download-monitor/ is kept: the Download Monitor plugin
+          # auto-discovers content-download.php there by convention, even
+          # though nothing in this repo explicitly references it by name.)
           rsyncArgs: >-
             --exclude=.git
             --exclude=.github
+            --exclude=.gitignore
+            --exclude=.gitattributes
             --exclude=node_modules
             --exclude=source
             --exclude=_archive
             --exclude=package.json
             --exclude=package-lock.json
             --exclude=gulpfile.js
-            --exclude=bower.json
-            --exclude=.bowerrc
-            --exclude=.gitignore
+            --exclude=faviconData.json
+            --exclude=README.md
           sftpArgs: '-o ConnectTimeout=5'

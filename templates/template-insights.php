@@ -430,7 +430,7 @@ $filterBy = array();
                                         <span class="radioSlide slide <?php echo $term -> slug; ?>">
                                             <label style="background-image: url(<?php the_field( 'button_image', $term ); ?>);">
                                               <input type="checkbox" name="topics[]" <?php if($filterTopics == '') { } else { if (in_array( $term -> slug, $filterTopics )) { ?> checked <?php }}?> value="<?php echo $term -> slug; ?>">
-                                              <img class="tick" src="<?php echo get_template_directory_uri(); ?>/assets/images/tick.svg" width="25"/>
+                                              <img loading="lazy" class="tick" src="<?php echo get_template_directory_uri(); ?>/assets/images/tick.svg" width="25"/>
                                               <span class="overlay"></span>
                                               <span class="checkbox-text">
                                                   <span class="v-wrap">

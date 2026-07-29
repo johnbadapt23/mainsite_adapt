@@ -2,16 +2,16 @@
     <div class="container">
         <div class="column one-half image-column">
             <img class="overlay-image-top-left" src="<?php echo get_template_directory_uri(); ?>/assets/images/overlay-top-left.svg" width="50"/>
-            <img class="overlay-image-bottom-left" src="<?php echo get_template_directory_uri(); ?>/assets/images/overlay-bottom-left.svg" width="50"/>
+            <img loading="lazy" class="overlay-image-bottom-left" src="<?php echo get_template_directory_uri(); ?>/assets/images/overlay-bottom-left.svg" width="50"/>
             <div class="image-container">
                 <div class="bg-container">
                     <?php $image = get_sub_field( 'image' ); ?>
             		<?php if ( $image ) { ?>
-            			<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+            			<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
             		<?php } ?>
                 </div>
             </div>
-            <img class="overlay-image-bottom-right" src="<?php echo get_template_directory_uri(); ?>/assets/images/overlay-bottom-right.svg" width="50"/>
+            <img loading="lazy" class="overlay-image-bottom-right" src="<?php echo get_template_directory_uri(); ?>/assets/images/overlay-bottom-right.svg" width="50"/>
         </div>
         <div class="column one-half text-column">
             <div class="v-wrap">

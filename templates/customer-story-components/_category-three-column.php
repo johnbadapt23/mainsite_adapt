@@ -52,7 +52,7 @@
                                     <?php if ( $company_logo ) { ?>
                                         <span class="company-logo-container">
                                             <span class="logo-container">
-                                                <img src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
                                             </span>
                                         </span>
                                     <?php } ?> 
@@ -161,7 +161,7 @@
                         <?php if ( $company_logo ) { ?>
                             <span class="company-logo-container">
                                 <span class="logo-container">
-                                    <img src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                    <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
                                 </span>
                             </span>
                         <?php } ?>
@@ -176,7 +176,7 @@
                                 <?php while ( have_rows( 'bio' ) ) : the_row(); ?>
                                     <?php $image = get_sub_field( 'image' ); ?>
                                     <?php if ( $image ) { ?>
-                                        <span class="bio-image-container"><img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" /></span>
+                                        <span class="bio-image-container"><img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" /></span>
                                     <?php } ?>
                                     <span class="bio-text">
                                         <span class="labelLarge text-black"><?php echo get_sub_field( 'name' ); ?></span>
@@ -191,8 +191,8 @@
                                                     <input type="text" value="<?php echo get_term_link( $termTax ); ?>?story=<?php echo $slug; ?>" id="postLink" style="display: none;">
                                                     <a onclick="copyJobLink()">
                                                         <span class="image-icon-container">
-                                                            <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
-                                                            <img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
+                                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
+                                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
                                                             <span class="job-link-text"></span>
                                                         </span>
                                                     </a>
@@ -210,16 +210,16 @@
                                                 <span class="share-linked-in share">
                                                     <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php echo get_term_link( $termTax ); ?>?story=<?php echo $slug; ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
                                                         <span class="image-icon-container">
-                                                            <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
-                                                            <img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
+                                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
+                                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
                                                         </span>
                                                     </a>
                                                 </span>								
                                                 <span class="share-email share">
                                                     <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo get_term_link( $termTax ); ?>?story=<?php echo $slug; ?>" target="_blank">
                                                         <span class="image-icon-container">
-                                                            <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
-                                                            <img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
+                                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
+                                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
                                                         </span>
                                                     </a>
                                                 </span>

@@ -34,17 +34,17 @@
                         </script>
                         <span class="share-linked-in share">
                             <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
-                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="32px"/>
+                                <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="32px"/>
                             </a>
                         </span>
                         <span class="share-twitter share">
                             <a class="twitterShare" href="https://twitter.com/intent/tweet?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&text=<?php the_excerpt(); ?>" target="_blank">
-                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-black.svg" alt="Tweet" width="32px"/>
+                                <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-black.svg" alt="Tweet" width="32px"/>
                             </a>
                         </span>
                         <span class="share-email share">
                             <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
-                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="32px"/>
+                                <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="32px"/>
                             </a>
                         </span>
                     </span>
@@ -76,7 +76,7 @@
                             <a class="publicaton-link" href="<?php echo get_sub_field( 'publication_link' ); ?>" target="_blank">
                                 <?php if ( $publication_logo ) { ?>
                                     <span class="publication-logo-container">
-                            			<img src="<?php echo $publication_logo['url']; ?>" alt="<?php echo $publication_logo['alt']; ?>" />
+                            			<img loading="lazy" src="<?php echo $publication_logo['url']; ?>" alt="<?php echo $publication_logo['alt']; ?>" />
                                     </span>
                         		<?php } else { ?>
                                     <?php echo get_sub_field( 'publication_name' ); ?>
@@ -108,7 +108,7 @@
 						<span class="subscribe-sidebar-form background-pink">
 							<span class="icon-container">
 								<span class="icon-inner">
-									<img src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+									<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
 								</span>
 							</span>
 							<h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>
@@ -157,7 +157,7 @@
     			<span class="subscribe-sidebar-form background-pink">
 					<span class="icon-container">
 						<span class="icon-inner">
-							<img src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+							<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
 						</span>
 					</span>
     				<h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>

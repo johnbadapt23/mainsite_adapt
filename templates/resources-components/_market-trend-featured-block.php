@@ -70,13 +70,13 @@
                                 <span class="bg-container">
                                     <?php $featured_image = get_field( 'featured_image' ); ?>
                                     <?php if ( $featured_image ) { ?>
-                                    	<img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                    	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                     <?php } ?>
                                 </span>
                                 <span class="bg-container bg-container-hover">
                                     <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                     <?php if ( $listing_hover_image ) { ?>
-                                    	<img src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
+                                    	<img loading="lazy" src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
                                     <?php } ?>
                                 </span>
                             </span>
@@ -115,13 +115,13 @@
                                     <span class="bg-container">
                                         <?php $featured_image = get_field( 'featured_image' ); ?>
                                         <?php if ( $featured_image ) { ?>
-                                        	<img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                        	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                         <?php } ?>
                                     </span>
                                     <span class="bg-container bg-container-hover">
                                         <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                         <?php if ( $listing_hover_image ) { ?>
-                                        	<img src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
+                                        	<img loading="lazy" src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
                                         <?php } ?>
                                     </span>
                                 </span>

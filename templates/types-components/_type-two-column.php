@@ -63,14 +63,14 @@
                                         <span class="bg-container">
                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                             <?php if ( $featured_image ) { ?>
-                                            	<img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                            	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                             <?php } ?>
                                         </span>
                                     </a>
                                     <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                     <?php if ( $listing_hover_image ) { ?>
                                         <span class="bg-container bg-container-hover">
-                                        	<img src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
+                                        	<img loading="lazy" src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
                                         </span>
                                     <?php } ?>
                                 </span>
@@ -104,7 +104,7 @@
             <span class="subscribe-sidebar-form <?php if ($q->slug == 'peer-insights'){ ?> background-tertiary-black<?php } else { ?> background-pink<?php } ?>">
                 <span class="icon-container">
                     <span class="icon-inner">
-                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+                        <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
                     </span>
                 </span>
                 <h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>

@@ -30,7 +30,7 @@
                                     <?php $icon = get_sub_field( 'icon' ); ?>
                                     <?php if ( $icon ) { ?>
                                         <span class="icon">
-                                            <img src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                                            <img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
                                         </span>
                                     <?php } ?>
                                     <span class="text">

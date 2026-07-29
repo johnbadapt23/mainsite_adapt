@@ -13,6 +13,6 @@
        <div class="infogram-container">
            <?php echo get_sub_field( 'infogram' ); ?>
        </div>
-       <img class="delete-no" style="display: none;" src="<?php echo get_sub_field( 'infogram_image' ); ?>"/>
+       <img loading="lazy" class="delete-no" style="display: none;" src="<?php echo get_sub_field( 'infogram_image' ); ?>"/>
    <?php } ?>
 </div>

@@ -16,7 +16,7 @@
                 </span>
                  <?php if ( get_field ( 'linked_in_url' ) ) { ?>
                     <span class="button-container">
-                        <a class="linkedin-button" href="<?php echo get_field('linked_in_url'); ?>" target="_blank"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-white-new.svg" width="20"/>Follow on LinkedIn</a>
+                        <a class="linkedin-button" href="<?php echo get_field('linked_in_url'); ?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-white-new.svg" width="20"/>Follow on LinkedIn</a>
                     </span>
                 <?php } ?>                
             </div>
@@ -90,11 +90,11 @@
                                         <span class="bg-container">
                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                             <?php if ( $video_poster_image ) { ?>
-                                                <img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                <img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                             <?php } else { ?>
                                                 <?php $featured_image = get_field( 'featured_image' ); ?>
                                                 <?php if ( $featured_image ) { ?>
-                                                    <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                    <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                 <?php } ?>
                                             <?php } ?>
                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -114,7 +114,7 @@
                                         <span class="bg-container">
                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                             <?php if ( $featured_image ) { ?>
-                                                <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                             <?php } ?>
                                         </span>
                                     </a>

@@ -282,7 +282,7 @@ if($keyword != '') {
                                         <span class="bg-container">
                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                             <?php if ( $video_poster_image ) { ?>
-                                            	<img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                            	<img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                             <?php } ?>
                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
                                                 <span class="opacity-overlay"></span>
@@ -330,13 +330,13 @@ if($keyword != '') {
                                             <span class="bg-container">
                                                 <?php $featured_image = get_field( 'featured_image' ); ?>
                                                 <?php if ( $featured_image ) { ?>
-                                                    <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                    <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                 <?php } ?>
                                             </span>
                                             <span class="bg-container bg-container-hover">
                                                 <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                                 <?php if ( $listing_hover_image ) { ?>
-                                                    <img src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
+                                                    <img loading="lazy" src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
                                                 <?php } ?>
                                             </span>
                                         </a>
@@ -378,7 +378,7 @@ if($keyword != '') {
                                         <span class="bg-container">
                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                             <?php if ( $featured_image ) { ?>
-                                                <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                             <?php } ?>
                                         </span>
                                     </a>
@@ -450,11 +450,11 @@ if($keyword != '') {
                                                         <span class="bg-container">
                                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                             <?php if ( $video_poster_image ) { ?>
-                                                                <img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                                <img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                                             <?php } else { ?>
                                                                 <?php $featured_image = get_field( 'featured_image' ); ?>
                                                                 <?php if ( $featured_image ) { ?>
-                                                                    <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                                    <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                                 <?php } ?>
                                                             <?php } ?>
                                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -516,7 +516,7 @@ if($keyword != '') {
                                                                                         <span class="bg-container">
                                                                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                                                             <?php if ( $video_poster_image ) { ?>
-                                                                                                <img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                                                                <img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                                                                             <?php } ?>
                                                                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
                                                                                                 <span class="opacity-overlay"></span>
@@ -535,7 +535,7 @@ if($keyword != '') {
                                                                                         <span class="bg-container">
                                                                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                                                                             <?php if ( $featured_image ) { ?>
-                                                                                                <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                                                                <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                                                             <?php } ?>
                                                                                         </span>
                                                                                     </a>
@@ -591,7 +591,7 @@ if($keyword != '') {
                                                                     <span class="bg-container">
                                                                         <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                                         <?php if ( $video_poster_image ) { ?>
-                                                                            <img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                                            <img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                                                         <?php } ?>
                                                                         <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
                                                                             <span class="opacity-overlay"></span>
@@ -610,13 +610,13 @@ if($keyword != '') {
                                                                     <span class="bg-container">
                                                                         <?php $featured_image = get_field( 'featured_image' ); ?>
                                                                         <?php if ( $featured_image ) { ?>
-                                                                            <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                                            <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                                         <?php } ?>
                                                                     </span>
                                                                     <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                                                     <?php if ( $listing_hover_image ) { ?>
                                                                         <span class="bg-container bg-container-hover">
-                                                                            <img src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
+                                                                            <img loading="lazy" src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
                                                                         </span>
                                                                     <?php } ?>
                                                                 </a>
@@ -689,11 +689,11 @@ if($keyword != '') {
                                                                     <span class="bg-container">
                                                                         <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                                         <?php if ( $video_poster_image ) { ?>
-                                                                            <img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                                            <img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                                                         <?php } else { ?>
                                                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                                                             <?php if ( $featured_image ) { ?>
-                                                                                <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                                                <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                                             <?php } ?>
                                                                         <?php } ?>
                                                                         <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -747,7 +747,7 @@ if($keyword != '') {
                                                                             <span class="bg-container">
                                                                                 <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                                                 <?php if ( $video_poster_image ) { ?>
-                                                                                    <img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                                                    <img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                                                                 <?php } ?>
                                                                                 <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
                                                                                     <span class="opacity-overlay"></span>
@@ -766,7 +766,7 @@ if($keyword != '') {
                                                                             <span class="bg-container">
                                                                                 <?php $featured_image = get_field( 'featured_image' ); ?>
                                                                                 <?php if ( $featured_image ) { ?>
-                                                                                    <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                                                    <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                                                 <?php } ?>
                                                                             </span>
                                                                         </a>
@@ -812,7 +812,7 @@ if($keyword != '') {
                                                                         <span class="bg-container">
                                                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                                             <?php if ( $video_poster_image ) { ?>
-                                                                                <img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                                                <img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                                                             <?php } ?>
                                                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
                                                                                 <span class="opacity-overlay"></span>
@@ -831,14 +831,14 @@ if($keyword != '') {
                                                                         <span class="bg-container">
                                                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                                                             <?php if ( $featured_image ) { ?>
-                                                                                <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                                                <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                                             <?php } ?>
                                                                         </span>
                                                                     </a>
                                                                     <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                                                     <?php if ( $listing_hover_image ) { ?>
                                                                         <span class="bg-container bg-container-hover">
-                                                                            <img src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
+                                                                            <img loading="lazy" src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
                                                                         </span>
                                                                     <?php } ?>
                                                                 </span>
@@ -923,13 +923,13 @@ if($keyword != '') {
                                                 <span class="bg-container">
                                                     <?php $featured_image = get_field( 'featured_image' ); ?>
                                                     <?php if ( $featured_image ) { ?>
-                                                    	<img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                    	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                     <?php } ?>
                                                 </span>
                                                 <span class="bg-container bg-container-hover">
                                                     <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                                     <?php if ( $listing_hover_image ) { ?>
-                                                    	<img src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
+                                                    	<img loading="lazy" src="<?php echo $listing_hover_image['url']; ?>" alt="<?php echo $listing_hover_image['alt']; ?>" />
                                                     <?php } ?>
                                                 </span>
                                             </a>
@@ -960,7 +960,7 @@ if($keyword != '') {
                                     <span class="subscribe-sidebar-form background-pink">
                                         <span class="icon-container">
                                             <span class="icon-inner">
-                                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+                                                <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
                                             </span>
                                         </span>
                                         <h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>
@@ -998,7 +998,7 @@ if($keyword != '') {
                                                 <span class="bg-container">
                                                     <?php $best_practice_listing_image = get_field( 'best_practice_listing_image' ); ?>
                                                     <?php if ( $best_practice_listing_image ) { ?>
-                                                        <img src="<?php echo $best_practice_listing_image['url']; ?>" alt="<?php echo $best_practice_listing_image['alt']; ?>" />
+                                                        <img loading="lazy" src="<?php echo $best_practice_listing_image['url']; ?>" alt="<?php echo $best_practice_listing_image['alt']; ?>" />
                                                     <?php } ?>
                                                 </span>
                                             </a>
@@ -1045,7 +1045,7 @@ if($keyword != '') {
                                             <span class="bg-container">
                                                 <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                 <?php if ( $video_poster_image ) { ?>
-                                                	<img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                	<img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                                 <?php } ?>
                                                 <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
                                                     <span class="opacity-overlay"></span>
@@ -1104,7 +1104,7 @@ if($keyword != '') {
                                             <span class="bg-container">
                                                 <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                 <?php if ( $video_poster_image ) { ?>
-                                                	<img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                	<img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                                 <?php } ?>
                                                 <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
                                                     <span class="opacity-overlay"></span>
@@ -1144,7 +1144,7 @@ if($keyword != '') {
                                         <span class="subscribe-sidebar-form background-tertiary-black">
                                             <span class="icon-container">
                                                 <span class="icon-inner">
-                                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+                                                    <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
                                                 </span>
                                             </span>
                                             <h5 class="labelXXLarge text-white"><?php echo get_field( 'title', 'options' ); ?></h5>
@@ -1171,7 +1171,7 @@ if($keyword != '') {
                                                 <span class="bg-container">
                                                     <?php $featured_image = get_field( 'featured_image' ); ?>
                                                     <?php if ( $featured_image ) { ?>
-                                                    	<img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                    	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                                                     <?php } ?>
                                                 </span>
                                             </a>

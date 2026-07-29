@@ -60,7 +60,7 @@
                                             <span class="background-pink overview-container-inner">
                                                 <?php if ( $itOverviewImage ) { ?>
                                                     <span class="overview-image">
-                                                        <img src="<?php echo $itOverviewImage['url']; ?>" alt="<?php echo $itOverviewImage['alt']; ?>" />
+                                                        <img loading="lazy" src="<?php echo $itOverviewImage['url']; ?>" alt="<?php echo $itOverviewImage['alt']; ?>" />
                                                     </span>
                                                     <span class="overview-content">
                                                         <span class="text-black labelLarge"><?php echo $itOverviewTitle; ?></span>
@@ -113,7 +113,7 @@
                         <li class="main-dropdown services-menu tech-vendors-menu">
                             <a><span class="icon-container">
                                     <?php if ( $techIcon ) { ?>
-                                        <img src="<?php echo $techIcon['url']; ?>" alt="<?php echo $techIcon['alt']; ?>" />
+                                        <img loading="lazy" src="<?php echo $techIcon['url']; ?>" alt="<?php echo $techIcon['alt']; ?>" />
                                     <?php } ?>
                                 </span>
                                 <span class="services-inner-title">
@@ -135,7 +135,7 @@
                                             <span class="background-pink overview-container-inner">
                                                 <?php if ( $techOverviewImage ) { ?>
                                                     <span class="overview-image">
-                                                        <img src="<?php echo $techOverviewImage['url']; ?>" alt="<?php echo $techOverviewImage['alt']; ?>" />
+                                                        <img loading="lazy" src="<?php echo $techOverviewImage['url']; ?>" alt="<?php echo $techOverviewImage['alt']; ?>" />
                                                     </span>
                                                     <span class="overview-content">
                                                         <span class="text-black labelLarge"><?php echo $techOverviewTitle; ?></span>
@@ -426,7 +426,7 @@
                                 <div class="subscribe-sidebar-form mobile-menu-subscribe-form background-pink">
                                     <span class="icon-container">
                                         <span class="icon-inner">
-                                            <img src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+                                            <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
                                         </span>
                                     </span>
                                     <span class="form-content">
@@ -503,7 +503,7 @@
                                             <?php $logo = get_sub_field( 'logo' ); ?>
                                             <span class="logo-tile" style="background-color: <?php echo get_sub_field( 'tile_background_colour' ); ?>">
                                                 <?php if ( $logo ) { ?>
-                                                    <img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                    <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                                                 <?php } ?>
                                             </span>
                                             <?php if (get_sub_field( 'link' )) { ?>

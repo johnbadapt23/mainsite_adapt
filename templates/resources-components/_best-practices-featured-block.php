@@ -83,7 +83,7 @@
                                         <span class="bg-container">
                                             <?php $best_practice_listing_image = get_field( 'best_practice_listing_image' ); ?>
                                             <?php if ( $best_practice_listing_image ) { ?>
-                                                <img src="<?php echo $best_practice_listing_image['url']; ?>" alt="<?php echo $best_practice_listing_image['alt']; ?>" />
+                                                <img loading="lazy" src="<?php echo $best_practice_listing_image['url']; ?>" alt="<?php echo $best_practice_listing_image['alt']; ?>" />
                                             <?php } ?>
                                         </span>
                                     </a>

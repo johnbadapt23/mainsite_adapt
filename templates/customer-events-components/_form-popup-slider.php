@@ -42,19 +42,19 @@
                                                 <span class="slide-bg-container">
                                                     <?php $image_one = get_sub_field( 'image_one' ); ?>
                                                     <?php if ( $image_one ) { ?>
-                                                        <img src="<?php echo $image_one['url']; ?>" alt="<?php echo $image_one['alt']; ?>"/>
+                                                        <img loading="lazy" src="<?php echo $image_one['url']; ?>" alt="<?php echo $image_one['alt']; ?>"/>
                                                     <?php } ?>
                                                 </span>
                                                 <span class="slide-bg-container">
                                                     <?php $image_two = get_sub_field( 'image_two' ); ?>
                                                     <?php if ( $image_two ) { ?>
-                                                        <img src="<?php echo $image_two['url']; ?>" alt="<?php echo $image_two['alt']; ?>"/>
+                                                        <img loading="lazy" src="<?php echo $image_two['url']; ?>" alt="<?php echo $image_two['alt']; ?>"/>
                                                     <?php } ?>
                                                 </span>
                                                 <span class="slide-bg-container">
                                                     <?php $image_three = get_sub_field( 'image_three' ); ?>
                                                     <?php if ( $image_three ) { ?>
-                                                        <img src="<?php echo $image_three['url']; ?>" alt="<?php echo $image_three['alt']; ?>"/>
+                                                        <img loading="lazy" src="<?php echo $image_three['url']; ?>" alt="<?php echo $image_three['alt']; ?>"/>
                                                     <?php } ?>   
                                                 </span>
                                             </span>
@@ -76,7 +76,7 @@
                                         <span class="logo-container" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>>
                                             <?php $title_logo = get_sub_field( 'title_logo' ); ?>
                                             <?php if ( $title_logo ) { ?>
-                                                <img src="<?php echo $title_logo['url']; ?>" alt="<?php echo $title_logo['alt']; ?>" />
+                                                <img loading="lazy" src="<?php echo $title_logo['url']; ?>" alt="<?php echo $title_logo['alt']; ?>" />
                                             <?php } ?>
                                         </span>
                                         <span class="arrow-container" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>></span>
@@ -86,19 +86,19 @@
                                             <span class="slide-bg-container">
                                                 <?php $image_one = get_sub_field( 'image_one' ); ?>
                                                 <?php if ( $image_one ) { ?>
-                                                    <img src="<?php echo $image_one['url']; ?>" alt="<?php echo $image_one['alt']; ?>" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>/>
+                                                    <img loading="lazy" src="<?php echo $image_one['url']; ?>" alt="<?php echo $image_one['alt']; ?>" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>/>
                                                 <?php } ?>
                                             </span>
                                             <span class="slide-bg-container">
                                                 <?php $image_two = get_sub_field( 'image_two' ); ?>
                                                 <?php if ( $image_two ) { ?>
-                                                    <img src="<?php echo $image_two['url']; ?>" alt="<?php echo $image_two['alt']; ?>" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>/>
+                                                    <img loading="lazy" src="<?php echo $image_two['url']; ?>" alt="<?php echo $image_two['alt']; ?>" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>/>
                                                 <?php } ?>
                                             </span>
                                             <span class="slide-bg-container">
                                                 <?php $image_three = get_sub_field( 'image_three' ); ?>
                                                 <?php if ( $image_three ) { ?>
-                                                    <img src="<?php echo $image_three['url']; ?>" alt="<?php echo $image_three['alt']; ?>" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>/>
+                                                    <img loading="lazy" src="<?php echo $image_three['url']; ?>" alt="<?php echo $image_three['alt']; ?>" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>/>
                                                 <?php } ?>   
                                             </span>
                                         </span>

@@ -479,7 +479,7 @@ section.logo-ticker-tape .band-container-backwards:after {
                                         <?php if ( $popup_form_image_id ) { ?>
                                             <?= wp_get_attachment_image($popup_form_image_id, 'full'); ?>
                                         <?php } ?>
-                                        <h4 class="text-white"><?php echo get_sub_field( 'popup_form_title' ); ?></h4>
+                                        <h2 class="text-white h4-style"><?php echo get_sub_field( 'popup_form_title' ); ?></h2>
                                         <p class="p-xsmall medium-grey "><?php echo get_sub_field( 'popup_form_text' ); ?></p>
                                     </span>
                                     <span class="form">
@@ -494,7 +494,7 @@ section.logo-ticker-tape .band-container-backwards:after {
                                     <?php if ( $popup_form_thank_you_image_id ) { ?>
                                         <?= wp_get_attachment_image($popup_form_thank_you_image_id, 'full'); ?>
                                     <?php } ?>
-                                    <h4 class="white-text"><?php the_sub_field( 'popup_form_thank_you_title' ); ?></h4>
+                                    <h2 class="white-text h4-style"><?php the_sub_field( 'popup_form_thank_you_title' ); ?></h2>
                                     <p class="p-xsmall white-text"><?php the_sub_field( 'popup_form_thank_you_text' ); ?></p>
                                 </span>                               
                             </span>

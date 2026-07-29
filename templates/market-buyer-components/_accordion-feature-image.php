@@ -37,7 +37,7 @@
                 <?php $image = get_sub_field( 'image' ); ?>
                 <?php if ( $image ) { ?>
                     <span class="image-container">
-                        <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                        <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                     </span>
                 <?php } ?>
             </div>

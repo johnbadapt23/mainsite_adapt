@@ -120,7 +120,7 @@
                         <?php $image = get_sub_field( 'image' ); ?>
                         <?php if ( $image ) { ?>
                             <div class="image-container-full">
-                                <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                             </div>
                         <?php } ?>
                     </div>

@@ -116,7 +116,7 @@
                                                         <span class="bg-container">
                                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                             <?php if ( $video_poster_image ) { ?>
-                                                            	<img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                            	<img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                                             <?php } ?>
                                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
                                                                 <span class="opacity-overlay"></span>

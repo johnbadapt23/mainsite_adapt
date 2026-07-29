@@ -52,7 +52,7 @@
                                                             <span class="icon-container">
                                                                 <?php $icon = get_sub_field( 'icon' ); ?>
                                                                 <?php if ( $icon ) { ?>
-                                                                    <img src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                                                                    <img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
                                                                 <?php } ?>
                                                             </span>
                                                             <span class="text-container">
@@ -103,7 +103,7 @@
                                         <div class="slider-bg-container bg-container <?php echo ($image_index === 0) ? 'active' : ''; ?>">
                                             <?php $image = get_sub_field( 'image' ); ?>
                                             <?php if ( $image ) { ?>
-                                                <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                                             <?php } ?>
                                         </div>
                                         <?php $image_index++; ?>

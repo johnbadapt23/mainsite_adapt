@@ -26,7 +26,7 @@
                 <span class="square-image-container">
                     <span class="image-container">
                         <span class="bg-container">
-                            <img src="<?php echo $square_image['url']; ?>" alt="<?php echo $square_image['alt']; ?>" />
+                            <img loading="lazy" src="<?php echo $square_image['url']; ?>" alt="<?php echo $square_image['alt']; ?>" />
                         </span>
                     </span>
                 </span>

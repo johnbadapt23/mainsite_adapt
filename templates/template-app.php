@@ -26,11 +26,11 @@ get_header();
 									<?php $icon = get_sub_field( 'icon' ); ?>
 									<?php if (get_sub_field( 'icon_link' )){ ?>
 										<a href="<?php echo get_sub_field( 'icon_link' ); ?>" target="_blank">
-											<img src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" width="130"/>
+											<img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" width="130"/>
 										</a>
 									<?php } else { ?>
 										<?php if ( $icon ) { ?>
-											<img src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" width="130"/>
+											<img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" width="130"/>
 										<?php } ?>
 									<?php } ?>
 								<?php endwhile; ?>
@@ -66,7 +66,7 @@ get_header();
 						<?php $main_image = get_sub_field( 'main_image' ); ?>
 						<?php if ( $main_image ) { ?>
 							<span class="main-image-container">
-								<img src="<?php echo $main_image['url']; ?>" alt="<?php echo $main_image['alt']; ?>" />
+								<img loading="lazy" src="<?php echo $main_image['url']; ?>" alt="<?php echo $main_image['alt']; ?>" />
 							</span>
 						<?php } ?>
 					</div>

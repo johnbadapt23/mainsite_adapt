@@ -52,7 +52,7 @@
                     <?php } ?>
                     <?php $mobile_image = get_sub_field( 'mobile_image' ); ?>
                     <?php if ( $mobile_image ) { ?>
-                        <img class="mobile desktop-hide" src="<?php echo $mobile_image['url']; ?>" alt="<?php echo $mobile_image['alt']; ?>" />
+                        <img loading="lazy" class="mobile desktop-hide" src="<?php echo $mobile_image['url']; ?>" alt="<?php echo $mobile_image['alt']; ?>" />
                     <?php } ?>
                 </div>
             </div>

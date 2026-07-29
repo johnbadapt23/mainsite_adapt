@@ -23,7 +23,7 @@
                                         <?php } ?>
                                         <?php $image = get_sub_field( 'mobile_image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <img class="mobile-image" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                            <img loading="lazy" class="mobile-image" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                                         <?php } ?>
                                     </div>
                                 </div>

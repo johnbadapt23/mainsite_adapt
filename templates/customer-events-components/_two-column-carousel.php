@@ -73,7 +73,7 @@
                                     <span class="image-container">
                                         <span class="bg-container">
                                             <?php $logo = $logo_up1['logo']; ?>
-                                            <img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                            <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                                         </span>
                                     </span>
                                 </span>
@@ -89,7 +89,7 @@
                                     <span class="image-container">
                                         <span class="bg-container">
                                             <?php $logo = $logo_down['logo']; ?>
-                                            <img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                            <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                                         </span>
                                     </span>
                                 </span>
@@ -101,7 +101,7 @@
                                     <span class="image-container">
                                         <span class="bg-container">
                                             <?php $logo = $logo_down['logo']; ?>
-                                            <img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                            <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                                         </span>
                                     </span>
                                 </span>
@@ -117,7 +117,7 @@
                                     <span class="image-container">
                                         <span class="bg-container">
                                             <?php $logo = $logo_up2['logo']; ?>
-                                            <img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                            <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                                         </span>
                                     </span>
                                 </span>
@@ -129,7 +129,7 @@
                                     <span class="image-container">
                                         <span class="bg-container">
                                             <?php $logo = $logo_up2['logo']; ?>
-                                            <img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                            <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                                         </span>
                                     </span>
                                 </span>

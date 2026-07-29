@@ -6,7 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 
-<title><?php wp_title(); ?></title>
+<!-- <title> is now injected automatically by wp_head() below, via the
+     add_theme_support('title-tag') declared in includes/_setup.php. This
+     used to be a hardcoded title tag here that called wp_title() directly,
+     which bypassed Yoast SEO's title customization (per-page SEO titles and
+     templates) since Yoast can't reliably take over a hardcoded title tag. -->
 
 <!-- main.min.css is loaded via wp_enqueue_style() in functions.php (my_enqueue_scripts),
      output below by wp_head(). It used to also be hardcoded here with a stale manual
@@ -28,7 +32,12 @@
      against WP's bundled jQuery, never this one. Removed -- one fewer
      synchronous cross-origin script fetched, parsed, and thrown away on every
      page load; nothing that actually ran changes. -->
-<link rel="preconnect" href="https://fonts.gstatic.com">
+<!-- fonts.gstatic.com preconnect removed: fonts here are all self-hosted via
+     @font-face, no Google Fonts stylesheet is ever loaded, so that hint
+     pointed at a domain the page never actually contacts. Preconnecting to
+     the CDNs the page *does* contact on (nearly) every load instead. -->
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <!-- lottie-player / lottie-interactivity moved to wp_enqueue_script() in
      functions.php (my_enqueue_scripts), pinned to their current resolved
      versions instead of "@latest". Output below by wp_head(). -->

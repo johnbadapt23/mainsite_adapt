@@ -23,7 +23,7 @@
                                             <?php } else { ?>
                                                 <?php if ( $generic_backup_image ) { ?>
                                                     <span class="background-image-container bg-container">
-                                                        <img src="<?php echo $generic_backup_image['url']; ?>" alt="<?php echo $generic_backup_image['alt']; ?>" />
+                                                        <img loading="lazy" src="<?php echo $generic_backup_image['url']; ?>" alt="<?php echo $generic_backup_image['alt']; ?>" />
                                                     </span>
                                                     <span class="gradient-container"></span>
                                                 <?php } ?>
@@ -33,7 +33,7 @@
                                                 <?php if ( $company_logo ) { ?>
                                                     <span class="company-logo-container">
                                                         <span class="logo-container">
-                                                            <img src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                            <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
                                                         </span>
                                                     </span>
                                                 <?php } ?>                                                                                                    
@@ -79,7 +79,7 @@
                                                             <?php // no rows found ?>
                                                         <?php endif; ?>
                                                         <span class="button-container">
-                                                            <span class="std-button-span red-button">Watch full video <img src="<?php echo get_template_directory_uri(); ?>/assets/images/video-circle-white.svg" width="16"/></span>
+                                                            <span class="std-button-span red-button">Watch full video <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/video-circle-white.svg" width="16"/></span>
                                                         </span>
                                                     </span>
                                                 <?php } else { ?>
@@ -116,13 +116,13 @@
                                             <span class="related-top">
                                                 <?php if ( $video_poster ) { ?>
                                                     <span class="background-image-container bg-container">
-                                                        <img src="<?php echo $video_poster['url']; ?>" alt="<?php echo $video_poster['alt']; ?>" />
+                                                        <img loading="lazy" src="<?php echo $video_poster['url']; ?>" alt="<?php echo $video_poster['alt']; ?>" />
                                                     </span>
                                                     <span class="gradient-container"></span>
                                                 <?php } else { ?>
                                                     <?php if ( $generic_backup_image ) { ?>
                                                         <span class="background-image-container bg-container">
-                                                            <img src="<?php echo $generic_backup_image['url']; ?>" alt="<?php echo $generic_backup_image['alt']; ?>" />
+                                                            <img loading="lazy" src="<?php echo $generic_backup_image['url']; ?>" alt="<?php echo $generic_backup_image['alt']; ?>" />
                                                         </span>
                                                         <span class="gradient-container"></span>
                                                     <?php } ?>
@@ -131,7 +131,7 @@
                                                 <?php if ( $company_logo ) { ?>
                                                     <span class="company-logo-container">
                                                         <span class="logo-container">
-                                                            <img src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                            <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
                                                         </span>
                                                     </span>
                                                 <?php } ?>                                                                                                    
@@ -176,7 +176,7 @@
                                                             <?php // no rows found ?>
                                                         <?php endif; ?>
                                                         <span class="button-container">
-                                                            <span class="std-button-span red-button">Watch full video <img src="<?php echo get_template_directory_uri(); ?>/assets/images/video-circle-white.svg" width="16"/></span>
+                                                            <span class="std-button-span red-button">Watch full video <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/video-circle-white.svg" width="16"/></span>
                                                         </span>
                                                     </span>
                                                 <?php } else { ?>

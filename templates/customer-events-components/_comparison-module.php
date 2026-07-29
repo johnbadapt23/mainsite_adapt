@@ -43,7 +43,7 @@
                                 <span class="image-value">
                                     <?php $gartner_image_value = get_sub_field( 'gartner_image_value' ); ?>
                                     <?php if ( $gartner_image_value ) { ?>
-                                        <img src="<?php echo $gartner_image_value['url']; ?>" alt="<?php echo $gartner_image_value['alt']; ?>" />
+                                        <img loading="lazy" src="<?php echo $gartner_image_value['url']; ?>" alt="<?php echo $gartner_image_value['alt']; ?>" />
                                     <?php } ?>
                                 </span>
                             <?php } ?>                           

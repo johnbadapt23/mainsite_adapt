@@ -28,7 +28,7 @@
     		<?php $rotating_icon = get_sub_field( 'rotating_icon' ); ?>
             <span class="rotating-image-container">
         		<?php if ( $rotating_icon ) { ?>
-        			<img id="rotatingImage" src="<?php echo $rotating_icon['url']; ?>" alt="<?php echo $rotating_icon['alt']; ?>" />
+        			<img loading="lazy" id="rotatingImage" src="<?php echo $rotating_icon['url']; ?>" alt="<?php echo $rotating_icon['alt']; ?>" />
         		<?php } ?>
             </span>
         </div>

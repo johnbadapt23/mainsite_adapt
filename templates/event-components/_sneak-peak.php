@@ -29,7 +29,7 @@
 									<span class="image-container">
 										<span class="bg-container">
 											<?php if ( $image ) { ?>
-												<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+												<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
 											<?php } ?>
 										</span>
 										<span class="enlarge-image"></span>
@@ -56,7 +56,7 @@
 										<span class="image-container">
 											<span class="bg-container">
 												<?php if ( $image ) { ?>
-													<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+													<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
 												<?php } ?>
 											</span>
 											<span class="enlarge-image"></span>

@@ -43,7 +43,7 @@
                         <span class="caption-text"><?php echo get_sub_field('caption'); ?>
                             <?php $arrow_image = get_sub_field( 'arrow_image' ); ?>
                 			<?php if ( $arrow_image ) { ?>
-                				<img class="arrow" src="<?php echo $arrow_image['url']; ?>" alt="<?php echo $arrow_image['alt']; ?>" />
+                				<img loading="lazy" class="arrow" src="<?php echo $arrow_image['url']; ?>" alt="<?php echo $arrow_image['alt']; ?>" />
                 			<?php } ?>
                         </span>
                     <?php } ?>

@@ -17,7 +17,7 @@
                                     <?php } ?>
                                     <?php $logo_dark = get_sub_field( 'logo_dark' ); ?>
                                     <?php if ( $logo_dark ) { ?>
-                                        <img class="logo-dark" src="<?php echo $logo_dark['url']; ?>" alt="<?php echo $logo_dark['alt']; ?>" />
+                                        <img loading="lazy" class="logo-dark" src="<?php echo $logo_dark['url']; ?>" alt="<?php echo $logo_dark['alt']; ?>" />
                                     <?php } ?>
                                 </span>
                             </span>

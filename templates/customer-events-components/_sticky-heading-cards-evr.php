@@ -39,7 +39,7 @@
                                     <span class="mobile-image-container">
                                         <?php $image = get_sub_field( 'image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <img class="desktop-image" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                            <img loading="lazy" class="desktop-image" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                                         <?php } ?>
                                     </span>
                                     <span class="card-text p-medium text-secondary text-grey"><?php echo get_sub_field( 'text' ); ?></span>

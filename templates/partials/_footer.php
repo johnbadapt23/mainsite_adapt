@@ -109,12 +109,12 @@ $accessLinkText = get_field( 'access_the_portal_link_text', 'options'  );
 					<?php $footer_icon = get_field( 'footer_icon', 'options'  ); ?>
 					<?php if ( $footer_icon ) { ?>
 						<a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-							<img class="logo" src="<?php echo $footer_icon['url']; ?>" alt="<?php echo $footer_icon['alt']; ?>" />
+							<img loading="lazy" class="logo" src="<?php echo $footer_icon['url']; ?>" alt="<?php echo $footer_icon['alt']; ?>" />
 						</a>
 					<?php } ?>
 					<span class="copyright text-medium-grey">ADAPT &copy; <?php echo date('Y'); ?></span>
 					<span class="back-to-top">
-						<img src="<?php echo get_template_directory_uri(); ?>/assets/images/scroll-up.svg" width="60" class="scroll-up"/>
+						<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/scroll-up.svg" width="60" class="scroll-up"/>
 					</span>
 				</div>
 				<?php if ( have_rows( 'footer_bottom', 'options' ) ) : ?>

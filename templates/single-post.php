@@ -220,7 +220,7 @@
                                         <span class="bg-container">
                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                             <?php if ( $video_poster_image ) { ?>
-                                                <img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                <img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                             <?php } ?>
                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
                                                 <span class="opacity-overlay"></span>
@@ -261,9 +261,9 @@
                             <span class="copy-link share">
 								<a class="share-button" title="Share this article">
 									<?php if($typePost == 'insights' || $typePost == 'expert'){ ?>
-                                         <img src="<?php echo get_template_directory_uri(); ?>/assets/images/post-share-white.svg" width="32px"/>
+                                         <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/post-share-white.svg" width="32px"/>
                                     <?php } else { ?>
-                                         <img src="<?php echo get_template_directory_uri(); ?>/assets/images/post-share.svg" width="32px"/>
+                                         <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/post-share.svg" width="32px"/>
                                     <?php } ?>
 		                        </a>
 							</span>
@@ -287,27 +287,27 @@
                             <span class="share-linked-in share">
                                 <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
                                     <?php if($typePost == 'insights' || $typePost == 'expert'){ ?>
-                                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-white.svg" alt="Share on LinkedIn" width="32px"/>
+                                        <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-white.svg" alt="Share on LinkedIn" width="32px"/>
                                     <?php } else { ?>
-                                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="32px"/>
+                                        <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="32px"/>
                                     <?php } ?>
                                 </a>
                             </span>
                             <span class="share-twitter share">
                                 <a class="twitterShare" href="https://twitter.com/intent/tweet?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&text=<?php the_excerpt(); ?>" target="_blank">
                                     <?php if($typePost == 'insights' || $typePost == 'expert'){ ?>
-                                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-white.svg" alt="Tweet" width="32px"/>
+                                        <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-white.svg" alt="Tweet" width="32px"/>
                                     <?php } else { ?>
-                                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-black.svg" alt="Tweet" width="32px"/>
+                                        <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-black.svg" alt="Tweet" width="32px"/>
                                     <?php } ?>
                                 </a>
                             </span>
                             <span class="share-email share">
                                 <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
                                     <?php if($typePost == 'insights' || $typePost == 'expert'){ ?>
-                                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email-white.svg" alt="Share via Email" width="32px"/>
+                                        <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email-white.svg" alt="Share via Email" width="32px"/>
                                     <?php } else { ?>
-                                        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="32px"/>
+                                        <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="32px"/>
                                     <?php } ?>
                                 </a>
                             </span>
@@ -388,7 +388,7 @@
                                     <a class="publicaton-link" href="<?php echo get_sub_field( 'publication_link' ); ?>" target="_blank">
                                         <?php if ( $publication_logo ) { ?>
                                             <span class="publication-logo-container">
-                                    			<img src="<?php echo $publication_logo['url']; ?>" alt="<?php echo $publication_logo['alt']; ?>" />
+                                    			<img loading="lazy" src="<?php echo $publication_logo['url']; ?>" alt="<?php echo $publication_logo['alt']; ?>" />
                                             </span>
                                 		<?php } else { ?>
                                             <?php echo get_sub_field( 'publication_name' ); ?>
@@ -434,7 +434,7 @@
                             <span class="bg-container">
                                 <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                 <?php if ( $video_poster_image ) { ?>
-                                    <img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                    <img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
                                 <?php } ?>
                                 <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
                                     <span class="opacity-overlay"></span>
@@ -659,7 +659,7 @@
                     </div>
                     <?php if ( $image ) { ?>
                         <div class="preview-image-container">
-                            <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                            <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                         </div>
                     <?php } ?>
                      <?php $portalURL = get_field( 'portal_url' ); ?>
@@ -685,7 +685,7 @@
                                                     <span class="bg-container">
                                                         <?php $image = get_sub_field( 'image' ); ?>
                                                         <?php if ( $image ) { ?>
-                                                            <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                            <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                                                         <?php } ?>
                                                     </span>
                                                 </span>                                                    
@@ -842,7 +842,7 @@
                                                     <span class="image-container">
                                                         <span class="bg-container">
                                                             <?php $team_member_image = get_field( 'team_member_image' ); ?>
-                                                            <img src="<?php echo $team_member_image['url']; ?>" alt="<?php echo $team_member_image['alt']; ?>" />
+                                                            <img loading="lazy" src="<?php echo $team_member_image['url']; ?>" alt="<?php echo $team_member_image['alt']; ?>" />
                                                         </span>
                                                         <span class="border-offset"></span>
                                                     </span>
@@ -885,7 +885,7 @@
                         <span class="subscribe-sidebar-form background-pink">
                             <span class="icon-container">
                                 <span class="icon-inner">
-                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+                                    <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
                                 </span>
                             </span>
                             <h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>
@@ -899,7 +899,7 @@
                         <span class="subscribe-sidebar-form background-pink position-sticky">
                             <span class="icon-container">
                                 <span class="icon-inner">
-                                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
+                                    <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg"/>
                                 </span>
                             </span>
                             <h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>

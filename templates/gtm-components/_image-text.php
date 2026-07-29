@@ -56,7 +56,7 @@
                 <div class="map-container">
                     <?php $desktop_image = get_sub_field( 'desktop_image' ); ?>
                     <?php if ( $desktop_image ) { ?>
-                        <img src="<?php echo $desktop_image['url']; ?>" alt="<?php echo $desktop_image['alt']; ?>" />
+                        <img loading="lazy" src="<?php echo $desktop_image['url']; ?>" alt="<?php echo $desktop_image['alt']; ?>" />
                     <?php } ?>
                 </div>
             </div>

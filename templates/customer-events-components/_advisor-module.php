@@ -116,14 +116,14 @@
                                                     <span class="image-container">
                                                         <span class="bg-container">
                                                             <?php $team_member_image = get_field( 'speaker_image' ); ?>
-                                                            <img src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
+                                                            <img loading="lazy" src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
                                                         </span>
                                                         <span class="border-offset"></span>
                                                     </span>
                                                     <span class="text">
                                                         <h2><?php the_title(); ?></h2>
                                                         <h3><?php echo get_field('speaker_description'); ?></h3>
-                                                        <a class="linkedin" href="<?php echo get_field('linked_in_url'); ?>"><img class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-new.svg" width="28" /></a>
+                                                        <a class="linkedin" href="<?php echo get_field('linked_in_url'); ?>"><img loading="lazy" class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-new.svg" width="28" /></a>
                                                     </span>
                                                 </span>
                                                 <span class="bio-bottom">

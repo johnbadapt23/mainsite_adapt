@@ -18,7 +18,7 @@
 								<div class="insetImage">
 									<div class="image" style="background-image:url(<?php echo $slide['inset_image']; ?>);">
 									</div>
-									<img src="<?php echo $slide['inset_image']; ?>" style="visibility:hidden; position:absolute; top:-10000px; left:-10000px;" alt="Adapt - <?php echo the_title(); ?>" />
+									<img loading="lazy" src="<?php echo $slide['inset_image']; ?>" style="visibility:hidden; position:absolute; top:-10000px; left:-10000px;" alt="Adapt - <?php echo the_title(); ?>" />
 								</div>
 							<?php } ?>
 							<?php if($slide['title']) { ?>
@@ -35,7 +35,7 @@
 								<span class="videoLink">
 									<a href="#" class="playBtn">
 										<span class="icon">
-											<img src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
+											<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
 										</span>
 										<span class="text">
 											<span><?php if($slide['video'][0]['video_button_text']) { ?><?php echo $slide['video'][0]['video_button_text']; ?><?php } else { ?>Watch Video<?php } ?></span>
@@ -51,7 +51,7 @@
 			<?php foreach($bannerSlides as $slide) { ?>
 				<?php if($slide['video']) { ?>
 					<div class="videoPlayerContainer">
-						<span class="closeVideo"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" alt="Close" width="25"/></span>
+						<span class="closeVideo"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" alt="Close" width="25"/></span>
 						<div class="videoWrapper">
 							<video width="100%" id="popupVideo" controls controlsList="nodownload">
 								<source type="video/mp4" src="<?php echo $slide['video'][0]['vimeo_code']; ?>" />
@@ -112,8 +112,8 @@
 <section class="eventShare">
 	<div class="container">
 		<div class="share">
-			<a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=I%20thought%20you%20might%20be%20interested%20in%20this%20article%20<?php echo the_permalink(); ?>" target="_blank"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/email.svg" alt="Share via Email" /><span>Email</span></a>
-			<a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_field( 'share_title' ); ?>&summary=<?php the_field('event_short_description_for_listing'); ?>" target="_blank"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" /><span>Share</span></a>
+			<a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=I%20thought%20you%20might%20be%20interested%20in%20this%20article%20<?php echo the_permalink(); ?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/email.svg" alt="Share via Email" /><span>Email</span></a>
+			<a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_field( 'share_title' ); ?>&summary=<?php the_field('event_short_description_for_listing'); ?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" /><span>Share</span></a>
 		</div>
 	</div>
 </section>
@@ -312,7 +312,7 @@
 											</span>
 											<?php if ( get_field( 'logo') ) { ?>
 												<div class="logoContainer">
-													<img src="<?php the_field( 'logo' ); ?>" alt="Adapt" />
+													<img loading="lazy" src="<?php the_field( 'logo' ); ?>" alt="Adapt" />
 												</div>
 											<?php } ?>
 										</a>
@@ -396,7 +396,7 @@
 					<span class="videoLink">
 						<a href="#" class="playBtnVideoBlock">
 							<span class="icon">
-								<img src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
+								<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
 							</span>
 							<span class="text">
 								<span><?php if( get_sub_field('video_button_text')) { ?><?php the_sub_field('video_button_text') ?><?php } else { ?>Watch Video<?php } ?></span>
@@ -407,7 +407,7 @@
 				</div>
 			</div>
 			<div class="videoPlayerContainer videoBlock">
-				<span class="closeVideo"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" alt="Close" width="25"/></span>
+				<span class="closeVideo"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" alt="Close" width="25"/></span>
 				<div class="videoWrapper">
 					<video width="100%" id="popupVideo" controls controlsList="nodownload">
 						<source type="video/mp4" src="<?php the_sub_field('vimeo_code'); ?>" />
@@ -489,7 +489,7 @@
                                         </span>
                                         <?php if ( get_sub_field( 'logo') ) { ?>
                                             <div class="logoContainer">
-                                                <img src="<?php the_sub_field( 'logo' ); ?>" alt="Adapt" />
+                                                <img loading="lazy" src="<?php the_sub_field( 'logo' ); ?>" alt="Adapt" />
                                             </div>
                                         <?php } ?>
                                     </div>
@@ -523,7 +523,7 @@
                                                     <div class="image video" style="background-image: url('<?php the_field( 'video_poster' ); ?>');">
                                                         <?php if ( get_field ( 'podcast_available' ) == 'yes' ) { ?>
                                                             <span class="podcast">
-                                                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
+                                                                <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
                                                             </span>
                                                         <?php } ?>
                                                     </div>
@@ -531,7 +531,7 @@
 													<div class="image" <?php if ( get_field( 'listing_page_grid_image' )) { ?>style="background-image: url('<?php the_field( 'listing_page_grid_image' ); ?>');" <?php } else { ?>style="background-image: url('<?php the_field( 'featured_image' ); ?>');"<?php } ?>>
                                                         <?php if ( get_field ( 'podcast_available' ) == 'yes' ) { ?>
                                                             <span class="podcast">
-                                                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
+                                                                <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
                                                             </span>
                                                         <?php } ?>
                                                     </div>
@@ -539,7 +539,7 @@
 													<div class="image" <?php if ( get_field( 'listing_page_grid_image' )) { ?>style="background-image: url('<?php the_field( 'listing_page_grid_image' ); ?>');" <?php } else { ?>style="background-image: url('<?php the_field( 'featured_image' ); ?>');"<?php } ?>>
 														<?php if ( get_field ( 'podcast_available' ) == 'yes' ) { ?>
 															<span class="podcast">
-																<img src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
+																<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/podcast-white.svg" alt="Podcast Available" />
 															</span>
 														<?php } ?>
 													</div>

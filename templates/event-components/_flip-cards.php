@@ -28,7 +28,7 @@
                                         <span class="bg-container">
                                             <?php $card_image = get_sub_field( 'card_image' ); ?>
                         					<?php if ( $card_image ) { ?>
-                        						<img src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
+                        						<img loading="lazy" src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
                         					<?php } ?>
                                         </span>
                                     </span>
@@ -56,7 +56,7 @@
                                         <span class="bg-container">
                                             <?php $card_image = get_sub_field( 'card_image' ); ?>
                         					<?php if ( $card_image ) { ?>
-                        						<img src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
+                        						<img loading="lazy" src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
                         					<?php } ?>
                                         </span>
                                     </span>
@@ -104,7 +104,7 @@
                                         <span class="bg-container">
                         					<?php $logo = get_sub_field( 'logo' ); ?>
                         					<?php if ( $logo ) { ?>
-                        						<img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                        						<img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                         					<?php } ?>
                                         </span>
                                     </span>
@@ -114,7 +114,7 @@
                                         <span class="bg-container">
                                             <?php $card_image = get_sub_field( 'card_image' ); ?>
                         					<?php if ( $card_image ) { ?>
-                        						<img src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
+                        						<img loading="lazy" src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
                         					<?php } ?>
                                         </span>
                                     </span>
@@ -142,7 +142,7 @@
                                         <span class="bg-container">
                                             <?php $card_image = get_sub_field( 'card_image' ); ?>
                         					<?php if ( $card_image ) { ?>
-                        						<img src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
+                        						<img loading="lazy" src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
                         					<?php } ?>
                                         </span>
                                     </span>

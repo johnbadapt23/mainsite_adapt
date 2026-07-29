@@ -26,7 +26,7 @@ get_header();
     								<div class="insetImage">
     									<div class="image" style="background-image:url(<?php echo $slide['inset_image']; ?>);">
     									</div>
-    									<img src="<?php echo $slide['inset_image']; ?>" style="visibility:hidden; position:absolute; top:-10000px; left:-10000px;" alt="Adapt - <?php echo the_title(); ?>" />
+    									<img loading="lazy" src="<?php echo $slide['inset_image']; ?>" style="visibility:hidden; position:absolute; top:-10000px; left:-10000px;" alt="Adapt - <?php echo the_title(); ?>" />
     								</div>
     							<?php } ?>
     							<?php if($slide['title']) { ?>
@@ -47,7 +47,7 @@ get_header();
 											<a href="#" class="playBtn">
 										<?php }?>
     										<span class="icon">
-    											<img src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
+    											<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="Play Icon" width="51" />
     										</span>
     										<span class="text">
     											<span><?php if($slide['video'][0]['video_button_text']) { ?><?php echo $slide['video'][0]['video_button_text']; ?><?php } else { ?>Watch Video<?php } ?></span>
@@ -63,7 +63,7 @@ get_header();
     			<?php foreach($bannerSlides as $slide) { ?>
                     <div class="videoPlayerContainer">
 		                <?php if($slide['video']) { ?>
-    						<span class="closeVideo"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" width="25" alt="close" /></span>
+    						<span class="closeVideo"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/close-grey.svg" width="25" alt="close" /></span>
     						<div class="videoWrapper">
     							<video width="100%" id="popupVideo" controls controlsList="nodownload">
     								<source type="video/mp4" src="<?php echo $slide['video'][0]['vimeo_code']; ?>" />
@@ -111,8 +111,8 @@ get_header();
     	<div class="container">
             <div class="inner">
         		<div class="share">
-        			<a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=I%20thought%20you%20might%20be%20interested%20in%20this%20article%20<?php echo the_permalink(); ?>" target="_blank"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/email.svg" alt="Share via Email" /><span>Email</span></a>
-                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title();?>" target="_blank"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" /><span>Share</span></a>
+        			<a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=I%20thought%20you%20might%20be%20interested%20in%20this%20article%20<?php echo the_permalink(); ?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/email.svg" alt="Share via Email" /><span>Email</span></a>
+                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title();?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" /><span>Share</span></a>
         		</div>
             </div>
     	</div>
@@ -360,7 +360,7 @@ get_header();
 </main>
 
 <section class="printContainer">
-    <div class="imageHeader"><img src="<?php the_field( 'print_header' ); ?>" alt="Adapt - <?php echo the_title(); ?>"/></div>
+    <div class="imageHeader"><img loading="lazy" src="<?php the_field( 'print_header' ); ?>" alt="Adapt - <?php echo the_title(); ?>"/></div>
     <div class="content">
     <?php if ( have_rows( 'day' ) ) : $counter = 1; ?>
 
@@ -393,7 +393,7 @@ get_header();
                                                 <?php if ( have_rows( 'logos' ) ) : ?>
                                                     <div class="logoWrapperPrint">
                                                         <?php while ( have_rows( 'logos' ) ) : the_row(); ?>
-                                                            <img src="<?php the_sub_field('logo'); ?>" width="100" alt="Adapt" />
+                                                            <img loading="lazy" src="<?php the_sub_field('logo'); ?>" width="100" alt="Adapt" />
                                                         <?php endwhile; ?>
                                                     </div>
                                                 <?php endif; ?>
@@ -486,7 +486,7 @@ get_header();
                                                                 <?php if ( have_rows( 'logos' ) ) : ?>
                                                                     <div class="logoWrapperPrint">
                                                                         <?php while ( have_rows( 'logos' ) ) : the_row(); ?>
-                                                                            <img src="<?php the_sub_field('logo'); ?>" width="100" alt="Adapt" />
+                                                                            <img loading="lazy" src="<?php the_sub_field('logo'); ?>" width="100" alt="Adapt" />
                                                                         <?php endwhile; ?>
                                                                     </div>
                                                                 <?php endif; ?>
@@ -525,7 +525,7 @@ get_header();
                                                                 <?php if ( have_rows( 'logos_track_two' ) ) : ?>
                                                                     <div class="logoWrapperPrint">
                                                                         <?php while ( have_rows( 'logos_track_two' ) ) : the_row(); ?>
-                                                                            <img src="<?php the_sub_field('logo'); ?>" width="100" alt="Adapt" />
+                                                                            <img loading="lazy" src="<?php the_sub_field('logo'); ?>" width="100" alt="Adapt" />
                                                                         <?php endwhile; ?>
                                                                     </div>
                                                                 <?php endif; ?>

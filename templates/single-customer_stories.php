@@ -68,14 +68,14 @@ $displayed_posts[] = get_the_ID();
                         <?php if ( $company_logo ) { ?>
                             <span class="company-logo-container">
                                 <span class="logo-container">
-                                    <img src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                    <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
                                 </span>
                             </span>
                         <?php } ?> 
                     <?php } ?>     
                     <span class="labelMedium text-black"><?php echo get_field( 'company_name' ); ?></span>
                     <span class="sector-container">
-                        <span class="sector-icon"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/sector.svg" width="20"/></span>
+                        <span class="sector-icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/sector.svg" width="20"/></span>
                         <span class="sector-name labelMedium text-dark-grey"><?php echo get_field( 'sector' ); ?></span>
                     </span>
                     <span class="divider-line"></span>
@@ -116,8 +116,8 @@ $displayed_posts[] = get_the_ID();
                                     <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
                                     <a onclick="copyJobLink()">
                                         <span class="image-icon-container">
-                                            <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
-                                            <img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
+                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
+                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
                                             <span class="job-link-text"></span>
                                         </span>
                                     </a>
@@ -140,16 +140,16 @@ $displayed_posts[] = get_the_ID();
                                 <span class="share-linked-in share">
                                     <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
                                         <span class="image-icon-container">
-                                            <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
-                                            <img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
+                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
+                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
                                         </span>
                                     </a>
                                 </span>								
                                 <span class="share-email share">
                                     <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
                                         <span class="image-icon-container">
-                                            <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
-                                            <img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
+                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
+                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
                                     </a>
                                 </span>
                             </span>
@@ -163,7 +163,7 @@ $displayed_posts[] = get_the_ID();
                                             <span class="icon-inner">
                                                 <?php $icon = get_sub_field( 'icon' ); ?>
                                                 <?php if ( $icon ) { ?>
-                                                    <img src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                                                    <img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
                                                 <?php } ?>                                    
                                             </span>
                                         </span>
@@ -198,14 +198,14 @@ $displayed_posts[] = get_the_ID();
                     <?php if ( $company_logo_background ) { ?>
                         <span class="company-logo-container background-company-logo desktop-hide">
                             <span class="logo-container-background">
-                                <img src="<?php echo $company_logo_background['url']; ?>" alt="<?php echo $company_logo_background['alt']; ?>" />
+                                <img loading="lazy" src="<?php echo $company_logo_background['url']; ?>" alt="<?php echo $company_logo_background['alt']; ?>" />
                             </span>
                         </span>
                     <?php } else { ?>
                         <?php if ( $company_logo ) { ?>
                             <span class="company-logo-container desktop-hide">
                                 <span class="logo-container">
-                                    <img src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                    <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
                                 </span>
                             </span>
                         <?php } ?> 
@@ -215,7 +215,7 @@ $displayed_posts[] = get_the_ID();
                         <span class="divider-line"></span>
                         <span class="labelMedium text-black"><?php echo get_field( 'company_name' ); ?></span>
                         <span class="sector-container">
-                            <span class="sector-icon"><img src="<?php echo get_template_directory_uri(); ?>/assets/images/sector.svg" width="20"/></span>
+                            <span class="sector-icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/sector.svg" width="20"/></span>
                             <span class="sector-name labelMedium text-dark-grey"><?php echo get_field( 'sector' ); ?></span>
                         </span>
                         <span class="divider-line"></span>
@@ -254,7 +254,7 @@ $displayed_posts[] = get_the_ID();
                                     <span class="bg-container">
                                         <?php $video_poster = get_field( 'video_poster' ); ?>
                                         <?php if ( $video_poster ) { ?>
-                                            <img src="<?php echo $video_poster['url']; ?>" alt="<?php echo $video_poster['alt']; ?>" />
+                                            <img loading="lazy" src="<?php echo $video_poster['url']; ?>" alt="<?php echo $video_poster['alt']; ?>" />
                                         <?php } ?>
                                         <span class="gradient-overlay"></span>
                                         <span class="video-button"></span>
@@ -288,7 +288,7 @@ $displayed_posts[] = get_the_ID();
                                     <span class="image-content-container">
                                         <?php $image = get_sub_field( 'image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                            <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                                         <?php } ?>
                                         <?php if( get_sub_field( 'image_caption' )){ ?> 
                                             <span class="caption"><?php echo get_sub_field( 'image_caption' ); ?></span>
@@ -309,8 +309,8 @@ $displayed_posts[] = get_the_ID();
                                     <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
                                     <a onclick="copyJobLink()">
                                         <span class="image-icon-container">
-                                            <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
-                                            <img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
+                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" width="24px"/>
+                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" width="24px"/>
                                             <span class="job-link-text"></span>
                                         </span>
                                     </a>
@@ -333,16 +333,16 @@ $displayed_posts[] = get_the_ID();
                                 <span class="share-linked-in share">
                                     <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
                                         <span class="image-icon-container">
-                                            <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
-                                            <img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
+                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
+                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
                                         </span>
                                     </a>
                                 </span>								
                                 <span class="share-email share">
                                     <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
                                         <span class="image-icon-container">
-                                            <img class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
-                                            <img class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
+                                            <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
+                                            <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" width="24px"/>
                                     </a>
                                 </span>
                             </span>
@@ -356,7 +356,7 @@ $displayed_posts[] = get_the_ID();
                                             <span class="icon-inner">
                                                 <?php $icon = get_sub_field( 'icon' ); ?>
                                                 <?php if ( $icon ) { ?>
-                                                    <img src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                                                    <img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
                                                 <?php } ?>                                    
                                             </span>
                                         </span>
@@ -448,14 +448,14 @@ $displayed_posts[] = get_the_ID();
                                     <?php if ( $company_logo_background ) { ?>
                                         <span class="company-logo-container background-company-logo">
                                             <span class="logo-container-background">
-                                                <img src="<?php echo $company_logo_background['url']; ?>" alt="<?php echo $company_logo_background['alt']; ?>" />
+                                                <img loading="lazy" src="<?php echo $company_logo_background['url']; ?>" alt="<?php echo $company_logo_background['alt']; ?>" />
                                             </span>
                                         </span>
                                     <?php } else { ?>
                                         <?php if ( $company_logo ) { ?>
                                             <span class="company-logo-container">
                                                 <span class="logo-container">
-                                                    <img src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                    <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
                                                 </span>
                                             </span>
                                         <?php } ?> 
@@ -585,7 +585,7 @@ $displayed_posts[] = get_the_ID();
                                                 <span class="bg-container">
                                                     <?php $image = get_sub_field( 'image' ); ?>
                                                     <?php if ( $image ) { ?>
-                                                        <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                        <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                                                     <?php } ?>
                                                 </span>
                                             </span>
@@ -597,7 +597,7 @@ $displayed_posts[] = get_the_ID();
                                                 <span class="bg-container">
                                                     <?php $image = get_sub_field( 'image' ); ?>
                                                     <?php if ( $image ) { ?>
-                                                        <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                        <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                                                     <?php } ?>
                                                 </span>
                                             </span>

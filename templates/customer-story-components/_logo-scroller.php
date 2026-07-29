@@ -35,7 +35,7 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                             <?php } ?>
-                                                <img class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                <img loading="lazy" class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 </a>
                                             <?php } ?>
@@ -65,7 +65,7 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                             <?php } ?>
-                                                <img class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                <img loading="lazy" class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 </a>
                                             <?php } ?>
@@ -87,7 +87,7 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                             <?php } ?>
-                                                <img class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                <img loading="lazy" class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 </a>
                                             <?php } ?>

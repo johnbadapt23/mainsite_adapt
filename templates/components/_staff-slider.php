@@ -26,7 +26,7 @@
                 					<?php $image = get_sub_field( 'image' ); ?>
                                     <span class="staff-image-container">
                     					<?php if ( $image ) { ?>
-                    						<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                    						<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                     					<?php } ?>
                                     </span>
                                 </div>
@@ -64,13 +64,13 @@
                                     <?php $arrow = get_sub_field( 'mobile_arrow' ); ?>
                                     <span class="arrow-container">
                     					<?php if ( $arrow ) { ?>
-                    						<img src="<?php echo $arrow['url']; ?>" alt="<?php echo $arrow['alt']; ?>" />
+                    						<img loading="lazy" src="<?php echo $arrow['url']; ?>" alt="<?php echo $arrow['alt']; ?>" />
                     					<?php } ?>
                                     </span>
                 					<?php $image = get_sub_field( 'image' ); ?>
                                     <span class="staff-image-container">
                     					<?php if ( $image ) { ?>
-                    						<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                    						<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
                     					<?php } ?>
                                     </span>
                                 </div>

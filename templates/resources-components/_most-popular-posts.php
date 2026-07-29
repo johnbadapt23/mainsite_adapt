@@ -34,7 +34,7 @@
                          <span class="bg-container">
                              <?php $featured_image = get_field( 'featured_image' ); ?>
                              <?php if ( $featured_image ) { ?>
-                                 <img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                 <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
                              <?php } ?>
                          </span>
                      </a>
