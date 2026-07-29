@@ -1,0 +1,71 @@
+<section class="three-column-video filter-listing background-white">
+    <div class="container">               
+        <div class="grid-wrapper">
+            <?php if ( get_sub_field( 'title' )) { ?> 
+                <h2 class="text-black"><?php echo get_sub_field( 'title' ); ?></h2>
+            <?php } ?>
+            <div class="peer-insights-full-container">                
+                <?php if ( have_rows( 'posts' ) ) : ?>
+                    <?php while ( have_rows( 'posts' ) ) : the_row(); ?>
+                        <?php $post_object = get_sub_field( 'post' ); ?>
+                        <?php if ( $post_object ): ?>
+                            <?php $post = $post_object; ?>
+                            <?php setup_postdata( $post ); ?> 
+                            <div class="item one-third peer-insights-item">
+                                <?php $video_link = get_field( 'featured_video_vimeo_code' ); ?>
+                                <?php if ($video_link){ ?>
+                                <?php } else { ?>
+                                    <?php $video_link = get_field( 'vimeo_code' ); ?>
+                                <?php } ?>
+                                <span class="video-container">
+                                    <?php if ($video_link){ ?>
+                                        <a href="<?php the_permalink(); ?>">
+                                    <?php } ?>
+                                        <span class="bg-container">
+                                            <?php $video_poster_image = get_field( 'video_poster' ); ?>
+                                            <?php if ( $video_poster_image ) { ?>
+                                            	<img src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                            <?php } ?>
+                                            <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
+                                                <span class="opacity-overlay"></span>
+                                            <?php } ?>
+                                            <span class="video-play-time"><?php echo get_field( 'video_time' ); ?></span>
+                                            <?php if ($video_link){ ?>
+                                                <span class="video-button">
+                                                </span>
+                                            <?php } ?>
+                                        </span>
+                                    <?php if ($video_link){ ?>
+                                        </a>
+                                    <?php } ?>
+                                </span>
+                                <span class="item-content-container">
+                                    <span class="topic-filter">
+                                        <?php if (yoast_get_primary_term_id('topic')) {
+                                            $primary_term_topic_id = yoast_get_primary_term_id('topic');
+                                            $postTopic = get_term( $primary_term_topic_id );
+                                        } else {
+                                            if(get_the_terms( $post->ID, 'topic' )){
+                                                $terms = get_the_terms( $post->ID, 'topic' );
+                                                foreach($terms as $term) {
+                                                    $postTopic = $term;
+                                                }
+                                            }
+                                        }?>
+                                        <?php if ( !empty( $postTopic ) ) { ?>
+                                            <a href="<?php echo get_term_link($postTopic); ?>" class="topic-filter-text">/ <?php echo $postTopic->name; ?></a>
+                                        <?php } ?>
+                                    </span>
+                                    <a href="<?php the_permalink(); ?>" class="title label-XXLarge text-black"><?php the_title(); ?></a>
+                                </span>
+                            </div>                            
+                            <?php wp_reset_postdata(); ?>
+                        <?php endif; ?>
+                    <?php endwhile; ?>
+                <?php else : ?>
+                    <?php // no rows found ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</section> 

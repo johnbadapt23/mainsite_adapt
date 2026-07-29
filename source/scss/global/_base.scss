@@ -1,0 +1,261 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+*,
+*:after,
+*:before {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+*:focus {
+	outline-color: transparent;
+	outline-style: none;
+}
+
+::selection {
+	//background: $selection-bg;
+	color: inherit;
+	text-shadow: none;
+}
+
+::-webkit-selection {
+	//background: $selection-bg;
+	color: $selection-color;
+	text-shadow: none;
+}
+
+::-moz-selection {
+	//background: $selection-bg;
+	color: $selection-color;
+	text-shadow: none;
+}
+
+html {
+	font-family: $font-main;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-tap-highlight-color: transparent;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body,
+html {
+	font-family: $font-main;
+	width: 100%;
+	min-height: 100%;
+	min-width: $site-min-width;
+	@media (max-width: 767px) {
+		overflow-x: hidden;
+	}
+}
+
+html.fixed {
+	overflow: hidden;
+
+	body {
+		overflow: hidden;
+	}
+}
+
+body {
+	overflow-x: hidden;
+
+	&.fixed {
+		overflow: hidden;
+	}
+
+	 > main,
+	 > nav,
+	 > section,
+	> footer {
+		//display: none;
+	}
+}
+
+main {
+	margin-bottom: 0;
+	margin-top: 80px;
+	float:left;
+	width:100%;
+	position: relative;
+	opacity: 0;
+	@include transition(all, 300ms, ease);
+
+	@include responsive(1023) {
+		margin-top: 60px;
+	}
+
+	&.resource-landing {
+		margin-top: 160px;
+
+		@include responsive(1023) {
+			margin-top: 60px;
+		}
+	}
+
+	&.loaded {
+		opacity: 1;
+	}
+
+	&.notFound {
+
+	    section.default {
+	        padding: 112px 0;
+
+			@include responsive(767) {
+				padding: 65px 0;
+			}
+
+			.not-found-inner {
+				float: left;
+				width: 100%;
+				text-align: center;
+
+				.pre-title-text {
+					float: left;
+					width: 100%;
+					text-align: center;
+					margin-bottom: 8px;
+
+					@include responsive(767) {
+						font-size: 18px;
+					}
+				}
+
+				.not-found-title {
+					float: left;
+					width: 100%;
+					text-align: center;
+					margin-bottom: 8px;
+
+					@include responsive(767) {
+						font-size: 32px;
+						line-height: 38px;
+					}
+				}
+
+				.not-found-image-container {
+					float: left;
+					width: 100%;
+					margin: 36px 0 28px;
+				}
+
+				.not-found-button-container {
+					float: left;
+					width: 100%;
+					margin-bottom: 32px;
+				}
+
+				.pre-link-text {
+					float: left;
+					width: 100%;
+					font-size: 20px;
+					line-height: 28px;
+					margin-bottom: 32px;
+
+					@include responsive(767) {
+						font-size: 18px;
+					}
+				}
+
+				.not-found-link-container {
+					float: left;
+					width: 100%;
+					text-align: center;
+
+					a {
+						float: none;
+						display: inline-block;
+						margin: 0 20px;
+						font-size: 18px;
+						line-height: 22px;
+						position: relative;
+
+						@include responsive(767) {
+							margin-bottom: 24px;
+						}
+
+						&:before {
+	                        content: '';
+	                        width: 100%;
+	                        height: 1px;
+	                        background-color: $color-red;
+	                        position: absolute;
+	                        left: 0;
+	                        bottom: -2px;
+	                        opacity: 1;
+	                        visibility: visible;
+	                        @include transition();
+	                    }
+
+						&:hover {
+							&:before {
+	                            width: 0;
+	                            opacity: 0;
+	                            visibility: hidden;
+	                            @include transition();
+	                        }
+						}
+					}
+				}
+			}
+	    }
+	}
+}
+
+
+
+.container {
+	width: 100%;
+	max-width: $site-max-width;
+	min-width: $site-min-width;
+	margin: 0 auto;
+	padding: 0 $site-padding-desktop;
+
+	.inner {
+		width: 100%;
+		max-width: 800px;
+		margin: 0 auto;
+	}
+}
+
+article,
+footer,
+header,
+section {
+	position: relative;
+	width: 100%;
+}
+
+img {
+	display: inline;
+	vertical-align: middle;
+	max-width: 100%;
+	border: none;
+}
+
+a {
+	border: none;
+	@include transition(all, 200ms, ease);
+}
+
+.imageContainer {
+	width: 100%;
+	float: left;
+	position: relative;
+
+	.image {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background-size: cover;
+	}
+}

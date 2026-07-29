@@ -1,0 +1,51 @@
+@font-face {
+  font-family: 'Apercu-Medium';
+  src: url('../fonts/Apercu-Medium.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/Apercu-Medium.otf')  format('opentype'),
+	   url('../fonts/Apercu-Medium.woff') format('woff'),
+       url('../fonts/Apercu-Medium.ttf')  format('truetype'),
+       url('../fonts/Apercu-Medium.svg#Apercu-Medium') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Apercu-Regular';
+  src: url('../fonts/Apercu-Regular.eot?#iefix') format('embedded-opentype'),  url('../fonts/Apercu-Regular.otf')  format('opentype'),
+	     url('../fonts/Apercu-Regular.woff') format('woff'), url('../fonts/Apercu-Regular.ttf')  format('truetype'), url('../fonts/Apercu-Regular.svg#Apercu-Regular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Apercu-Bold';
+  src: url('../fonts/Apercu-Bold.eot?#iefix') format('embedded-opentype'),  url('../fonts/Apercu-Bold.otf')  format('opentype'),
+	     url('../fonts/Apercu-Bold.woff') format('woff'), url('../fonts/Apercu-Bold.ttf')  format('truetype'), url('../fonts/Apercu-Bold.svg#Apercu-Bold') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+    font-family: 'Glyphter';
+    src: url('../fonts/Henry-Jones.eot');
+    src: url('../fonts/Henry-Jones.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Henry-Jones.woff') format('woff'),
+         url('../fonts/Henry-Jones.ttf') format('truetype'),
+         url('../fonts/Henry-Jones.svg#Henry-Jones') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+[class*='icon-']:before{
+	display: inline-block;
+    font-family: 'Glyphter';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+.icon-trip-advisor:before{content:'\0041';}
+.icon-facebook:before{content:'\0042';}
+.icon-instagram:before{content:'\0043';}
+.icon-twitter:before{content:'\0044';}
+.icon-close:before{content:'\0045';}
