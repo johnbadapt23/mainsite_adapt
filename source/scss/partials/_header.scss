@@ -1,14 +1,37 @@
 header {
-    position: fixed;
+    position: absolute;
     top: 0px;
     left: 0px;
     background: #fff;
     z-index: 99;
     padding: 14px 0;
     height: 80px;
-    // border-bottom: 1px solid #000;
+    @include transition(all, 300ms, ease);
+    border-bottom: 1px solid #000;
 
-    @media (max-width: 1023px) {
+    &.scrolled {
+        top: -80px;
+        @include transition(all, 300ms, ease);
+
+        &.scrolled-fixed {
+            position: fixed;
+        }
+
+        &.scrolled-up {
+            position: fixed;
+            top: 0;
+            @include transition(all, 300ms, ease);
+        }
+    }
+
+    &.scrolled-up {
+        position: fixed;
+        top: 0;
+        @include transition(all, 300ms, ease);
+    }
+
+
+    @media (max-width: 1250px) {
         height: 60px;
         padding: 18px 0;
         background-color: $color-background-light-grey;
@@ -20,7 +43,8 @@ header {
         }
 
         &.menu-open {
-            position: fixed;
+            position: fixed!important;
+            top: 0!important;
         }
     }
 
@@ -29,9 +53,8 @@ header {
             float: left;
             width: 100%;
             padding-bottom: 13px;
-            border-bottom: 1px solid #000;
 
-            @media (max-width: 1023px) {
+            @media (max-width: 1250px) {
                 border-bottom: none;
                 padding: 0px;
             }
@@ -45,7 +68,7 @@ header {
             padding: 12px 0;
             z-index: 100;
 
-            @media (max-width: 1023px) {
+            @media (max-width: 1250px) {
                 width: 92px;
                 padding: 0;
             }
@@ -93,7 +116,7 @@ header {
             width: calc(100% - 150px);
             text-align: left;
 
-            @media (max-width: 1023px) {
+            @media (max-width: 1250px) {
                 width: calc(100% - 132px);
             }
 
@@ -106,7 +129,7 @@ header {
                     width: auto;
                     color: #000;
 
-                    @media (max-width: 1023px) {
+                    @media (max-width: 1250px) {
                         display: none;
                     }
 
@@ -126,8 +149,8 @@ header {
         					}
 
                             >a {
-        						font-family: $font-base;
-        						font-weight: 400;
+                                font-family: $font-medium;
+        						font-weight: 500;
         						text-transform: none;
         						line-height: 48px;
         						font-size: 16px;
@@ -155,7 +178,7 @@ header {
         								position: absolute;
         								content: '';
         								background-image: url('../images/mega-menu-arrow.svg');
-        								top: 5px;
+        								top: 12px;
         								right: -17px;
         								background-size: 10px 5px;
         								width:10px;
@@ -205,7 +228,184 @@ header {
                                 overflow-y: auto;
 
                                 &.servicesMenu {
-                                    width: 545px;
+                                    width: 1062px;
+
+                                    .container {
+                                        .column.title-column {
+                                            width: 278px;
+                                            padding-right: 32px;
+
+                                            .services-hover {
+                                                float: left;
+                                                width: 100%;
+                                                margin-bottom: 32px;
+                                                transition: all .3s ease;
+                                                filter: grayscale(100%);  
+                                                cursor: pointer;                      
+
+                                                .icon-container {
+                                                    height: 24px;
+                                                    width: 24px;
+                                                    float: left;
+                                                    margin-right: 8px;
+
+                                                    img {
+                                                        float: left;
+                                                        width: 100%;
+                                                    }
+                                                }
+
+                                                .hover-title {
+                                                    float: left;
+                                                    line-height: 24px;
+                                                    font-size: 16px;
+                                                    font-weight: 500;
+                                                    font-family: $font-medium;
+                                                    position: relative;
+                                                    transition: all .3s ease;
+                                                    color: #000;
+                                                }
+
+                                                .hover-icon-container {
+                                                    display: inline-flex;
+                                                    position: relative;
+                                                    top: 3px;
+                                                    left: -10px;
+                                                    opacity: 0;
+                                                    height: 16px;
+                                                    transition: all .3s ease;
+                                                }
+
+                                                .switch-text {
+                                                    float: left;
+                                                    width: 100%;
+                                                    padding-left: 32px;
+                                                    color: #5F5F5F;
+                                                }
+
+                                                &.active {
+                                                    filter: grayscale(0);
+
+                                                    .hover-title {
+                                                        color: $color-red;
+                                                    }
+
+                                                    .hover-icon-container {
+                                                        opacity: 1;
+                                                        left: 4px;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        .column.content-column {
+                                            width: calc(100% - 278px);
+                                            padding-left: 32px;
+
+                                            .services-content-inner {
+                                                float: left;
+                                                width: 100%;
+                                                position: relative;
+                                                transition: all .3s ease;
+                                            }
+
+                                            .services-content {
+                                                width: 100%;
+                                                float: left;
+                                                display: none;
+
+                                                &.active {
+                                                    display: block;
+                                                }
+
+                                                .overview-container {
+                                                    float: left;
+                                                    width: 240px;
+                                                    margin-right: 32px;
+                                                    background-color: #FDF1F1;
+                                                    padding: 20px;
+                                                    border-radius: 2px;
+
+                                                    .overview-image {
+                                                        width: 100%;
+                                                        float: left;
+                                                        margin-bottom: 24px;
+                                                        aspect-ratio: 4/3;
+
+                                                        img {
+                                                            display: block;
+                                                            width: 100%;
+                                                            height: 100%;
+                                                            object-fit: cover;
+                                                            object-position: center;
+                                                        }
+                                                    }
+
+                                                    .overview-content {
+                                                        float: left;
+                                                        width: 100%;
+
+                                                        .labelLarge {
+                                                            float: left;
+                                                            width: 100%;
+                                                            margin-bottom: 8px;
+                                                        }
+
+                                                        .labelSmall {
+                                                            float: left;
+                                                            width: 100%;
+                                                            margin-bottom: 24px;
+
+                                                        }
+                                                    }
+                                                }
+
+                                                .links-container {
+                                                    float: left;
+                                                    width: calc(100% - 272px);                                                    
+                                                }
+
+                                            }
+
+                                            .dropDownSection {
+                                                margin-bottom: 32px;
+
+                                                &.compare {
+                                                    padding-top: 32px;
+                                                    border-top: 1px solid #E4E4E4;
+
+                                                    .compare-text {
+                                                        float: left;
+                                                        width: 100%;
+                                                        color: #5F5F5F;
+                                                        text-transform: uppercase;
+                                                        font-size: 10px;
+                                                        letter-spacing: 0.04em;
+                                                        font-family: $font-medium;
+                                                        font-weight: 500;
+                                                    }
+                                                }
+
+                                                .columnText {
+                                                    font-size: 14px;
+                                                }
+
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                &.reportsMenu {
+                                    width: 445px;
+
+                                    .container {
+                                        .column {
+                                            width: 100%;
+                                            padding-left: 0px;
+                                            border-right: none;
+                                        }
+                                    }
                                 }
 
                                 &.howHelpMenu {
@@ -217,7 +417,25 @@ header {
                                 }
 
                                 &.eventsMenu {
-                                    width: 617px;
+                                    width: 625px;
+                                }
+
+                                &.customerMenu {
+                                    width: 865px;
+                                    // opacity: 1;
+                                    // visibility: visible;
+
+                                    @media (max-width:1300px) {
+                                        width: 665px;
+                                    }
+
+                                    .column {
+                                        &:first-child {
+                                            .dropDownSection .columnText {
+                                                margin-bottom: 40px;
+                                            }
+                                        }
+                                    }
                                 }
 
                                 &.resourcesMenu {
@@ -230,7 +448,18 @@ header {
                                 }
 
                                 &.adaptMenu {
-                                    width: 331px;
+                                    width: 345px;
+
+                                    .dropdownSection {
+                                        a {
+                                            .columnTitle {
+                                                transition: all .3s ease;
+                                                &:hover {
+                                                    color: $color-red;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
 
                         		@media (max-width: 1200px) {
@@ -293,7 +522,7 @@ header {
                                         .events-bottom-text {
                                             float: left;
                         					width: 100%;
-                        					font-family: $font-base;
+                                            font-family: $font-medium;
                                             font-weight: 500;
                                             font-size: 16px;
                                             line-height: 20px;
@@ -329,7 +558,7 @@ header {
                         				.columnTitle {
                         					float: left;
                         					width: 100%;
-                        					font-family: $font-base;
+                                            font-family: $font-medium;
                                             font-weight: 500;
                                             font-size: 16px;
                                             line-height: 20px;
@@ -339,15 +568,64 @@ header {
                         					margin-bottom: 20px;
                                             text-align: left;
 
+                                            .hover-icon-container {
+                                                display: none;
+                                            }
+
                                             &.small-margin {
                                                 margin-bottom: 4px;
+
+                                                &.subTitle {
+                                                    margin-top: 0px;
+                                                    margin-bottom: 15px;
+                                                }
                                             }
                         				}
+
+                                        a {
+                                            .columnTitle {
+                                                transition: all .3s ease;
+
+                                                .hover-icon-container {
+                                                    display: inline-flex;
+                                                    position: relative;
+                                                    top: 2px;
+                                                    left: -10px;
+                                                    opacity: 0;
+                                                    height: 16px;
+                                                    transition: all .3s ease;
+                                                }
+                                                                                            
+                                            
+                                            }
+                                            &:hover {
+                                                .columnTitle {
+                                                    color: $color-red;
+
+                                                    .hover-icon-container {
+                                                        opacity: 1;
+                                                        left: -1px;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        .title-link {
+                                            .columnTitle {
+                                                transition: all .3s ease;
+                                            }
+
+                                            &:hover {
+                                                .columnTitle {
+                                                    color: $color-red;
+                                                }
+                                            }
+                                        }
 
                                         .columnText {
                                             float: left;
                         					width: 100%;
-                        					font-family: $font-base;
+                                            font-family: $font-medium;
                                             font-weight: 500;
                                             font-size: 13px;
                                             line-height: 16px;
@@ -355,6 +633,10 @@ header {
                         					text-transform: none;
                         					margin-bottom: 24px;
                                             text-align: left;
+
+                                            &.no-margin {
+                                                margin-bottom: 0px;
+                                            }
                                         }
 
                         				ul {
@@ -392,6 +674,16 @@ header {
                         							@include transition();
                         							letter-spacing: 0px;
 
+                                                    &.external-link-event {
+                                                        width: auto;
+
+                                                        .event-month {
+                                                            margin-left: 5px;
+                                                            font-size: 12px;
+                                                        }
+                                                    }
+
+
                         							&:after {
                         								display: none !important;
                         							}
@@ -411,12 +703,80 @@ header {
                                                 color: $color-red!important;
                                             }
                                         }
+
+                                        .logo-link-column-container {
+                                            width: 100%;
+                                            display: flex;
+                                            gap: 18px;
+                                            margin-bottom: 40px;
+
+                                            &:last-child {
+                                                margin-bottom: 0px;
+                                            }
+
+                                            .column {
+                                                text-align: left;
+                                                float: left;
+                                                padding-left: 0px;
+                                                padding-right: 0px;
+                                                border-left: none;
+
+                                                &.link-logo-column {
+                                                    width: 88px;
+
+                                                    .logo-tile {
+                                                        float: left;
+                                                        width: 88px;
+                                                        height: 88px;
+                                                        border-radius: 8px;
+                                                        padding: 10px;
+
+                                                        img {
+                                                            object-position: center;
+                                                            object-fit: contain;
+                                                            width: 100%;
+                                                            height: 100%;
+                                                        }
+                                                    }
+                                                }
+
+                                                &.link-text-column {
+                                                    a.title-link {
+                                                        float: left;
+                                                        width: 100%;
+                                                        height: 100%;
+                                                        display: flex;
+                                                        flex-direction: column;
+                                                        justify-content: space-between;
+
+                                                        .columnTitle {
+                                                            transition: all .15s ease;
+                                                            max-width: 238px;
+                                                        }
+
+                                                        &:hover {
+                                                            .columnTitle {
+                                                                color: #000;
+                                                                text-decoration: underline;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    
+                                                   
+                                                }
+
+                                                .columnText {
+                                                    margin-bottom: 0px;
+                                                }
+                                            }
+                                        }
                         			}
 
                                     .column-title {
                                         float: left;
                                         width: 100%;
-                                        font-family: $font-base;
+                                        font-family: $font-medium;
                                         font-weight: 500;
                                         font-size: 16px;
                                         line-height: 20px;
@@ -448,6 +808,10 @@ header {
                                     &.one-half {
                         				width: 50%;
                         			}
+
+                                    &.full-width {
+                                        width: 100%;
+                                    }
 
                         			&.first {
                         				border-right: 1px solid #f1f1f1;
@@ -601,6 +965,7 @@ header {
                                                     width: 100%;
                                                     color: #000;
                                                     font-size: 14px;
+                                                    font-family: $font-medium;
                                                     font-weight: 500;
                                                     line-height: 17px;
                                                 }
@@ -617,13 +982,15 @@ header {
             .menu-buttons {
                 float: right;
 
-                @media (max-width: 1023px) {
+                @media (max-width: 1250px) {
                     display: none;
                 }
 
                 a {
                     display: inline-block;
                     vertical-align: middle;
+                    font-family: $font-medium;
+                    font-weight: 500;
                 }
 
                 a.client-login {
@@ -635,9 +1002,9 @@ header {
 
                 a.booking-button {
                     background-color: $color-red;
-                    font-family: $font-base;
+                    font-family: $font-medium;
                     text-transform: none;
-                    font-weight: 400;
+                    font-weight: 500;
                     font-size: 14px;
                     line-height: 52px;
                     border-radius: 4px;
@@ -686,7 +1053,7 @@ header {
     				position: absolute;
     				width: 40px;
     				height: 40px;
-    				top: -3px;
+    				top: -10px;
     				left: 0px;
     				text-align: left;
     				display: inline-block;
@@ -819,7 +1186,7 @@ header {
                     }
     			}
 
-                @media (max-width: 1023px) {
+                @media (max-width: 1250px) {
                     display:block;
                 }
             }
@@ -842,15 +1209,17 @@ header {
     .resources-sticky-menu {
         float: left;
         width: 100%;
-        position: absolute;
-        top: 80px;
+        position: relative;
+        margin-top: 1px;
         background-color: #fff;
         left: 0;
         display: none;
         color: #000;
         z-index: 99;
+        border-bottom: 1px solid $color-medium-light-grey;
 
-        @media (max-width: 1023px) {
+        @media (max-width: 1250px) {
+            position: absolute;
             top: 60px;
             height: 60px;
             padding: 18px 0;
@@ -863,9 +1232,9 @@ header {
             .resources-sticky-inner {
                 float: left;
                 width: 100%;
-                border-bottom: 1px solid $color-medium-light-grey;
 
-                @media (max-width: 1023px) {
+
+                @media (max-width: 1250px) {
                     border-bottom: none;
                 }
             }
@@ -873,11 +1242,11 @@ header {
             span.buttonWrapperResources {
     			position: absolute;
                 right: 14px;
-                top: 10px;
+                top: 18px;
     			float: right;
     			z-index: 9999;
-    			width: 40px;
-    			height: 40px;
+    			width: 24px;
+    			height: 24px;
                 margin-left: 0px;
                 -webkit-transition: all ease .3s;
                 -moz-transition: all ease .3s;
@@ -887,9 +1256,9 @@ header {
 
     			a.navResources {
     				position: absolute;
-    				width: 40px;
-    				height: 40px;
-    				top: -3px;
+    				width: 24px;
+    				height: 24px;
+    				top: 0px;
     				left: 0px;
     				text-align: left;
     				display: inline-block;
@@ -903,8 +1272,8 @@ header {
     					width: 18px;
     					height: 2px;
     					position: relative;
-    					top: 8px;
-                        left: 10px;
+    					top: -12px;
+                        left: 3px;
     					vertical-align: bottom;
     					background: #000;
     					white-space: nowrap;
@@ -1022,7 +1391,7 @@ header {
                     }
     			}
 
-                @media (max-width: 1023px) {
+                @media (max-width: 1250px) {
                     display:block;
                 }
             }
@@ -1036,7 +1405,7 @@ header {
                 opacity: 0;
                 @include transition(all, 300ms, ease);
 
-                @media (max-width: 1023px) {
+                @media (max-width: 1250px) {
                     visibility: visible;
                     opacity: 1;
                     width: auto;
@@ -1053,11 +1422,12 @@ header {
                         margin-left: 12px;
                         line-height: 21px;
                         font-size: 18px;
+                        font-family: $font-medium;
                         font-weight: 500;
                         color: #000;
                     }
 
-                    @media (max-width: 1023px) {
+                    @media (max-width: 1250px) {
                         margin-right: 0px;
                         padding-top: 0px;
 
@@ -1067,6 +1437,7 @@ header {
                             margin-left: 12px;
                             line-height: 24px;
                             font-size: 18px;
+                            font-family: $font-medium;
                             font-weight: 500;
                             color: #000;
                         }
@@ -1076,7 +1447,7 @@ header {
                         float: left;
                         width: 17px;
 
-                        @media (max-width: 1023px) {
+                        @media (max-width: 1250px) {
                             width: 14px;
                         }
 
@@ -1095,7 +1466,7 @@ header {
                 float: left;
                 width: auto;
 
-                @media (max-width: 1023px) {
+                @media (max-width: 1250px) {
                     display: none;
                 }
 
@@ -1127,8 +1498,8 @@ header {
                         }
 
                         >a {
-    						font-family: $font-base;
-    						font-weight: 400;
+                            font-family: $font-medium;
+    						font-weight: 500;
     						text-transform: none;
     						line-height: 80px;
     						font-size: 16px;
@@ -1155,7 +1526,7 @@ header {
     								position: absolute;
     								content: '';
     								background-image: url('../images/mega-menu-arrow.svg');
-    								top: 5px;
+    								top: 12px;
     								right: -17px;
     								background-size: 10px 5px;
     								width:10px;
@@ -1187,7 +1558,7 @@ header {
                         .megaMenu {
                     		position: absolute;
                     		float: left;
-                    		top: 81px;
+                    		top: 82px;
                     		left: -43px;
                     		width: 1000px;
                     		background-color: #fff;
@@ -1200,6 +1571,18 @@ header {
                     		box-shadow: 0px 3px 21px 0px rgba(0,0,0,0.24);
                     		z-index: 2;
                     		@include transition();
+
+                            &.reportsMenu {
+                                width: 445px;
+
+                                .container {
+                                    .column {
+                                        width: 100%;
+                                        padding-left: 0px;
+                                        border-right: none;
+                                    }
+                                }
+                            }
 
                     		@media (max-width: 1200px) {
 
@@ -1256,6 +1639,8 @@ header {
                     				width: 100%;
                     				margin-bottom: 40px;
 
+
+
                     				&:last-child {
                     					margin-bottom: 0px;
                     				}
@@ -1263,7 +1648,7 @@ header {
                     				.columnTitle {
                     					float: left;
                     					width: 100%;
-                    					font-family: $font-base;
+                                        font-family: $font-medium;
                                         font-weight: 500;
                                         font-size: 16px;
                                         line-height: 20px;
@@ -1308,6 +1693,16 @@ header {
                     							opacity: 1 !important;
                     							@include transition();
                     							letter-spacing: 0px;
+                                                color: #000!important;
+
+                                                &.external-link-event {
+                                                    width: auto;
+
+                                                    .event-month {
+                                                        margin-left: 5px;
+                                                        font-size: 12px;
+                                                    }
+                                                }
 
                     							&:after {
                     								display: none !important;
@@ -1324,12 +1719,12 @@ header {
                                 .column-title {
                                     float: left;
                                     width: 100%;
-                                    font-family: $font-base;
+                                    font-family: $font-medium;
                                     font-weight: 500;
                                     font-size: 16px;
                                     line-height: 20px;
                                     min-height: 20px;
-                                    color: inherit;
+                                    color: #000;
                                     text-transform: none;
                                     margin-bottom: 20px;
                                     text-align: left;
@@ -1539,6 +1934,7 @@ header {
                                                 width: 100%;
                                                 color: #000;
                                                 font-size: 14px;
+                                                font-family: $font-medium;
                                                 font-weight: 500;
                                                 line-height: 17px;
                                                 @include transition(all, 300ms, ease);
@@ -1568,7 +1964,7 @@ header {
                 text-align: right;
                 padding-top: 14px;
 
-                @media (max-width: 1023px) {
+                @media (max-width: 1250px) {
                     display: none;
                 }
 
@@ -1589,10 +1985,14 @@ header {
                     @include transition(all, 300ms, ease);
 
                     .subscribe-popup-button {
+                        float: right;
+                    }
+
+                    .subscribe-popup-button a {
                         background-color: $color-red;
-                        font-family: $font-base;
+                        font-family: $font-medium;
                         text-transform: none;
-                        font-weight: 400;
+                        font-weight: 500;
                         font-size: 14px;
                         line-height: 52px;
                         border-radius: 4px;
@@ -1636,10 +2036,144 @@ header {
 }
 
 header.background-black .container .headerRight .menu .main-nav >ul >li >a {
-    color: #fff!important;
-
-
+    color: $color-text-white!important;
 }
+
+body.template-customer-events,
+body.template-ecosystem-advisors,
+body.template-comparison,
+body.template-gtm {
+    background-color: #121212;
+
+    header .container .headerRight .menu .main-nav>ul>li>a {
+        color: $color-text-white !important;
+    }
+
+    header {        
+        background-color: #121212;
+        border-bottom: 1px solid $color-dark-grey;
+
+        .header-inner {
+            border-bottom: none !important;
+        }
+
+        .container .logo-container .logo img.dark {
+            display: none;
+        }
+
+        .container .logo-container .logo img.light {
+            display: block;
+        }
+
+        .container .headerRight span.buttonWrapper a.nav .ham {
+            background-color: #fff;
+
+            &:before,
+            &:after {
+                background-color: #fff;
+            }
+        }
+
+        .container .headerRight span.buttonWrapper a.nav .ham.active {
+            background-color: transparent;
+        }
+    }
+
+    .container .logo-container .logo img {
+        &.dark {
+            display: none;
+        }
+
+        &.light {
+            display: block;
+        }
+    }
+
+    .container .headerRight .menu .main-nav ul li.dropdown {
+        >a:after {
+            background-image: url('../images/mega-menu-arrow-white.svg');
+        }
+
+        &.active {
+            >a {
+                &:after {
+                    background-image: url('../images/mega-menu-arrow-red.svg');
+                }
+            }
+        }
+    }
+
+    .container .headerRight span.buttonWrapper a.nav .ham {
+        background-color: #fff;
+
+        &:before,
+        &:after {
+            background-color: #fff;
+        }
+    }
+
+    .container .headerRight span.buttonWrapper a.nav .ham.active {
+        background-color: transparent;
+    }
+
+    .container .headerRight .menu-buttons a.client-login {
+        color: #fff;
+    }
+
+    .container .headerRight .menu>ul>li>a {
+        color: #fff;
+    }
+
+    .resources-sticky-menu {
+        background-color: $color-background-black;
+        color: $color-text-white;
+
+        .container .resources-nav ul li.dropdown>a:after {
+            background-image: url('../images/mega-menu-arrow-white.svg');
+        }
+
+        .container .resources-nav ul li.dropdown.active {
+            >a {
+                &:after {
+                    background-image: url('../images/mega-menu-arrow-red.svg');
+                }
+            }
+        }
+
+        .scroll-image-container {
+            .logo {
+                img {
+                    &.dark {
+                        display: none;
+                    }
+
+                    &.light {
+                        display: block;
+                    }
+                }
+
+                .resources-link-mobile {
+                    color: #fff;
+                }
+            }
+        }
+
+        span.buttonWrapperResources a.navResources {
+            .ham {
+                background-color: #fff;
+
+                &:before {
+                    background-color: #fff;
+                }
+
+                &:after {
+                    background-color: #fff;
+                }
+            }
+        }
+    }
+}
+
 
 body.home {
     header {
@@ -1685,12 +2219,41 @@ body.home {
     }
 }
 
+body.template-resources,
+body.search-results,
+body.post {
+    header.scrolled-up,
+    header.scrolled.scrolled-up {
+        position: absolute;
+    }
 
+    header.resources-sticky.scrolled {
+        > .container {
+            display: none;
+        }
+    }
+}
+
+body.search-results,
+body.post {
+    main {
+        margin-top: 160px;
+
+        @media (max-width: 1250px) {
+    		margin-top: 60px;
+    	}
+    }
+}
+
+
+
+body.post,
+body.search-results,
 body.template-resources {
     header {
         position: absolute;
 
-        @include responsive(1023) {
+        @media (max-width: 1250px) {
             position: absolute;
             padding: 0px;
 
@@ -1699,7 +2262,7 @@ body.template-resources {
             }
 
             &.scrolled-up {
-                position: fixed;
+                position: fixed!important;
             }
 
             &.menu-open {
@@ -1711,7 +2274,7 @@ body.template-resources {
     .resources-sticky-menu {
         display: block;
 
-        @include responsive(1023) {
+        @media (max-width: 1250px) {
             position: absolute;
             top: 0;
         }
@@ -1722,8 +2285,10 @@ body.template-resources {
             .resources-sticky-menu {
                 position: fixed;
                 top: 0;
+                margin-top: 0px;
+                @include transition(all, 300ms, ease);
 
-                @include responsive(1023) {
+                @media (max-width: 1250px) {
                     position: absolute;
                     top: 0;
                 }
@@ -1734,70 +2299,27 @@ body.template-resources {
                     width: 33px;
                     @include transition(all, 300ms, ease);
 
-                    @media (max-width: 1023px) {
+                    @media (max-width: 1250px) {
                         width: auto;
                     }
                 }
 
                 .sticky-menu-right .subscribe-button-container  {
-                    width: 130px;
+                    width: 132px;
                     @include transition(all, 300ms, ease);
                 }
             }
         }
-    }
-}
 
-body.post,
-body.search-results {
-    header {
-        position: absolute;
-        padding: 0px;
-
-        .header-inner {
-            display: none;
-        }
-
-        @include responsive(1023) {
-            &.scrolled-up {
-                position: fixed;
-            }
-
-            &.menu-open {
-                position: fixed;
-            }
-        }
-    }
-
-    .resources-sticky-menu {
-        display: block;
-    }
-
-    header {
-        .resources-sticky-menu {
-            position: fixed;
-            top: 0;
-
-            @media (max-width: 1023px) {
-                position: absolute;
-            }
-
-            .scroll-image-container {
-                opacity: 1;
-                visibility: visible;
-                width: 33px;
-                @include transition(all, 300ms, ease);
-
-                @media (max-width: 1023px) {
-                    width: auto;
-                }
-            }
-
-            .sticky-menu-right .subscribe-button-container  {
-                width: 130px;
-                @include transition(all, 300ms, ease);
-            }
-        }
+        // &.scrolled-up {
+        //     &.resources-sticky {
+        //         .resources-sticky-menu {
+        //             position: fixed;
+        //             top: 80px;
+        //             @include transition(all, 300ms, ease);
+        //         }
+        //     }
+        // }
     }
 }
 
@@ -1844,6 +2366,7 @@ body.search-results {
                     a {
                         font-size: 20px;
                         line-height: 24px;
+                        font-family: $font-medium;
                         font-weight: 500;
                         color: #000;
                     }
@@ -1870,6 +2393,7 @@ body.search-results {
                         border: none;
                         font-size: 20px;
                         line-height: 23px;
+                        font-family: $font-medium;
                         font-weight: 500;
                         background-color: $color-background-light-grey;
                     }
@@ -1879,6 +2403,7 @@ body.search-results {
                         color: $color-background-placeholders!important;
                         font-size: 20px!important;
                         line-height: 23px!important;
+                        font-family: $font-medium;
                         font-weight: 500!important;
                     }
                     ::-webkit-input-placeholder {
@@ -1886,6 +2411,7 @@ body.search-results {
                         color: $color-background-placeholders!important;
                         font-size: 20px!important;
                         line-height: 23px!important;
+                        font-family: $font-medium;
                         font-weight: 500!important;
                     }
                     ::-moz-placeholder {
@@ -1893,6 +2419,7 @@ body.search-results {
                         color: $color-background-placeholders!important;
                         font-size: 20px!important;
                         line-height: 23px!important;
+                        font-family: $font-medium;
                         font-weight: 500!important;
                     }
                     :-ms-input-placeholder {
@@ -1900,6 +2427,7 @@ body.search-results {
                         color: $color-background-placeholders!important;
                         font-size: 20px!important;
                         line-height: 23px!important;
+                        font-family: $font-medium;
                         font-weight: 500!important;
                     }
                     :-moz-placeholder {
@@ -1907,6 +2435,7 @@ body.search-results {
                         color: $color-background-placeholders!important;
                         font-size: 20px!important;
                         line-height: 23px!important;
+                        font-family: $font-medium;
                         font-weight: 500!important;
                     }
 
@@ -1926,6 +2455,7 @@ body.search-results {
                     .column-title {
                         float: left;
                         width: 100%;
+                        font-family: $font-medium;
                         font-weight: 500;
                         font-size: 16px;
                         line-height: 20px;
@@ -1954,17 +2484,49 @@ body.search-results {
             }
         }
 
-        a.search-close {
+        .close-clear-container{
             float: left;
-            margin-left: 85px;
-            margin-top: 8px;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            background-image: url('../images/search-close.svg');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
+            width: 25%;
+            text-align: left;
+            padding-left: 85px;
+
+            a.search-close {
+                float: left;
+                width: 28px;
+                height: 28px;
+                cursor: pointer;
+                background-image: url('../images/search-close.svg');
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                @include transition();
+            }
+
+            a.search-clear {
+                float: right;
+                padding-right: 16px;
+                margin-right: 16px;
+                border-right: 1px solid #e4e4e4;
+                line-height: 28px;
+                color: #9a9a9a;
+                font-size: 16px;
+                font-family: $font-medium;
+                font-weight: 500;
+                opacity: 0;
+                visibility: hidden;
+                @include transition();
+            }
+
+            &.active {
+                a.search-close {
+                    float: right;
+                }
+
+                a.search-clear {
+                    opacity: 1;
+                    visibility: visible;
+                }
+            }
         }
     }
 }
@@ -1974,7 +2536,32 @@ body.search-results {
         width: 260px;
         padding: 24px;
 
+        .icon-container {
+            float: left;
+            width: 100%;
+            margin-bottom: 16px;
+
+            .icon-inner {
+                width: 100%;
+                float: left;
+                max-width: 60px;
+
+                img {
+                    float: left;
+                    width: 100%;
+                }
+            }
+        }
+
+        h5 {
+            font-family: $font-medium;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 22px;
+        }
+
         p {
+            font-family: $font-medium;
             font-size: 13px;
             line-height: 16px;
             font-weight: 500;
@@ -1990,7 +2577,10 @@ body.search-results {
 
 .mobileMenuMain {
     width: 100%;
+    max-height: calc(100vh - 60px);
     height: calc(100vh - 60px);
+    max-height: calc(100svh - 60px);
+    height: calc(100svh - 60px);
     position: fixed;
     z-index: 100;
     top: 60px;
@@ -1998,7 +2588,7 @@ body.search-results {
     background: #fff;
     opacity: 0;
     visibility: hidden;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
     @include transition(all, 500ms, ease);
 
@@ -2012,8 +2602,12 @@ body.search-results {
         float: left;
         width: 100%;
         height: 100%;
+        height: calc(100vh - 60px);
+        height: calc(100svh - 60px);
         position: relative;
         padding-top: 40px;
+        overflow-y: auto;
+        overflow-x: hidden;
 
         > .container {
             text-align: left;
@@ -2030,8 +2624,8 @@ body.search-results {
                     > li {
                         float: left;
                         width: 100%;
-                        padding: 18px 0 18px;
-                        border-bottom: 1px solid #e4e4e4;
+                        padding: 15px 0 15px;
+                        // border-bottom: 1px solid #e4e4e4;
 
                         &:last-child {
                             border-bottom: none;
@@ -2043,6 +2637,7 @@ body.search-results {
                             line-height: 22px;
                             position: relative;
                             display: inline-block;
+                            font-family: $font-medium;
                             font-weight: 500;
                         }
 
@@ -2050,19 +2645,20 @@ body.search-results {
                             > a {
                                 padding-right: 15px;
                                 color: #000;
+                                width: 100%;
 
                                 &:after {
                                     content: '';
-                                    width: 6px;
-                                    height: 10px;
-                                    background-image: url('../images/main-right.svg');
+                                    width: 16px;
+                                    height: 16px;
+                                    background-image: url('../images/mobile-arrow-right.svg');
                                     background-size: contain;
                                     background-repeat: no-repeat;
                                     background-position: center;
                                     position: absolute;
                                     display: block;
                                     right: 0px;
-                                    top: 8px;
+                                    top: 3px;
                                     @include transition(all, 300ms, ease);
                                 }
                             }
@@ -2103,6 +2699,7 @@ body.search-results {
                                                 padding-left: 23px;
                                                 font-size: 16px;
                                                 line-height: 24px;
+                                                font-family: $font-medium;
                                                 font-weight: 500;
                                                 color: #000;
 
@@ -2150,11 +2747,17 @@ body.search-results {
                                         width: 100%;
                                         font-size: 16px;
                                         line-height: 20px;
+                                        font-family: $font-medium;
                                         font-weight: 500;
                                         color: #000;
                                         padding: 32px 0 10px;
                                         margin-top: 32px;
                                         border-top: 1px solid $color-medium-light-grey;
+
+                                        &.subTitle {
+                                            margin-top: 0px;
+                                            margin-bottom: 5px;
+                                        }
 
                                         &.small-margin {
                                             border-top: none;
@@ -2166,6 +2769,11 @@ body.search-results {
                                         .columnTitle {
                                             border-top: 0px;
                                             padding-top: 8px;
+
+                                            &.subTitle {
+                                                margin-top: 0px;
+                                                margin-bottom: 5px;
+                                            }
                                         }
                                     }
 
@@ -2174,8 +2782,9 @@ body.search-results {
                                         width: 100%;
                                         font-size: 14px;
                                         line-height: 18px;
-                                        font-weight: 400;
-                                        color: #000;
+                                        font-family: $font-medium;
+                                        font-weight: 500;
+                                        color: $color-dark-grey;
 
                                         &.large-margin {
                                             margin-bottom: 32px;
@@ -2199,10 +2808,24 @@ body.search-results {
                                                 font-weight: 400;
                                                 color: #000;
 
+                                                &.external-link-event {
+                                                    width: auto;
+
+                                                    .event-month {
+                                                        margin-left: 5px;
+                                                        font-size: 12px;
+                                                    }
+                                                }
+
                                                 &.events-links {
                                                     width: auto;
                                                     padding-right: 23px;
                                                     position:relative;
+
+                                                    .event-month {
+                                                        margin-left: 5px;
+                                                        font-size: 12px;
+                                                    }
 
                                                     &:after {
                                                         content: '';
@@ -2233,8 +2856,73 @@ body.search-results {
                                             width: auto;
                                             font-size: 16px;
                                             line-height: 20px;
+                                            font-family: $font-medium;
                                             font-weight: 500;
                                             color: $color-red!important;
+                                        }
+                                    }
+
+                                    .logo-link-column-container {
+                                        width: 100%;
+                                        display: flex;
+                                        gap: 18px;
+                                        margin-bottom: 32px;
+
+                                        &:first-child {
+                                            padding-top: 48px;
+                                            margin-top: 48px;
+                                            border-top: 1px solid #e4e4e4;
+                                        }
+                                        
+                                        &:last-child {
+                                            margin-bottom: 0px;
+                                        }
+
+                                        .column {
+                                            text-align: left;
+                                            float: left;
+                                            padding-left: 0px;
+                                            padding-right: 0px;
+                                            border-left: none;
+
+                                            &.link-logo-column {
+                                                width: 88px;
+                                                
+
+                                                .logo-tile {
+                                                    float: left;
+                                                    width: 88px;
+                                                    height: 88px;
+                                                    border-radius: 8px;
+                                                    padding: 10px;
+
+                                                    img {
+                                                        object-position: center;
+                                                        object-fit: contain;
+                                                        width: 100%;
+                                                        height: 100%;
+                                                    }
+                                                }
+                                            }
+
+                                            &.link-text-column {
+                                                .columnTitle {
+                                                    margin-top: 0px;
+                                                }
+                                                a.title-link {
+                                                    float: left;
+                                                    width: 100%;
+                                                    height: 100%;
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    justify-content: space-between;
+                                                }
+
+                                            }
+
+                                            .columnText {
+                                                margin-bottom: 0px;
+                                            }
                                         }
                                     }
                                 }
@@ -2254,6 +2942,19 @@ body.search-results {
                                         .subscribe-sidebar-form {
                                             width: 100%;
                                             max-width: 400px;
+
+                                            .icon-container {
+                                                float: right;
+                                                width: 60px;
+                                            }
+
+                                            .form-content {
+                                                float: left;
+                                                width: calc(100% - 60px);
+                                                padding-right: 30px;
+                                            }
+
+
                                         }
                                     }
                                 }
@@ -2268,12 +2969,15 @@ body.search-results {
                                         float: left;
                                         width: 100%;
                                         padding-top: 32px;
+                                        margin-top: 32px;
+                                        margin-bottom: 32px;
 
                                         .events-bottom-text {
                                             float: left;
                                             width: 100%;
                                             font-size: 16px;
                                             line-height: 20px;
+                                            font-family: $font-medium;
                                             font-weight: 500;
                                             color: #000;
                                         }
@@ -2284,9 +2988,500 @@ body.search-results {
                                             text-align: left;
                                         }
                                     }
+                                }                                
+
+                                &.customerMenu {
+                                    .dropDownSection {
+                                        .columnTitle {
+                                            padding-top: 0px;
+                                        }
+
+                                        .all-link-container {
+                                            margin-top: 48px;
+                                        }
+                                    }
                                 }
                             }
                         }
+                    }
+
+                    .mobile-services-dropdown {
+                        float: left;
+                        width: 100%;
+                        padding: 15px 0 15px;
+                        font-size: 18px;
+                        color: #000;
+                        line-height: 22px;
+                        position: relative;
+                        font-family: $font-medium;
+                        font-weight: 500;                        
+
+                        &:after {
+                            position: absolute;
+                            display: block;
+                            content: '';
+                            width: 16px;
+                            height: 16px;
+                            background-image: url('../images/services-mobile-plus.svg');
+                            background-size: contain;
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            right: 0px;
+                            top: 18px;
+                        }
+
+                        &.active {
+                            &:after {
+                                background-image: url('../images/services-mobile-minus.svg');
+                            }
+                        }
+                    }
+
+                    .overview-container {
+                        float: left;
+                        width: 100%;
+                        padding: 0 20px;
+                        margin: 44px 0 16px;
+
+                        .overview-container-inner {
+                            width: 100%;
+                            display: flex;
+                            padding: 4px;
+                            gap: 16px;
+                            align-items: center;
+                            background-color: #FDF1F1;
+                            border-radius: 4px;
+
+                            .overview-image {
+                                width: 136px;
+                                min-width: 136px;
+                                float: left;
+                                aspect-ratio: 4/3;
+
+                                img {
+                                    display: block;
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: cover;
+                                    object-position: center;
+                                }
+                            }
+                        }
+
+
+                        .overview-content {
+                            float: left;
+                            width: 100%;
+
+                            .labelLarge {
+                                float: left;
+                                width: 100%;
+                                margin-bottom: 16px;
+                                padding-right: 12px;
+                            }
+                        }
+                    }
+
+                    .services-inner-mobile {
+                        height: 0px;
+                        overflow: hidden;
+
+                        >li {
+                            float: left;
+                            width: 100%;
+                            padding: 15px 0 15px;
+                            opacity: 0;
+                            position: relative;
+                            left: -30px;
+                            @include transition(all, 300ms, ease);
+                            // border-bottom: 1px solid #e4e4e4;
+                    
+                            &:last-child {
+                                border-bottom: none;
+                            }
+
+                            &:nth-child(2) {                                                           
+                                transition-delay: 200ms;
+                                padding-bottom: 30px;
+                            }
+                    
+                            >a {
+                                font-size: 18px;
+                                color: #000;
+                                line-height: 22px;
+                                position: relative;
+                                display: inline-block;
+                                font-family: $font-medium;
+                                font-weight: 500;
+                                filter: grayscale(100%);
+
+                                .icon-container {
+                                    height: 24px;
+                                    width: 24px;
+                                    float: left;
+                                    margin-right: 8px;
+                            
+                                    img {
+                                        float: left;
+                                        width: 100%;
+                                    }
+                                }
+
+                                .services-inner-title {
+                                    display: flex;
+                                    flex-direction: column;
+                                }
+
+                            }
+                    
+                            &.main-dropdown {
+                                >a {
+                                    padding-right: 15px;
+                                    color: #000;
+                                    width: 100%;
+                    
+                                    &:after {
+                                        content: '';
+                                        width: 16px;
+                                        height: 16px;
+                                        background-image: url('../images/mobile-arrow-right.svg');
+                                        background-size: contain;
+                                        background-repeat: no-repeat;
+                                        background-position: center;
+                                        position: absolute;
+                                        display: block;
+                                        right: 0px;
+                                        top: 3px;
+                                        @include transition(all, 300ms, ease);
+                                    }
+                                }
+                    
+                                .mobile-sub-menu {
+                                    position: fixed;
+                                    z-index: 99;
+                                    height: 100vh;
+                                    width: 100%;
+                                    top: 0;
+                                    right: -100%;
+                                    overflow-y: auto;
+                                    background-color: #fff;
+                                    @include transition(all, 500ms, ease);
+                                    padding-bottom: 80px;
+
+                                    .all-link {
+                                        float:left;
+                                        margin-left: 20px;
+                                        margin-top: 40px;
+                                    }
+                    
+                                    &.active {
+                                        right: 0px;
+                                    }
+                    
+                                    .sub-menu-top {
+                                        float: left;
+                                        width: 100%;
+                                        height: 60px;
+                                        padding: 18px 0;
+                                        background-color: $color-background-light-grey;
+                                        border-bottom: 1px solid $color-medium-light-grey;
+                    
+                                        .container {
+                                            .back-container {
+                                                float: left;
+                                                width: auto;
+                    
+                                                .mobile-menu-title {
+                                                    float: left;
+                                                    width: auto;
+                                                    position: relative;
+                                                    padding-left: 23px;
+                                                    font-size: 16px;
+                                                    line-height: 24px;
+                                                    font-family: $font-medium;
+                                                    font-weight: 500;
+                                                    color: #000;
+                    
+                                                    &:before {
+                                                        content: '';
+                                                        width: 9px;
+                                                        height: 17px;
+                                                        background-image: url('../images/back-left.svg');
+                                                        background-size: contain;
+                                                        background-repeat: no-repeat;
+                                                        background-position: center;
+                                                        display: block;
+                                                        position: absolute;
+                                                        left: 0;
+                                                        top: 3px;
+                                                    }
+                                                }
+                                            }
+                    
+                                            .close-container {
+                                                float: right;
+                                                width: auto;
+                    
+                                                .close-menu {
+                                                    width: 24px;
+                                                    height: 24px;
+                                                    background-image: url('../images/close-nav.svg');
+                                                    background-size: contain;
+                                                    background-repeat: no-repeat;
+                                                    background-position: center;
+                                                    float: right;
+                                                }
+                                            }
+                                        }
+                                    }
+                    
+                                    .groupSection,
+                                    .dropDownSection {
+                                        float: left;
+                                        width: 100%;
+                                        padding: 0px 20px;
+
+                                        &.compare {                                            
+                                            margin-top: 32px;                                            
+                                    
+                                            .compare-text {
+                                                float: left;
+                                                width: 100%;
+                                                color: #5F5F5F;
+                                                padding-top: 32px;
+                                                border-top: 1px solid #E4E4E4;
+                                                text-transform: uppercase;
+                                                font-size: 10px;
+                                                margin-bottom: 8px;
+                                                letter-spacing: 0.04em;
+                                                font-family: $font-medium;
+                                                font-weight: 500;
+                                            }
+                                    
+                                            .columnTitle {
+                                                margin-top: 0px;
+                                                padding-top: 0px;
+                                                border-top: none;
+                                            }
+                                        }
+                    
+                                        .columnTitle {
+                                            float: left;
+                                            width: 100%;
+                                            font-size: 18px;
+                                            line-height: 20px;
+                                            font-family: $font-medium;
+                                            font-weight: 500;
+                                            color: #000;
+                                            padding: 32px 0 10px;
+                                            margin-top: 32px;
+                                            border-top: 1px solid $color-medium-light-grey;
+                    
+                                            &.subTitle {
+                                                margin-top: 0px;
+                                                margin-bottom: 5px;
+                                            }
+                    
+                                            &.small-margin {
+                                                border-top: none;
+                                                padding-top: 0px;
+                                            }
+                                        }
+                    
+                                        &:first-of-type {
+                                            .columnTitle {
+                                                border-top: 0px;
+                                                padding-top: 8px;
+                    
+                                                &.subTitle {
+                                                    margin-top: 0px;
+                                                    margin-bottom: 5px;
+                                                }
+                                            }
+                                        }
+                    
+                                        .columnText {
+                                            float: left;
+                                            width: 100%;
+                                            font-size: 14px;
+                                            line-height: 18px;
+                                            font-family: $font-medium;
+                                            font-weight: 500;
+                                            color: $color-dark-grey;
+                    
+                                            &.large-margin {
+                                                margin-bottom: 32px;
+                                            }
+                                        }
+                                       
+                    
+                                        ul {
+                                            float: left;
+                                            width: 100%;
+                    
+                                            li {
+                                                float: left;
+                                                width: 100%;
+                                                padding: 10px 0;
+                    
+                                                a {
+                                                    float: left;
+                                                    width: 100%;
+                                                    font-size: 16px;
+                                                    line-height: 20px;
+                                                    font-weight: 400;
+                                                    color: #000;
+                    
+                                                    &.external-link-event {
+                                                        width: auto;
+                    
+                                                        .event-month {
+                                                            margin-left: 5px;
+                                                            font-size: 12px;
+                                                        }
+                                                    }
+                    
+                                                    &.events-links {
+                                                        width: auto;
+                                                        padding-right: 23px;
+                                                        position: relative;
+                    
+                                                        .event-month {
+                                                            margin-left: 5px;
+                                                            font-size: 12px;
+                                                        }
+                    
+                                                        &:after {
+                                                            content: '';
+                                                            width: 18px;
+                                                            height: 18px;
+                                                            background-image: url('../images/main-external.svg');
+                                                            background-size: contain;
+                                                            background-repeat: no-repeat;
+                                                            background-position: center;
+                                                            position: absolute;
+                                                            right: 0;
+                                                            top: 0px;
+                                                            display: block;
+                    
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                    
+                                        .all-link-container {
+                                            float: left;
+                                            width: 100%;
+                                            margin-top: 22px;
+                    
+                                            a {
+                                                float: left;
+                                                width: auto;
+                                                font-size: 16px;
+                                                line-height: 20px;
+                                                font-family: $font-medium;
+                                                font-weight: 500;
+                                                color: $color-red !important;
+                                            }
+                                        }
+                                    }
+                    
+                                    .full-width {
+                                        float: left;
+                                        width: 100%;
+                                        padding: 0 20px;
+                    
+                                        >.form-container-inner {
+                                            border-top: 1px solid $color-medium-light-grey;
+                                            float: left;
+                                            width: 100%;
+                                            padding-top: 32px;
+                                            margin-top: 32px;
+                    
+                                            .subscribe-sidebar-form {
+                                                width: 100%;
+                                                max-width: 400px;
+                    
+                                                .icon-container {
+                                                    float: right;
+                                                    width: 60px;
+                                                }
+                    
+                                                .form-content {
+                                                    float: left;
+                                                    width: calc(100% - 60px);
+                                                    padding-right: 30px;
+                                                }
+                    
+                    
+                                            }
+                                        }
+                                    }
+                    
+                                    .sub-menu-bottom {
+                                        float: left;
+                                        width: 100%;
+                                        padding: 0 20px;
+                    
+                                        .menu-bottom-inner {
+                                            border-top: 1px solid $color-medium-light-grey;
+                                            float: left;
+                                            width: 100%;
+                                            padding-top: 32px;
+                                            margin-top: 32px;
+                                            margin-bottom: 32px;
+                    
+                                            .events-bottom-text {
+                                                float: left;
+                                                width: 100%;
+                                                font-size: 16px;
+                                                line-height: 20px;
+                                                font-family: $font-medium;
+                                                font-weight: 500;
+                                                color: #000;
+                                            }
+                    
+                                            .events-bottom-link-container {
+                                                float: left;
+                                                width: 100%;
+                                                text-align: left;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .services-container {
+                        float: left;
+                        width: 100%;
+                        @include transition(all, 300ms, ease);
+                        
+
+                        &.active {
+                            border-bottom: 1px solid #e4e4e4;
+
+                            .services-inner-mobile {                                
+                                height: auto;
+                                overflow: visible;
+
+                                >li:first-child {
+                                    opacity: 1;
+                                    left: 0px; 
+                                    @include transition(all, 200ms, ease);
+                                }
+
+                                >li:nth-child(2) {
+                                    opacity: 1;
+                                    left: 0px;                                    
+                                    @include transition(all, 200ms, ease);
+                                    transition-delay: 150ms;
+                                }
+                            }
+                        }
+
                     }
                 }
             }
@@ -2306,9 +3501,11 @@ body.search-results {
                 a {
                     float: left;
                     width: 100%;
+                    font-family: $font-medium;
+                    font-weight: 500;
 
                     &.client-login {
-                        margin-top: 16px;
+                        margin-top: 8px;
                     }
                 }
             }
@@ -2356,6 +3553,7 @@ body.search-results {
                     padding-left: 23px;
                     font-size: 16px;
                     line-height: 24px;
+                    font-family: $font-medium;
                     font-weight: 500;
                     color: #000;
 
@@ -2420,6 +3618,7 @@ body.search-results {
                         margin-left: 12px;
                         line-height: 24px;
                         font-size: 18px;
+                        font-family: $font-medium;
                         font-weight: 500;
                         color: #000;
                     }
@@ -2436,6 +3635,7 @@ body.search-results {
                         padding-right: 23px;
                         font-size: 16px;
                         line-height: 24px;
+                        font-family: $font-medium;
                         font-weight: 500;
                         color: #000;
 
@@ -2479,6 +3679,29 @@ body.search-results {
                     height: 44px;
                     line-height: 42px;
                     padding-left: 44px;
+                    font-size: 16px;
+                    font-family: $font-medium;
+                    font-weight: 500;
+                }
+
+                .search-clear {
+                    position: absolute;
+                    width: 20px;
+                    height: 20px;
+                    right: 12px;
+                    top: 12px;
+                    background-image: url('../images/search-close.svg');
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    @include transition();
+                    opacity: 0;
+                    visibility: hidden;
+
+                    &.active {
+                        opacity: 1;
+                        visibility: visible;
+                    }
                 }
 
                 button {
@@ -2486,10 +3709,38 @@ body.search-results {
                     left: 12px;
                     width: 20px;
                     height: 20px;
-                    top: 12px;
+                    top: 13px;
                     border: none;
                     padding: 0px;
                     background-color: transparent;
+                }
+
+                ::-webkit-input-placeholder {
+                	color: #bdbdbd!important;
+                	font-family: $font-medium!important;
+                    font-family: $font-medium;
+                	font-weight: 500!important;
+                	font-size: 16px!important;
+                }
+                ::-moz-placeholder {
+                    color: #bdbdbd!important;
+                	font-family: $font-medium!important;
+                    font-family: $font-medium;
+                	font-weight: 500!important;
+                	font-size: 16px!important;
+                }
+                :-ms-input-placeholder {
+                    color: #bdbdbd!important;
+                	font-family: $font-medium!important;
+                    font-family: $font-medium;
+                	font-weight: 500!important;
+                	font-size: 16px!important;
+                }
+                :-moz-placeholder {
+                    color: #bdbdbd!important;
+                	font-family: $font-medium!important;
+                	font-weight: 500!important;
+                	font-size: 16px!important;
                 }
             }
 
@@ -2517,6 +3768,7 @@ body.search-results {
                             line-height: 22px;
                             position: relative;
                             display: inline-block;
+                            font-family: $font-medium;
                             font-weight: 500;
                         }
 
@@ -2556,6 +3808,7 @@ body.search-results {
                                         width: 100%;
                                         font-size: 16px;
                                         line-height: 20px;
+                                        font-family: $font-medium;
                                         font-weight: 500;
                                         color: #000;
                                         padding: 0px 0 10px;
@@ -2617,12 +3870,13 @@ body.search-results {
     width: 100%;
     position: absolute;
     height: 80px;
-    top: -80px;
+    top: -160px;
     background-color: #fff;
     padding: 14px 0;
     left: 0;
     color: #000;
-    z-index: 99;
+    border-bottom: 1px solid #e4e4e4;
+    // z-index: 99;
     width: 100%;
     @include transition();
 
@@ -2650,15 +3904,13 @@ body.search-results {
         height: inherit;
     }
 
-    @media (max-width: 1023px) {
-
-    }
-
     .container {
+        position: relative;
+
         span.buttonWrapperSingleResources {
             position: absolute;
-            left: 14px;
-            top: 10px;
+            left: 11px;
+            top: -4px;
             float: left;
             z-index: 9999;
             width: 40px;
@@ -2806,7 +4058,7 @@ body.search-results {
                 }
             }
 
-            @media (max-width: 1023px) {
+            @media (max-width: 1250px) {
                 display:none;
             }
         }
@@ -2835,7 +4087,7 @@ body.search-results {
             width: auto;
             text-align: right;
 
-            @media (max-width: 1023px) {
+            @media (max-width: 1250px) {
                 display: none;
             }
             .share-container {
@@ -2855,6 +4107,47 @@ body.search-results {
                     span.share {
                         float: left;
                         margin-left: 8px;
+
+                        .image-icon-container {
+                            position: relative;
+                            display: block;
+                            width: 24px;
+                            height: 24px;
+
+                            .job-link-text {
+                                position: absolute;
+                                bottom: -15px;
+                                left: -5px;
+                                width: auto;
+                                font-size: 10px;
+                            }
+
+                            img {
+                                width: 24px;
+                                display: block;
+                                @include transition(all, 300ms, ease);
+
+                                &.hover {
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    width: 100%;
+                                    opacity: 0;
+                                }
+                            }
+                        }
+
+                        &:hover {
+                            img {
+                                &.standard {
+                                    opacity: 0;
+                                }
+
+                                &.hover {
+                                    opacity: 1;
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -2863,11 +4156,11 @@ body.search-results {
             .subscribe-button-container {
                 float: right;
 
-                .subscribe-popup-button {
+                .subscribe-popup-button a {
                     background-color: $color-red;
-                    font-family: $font-base;
+                    font-family: $font-medium;
                     text-transform: none;
-                    font-weight: 400;
+                    font-weight: 500;
                     font-size: 14px;
                     line-height: 52px;
                     border-radius: 4px;
@@ -2890,7 +4183,7 @@ body.search-results {
 }
 
 header.scrolled {
-    @include responsive(1023) {
+    @media (max-width: 1250px) {
         .single-post-sticky .progress-container {
             position: fixed;
             bottom: auto;
@@ -2898,6 +4191,8 @@ header.scrolled {
         }
     }
 }
+
+
 
 header.background-secondary-light-grey {
     background-color: $color-background-light-grey;
@@ -2954,8 +4249,20 @@ header.background-black {
     }
 
     .resources-sticky-menu {
-        background-color: $color-black;
-        color: #fff;
+        background-color: $color-background-black;
+        color: $color-text-white;
+
+        .container .resources-nav ul li.dropdown>a:after {
+            background-image: url('../images/mega-menu-arrow-white.svg');
+        }
+
+        .container .resources-nav ul li.dropdown.active {
+            >a {
+                &:after {
+                    background-image: url('../images/mega-menu-arrow-red.svg');
+                }
+            }
+        }
 
         .scroll-image-container {
             .logo {
@@ -2989,39 +4296,57 @@ header.background-black {
             }
         }
     }
+}
 
-    .single-post-sticky {
-        background-color: #000;
-
-        .container .title-container .labelLarge,
-        .container .right-container .share-container .share-title {
-            color: #fff;
+body.position {
+    header {
+        @media (max-width: 1100px) {
+            position: fixed!important;
+            top: 0px!important;
         }
 
-        .container span.buttonWrapperSingleResources a.navSingleResources {
-            .ham {
-                background-color: #fff;
+        border-bottom: 1px solid #000;
+    }
+    header .container .header-inner {
+        border-bottom: none;
+    }
+}
 
-                &:before {
-                    background-color: #fff;
-                }
+.mobile-menu-bottom {
+    .subscribe-sidebar-form {
+        width: 100%;
+        max-width: 400px;
+        padding: 24px;
 
-                &:after {
-                    background-color: #fff;
-                }
+        .icon-container {
+            float: right;
+            width: 60px;
+        }
 
-                &.active {
-                    background-color: transparent;
+        .form-content {
+            float: left;
+            width: calc(100% - 60px);
+            padding-right: 16px;
 
-                    &:before {
-                        background-color: #fff;
-                    }
+            h5 {
+                font-family: $font-medium;
+                font-weight: 500;
+                font-size: 18px;
+                line-height: 22px;
+            }
 
-                    &:after {
-                        background-color: #fff;
-                    }
-                }
+            p {
+                font-family: $font-medium;
+                font-size: 13px;
+                line-height: 16px;
+                font-weight: 500;
+            }
+
+            a.std-button {
+                font-size: 16px;
+                padding: 20px 24px;
             }
         }
+
     }
 }

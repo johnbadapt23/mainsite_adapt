@@ -13,20 +13,19 @@ module.exports = {
         scripts: [
             'source/components/select2/dist/js/select2.js',
             'source/components/magnific-popup/dist/jquery.magnific-popup.js',
+            'source/components/isotope/dist/isotope.pkgd.js',
             'source/components/slick-carousel/slick/slick.min.js',
             'source/components/jquery.scrollTo/jquery.scrollTo.js',
             'source/components/jquery.localScroll/jquery.localScroll.js',
+            'source/components/scrollmagic/scrollmagic/uncompressed/ScrollMagic.js',
+            'source/components/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js',
+            'source/components/scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators.js',
             'source/components/aos/dist/aos.js',
             'source/components/js-cookie/src/js.cookie.js',
             'source/components/jquery.scrollbar-master/jquery.scrollbar.js',
             'source/components/perfect-scrollbar/js/perfect-scrollbar.jquery.js',
             'source/components/matchHeight/dist/jquery.matchHeight-min.js',
-            // modernizr-2.7.1.min.js referenced here doesn't exist anywhere in
-            // source/components (confirmed) -- this made build:scripts hard-fail.
-            // No "Modernizr" reference exists anywhere else in the codebase, and
-            // the currently-deployed assets/js/main.min.js doesn't contain it
-            // either, so it was already absent from what's live. Removing this
-            // dead entry only fixes the build; it changes nothing that ships.
+            'source/components/modernizr/modernizr-2.7.1.min.js',
             'source/js/main.js',
         ],
         styles: [

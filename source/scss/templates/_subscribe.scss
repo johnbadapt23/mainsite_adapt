@@ -528,7 +528,9 @@ section.three-column-icon-text {
                         &.title {
                             font-size: 18px;
                             line-height: 28px;
-                            font-weight: 50px;
+                            font-weight: 500;
+                            font-family: $font-medium;
+
                         }
                     }
                 }
@@ -670,6 +672,7 @@ section.two-column-subscribe{
                 float: left;
                 width: 100%;
                 margin-bottom: 32px;
+                max-width: 350px;
 
                 .text {
                     float: left;
@@ -677,6 +680,10 @@ section.two-column-subscribe{
                     margin-bottom: 32px;
                     font-size: 20px;
                     line-height: 28px;
+
+                    @include responsive(767) {
+						font-size: 18px;
+					}
                 }
 
                 .tags-container {

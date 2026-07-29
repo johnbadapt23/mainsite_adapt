@@ -1,0 +1,458 @@
+body.template-app {
+    color: #000;
+    header span.desktopNav {
+        display: none;
+    }
+
+    main {
+        padding-top: 90px;
+
+        @media only screen and (max-width:767px) {
+            padding-top: 70px;
+        }
+    }
+}
+
+section.app-introduction {
+    float: left;
+    width: 100%;
+    padding: 60px 0 60px;
+    color: #000;
+
+    @media only screen and (max-width:767px) {
+        padding: 50px 0 30px;
+    }
+
+    .container {
+        text-align: center;
+
+        .app-inner-container {
+            width: 100%;
+            max-width: 900px;
+            display: block;
+            margin: 0 auto;
+
+            .title {
+                float: left;
+                width: 100%;
+                text-align: center;
+                font-family: $font-base;
+                font-size: 42px;
+                line-height: 50px;
+                font-weight: 300;
+                text-transform: none;
+                margin-top: 30px;
+                margin-bottom: 30px;
+
+                @media only screen and (max-width:767px) {
+                    font-size: 32px!important;
+                    line-height: 42px;
+                    margin-top: 20px;
+                }
+            }
+
+            .text {
+                width: 100%;
+                max-width: 540px;
+                margin: 0 auto;
+                display: block;
+                margin-bottom: 50px;
+
+                p {
+                    font-family: $font-base;
+                    font-size: 16px;
+                }
+            }
+
+            .bottom-icon-container {
+                float: left;
+                width: 100%;
+                text-align: center;
+
+                img {
+                    display: inline-block;
+                    margin: 0 7px;
+                }
+            }
+        }
+    }
+}
+
+
+section.app-block {
+    float: left;
+    width: 100%;
+    padding: 30px 0 30px;
+    overflow: hidden;
+
+    .container {
+        .main-image-column-container {
+            float: left;
+            width: 100%;
+            position: relative;
+            padding-top: 100px;
+
+            @media only screen and (max-width:1023px) {
+                padding: 0 40px;
+                padding-top: 40%;
+            }
+
+            @media only screen and (max-width:767px) {
+                padding: 0 10px;
+                padding-top: 368px;
+
+                &:after {
+                    content: '';
+                    background-color: #fff;
+                    width: 100%;
+                    height: calc(100% - 400px);
+                    bottom: 0;
+                    left: 0;
+                    position: absolute;
+                    display: block;
+                    z-index: 2;
+                }
+            }
+
+            .text-container {
+                position: relative;
+                margin-bottom: 12%;
+                text-align: center;
+
+                @media only screen and (max-width:1023px) {
+                    z-index: 3;
+
+                    &:before {
+                        content: '';
+                        width: 8px;
+                        height: 10px;
+                        background-image: url('../images/app-arrow.svg');
+                        background-size: 8px 10px;
+                        position: absolute;
+                        top: 20px;
+                        left: 20px;
+                        display: block;
+                    }
+                }
+
+                p {
+                    font-size: 20px;
+                    line-height: 28px;
+
+                    @media only screen and (max-width:1200px) {
+                        font-size: 16px;
+                        line-height: 26px;
+                    }
+
+
+                    @media only screen and (max-width:1023px) {
+                        font-size: 20px;
+                        line-height: 28px;
+                        margin-bottom: 0px;
+                    }
+
+                    @media only screen and (max-width:767px) {
+                        font-size: 16px;
+                        line-height: 26px;
+                        text-align: left;
+                    }
+                }
+
+                &:nth-child(1),
+                &:nth-child(3){
+                    padding-right: 25%;
+                }
+
+                &:nth-child(2),
+                &:nth-child(4){
+                    padding-left: 25%;
+                }
+
+                &:nth-child(1){
+                    &:after {
+                        content: '';
+                        width: 90px;
+                        height: 45px;
+                        background-image: url('../images/Arrow-5.svg');
+                        background-size: 90px 45px;
+                        position: absolute;
+                        top: 10px;
+                        right: calc(25% + 70px);
+                        display: block;
+
+                        @media only screen and (max-width:1200px) {
+                            width: 60px;
+                            height: 30px;
+                            background-size: 60px 30px;
+                            right: calc(25% + 50px);
+                        }
+
+                        @media only screen and (max-width:1023px) {
+                            display: none;
+                        }
+                    }
+                }
+
+                &:nth-child(2){
+                    &:after {
+                        content: '';
+                        width: 90px;
+                        height: 45px;
+                        background-image: url('../images/Arrow.svg');
+                        background-size: 90px 45px;
+                        position: absolute;
+                        top: 10px;
+                        left: calc(25% + 70px);
+                        display: block;
+
+                        @media only screen and (max-width:1200px) {
+                            width: 60px;
+                            height: 30px;
+                            background-size: 60px 30px;
+                            left: calc(25% + 50px);
+                        }
+
+                        @media only screen and (max-width:1023px) {
+                            display: none;
+                        }
+                    }
+                }
+
+                &:nth-child(3){
+                    clear: both;
+                    &:after {
+                        content: '';
+                        width: 90px;
+                        height: 100px;
+                        background-image: url('../images/Arrow-2.svg');
+                        background-size: 90px 100px;
+                        position: absolute;
+                        top: 50px;
+                        right: calc(25% + 150px);
+                        display: block;
+
+                        @media only screen and (max-width:1200px) {
+                            width: 60px;
+                            height: 66px;
+                            background-size: 60px 66px;
+                            right: calc(25% + 120px);
+                        }
+
+                        @media only screen and (max-width:1023px) {
+                            display: none;
+                        }
+                    }
+                }
+
+                &:nth-child(4){
+                    &:after {
+                        content: '';
+                        width: 90px;
+                        height: 100px;
+                        background-image: url('../images/Arrow-1.svg');
+                        background-size: 90px 100px;
+                        position: absolute;
+                        top: 50px;
+                        left: calc(25% + 150px);
+                        display: block;
+
+                        @media only screen and (max-width:1200px) {
+                            width: 60px;
+                            height: 66px;
+                            background-size: 60px 66px;
+                            left: calc(25% + 120px);
+                        }
+
+                        @media only screen and (max-width:1023px) {
+                            display: none;
+                        }
+                    }
+                }
+
+                @media only screen and (max-width:1023px) {
+                    margin-bottom: 20px;
+                    padding-left: 40px!important;
+                    padding-right: 20px!important;
+                    width: 100%;
+                    background-color: #fff;
+                    padding-top: 15px;
+                    padding-bottom: 15px;
+                    border-radius: 4px;
+                    -webkit-box-shadow: 0px 8px 20px 0px rgba(0,0,0,0.3);
+                    -moz-box-shadow: 0px 8px 20px 0px rgba(0,0,0,0.3);
+                    box-shadow: 0px 8px 20px 0px rgba(0,0,0,0.3);
+                }
+
+            }
+
+            .bottom-container {
+                float: left;
+                width: 100%;
+
+                .text-container {
+                    &:nth-child(1){
+                        padding-right: 17%;
+                        margin-bottom: 50px;
+                        margin-top: 10%;
+                        padding-top: 90px;
+
+                        @media only screen and (max-width:1200px) {
+                            padding-top: 50px;
+                        }
+
+                        p {
+                            float: right;
+                            text-align: center;
+
+                            @media only screen and (max-width:1023px) {
+                                float:left;
+                                width: 100%;
+                            }
+
+                            @media only screen and (max-width:767px) {
+                                text-align: left;
+                            }
+                        }
+                    }
+
+                    &:nth-child(2){
+                        padding-left: 17%;
+                        margin-bottom: 50px;
+                        margin-top: 10%;
+                        padding-top: 90px;
+
+                        @media only screen and (max-width:1200px) {
+                            padding-top: 50px;
+                        }
+
+                        p {
+                            float: left;
+                            text-align: center;
+
+                            @media only screen and (max-width:1023px) {
+                                float:left;
+                                width: 100%;
+                            }
+
+                            @media only screen and (max-width:767px) {
+                                text-align: left;
+                            }
+                        }
+                    }
+
+                    &:nth-child(1){
+                        &:after {
+                            content: '';
+                            width: 100px;
+                            height: 90px;
+                            background-image: url('../images/Arrow-3.svg');
+                            background-size: 100px 90px;
+                            position: absolute;
+                            top: 10px;
+                            right: calc(5% + 70px);
+                            display: block;
+
+                            @media only screen and (max-width:1200px) {
+                                width: 66px;
+                                height: 60px;
+                                background-size: 66px 60px;
+                                right: calc(5% + 50px);
+                            }
+
+                            @media only screen and (max-width:1023px) {
+                                display: none;
+                            }
+                        }
+                    }
+
+                    &:nth-child(2){
+                        &:after {
+                            content: '';
+                            width: 100px;
+                            height: 90px;
+                            background-image: url('../images/Arrow-4.svg');
+                            background-size: 100px 90px;
+                            position: absolute;
+                            top: 10px;
+                            left: calc(5% + 70px);
+                            display: block;
+
+                            @media only screen and (max-width:1200px) {
+                                width: 66px;
+                                height: 60px;
+                                background-size: 66px 60px;
+                                left: calc(5% + 50px);
+                            }
+
+                            @media only screen and (max-width:1023px) {
+                                display: none;
+                            }
+                        }
+                    }
+
+                    @media only screen and (max-width:1023px) {
+                        margin-bottom: 20px!important;
+                        margin-top: 0px!important;
+                        padding-left: 40px!important;
+                        padding-right: 20px!important;
+                        width: 100%;
+                        background-color: #fff;
+                        padding-top: 15px!important;
+                        padding-bottom: 15px!important;
+                        border-radius: 4px;
+                        -webkit-box-shadow: 0px 8px 20px 0px rgba(0,0,0,0.3);
+                        -moz-box-shadow: 0px 8px 20px 0px rgba(0,0,0,0.3);
+                        box-shadow: 0px 8px 20px 0px rgba(0,0,0,0.3);
+                    }
+                }
+            }
+
+            .main-image-container {
+                position: absolute;
+                top: 0px;
+                width: 48%;
+                left: 26%;
+                text-align: center;
+
+                @media only screen and (max-width:767px) {
+                    width: calc(100% + 60px);
+                    left: -30px;
+                }
+
+                &:before {
+                    content: '';
+                    width: 100%;
+                    padding-top: 100%;
+                    position: absolute;
+                    bottom: 0px;
+                    left: 0;
+                    background-color: $color-red;
+                    border-radius: 50%;
+                    display: block;
+
+                    @media only screen and (max-width:767px) {
+                        width: calc(100% + 40px);
+                        padding-top: calc(100% + 40px);
+                        bottom: auto;
+                        top: 20px;
+                        left: -20px;
+                    }
+                }
+
+                img {
+                    width: 65%;
+                    max-width: 350px;
+                    height: auto;
+                    position:relative;
+                    z-index: 1;
+
+                    @media only screen and (max-width:767px) {
+                        width: 100%;
+                        max-width: 320px;
+                    }
+                }
+            }
+
+        }
+    }
+}

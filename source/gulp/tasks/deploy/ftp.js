@@ -5,7 +5,7 @@ var path = require('../../paths.js');
 
 gulp.task('deploy:ftp', function() {
     var conn = ftp.create(path.deploy.ftp);
-    return gulp.src( path.deploy.files, {
+    gulp.src( path.deploy.files, {
             base: path.deploy.base,
             buffer: false
         })

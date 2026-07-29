@@ -1,0 +1,597 @@
+section.thank-you-banner {
+    float: left;
+    width: 100%;
+    position: relative;
+    padding: 70px 0;
+    background-color: #fafafa;
+    color: #000;
+
+    @include responsive(767) {
+        background-color: #fff;
+        padding: 30px 0;
+    }
+
+    a.std-button {
+        font-weight: 500;
+        font-family: $font-medium;
+        font-size: 14px;
+        line-height: 52px;
+        border-radius: 4px;
+        padding: 0 24px;
+
+    	&.scroll-to-button {
+    		background-color: $color-red;
+
+    		&:hover {
+    			background-color: $color-red-hover;
+    		}
+    	}
+    }
+
+    &:after {
+        content: '';
+        background-color: #000;
+        width: calc(50% - 375px);
+        height: 100%;
+        top: 0;
+        right: 0;
+        display: block;
+        position: absolute;
+
+        @include responsive(1023) {
+            display: none;
+        }
+
+    }
+
+    .container {
+        .column {
+            color: #000;
+            &.image-column {
+                padding-left: 90px;
+                position: relative;
+                z-index: 1;
+                float: right;
+
+                @include responsive(767) {
+                    padding-left: 0px;
+                }
+
+                .image-container {
+                    padding-top: 115%;
+                    height: 100%;
+                    -webkit-box-shadow: 0px 15px 40px 0px rgba(0,0,0,0.26);
+                    -moz-box-shadow: 0px 15px 40px 0px rgba(0,0,0,0.26);
+                    box-shadow: 0px 15px 40px 0px rgba(0,0,0,0.26);
+                }
+
+                .overlay-image-top-left,
+                .overlay-image-bottom-left,
+                .overlay-image-bottom-right {
+                    position: absolute;
+                    z-index: 2;
+                }
+
+                .overlay-image-top-left {
+                    top: -15px;
+                    width: 95px;
+                    left: 20px;
+
+                    @include responsive(767) {
+                        top: -10px;
+                        width: 75px;
+                        left: -15px;
+                    }
+                }
+
+                .overlay-image-bottom-left {
+                    bottom: 50px;
+                    left: 0px;
+
+                    @include responsive(767) {
+                        left: -10px;
+                        width: 40px;
+                        bottom: 25px;
+                    }
+                }
+
+                .overlay-image-bottom-right {
+                    bottom: 120px;
+                    right: -30px;
+
+                    @include responsive(767) {
+                        right: -10px;
+                        width: 40px;
+                        bottom: 80px;
+                    }
+                }
+            }
+
+            &.text-column {
+                padding-right: 80px;
+                color: #000;
+
+                @include responsive(1023) {
+                    padding-right: 0px;
+                }
+
+                @include responsive(767) {
+                    padding-top: 40px;
+                    padding-right: 30px;
+                }
+
+                .text-inner {
+                    float: left;
+                    width: 100%;
+                    max-width: 415px;
+                }
+
+                h3 {
+                    font-size: 20px;
+                    line-height: 28px;
+                    font-family: $font-base;
+                    color: $color-red;
+                    font-weight: bold;
+                    margin-bottom: 20px;
+                    float: left;
+                    width: 100%;
+
+                    @include responsive(767) {
+                        font-size: 18px;
+                        line-height: 22px;
+                    }
+                }
+
+                h2 {
+                    font-size: 32px;
+                    line-height: 42px;
+                    font-family: $font-base;
+                    color: #000;
+                    text-transform: none;
+                    font-weight: bold;
+                    margin-bottom: 20px;
+                    float: left;
+                    width: 100%;
+
+                    @include responsive(767) {
+                        font-size: 24px;
+                        line-height: 29px;
+                    }
+                }
+
+                .button-container {
+                    float: left;
+                    width: 100%;
+                    margin-top: 20px;
+                }
+            }
+        }
+    }
+
+}
+
+section.information-blocks {
+    float: left;
+    width: 100%;
+    padding: 70px 0;
+    color: #000;
+
+    @include responsive(767) {
+        padding: 30px 0;
+    }
+
+    .container {
+        .column-container {
+            float: left;
+            width: 100%;
+
+            .column.information-column {
+                float: left;
+                padding: 60px 60px 40px 60px;
+                text-align: center;
+
+                @include responsive(1023) {
+                    padding: 30px;
+                }
+
+                @include responsive(767) {
+                    padding: 30px 0 10px;
+                    text-align: left;
+                }
+
+                h3 {
+                    color: $color-red;
+                    float: left;
+                    width: 100%;
+                    text-align: center;
+                    font-size: 20px;
+                    line-height: 28px;
+                    margin-bottom: 20px;
+
+                    @include responsive(767) {
+                        text-align: left;
+                    }
+                }
+
+                h2 {
+                    float: left;
+                    width: 100%;
+                    text-align: center;
+                    text-transform: none;
+                    font-family: $font-base;
+                    font-weight: bold;
+                    font-size: 20px;
+                    line-height: 28px;
+                    margin-bottom: 20px;
+
+                    @include responsive(767) {
+                        text-align: left;
+                    }
+                }
+
+                span.text {
+                    float: left;
+                    width: 100%;
+                    text-align: center;
+                    font-family: $font-base;
+                    font-size: 16px;
+                    line-height: 24px;
+                    margin-bottom: 0px;
+                    color: #000;
+
+                    @include responsive(767) {
+                        text-align: left;
+                    }
+
+                    p {
+                        font-family: $font-base;
+                        font-size: 16px;
+                        line-height: 24px;
+                        margin-bottom: 20px;
+                    }
+                }
+
+                .button-container {
+                    float: left;
+                    width: 100%;
+                    text-align: center;
+                    margin-top: 10px;
+
+                    @include responsive(767) {
+                        text-align: left;
+                    }
+
+                    .tooltip-container {
+                        float: left;
+                        width: 100%;
+                        text-align: center;
+                        position: relative;
+                        margin-top: 20px;
+
+                        @include responsive(767) {
+                            text-align: left;
+                            margin-bottom: 20px;
+                        }
+
+                        span.text {
+                            color: #838383;
+                            font-size: 12px;
+                            line-height: 14px;
+                            margin-bottom: 0px;
+                            cursor: pointer;
+                        }
+
+                        span.tooltip {
+                            position: absolute;
+                            z-index: 2;
+                            width: 90%;
+                            padding: 25px 25px 5px 25px;
+                            background-color: #000;
+                            color: #fff;
+                            font-size: 12px;
+                            line-height: 20px;
+                            border-radius: 4px;
+                            opacity: 0;
+                            visibility: hidden;
+                            bottom: 30px;
+                            left: 5%;
+                            @include transition(all, 300ms, ease);
+
+                            @include responsive(767) {
+                                width: 100%;
+                                left: 0px;
+                            }
+
+                            p {
+                                color: #fff;
+                                font-size: 12px;
+                                line-height: 20px;
+                            }
+
+                            &:after {
+                                content: "";
+                                position: absolute;
+                                bottom: -10px;
+                                left: 50%;
+                                margin-left: -5px;
+                                border-width: 5px;
+                                border-style: solid;
+                                border-color:  #000 transparent transparent transparent;
+                            }
+                        }
+
+                        &:hover {
+                            span.tooltip {
+                                opacity: 1;
+                                visibility: visible;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+section.cta-block {
+    float: left;
+    width: 100%;
+    padding: 30px 0px;
+
+    .container {
+        position: relative;
+        height: 100%;
+
+        .cta-content {
+            float: left;
+            width: 100%;
+            background-color: #000;
+            padding: 50px 30px 0;
+            text-align: center;
+            position: relative;
+
+            @include responsive(767) {
+                padding: 30px 30px 0;
+            }
+
+            .offset-container {
+                position: absolute;
+                top: -16px;
+                right: -16px;
+                width: 100%;
+                height: 100%;
+                border: 1px solid #000;
+                z-index: 0;
+
+                @include responsive(767) {
+                    top: -8px;
+                    right: -8px;
+                }
+            }
+
+            .cta-inner {
+                width: 100%;
+                max-width: 720px;
+                margin: 0 auto;
+                display: block;
+                position: relative;
+
+                .cta-title {
+                    float: left;
+                    width: 100%;
+                    text-align: center;
+
+                    @include responsive(767) {
+                        text-align: left;
+                    }
+
+                    p {
+                        font-family: $font-base;
+                        font-size: 32px;
+                        line-height: 38px;
+                        font-weight: bold;
+                        color: #fff;
+                        margin-bottom: 30px;
+
+                        strong {
+                            color: $color-red;
+                        }
+
+                        @include responsive(767) {
+                            font-size: 24px;
+                            line-height: 29px;
+                        }
+                    }
+                }
+
+                .text {
+                    float: none;
+                    width: 100%;
+                    max-width: 540px;
+                    display: block;
+                    margin: 0 auto 20px;
+                    text-align: center;
+                    color: #fff;
+                    font-size: 16px;
+                    line-height: 28px;
+
+                    @include responsive(767) {
+                        text-align: left;
+                    }
+
+                }
+
+                .button-container {
+                    float: left;
+                    width: 100%;
+                    text-align: center;
+                    margin-top: 20px;
+                }
+
+                .bottom-image-container {
+                    float: left;
+                    width: 100%;
+                    text-align: center;
+                    margin-top: 40px;
+
+                    @include responsive(767) {
+                        margin-left: -30px;
+                        width: calc(100% + 60px);
+                    }
+
+                    img {
+                        float: left;
+                        width: 100%;
+                        -webkit-box-shadow: 0px 15px 15px 0px rgba(0,0,0,0.1);
+                        -moz-box-shadow: 0px 15px 15px 0px rgba(0,0,0,0.1);
+                        box-shadow: 0px 15px 15px 0px rgba(0,0,0,0.1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+section.faq-block {
+    float: left;;
+    width: 100%;
+    background-color: #fff;
+    color: #000;
+    padding: 60px 0;
+
+    @media (max-width:1023px) {
+        padding: 40px 0;
+    }
+
+    .container {
+        .title-column {
+            width: 185px;
+            float: left;
+
+            @media (max-width:1023px) {
+                width: 150px;
+            }
+
+            @media (max-width:767px) {
+                width: 100%;
+            }
+
+            h2 {
+                color: #000;
+                font-family: $font-base;
+                font-weight: bold;
+                font-size: 20px;
+                line-height: 28px;
+                text-transform: none;
+
+                @media (max-width:767px) {
+                    margin-bottom: 40px;
+                    padding-left: 30px;
+                }
+            }
+        }
+
+        .faq-column {
+            width: calc(100% - 185px);
+            float: left;
+
+            @media (max-width:1023px) {
+                width: calc(100% - 150px);
+            }
+
+            @media (max-width:767px) {
+                width: 100%;
+            }
+
+            .faq-item {
+                float: left;
+                width: 100%;
+                margin-bottom: 30px;
+                color: #000;
+                background-color: #fafafa;
+                padding-left: 40px;
+                padding-right: 40px;
+                border-radius: 4px;
+
+                @media (max-width:767px) {
+                    padding-left: 30px;
+                    padding-right: 30px;
+                }
+
+                .question {
+                    float: left;
+                    width: 100%;
+                    font-family: $font-base;
+                    font-size: 16px;
+                    line-height: 24px;
+                    font-weight: bold;
+                    padding-top: 30px;
+                    padding-bottom: 30px;
+                    color: #000;
+                    background-color: #fafafa;
+                    position: relative;
+                    padding-right: 50px;
+                    cursor: pointer;
+                    @include transition(all, 300ms, ease);
+
+                    @media (max-width:767px) {
+                        padding-right: 30px;
+                    }
+
+                    svg {
+                        width: 20px;
+                        height: 20px;
+                        right: 0px;
+                        top: 35px;
+                        display: block;
+                        position: absolute;
+                        @include transition(all, 300ms, ease);
+
+                        @media (max-width:767px) {
+                            width: 18px;
+                            height: 18px;
+                            top: 32px;
+                        }
+                    }
+
+                    &.open {
+                        color: $color-red;
+
+                        svg {
+                            transform: rotate(45deg);
+                            @include transition(all, 300ms, ease);
+                            .st1 {
+                                stroke: $color-red;
+                                @include transition(all, 300ms, ease);
+                            }
+                        }
+                    }
+                }
+
+                .answer {
+                    border-top: 1px solid #e1e1e1;
+                    float: left;
+                    width: 100%;
+                    position: relative;
+                    padding-right: 50px;
+                    padding-top: 30px;
+                    font-size: 14px;
+                    line-height: 22px;
+                    font-family: $font-base;
+                    color: #000;
+                    display: none;
+
+                    @media (max-width:767px) {
+                        padding-right: 30px;
+                    }
+
+                    p {
+                        font-size: 14px;
+                        line-height: 22px;
+                        color: #000;
+                    }
+                }
+            }
+        }
+    }
+}

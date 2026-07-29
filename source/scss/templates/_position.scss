@@ -50,7 +50,8 @@ section.position-information {
             .position-title-column {
                 top: 80px;
                 height: calc(100vh - 80px);
-                padding: 70px 70px 142px 0px;
+                min-height: 700px;
+                padding: 40px 70px 142px 0px;
 
                 @media (max-width: 1023px) {
                     width: 100%;
@@ -58,6 +59,7 @@ section.position-information {
                     position: relative;
                     top: auto;
                     height: auto;
+                    min-height: auto;
                     background-color: $color-pink;
                     padding: 40px 20px 160px;
                 }
@@ -65,7 +67,7 @@ section.position-information {
                 .back-container {
                     float: left;
                     width: 100%;
-                    margin-bottom: 88px;
+                    margin-bottom: 32px;
 
                     @media (max-width: 1023px) {
                         margin-bottom: 32px;
@@ -80,6 +82,7 @@ section.position-information {
                         line-height: 17px;
                         font-weight: 400;
                         color: #000;
+                        @include transition();
 
                         &:before {
                             content: '';
@@ -93,6 +96,35 @@ section.position-information {
                             position: absolute;
                             left: 0;
                             top: 0px;
+                            @include transition();
+                        }
+
+                        &:after {
+                            content: '';
+                            width: 18px;
+                            height: 18px;
+                            background-image: url('../images/post-back-red.svg');
+                            background-size: contain;
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            display: block;
+                            opacity: 0;
+                            position: absolute;
+                            left: 0;
+                            top: 0px;
+                            @include transition();
+                        }
+
+                        &:hover {
+                            color: $color-red;
+
+                            &:before {
+                                opacity: 0;
+                            }
+
+                            &:after {
+                                opacity: 1;
+                            }
                         }
                     }
                 }
@@ -100,7 +132,7 @@ section.position-information {
                 .title-tag-container {
                     float: left;
                     width: 100%;
-                    margin-bottom: 64px;
+                    margin-bottom: 32px;
 
                     @media (max-width: 1023px) {
                         margin-bottom: 52px;
@@ -161,10 +193,10 @@ section.position-information {
                 .apply-container {
                     position: absolute;
                     left: 0;
-                    bottom: 80px;
+                    bottom: 40px;
                     width: calc(100% - 70px);
 
-                    a.std-button {
+                    .form-popup-button-container {
                         float: left;
                         width: auto;
                         margin-right: 24px;
@@ -172,6 +204,17 @@ section.position-information {
                         @media (max-width: 1023px) {
                             padding: 16px 24px;
                             margin-right: 48px;
+                        }
+
+                        @media (max-width: 767px) {
+                            padding: 0px;
+                            padding-top: 5px;
+                            margin-right: 24px;
+                        }
+
+                        a {
+                            float: left;
+                            width: auto;
                         }
                     }
 
@@ -181,6 +224,7 @@ section.position-information {
 
                         &.mobile {
                             display: none;
+                            padding-top: 0px;
                         }
 
                         @media (max-width: 1023px) {
@@ -202,10 +246,40 @@ section.position-information {
                         margin-right: 24px;
 
                         a {
-                            img {
+                            .image-icon-container {
+                                position: relative;
                                 display: block;
                                 margin: 4px auto 8px;
+                                width: 32px;
+                                height: 32px;
+
+                                img {
+                                    width: 32px;
+                                    display: block;
+                                    @include transition(all, 300ms, ease);
+
+                                    &.hover {
+                                        position: absolute;
+                                        top: 0;
+                                        left: 0;
+                                        width: 100%;
+                                        opacity: 0;
+                                    }
+                                }
+
+                                &:hover {
+                                    img {
+                                        &.standard {
+                                            opacity: 0;
+                                        }
+
+                                        &.hover {
+                                            opacity: 1;
+                                        }
+                                    }
+                                }
                             }
+
 
                             .job-link-text {
                                 float: left;
@@ -241,8 +315,8 @@ section.position-information {
 
                     .back-top-link {
                         position: absolute;
-                        right: 40px;
-                        top: 16px;
+                        right: 20px;
+                        top: 17px;
                         opacity: 0;
                         visibility: hidden;
                         display: none;
@@ -288,13 +362,26 @@ section.position-information {
                                 opacity: 1;
                                 visibility: visible;
                             }
+
+                            .share-job-container.mobile {
+                                position: absolute;
+                                right: 100px;
+                            }
+
+                            .form-popup-button-container {
+                                width: 180px;
+
+                                a {
+                                    width: 100%;
+                                }
+                            }
                         }
                     }
                 }
             }
 
             .overview-column {
-                padding: 170px 0px 80px 70px;
+                padding: 100px 0px 80px 70px;
 
                 @media (max-width: 1023px) {
                     width: 100%;
@@ -305,6 +392,14 @@ section.position-information {
                 .overview-text {
                     float: left;
                     width: 100%;
+
+                    li {
+                        float: left;
+                        width: 100%;
+                        margin-bottom: 20px;
+                    }
+
+
                 }
             }
         }
@@ -364,7 +459,7 @@ section.position-icon-slider {
                 width: calc(100% - 32px);
                 margin-left: 16px;
                 margin-top: 90px;
-                height: 1px;
+                height: 2px;
                 overflow: hidden;
                 background-color: #e4e4e4;
                 background-image: linear-gradient(to right, #000, #000);
@@ -631,6 +726,13 @@ section.text-title-list {
                             top: 0;
                             left: 0;
                         }
+
+                        .title {
+                            @media (max-width: 767px) {
+                                font-size: 18px;
+                                line-height: 22px;
+                            }
+                        }
                     }
                 }
             }
@@ -699,11 +801,12 @@ section.text-title-list.two-column-list {
 
                     @media (max-width: 1023px) {
                         width: 100%;
-                        padding: 32px 24px 72px;
+                        padding: 48px 24px 48px;
 
                         &:first-child {
                             border-right: none;
-                            padding: 72px 24px 0px;
+                            padding: 48px 24px 48px;
+                            border-bottom: 1px solid #000;
                         }
                     }
 
@@ -711,7 +814,8 @@ section.text-title-list.two-column-list {
                         .title {
                             float: left;
                             width: 100%;
-                            font-weight: 600;
+                            font-weight: 500;
+                            font-family: $font-medium;
                         }
 
                         .text {
@@ -727,7 +831,7 @@ section.text-title-list.two-column-list {
 
 section.open-positions {
     float: left;
-    padding: 31px 0 100px;
+    padding: 80px 0 100px;
 
     @media (max-width: 1023px) {
         padding: 53px 0;
@@ -884,20 +988,7 @@ section.open-positions {
                     line-height: 22px;
                     padding-bottom: 10px;
 
-                    &:after {
-                        content: '';
-                        width: 0;
-                        height: 1px;
-                        background-color: $color-red;
-                        opacity: 0;
-                        position: absolute;
-                        left: 0px;
-                        bottom: 5px;
-                        @include transition(all, 300ms, ease);
-                    }
-
                     &:before {
-
                         content: '';
                         position: absolute;
                         top: 6px;
@@ -906,13 +997,6 @@ section.open-positions {
                         height: 10px;
                         background-size: 10px 10px;
                         background-image: url(../images/external-link-arrow.svg);
-                    }
-
-                    &:hover {
-                        &:after {
-                            width: 100%;
-                            opacity: 1;
-                        }
                     }
                 }
             }

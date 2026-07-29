@@ -1,0 +1,827 @@
+body.template-market-buyer {
+    overflow-x: initial;
+    
+    @media (max-width: 767px) {
+        overflow-x: hidden;
+    }
+
+    section.centered-text-links {
+        padding: 80px 0 144px;
+
+        @include responsive(767) {
+            padding: 80px 0;
+        }
+    }
+
+    section.video-module {
+        float: left;
+        width: 100%;
+        padding: 0;
+        background-color: #121212;
+
+        .container {
+            max-width: 1920px;
+            padding: 0px;
+        }
+      
+        .image-video-container {
+            float: left;
+            width: 100%;
+            text-align: center;
+
+            .video-image-inner {
+                float: left;
+                width: 100%;
+                position: relative;
+
+                .image-container,
+                .video-container {
+                    float: left;
+                    width: 100%;
+                    aspect-ratio: 2.4/1;
+                    padding-top: 0px;
+
+                    @media (max-width:767px) {
+                        aspect-ratio: 1/1;
+                        padding-top: 0;
+                    }
+
+                    .bg-container {
+                        border-radius: 0px;
+
+                        video {
+                            object-fit: cover;
+                            object-position: center;
+                            height: 100%;
+                            width: 100%;
+                        }
+
+                        .opacity-overlay {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background-color: rgba(18,18,18,0.5);
+                            mix-blend-mode: multiply;
+                            @include transition(all, 300ms, ease);
+                        }
+
+                        .popup-vimeo {
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                            border: 1px solid #fff;
+                            background-color: rgba(255, 255, 255, 0.5);
+                            background-image: url('../images/expand.svg');
+                            background-size: contain;
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            cursor: pointer;
+                            position: absolute;
+                            bottom: 20px;
+                            right: 72px;
+                            top: auto;
+                            left: auto;                           
+                        }
+
+                        .pause-autoplay {
+                            width: 40px;
+                            height: 40px;
+                            background-image: url('../images/market-play-pause.svg');
+                            background-size: contain;
+                            background-repeat: no-repeat;
+                            background-position: center;
+                            cursor: pointer;
+                            position: absolute;
+                            bottom: 20px;
+                            right: 20px;          
+
+                            &.paused {
+                                background-image: url('../images/gtm-play.svg');
+                            }
+                        }
+                    }
+
+                    &:hover {
+                        .opacity-overlay {
+                            opacity: 0;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    section.stats {
+        padding: 0;
+        border-top: none;
+
+        @include responsive(767) {
+            padding-top: 80px;
+        }
+
+        .quote-column {
+            align-items: flex-start !important;
+            justify-content: center !important;
+            gap: 0 !important;
+
+            .text-container {
+                display: flex;
+                flex-direction: column;
+                max-width: 523px;
+                width: 100%;
+            }
+
+            .icon-container {
+                margin-bottom: 104px;
+
+                @include responsive(767) {
+                    display: flex !important;
+                    margin-bottom: 56px;
+                }
+            }
+
+            .headerLarge {
+                font-size: 56px;
+                line-height: 60px;
+                margin-bottom: 24px;
+                max-width: 100% !important;
+
+                strong {
+                    font-weight: 400;
+                    color: $color-red;
+                }
+            }
+
+            .labelXL {
+                font-weight: 400 !important;
+                line-height: 28px !important;
+                margin-bottom: 104px;
+                font-family: $font-base !important;
+
+                @include responsive(767) {
+                    margin-bottom: 56px;
+                }
+            }
+        }
+
+        .image-column {
+
+            @include responsive(767) {
+                margin-left: -20px;
+                margin-right: -20px;
+                width: calc(100% + 40px);
+            }
+        }
+    }
+
+    section.market-sticky-cards {
+
+        .title-container {
+            margin-bottom: 104px; 
+
+            .column {
+
+                &:first-child {
+                    display: inline-block;
+                    max-width: 856px !important;
+                    width: 100%;
+                }
+                
+                &:last-child {
+                    display: inline-block;
+                    max-width: 488px !important;
+                    width: 100%;
+                }
+            }
+        }
+
+        .market-sticky-cards-container {
+            display: flex;
+            width: 100%;
+            flex-direction: row;
+            gap: 32px;
+
+            .side-bar-navigation {
+                display: flex;
+                position: sticky;
+                flex-direction: column;
+                width: 23.15%;
+                position: sticky;
+                top: 80px;
+                height: calc(100vh - 80px); 
+                overflow-y: auto; 
+                padding-right: 8px; 
+
+                @include responsive(767) {
+                    display: none;
+                }
+
+                ul {
+                    padding: 0;
+
+                    li {
+                        float:left;
+                        width: 100%;
+                        border-top: 1px solid $color-tertiary-black;
+                        padding: 12px 0;
+                        margin: 0;
+                        transition: all 350ms ease-out;
+                        cursor: pointer;
+
+                        &:last-child {
+                            border-bottom: 1px solid $color-tertiary-black;
+                        }
+
+                        .label {
+                            position: relative;
+                            padding-left: 16px;
+                            font-family: $font-medium;
+                            font-weight: 500;
+                            font-size: 12px;
+                            color: #5F5F5F;
+                            transition: all 350ms ease-out;
+
+                            &:before {
+                                content: '';
+                                position: absolute;
+                                width: 8px;
+                                height: 8px;
+                                background-color: $color-tertiary-black;
+                                left: 0;
+                                top: 5px;
+                                transition: all 350ms ease-out;
+                            }                            
+                        }
+
+                        &.active {
+                            .label {
+                                color: #fff;
+                                
+                                &:before {
+                                    background-color: $color-red;
+                                }
+                            }      
+                            
+                            .text-link {
+                                display: block;
+                            }
+                        }
+
+                        .text-link {
+                            position: absolute;
+                            bottom: 80px;
+                            left: 0;
+                            display: none;
+                        }
+                    }
+                }
+            }
+
+            .market-sticky-cards-wrapper {
+                display: flex;
+                flex-direction: column;
+                width: 76.85%;
+                gap: 80px;
+
+                @include responsive(767) {
+                    width: 100%;
+                    gap: 24px;
+                }
+
+                .market-sticky-card {
+                    display: flex;
+                    flex-direction: column;
+                    border-radius: 2px;
+                    border: 1px solid $color-tertiary-black;
+                    overflow: hidden;
+                    background-color: transparent;
+                    transition: all 350ms ease-out;
+
+                    .column-container {
+                        display: flex;
+                        flex-direction: column;
+                        background-color: transparent;
+                        overflow: hidden;
+
+                        .column {
+                            &.text-column {
+                                width: 100%;
+                                padding: 0;
+                                margin-bottom: 30px;
+                                padding: 56px 56px 0 56px;
+
+                                @include responsive(767) {
+                                    padding: 32px;
+                                    margin-bottom: 0;
+                                }
+
+                                .text-inner {
+                                    display: flex;
+                                    flex-direction: row;
+                                    max-width: 100%;
+                                    width: 100%;
+                                    justify-content: space-between;
+                                    align-items: flex-end;
+
+                                    @include responsive(767) {
+                                        flex-direction: column;
+                                        gap: 24px;
+                                    }
+
+                                    h2 {
+                                        // max-width: 50%;
+                                        max-width: 400px;
+                                        margin-bottom: 0;
+
+                                        @include responsive(767) {
+                                            max-width: 100%;
+                                        }
+
+                                        p {
+                                            margin-bottom: 0;
+                                        }
+                                    }
+
+                                    .text {
+                                        // max-width: 40%;
+                                        max-width: 344px;
+
+                                        @include responsive(767) {
+                                            max-width: 100%;
+                                            color: #fff;
+                                            font-size: 14px;
+                                            line-height: 26px;
+                                        }
+                                    }
+                                }
+                            }
+
+                            &.image-column {
+                                width: 100%;
+
+                                .image-container {
+                                    aspect-ratio: unset !important;
+
+                                    .bg-container {
+
+                                        img {
+                                            width: 100%;
+                                            height: auto;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    &.active {
+                        background-color: #222;
+                    }
+                }
+            }
+        }
+    }
+
+    section.quote-slider {
+        position: relative;
+        padding-bottom: 144px;
+        padding-top: 0;
+
+        @include responsive(767) {
+            padding-bottom: 0;
+        }
+
+        &:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 70px;
+            height: calc(100% - 144px);
+            width: calc(100% - 70px);
+            background-color: #161616;
+
+            @include responsive(1023) {
+                left: 20px;
+                width: calc(100% - 20px);
+            }
+        }
+
+        .desktop-hide {
+            display: none;
+
+            @include responsive(1023) {
+                display: block;
+                padding-left: 20px;
+                margin-bottom: 64px;
+            }
+        }
+
+        .mobile-hide {
+            display: block;
+
+            @include responsive(1023) {
+                display: none !important;
+            }
+        }
+
+        .container {
+            max-width: 1118px;
+
+            .quote-slider-outer {
+                padding: 0 32px 80px;
+            }
+        }
+
+        .quote-slider-module {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            position: relative;
+
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 32px;
+                height: 4px;
+                background-color: $color-red;
+
+                @include responsive(1023) {
+                    left: 20px;
+                }
+            }
+
+            .quote-slide {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                padding: 104px 0 0 0;
+                width: 100%;
+                justify-content: flex-start;
+                align-items: flex-start;
+
+                @include responsive(1023) {
+                    padding-left: 20px;
+                }
+
+                .quote-slider-inner {
+                     position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    padding: 104px 0 0 0;
+                    width: 100%;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    max-width: 100%;
+                    margin: 0;
+
+                    @include responsive(1023) {
+                        padding-top: 64px;
+                    }
+
+                    &:before {
+                        content: '';
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 32px;
+                        height: 27px;
+                        background-size: 32px 27px;
+                        background-image: url(../images/red-quote-open.svg);
+                        background-repeat: no-repeat;
+                    }
+
+                    h2 {
+                        width: 100%;
+                    }
+
+                    h4 {
+                        font-size: 48px;
+                        line-height: 54px;
+                        text-align: left;
+                        margin-bottom: 32px;
+                        width: 100%;
+
+                        @include responsive(1023) {
+                            font-size: 28px;
+                            line-height: 36px;
+                        }
+                    }
+
+                    .bottom {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        width: 100%;
+
+                        .credits {
+                            display: flex;
+                            flex-direction: column;
+                            width: 50%;
+                            text-align: left;
+                            justify-content: flex-start;
+
+                            .quote-title {
+                                text-align: left;
+                            }
+
+                            .quote-business {
+                                text-align: left;
+                            }
+                        }
+
+                        .link {
+                            display: flex;
+                            width: 50%;
+                            justify-content: flex-end;
+                            padding-right: 27px;
+
+                            a {
+                                &:after {
+                                    bottom: 18px;
+                                }
+                            }
+                        }
+                    }
+                }                
+            }   
+        }
+
+        .quote-slider-thumbnails {
+            margin-bottom: 80px !important;
+
+            @include responsive(1023) {
+                padding-left: 20px;
+                margin-bottom: 64px;
+            }
+
+            .slick-slide {
+                .thumbnail-container {
+                    img {
+                        opacity: 0.2;
+                    }
+                }
+            }
+
+            .slick-active {
+                .thumbnail-container {
+                    img {
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+
+        .thumbnail-container {
+            width: 160px !important;
+            height: 32px !important;
+
+            img {
+                object-position: left center !important;
+            }
+        }
+
+        .progress-container {
+            padding-bottom: 80px;
+
+            @include responsive(1023) {
+                padding-bottom: 0;
+                padding-left: 20px;
+            }
+
+            .active-bar {
+                width: 33.33% !important;
+            }
+        }
+
+        .customer-quote-slider-inner {
+            .link-container {
+                right: 20px !important;
+
+                @include responsive(767) {
+                    bottom: 6px!important;
+                    right: 15px !important;
+            
+                    a.text-link.large-link-text {
+                        font-size: 14px !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+section.stats {
+    &.background-black {
+        border: 1px solid #222222 !important;
+        padding: 144px 0;
+        border-radius: 0 !important;
+
+        .headerLarge {
+            max-width: 523px;
+            width: 100%;
+
+            p {
+                color: #fff !important;
+            }
+        }
+
+        .name {
+            font-size: 28px !important;
+            line-height: 36px !important;
+            max-width: 523px;
+            width: 100%;
+            margin-top: 40px;
+            margin-bottom: auto;
+
+            strong {
+                font-weight: 400 !important;
+                color: #9a9a9a !important;
+            }
+        }
+
+        .labelXSmall {
+            color: #5f5f5f;
+            font-size: 12px !important;
+        }
+    }
+}
+        
+
+section.accordion-with-image {
+    padding-top: 144px;
+
+    @include responsive(767) {
+        padding-top: 80px;
+    }
+
+    .container {
+        max-width: 1080px;
+    }
+
+    .title-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+
+        h2 {
+            max-width: 856px;
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 80px;
+
+            @include responsive(767) {
+                margin-bottom: 56px;
+            }
+
+            strong {
+                font-weight: 400;
+                color: #9a9a9a;
+            }
+        }
+    }
+
+    .column-container {
+        display: flex;
+        flex-direction: row;
+        gap: 32px;
+
+        @include responsive(767) {
+            flex-direction: column-reverse;
+            gap: 24px;
+        }
+
+        .column {
+
+            &.accordion-block {
+                float: left;
+                display: flex;
+                flex-direction: column;
+
+                .faq-item {
+                    display: flex;
+                    flex-direction: column;
+                    width: 100%;
+                    padding: 32px 0;
+                    border-bottom: 1px solid #e4e4e4;
+
+                    .icon-container {
+
+                        .red-icon {
+                            display: block;
+                        }
+
+                        .black-icon {
+                            display: none;
+                        }
+                    }                    
+
+                    .icon-container {
+                        float: left;
+                        width: 24px;
+                        min-width: 24px;
+                        height: 24px;
+                        position: relative;
+
+                        img {
+                            position: absolute;
+                            width: 24px;
+                            height: 24px;
+                            object-fit: contain;
+                            object-position: center;
+                        }
+                    }
+
+                    .question {
+                        display: flex;
+                        flex-direction: row;
+                        width: 100%;
+                        gap: 24px;
+                        cursor: pointer;
+                        color: #5f5f5f;
+
+                        .accordion-title {
+                            color: #5f5f5f;
+
+                            &.text-black {
+                                color: #000;
+                            }
+                        }
+
+                        @include responsive(767) {
+                            gap: 24px;
+
+                            .accordion-title {
+                                max-width: 294px;
+                            }
+                        }
+                    }
+
+                    .answer {
+                        float: left;
+                        width: 100%;
+                        font-size: 18px;
+                        line-height: 28px;
+                        padding-left: 48px;
+                        padding-top: 0;
+                        padding-bottom: 0;                        
+
+                        @include responsive(767) {
+                            font-size: 16px;
+                            line-height: 28px;
+                            padding-left: 52px;
+                        }
+
+                        .inner {
+                            padding: 16px 0 0 0;
+                            max-width: 475px;
+                            color: #5f5f5f;
+
+                            @include responsive(767) {
+                                max-width: 294px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.image-block {
+                float: right;
+                padding-right: 0px;
+                height: 100%;
+                order: 1;
+
+                .image-container {
+                    float: left;
+                    width: 100%;
+                    height: 100%;
+
+                    @include responsive(767) {
+                        padding-top: 100%;
+                        position: relative;
+                    }
+
+                    img {
+
+                        @include responsive(767) {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                            object-position: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

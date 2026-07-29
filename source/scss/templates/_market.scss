@@ -1,0 +1,438 @@
+section.market-form {
+    float: left;
+    width: 100%;
+    padding: 160px 0 0px;
+    position: relative;
+
+    @media (max-width: 1023px) {
+        padding: 64px 0 64px;
+    }
+
+    .half-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 50%;
+        height: 100%;
+
+        @media (max-width: 1023px) {
+            display: none;
+        }
+    }
+
+    .container {
+        position: relative; 
+
+        .market-column-container {
+            float: left;
+            width: 100%;
+            display: flex;    
+            
+            @media (max-width: 1023px) {
+                display: block;
+            }
+
+            .column {
+                &.content-column {
+                    float: left;
+                    width: 50%;
+                    padding-right: 32px;
+
+                    @media (max-width: 1023px) {
+                        width: 100%;
+                        padding-right: 0px;
+                    }
+
+                    .pre-title {
+                        float: left;
+                        width: 100%;
+                        font-size: 18px;
+                        line-height: 28px;
+                        margin-bottom: 16px;
+                        font-weight: 400;
+                    }
+
+                    h1 {
+                        float: left;
+                        width: 100%;
+                        margin-bottom: 16px;
+
+                        p {
+                            margin-bottom: 0px;
+
+                            strong {
+                                font-weight: normal;
+                                color: $color-red;
+                            }
+                        }
+                    }
+
+                    .text {
+                        float: left;
+                        width: 100%;
+                        font-size: 20px;
+                        line-height: 24px;
+                        margin-bottom: 40px;
+                        font-weight: 500;
+                        font-family: $font-medium;
+                        max-width: 560px;
+
+                        @include responsive(767) {
+                            font-size: 18px;
+                        }
+                    }
+
+                    .points-container {
+                        float: left;
+                        width: 100%;
+                        margin-bottom: 40px;
+
+                        .points {
+                            float: left;
+                            width: 100%;
+                            margin-bottom: 8px;
+                            font-size: 16px;
+                            line-height: 28px;
+                            font-weight: 400;
+
+                            img {
+                                float: left;
+                                margin-right: 12px;
+                                margin-top: 4px;
+                            }
+                        }
+                    }
+
+                    .form-popup-button-container {
+                        float: left;
+                        width: 100%;
+                        display: none;
+
+                        @media (max-width: 1023px) {
+                            display: block;
+                        }
+
+                        @media (max-width: 767px) {
+                            a {
+                                width: 100%;
+                            }
+                        }
+                    }
+
+                    .contact-image-container {
+                        float: left;
+                        width: 100%;
+                        max-width: 700px;
+
+                        @include responsive(1023) {
+                            margin-top: 32px;
+                        }
+
+                        .image-container {
+                            float: left;
+                            width: 100%;
+                            padding-top: 61%;
+
+                            .bg-container {
+                                img {
+                                    object-fit: contain;
+                                    object-position: center;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                &.form-column {
+                    padding-left: 32px;
+                    float: left;
+                    width: 50%;
+
+                    @media (max-width: 1023px) {
+                        width: 100%;
+                        padding-left: 0px;
+                        padding-top: 24px;
+                        display: none;
+                    }
+
+                    .form-container {
+                        float: right;
+                        width: 100%;
+                        max-width: 550px;
+                        -webkit-box-shadow: 2px 5px 10px 0px rgba(71, 71, 71, 0.08);
+                        -moz-box-shadow: 2px 5px 10px 0px rgba(71, 71, 71, 0.08);
+                        box-shadow: 2px 5px 10px 0px rgba(71, 71, 71, 0.08);
+                    }
+                }
+            }
+        }
+    }
+}
+
+section.market-testimonial {
+    padding: 130px 0;
+
+    @media (max-width:767px) {
+        padding: 87px 0 110px;
+    }
+
+    .container {
+        .testimonial-container {
+            float: left;
+            width: 100%;
+            text-align: center;
+
+            .testimonial-inner {
+                display: inline-block;
+                margin: 0 auto;
+                width: 100%;
+                max-width: 600px;
+
+                h4.testimonial {
+                    float: left;
+                    width: 100%;
+                    text-align: center;
+                    margin-bottom: 73px;
+                    font-weight: 500;
+                    font-family: $font-medium;
+                }
+
+                .thumbnail-container {
+                    display: inline-block;
+                    margin: 0 auto;
+                    border-top: 2px solid $color-red;
+                    width: 85px;
+                    height: 42px;
+                    padding-top: 6px;
+
+                    img {
+                        display: block;
+                        position: relative;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        object-position: center;
+                    }
+                }
+            }
+        }        
+    }
+}
+
+section.market-two-column {
+    padding: 135px 0 135px;
+
+    @media (max-width: 767px) {
+        padding: 78px 0;
+    }
+
+    .container {
+        .title-container {
+            float: left;
+            width: 100%;
+            margin-bottom: 80px;
+
+            @media (max-width: 767px) {
+                margin-bottom: 56px;
+            }
+
+            h2 {
+                float: left;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 0px;
+            }
+        }
+
+        .two-column-container {
+            float: left;
+            width: 100%;            
+            display: flex;
+            flex-wrap: wrap;
+
+            .column {
+                float: left;
+                width: 50%;
+
+                @media (max-width: 767px) {
+                    width: 100%;
+                }
+
+                &:nth-child(2n) {
+                    padding-left: 48px;
+
+                    @media (max-width: 1023px) {
+                        padding-left: 24px;
+                    }
+
+                    @media (max-width: 767px) {
+                        padding-left: 0px;
+                    }
+                }
+
+                &:nth-child(2n + 1) {
+                    padding-right: 48px;
+
+                    @media (max-width: 1023px) {
+                        padding-right: 24px;
+                    }
+
+                    @media (max-width: 767px) {
+                        padding-right: 0px;
+                    }
+                }
+
+                margin-bottom: 100px;
+
+                @media (max-width: 1100px) {
+                    margin-bottom: 56px;
+                }
+
+                &:last-of-type {
+                    margin-bottom: 0px;
+                }
+
+                &:nth-last-of-type(2) {
+                    margin-bottom: 0px;
+
+                    @media (max-width: 767px) {
+                        margin-bottom: 56px;
+                    }
+                }
+
+                .inner-column {
+                    float: left;
+                    width: 50%;
+
+                    @media (max-width: 1023px) {
+                        width: 100%;
+                    }
+
+                    .image-container {
+                        padding-top: 57%;
+
+                        .bg-container {
+                            img {
+                                object-fit: contain;
+                                object-position: center;
+                            }
+                        }
+                    }
+
+                    &.image-column {
+                        @media (max-width: 1023px) {
+                            max-width: 300px;
+                            margin-bottom: 32px;
+                        }
+                    }
+
+                    &.text-column {
+                        padding-left: 32px;
+                        padding-top: 15px;
+
+                        @media (max-width: 767px) {
+                            padding-left: 0px;
+                            padding-top: 0px;
+                        }
+
+                        span {
+                            float: left;
+                            width: 100%;
+                    
+                            &.title {
+                                font-size: 20px;
+                                line-height: 25px;
+                                margin-bottom: 16px;
+                                font-weight: 500;
+                                font-family: $font-medium;
+                            }
+                    
+                            &.text {
+                                font-size: 18px;
+                                line-height: 28px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+section.market-featured {
+    float: left;
+    width: 100%;
+    padding: 80px 0;
+
+    @media (max-width: 767px) {
+        padding: 56px 0;
+    }
+
+    .container {
+        .title-container {
+            float: left;
+            width: 100%;
+            margin-bottom: 80px;
+
+            @media (max-width: 767px) {
+                margin-bottom: 56px;
+            }
+
+            h2 {
+                float: left;
+                width: 100%;
+                margin-bottom: 0px;
+            }
+        }
+
+        .grid-wrapper {
+            float: left;
+            width: 100%;
+            margin-bottom: 30px;
+
+            @media (max-width: 767px) {
+                margin-bottom: 0px;
+            }
+
+            .item {
+                @media (max-width: 767px) {
+                    .image-container {
+                        width: 126px;
+                        height: 90px;
+                        padding-top: 0px!important;
+                    }
+
+                    .item-content-container {
+                        float: left;
+                        width: calc(100% - 126px);
+                        padding-left: 18px;
+
+                        .title.label-XXLarge {
+                            font-size: 18px;
+                            line-height: 22px;
+                        }
+
+                        .topic-filter {
+                            .mobile-hide {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .button-container {
+            float: left;
+            width: 100%;
+            text-align: center;
+
+            a {
+                @media (max-width: 767px) {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
