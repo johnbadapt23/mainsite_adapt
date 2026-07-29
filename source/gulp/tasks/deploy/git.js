@@ -4,7 +4,7 @@ var deploy = require( 'gulp-deploy-git' );
 var path = require('../../paths.js');
 
 gulp.task('deploy:git', function() {
-    gulp.src('**/*')
+    return gulp.src('**/*')
         .pipe(deploy({
             repository: path.deploy.repository
         }));

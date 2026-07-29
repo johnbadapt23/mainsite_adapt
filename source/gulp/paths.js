@@ -25,7 +25,10 @@ module.exports = {
             'source/components/jquery.scrollbar-master/jquery.scrollbar.js',
             'source/components/perfect-scrollbar/js/perfect-scrollbar.jquery.js',
             'source/components/matchHeight/dist/jquery.matchHeight-min.js',
-            'source/components/modernizr/modernizr-2.7.1.min.js',
+            // source/components/modernizr/modernizr-2.7.1.min.js referenced
+            // here doesn't exist in the repo and hard-crashes build:scripts.
+            // Modernizr isn't used anywhere else and isn't in the live JS
+            // bundle either, so the reference is just removed.
             'source/js/main.js',
         ],
         styles: [
