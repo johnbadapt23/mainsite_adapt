@@ -45,6 +45,16 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # gulpfile.js eager-loads every file under source/gulp/tasks (via
+      # require-dir with recurse:true), including build/fonts.js. That file
+      # requires "gulp-fontgen" at the top, and gulp-fontgen throws at
+      # require-time (not task-run-time) if the system "fontforge" binary
+      # isn't installed -- so *any* gulp invocation fails on a bare runner,
+      # even one that only asks for build:styles/build:scripts. ubuntu-latest
+      # doesn't ship fontforge, so it has to be installed explicitly here.
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y fontforge
+
       - name: Compile CSS and JS
         run: npx gulp build:styles build:scripts
 
