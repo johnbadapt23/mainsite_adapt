@@ -12,7 +12,8 @@
                         <div class="list-card-inner">
                             <div class="list-card-front background-tertiary-black">
                                 <div class="title-container">
-                                    <h4 class="white-text"><?php echo get_sub_field( 'card_title' ); ?></h4>
+                                    <?php $card_title = get_sub_field( 'card_title' ); ?>
+                                    <h4 class="white-text"><?php echo $card_title; ?></h4>
                                 </div>
                                 <?php if ( have_rows( 'card_list' ) ) : ?>
                                     <div class="hover-list-container">
@@ -24,7 +25,7 @@
                                         <?php if ( have_rows( 'links' ) ) : ?>
                                             <span class="text-link-container">
                                                 <?php while ( have_rows( 'links' ) ) : the_row(); ?>
-                                                    <a class="text-link large-link-text red-text red-underline-link <?php if(get_sub_field( 'link_target' ) == '_blank') { ?>external-link<?php } else { ?>red-arrow<?php  }?>" href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
+                                                    <a class="text-link large-link-text red-text red-underline-link <?php if(get_sub_field( 'link_target' ) == '_blank') { ?>external-link<?php } else { ?>red-arrow<?php  }?>" href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>" aria-label="<?php echo esc_attr( trim( get_sub_field( 'link_text' ) . ' about ' . wp_strip_all_tags( $card_title ) ) ); ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
                                                 <?php endwhile; ?>
                                             </span>
                                         <?php else : ?>
