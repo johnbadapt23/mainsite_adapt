@@ -1007,6 +1007,19 @@ span.select2 {
 	margin-bottom: 0px !important;
 }
 
+// Hides the UTM hidden-field rows on embedded HubSpot forms as a CSS-only
+// fallback/backstop for utm-form-fields.js (which hides them via inline
+// style once populated) -- covers the brief flash before the script runs
+// and any browser without :has() support simply won't hide them (fields
+// stay visible but empty, no layout break).
+.hsfc-Row:has(input[name="0-1/utm_source"]),
+.hsfc-Row:has(input[name="0-1/utm_medium"]),
+.hsfc-Row:has(input[name="0-1/utm_campaign"]),
+.hsfc-Row:has(input[name="0-1/utm_term"]),
+.hsfc-Row:has(input[name="0-1/utm_content"]) {
+	display: none !important;
+}
+
 
 .hbspt-form fieldset select.is-placeholder {
 	color: #C1C1C1!important;
