@@ -36,7 +36,7 @@ $youtubeLink = get_field( 'you_tube', 'options'  );
                     </span>
                     <span class="social-links">
                         <?php if ($linkedInLink) {?>
-                            <a class="social-link linkedin" href="<?php echo $linkedInLink;?>" target="_blank">
+                            <a class="social-link linkedin" href="<?php echo $linkedInLink;?>" target="_blank" rel="noopener noreferrer">
                                 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                      viewBox="0 0 20 20" style="enable-background:new 0 0 20 20;" xml:space="preserve">
                                 <style type="text/css">
@@ -54,7 +54,7 @@ $youtubeLink = get_field( 'you_tube', 'options'  );
                             </a>
                          <?php } ?>
                          <?php if ($youtubeLink) {?>
-                          <a class="social-link youtube" href="<?php echo $youtubeLink;?>" target="_blank">
+                          <a class="social-link youtube" href="<?php echo $youtubeLink;?>" target="_blank" rel="noopener noreferrer">
                               <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                  viewBox="0 0 23 15" style="enable-background:new 0 0 23 15;" xml:space="preserve">
                               <style type="text/css">

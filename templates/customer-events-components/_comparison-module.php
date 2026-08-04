@@ -62,7 +62,7 @@
         </div>
         <?php if ( get_sub_field( 'download_link' ) ) { ?>
             <span class="button-container">
-                <a class="std-button red-button" target="_blank" href="<?php the_sub_field( 'download_link' ); ?>"><?php echo get_sub_field( 'download_link_text' ); ?></a>
+                <a class="std-button red-button" target="_blank" rel="noopener noreferrer" href="<?php the_sub_field( 'download_link' ); ?>"><?php echo get_sub_field( 'download_link_text' ); ?></a>
             </span>
         <?php } ?>
     </div>

@@ -146,7 +146,7 @@
                             <div style="display: none;">Listen on:</div>
                             <div class="podcast-links">
                                 <?php if( get_field('podcast_spotify') ) : ?>
-                                <a href="<?= get_field('podcast_spotify'); ?>" target="_blank" aria-label="Spotify Link">
+                                <a href="<?= get_field('podcast_spotify'); ?>" target="_blank" rel="noopener noreferrer" aria-label="Spotify Link">
                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g clip-path="url(#clip0_21501_12855)">
                                             <path d="M15.625 3.08325C8.49483 3.08325 2.70837 8.86971 2.70837 15.9999C2.70837 23.1301 8.49483 28.9166 15.625 28.9166C22.7552 28.9166 28.5417 23.1301 28.5417 15.9999C28.5417 8.86971 22.7552 3.08325 15.625 3.08325Z" fill="white"/>
@@ -162,7 +162,7 @@
                                 <?php endif; ?>
 
                                 <?php if( get_field('podcast_itunes') ) : ?>
-                                <a href="<?= get_field('podcast_itunes'); ?>" target="_blank" aria-label="iTunes Link">
+                                <a href="<?= get_field('podcast_itunes'); ?>" target="_blank" rel="noopener noreferrer" aria-label="iTunes Link">
                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd" clip-rule="evenodd" d="M20.931 2.66638C21.2484 2.66638 21.5658 2.66686 21.8831 2.66833C22.1503 2.66981 22.4177 2.67268 22.6849 2.68005C23.2673 2.69556 23.8552 2.73004 24.431 2.83337C25.0149 2.93894 25.5594 3.11005 26.0902 3.38025C26.6121 3.64603 27.0901 3.99342 27.5042 4.40759C27.9183 4.82171 28.2649 5.29882 28.5306 5.82068C28.8008 6.35218 28.9726 6.89619 29.0775 7.48083C29.1808 8.05661 29.2163 8.64353 29.2318 9.22595C29.2392 9.49312 29.242 9.76054 29.2435 10.0277L29.2445 10.9799V20.9301C29.2445 21.2474 29.2447 21.5648 29.2425 21.8822C29.241 22.1494 29.2382 22.4168 29.2308 22.684C29.2153 23.2656 29.1808 23.8534 29.0775 24.4291C28.9726 25.0138 28.7998 25.5587 28.5296 26.0902C28.2639 26.612 27.9173 27.0892 27.5033 27.5033C27.0891 27.9174 26.6111 28.2639 26.0892 28.5297C25.5584 28.7999 25.0147 28.9717 24.43 29.0765C23.8544 29.1798 23.2671 29.2153 22.6849 29.2308C22.4178 29.2382 22.1502 29.2411 21.8831 29.2426C21.5657 29.244 21.2475 29.2435 20.93 29.2435H10.9808C10.6635 29.2435 10.3459 29.2448 10.0286 29.2426C9.76155 29.2411 9.49398 29.2382 9.22689 29.2308C8.6445 29.2153 8.05654 29.1799 7.48079 29.0765C6.89683 28.971 6.35243 28.7999 5.82161 28.5297C5.2997 28.2639 4.8217 27.9174 4.40755 27.5033C3.9935 27.0892 3.64693 26.612 3.38118 26.0902C3.11098 25.5587 2.93817 25.0138 2.83333 24.4291C2.73004 23.8534 2.69551 23.2663 2.68001 22.684C2.67264 22.4168 2.66977 22.1494 2.66829 21.8822C2.66682 21.5648 2.66732 21.2474 2.66732 20.9301V10.9799C2.66732 10.6626 2.66682 10.3452 2.66829 10.0287C2.66977 9.76144 2.67263 9.49418 2.68001 9.22693C2.69551 8.64524 2.73 8.0576 2.83333 7.48181C2.93816 6.89714 3.11101 6.35317 3.38118 5.82166C3.64691 5.2998 3.99349 4.82269 4.40755 4.40857C4.82172 3.9944 5.29965 3.647 5.82161 3.38123C6.35239 3.11105 6.89613 2.93918 7.48079 2.83435C8.05653 2.73031 8.64452 2.69629 9.22689 2.68005C9.49398 2.67268 9.76155 2.66981 10.0286 2.66833C10.3459 2.66686 10.6635 2.66638 10.9808 2.66638H20.931ZM20.7513 6.84802L12.8519 8.44177L12.849 8.44275C12.6431 8.48631 12.4815 8.55963 12.3568 8.66443C12.2063 8.79058 12.1229 8.96913 12.0911 9.17712C12.0845 9.22141 12.0736 9.31189 12.0736 9.4447C12.0736 9.4447 12.0736 17.5145 12.0736 19.3314C12.0736 19.5625 12.0553 19.7877 11.8988 19.9789C11.7422 20.1701 11.5483 20.2271 11.3216 20.2728C11.1497 20.3075 10.9779 20.3426 10.806 20.3773C10.1534 20.5087 9.7287 20.5983 9.34408 20.7474C8.97657 20.8899 8.70099 21.0709 8.48177 21.3011C8.047 21.7566 7.87054 22.3748 7.93099 22.9535C7.98265 23.4473 8.20477 23.9197 8.58626 24.2689C8.84388 24.5051 9.16585 24.685 9.54525 24.7611C9.93874 24.8401 10.3583 24.8129 10.971 24.6888C11.2973 24.6231 11.603 24.52 11.8939 24.348C12.1817 24.1782 12.4288 23.9522 12.6214 23.6761C12.8148 23.3993 12.9395 23.0911 13.0081 22.764C13.079 22.4268 13.096 22.122 13.096 21.7855V13.2103C13.096 12.7512 13.2256 12.6295 13.596 12.5394C13.596 12.5394 20.1627 11.2154 20.4691 11.1556C20.8963 11.0738 21.0978 11.1952 21.098 11.6429V17.4974C21.098 17.7291 21.0957 17.9638 20.9378 18.1556C20.7813 18.3469 20.5873 18.4048 20.3607 18.4506C20.1888 18.4852 20.0169 18.5194 19.8451 18.5541C19.1924 18.6855 18.7678 18.7751 18.3831 18.9242C18.0155 19.0667 17.7401 19.2486 17.5208 19.4789C17.0861 19.9344 16.8939 20.5525 16.9544 21.1312C17.0061 21.6251 17.2447 22.0975 17.6263 22.4467C17.8839 22.6828 18.2059 22.8572 18.5853 22.934C18.9786 23.0128 19.3978 22.9849 20.0101 22.8617C20.3363 22.796 20.6422 22.6976 20.9329 22.5258C21.2209 22.356 21.4678 22.129 21.6605 21.8529C21.8539 21.5761 21.9785 21.2678 22.0472 20.9408C22.118 20.6036 22.1214 20.2988 22.1214 19.9623V7.42517C22.1227 6.97073 21.8826 6.6901 21.4554 6.72693C21.3912 6.73283 20.82 6.834 20.7513 6.84802Z" fill="white"/>
                                     </svg>
@@ -170,7 +170,7 @@
                                 <?php endif; ?>
 
                                 <?php if( get_field('podcast_youtube') ) : ?>
-                                <a href="<?= get_field('podcast_youtube'); ?>" target="_blank" aria-label="YouTube Link">
+                                <a href="<?= get_field('podcast_youtube'); ?>" target="_blank" rel="noopener noreferrer" aria-label="YouTube Link">
                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g clip-path="url(#clip0_21524_9963)">
                                         <g clip-path="url(#clip1_21524_9963)">
@@ -288,7 +288,7 @@
 	                            });
 	                        </script>
                             <span class="share-linked-in share">
-                                <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
+                                <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
                                     <?php if($typePost == 'insights' || $typePost == 'expert'){ ?>
                                         <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-white.svg" alt="Share on LinkedIn" width="32px"/>
                                     <?php } else { ?>
@@ -297,7 +297,7 @@
                                 </a>
                             </span>
                             <span class="share-twitter share">
-                                <a class="twitterShare" href="https://twitter.com/intent/tweet?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&text=<?php the_excerpt(); ?>" target="_blank">
+                                <a class="twitterShare" href="https://twitter.com/intent/tweet?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&text=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
                                     <?php if($typePost == 'insights' || $typePost == 'expert'){ ?>
                                         <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-white.svg" alt="Tweet" width="32px"/>
                                     <?php } else { ?>
@@ -306,7 +306,7 @@
                                 </a>
                             </span>
                             <span class="share-email share">
-                                <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
+                                <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank" rel="noopener noreferrer">
                                     <?php if($typePost == 'insights' || $typePost == 'expert'){ ?>
                                         <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email-white.svg" alt="Share via Email" width="32px"/>
                                     <?php } else { ?>
@@ -388,7 +388,7 @@
                             <span class="media-contact publication">
                             	<?php while ( have_rows( 'publication' ) ) : the_row(); ?>
                                     <?php $publication_logo = get_sub_field( 'publication_logo' ); ?>
-                                    <a class="publicaton-link" href="<?php echo get_sub_field( 'publication_link' ); ?>" target="_blank">
+                                    <a class="publicaton-link" href="<?php echo get_sub_field( 'publication_link' ); ?>" target="_blank" rel="noopener noreferrer">
                                         <?php if ( $publication_logo ) { ?>
                                             <span class="publication-logo-container">
                                     			<?php echo wp_get_attachment_image( $publication_logo['ID'], 'full', false, array(
@@ -734,7 +734,7 @@
                                             $postID = get_the_ID();
                                             $postURL = get_permalink();
                                         ?>
-                                        <span class="preview-cta-bottom-module">Already an ADAPT Research & Advisory Client? <a class="login-link"  href="https://research.adapt.com.au/login/?mepr-unauth-page=<?php echo $postID;?>&redirect_to=<?php echo $portalURL;?>" target="_blank">Login here</a></span>
+                                        <span class="preview-cta-bottom-module">Already an ADAPT Research & Advisory Client? <a class="login-link"  href="https://research.adapt.com.au/login/?mepr-unauth-page=<?php echo $postID;?>&redirect_to=<?php echo $portalURL;?>" target="_blank" rel="noopener noreferrer">Login here</a></span>
                                     </div> 
                                 </div>                                       
                                 <?php endwhile; ?>
@@ -788,7 +788,7 @@
                 <div class="post-content">
                     <?php if($typePost == 'press-release'){ ?>
                         <span class="published-information-container">
-                            <span class="published-information">Originally published in <a class="publication" href="<?php echo $publicationLink; ?>" target="_blank"><?php echo $publicationName; ?></a></span>
+                            <span class="published-information">Originally published in <a class="publication" href="<?php echo $publicationLink; ?>" target="_blank" rel="noopener noreferrer"><?php echo $publicationName; ?></a></span>
                         </span>
                     <?php } ?>
                     <?php if ( get_field('article_content')){ ?>

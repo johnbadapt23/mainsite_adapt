@@ -252,7 +252,7 @@
                                                     }
                                                 </script>
                                                 <span class="share-linked-in share">
-                                                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php echo get_term_link( $q );?>?story=<?php echo $slug; ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
+                                                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php echo get_term_link( $q );?>?story=<?php echo $slug; ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
                                                         <span class="image-icon-container">
                                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
                                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
@@ -260,7 +260,7 @@
                                                     </a>
                                                 </span>								
                                                 <span class="share-email share">
-                                                    <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo get_term_link( $q );?>?story=<?php echo $slug; ?>" target="_blank">
+                                                    <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo get_term_link( $q );?>?story=<?php echo $slug; ?>" target="_blank" rel="noopener noreferrer">
                                                         <span class="image-icon-container">
                                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
                                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" alt="Share via Email" width="24px"/>

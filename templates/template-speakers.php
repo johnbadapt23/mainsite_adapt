@@ -90,7 +90,7 @@ get_header();
                                 <h2 class="title">
                                     <?php the_title(); ?>
                                     <?php if ( get_field('linkedin')) { ?>
-                                        <a class="linkedin-link" href="<?php echo get_field('linkedin');?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" alt="LinkedIn" width="20"/></a>
+                                        <a class="linkedin-link" href="<?php echo get_field('linkedin');?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" alt="LinkedIn" width="20"/></a>
                                     <?php } ?>
                                 </h2>
                                 <p class="job-title"><?php echo get_field( 'speaker_description' ); ?></p>

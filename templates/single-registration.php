@@ -163,7 +163,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 														<h3 class="title">
 															<?php the_title(); ?>
 															<?php if ( get_field('linked_in_url')) { ?>
-																<a class="linkedin-link" href="<?php echo get_field('linked_in_url');?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" alt="LinkedIn" width="20"/></a>
+																<a class="linkedin-link" href="<?php echo get_field('linked_in_url');?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" alt="LinkedIn" width="20"/></a>
 															<?php } ?>
 														</h3>
 														<p class="job-title"><?php echo get_field( 'speaker_description' ); ?></p>

@@ -61,7 +61,7 @@
                             <span class="button-container">
                     			<?php while ( have_rows( 'button' ) ) : the_row(); ?>
                                     <?php if( get_sub_field( 'download_link_or_video' ) == 'download') { ?>
-                                        <a class="site-button download-link-button" href="<?php echo get_sub_field( 'link' ); ?>" target="_blank"><?php echo get_sub_field( 'button_text' ); ?></a>
+                                        <a class="site-button download-link-button" href="<?php echo get_sub_field( 'link' ); ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'button_text' ); ?></a>
                                     <?php } ?>
                                     <?php if( get_sub_field( 'download_link_or_video' ) == 'link') { ?>
                                         <a class="site-button" href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>"><?php echo get_sub_field( 'button_text' ); ?></a>

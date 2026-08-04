@@ -33,7 +33,7 @@
                                     <a class="stdBtn std-button red-outline-button" href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
                                 <?php } else if( get_sub_field( 'link_type' ) == 'file') { ?> 
                                     <?php $file = get_sub_field( 'file' ); ?>
-                                        <a class="file-button std-button download-icon-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank"><?php echo get_sub_field( 'link_text' ); ?></a>
+                                        <a class="file-button std-button download-icon-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'link_text' ); ?></a>
                                 <?php } else { ?> 
                                     <span style="display: none"><?php echo get_sub_field( 'form_code' ); ?></span>
                                     <span class="form-popup-button-container red-outline-button"><?php echo get_sub_field( 'form_button' ); ?></span>                                                               

@@ -42,7 +42,16 @@
      functions.php (my_enqueue_scripts), pinned to their current resolved
      versions instead of "@latest". Output below by wp_head(). -->
 <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDss6XUuPFsJgunJJ6dZZjzuR9d39WtjRU"></script> -->
-<?php if ( get_field ( 'featured_image' ) ) { ?>
+<?php if ( get_field ( 'seo_image' ) ) { ?>
+    <?php // Was previously "if ( get_field('featured_image') )" here, guarding
+          // a get_field('seo_image') read -- so on any page with a
+          // featured_image but no seo_image, $image_seo was false and this
+          // emitted a broken <meta property="og:image" content=""> instead
+          // of ever reaching the featured_image fallback below (whose own
+          // condition was an exact duplicate of this one, making it
+          // unreachable dead code). Checking seo_image directly here fixes
+          // both: the field this branch actually reads is what's checked,
+          // and the featured_image branch below can now actually run. ?>
     <?php $image_seo = get_field( 'seo_image' ); ?>
     <meta property="og:image" content="<?php echo $image_seo['url']; ?>" />
 <?php } else if ( get_field ( 'featured_image' ) ) { ?>

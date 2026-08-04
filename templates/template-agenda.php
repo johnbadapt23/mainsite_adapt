@@ -115,8 +115,8 @@ get_header();
     	<div class="container">
             <div class="inner">
         		<div class="share">
-        			<a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=I%20thought%20you%20might%20be%20interested%20in%20this%20article%20<?php echo the_permalink(); ?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/email.svg" alt="Share via Email" /><span>Email</span></a>
-                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title();?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" /><span>Share</span></a>
+        			<a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=I%20thought%20you%20might%20be%20interested%20in%20this%20article%20<?php echo the_permalink(); ?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/email.svg" alt="Share via Email" /><span>Email</span></a>
+                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title();?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" /><span>Share</span></a>
         		</div>
             </div>
     	</div>
@@ -138,7 +138,7 @@ get_header();
                                 <span class="right">
                                     <a class="button popup-modal registerInterest" href="#form">Register Interest</a>
                                     <?php if ( get_field( 'ticket_link' )) { ?>
-                                        <a class="button ticket buttonTicket" href="<?php the_field( 'ticket_link' ); ?>" target="_blank">Purchase Tickets</a>
+                                        <a class="button ticket buttonTicket" href="<?php the_field( 'ticket_link' ); ?>" target="_blank" rel="noopener noreferrer">Purchase Tickets</a>
                                     <?php } ?>
                                     <a class="button print buttonPrint" id="print" onclick="window.print()">Print Agenda</a>
                                 </span>

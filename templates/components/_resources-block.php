@@ -72,7 +72,7 @@
             					<?php else : ?>
             						<?php // no rows found ?>
             					<?php endif; ?>
-	                            <a class="resources-link" href="<?php echo $linkLink; ?>" target="_blank">
+	                            <a class="resources-link" href="<?php echo $linkLink; ?>" target="_blank" rel="noopener noreferrer">
 	                                <span class="resources-image-container">
 	                                    <span class="bg-container">
 	                                        <?php $image = get_sub_field( 'image' ); ?>

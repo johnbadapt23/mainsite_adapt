@@ -38,7 +38,7 @@
                     <span class="media-contact publication">
                     	<?php while ( have_rows( 'publication' ) ) : the_row(); ?>
                             <?php $publication_logo = get_sub_field( 'publication_logo' ); ?>
-                            <a class="publicaton-link" href="<?php echo get_sub_field( 'publication_link' ); ?>" target="_blank">
+                            <a class="publicaton-link" href="<?php echo get_sub_field( 'publication_link' ); ?>" target="_blank" rel="noopener noreferrer">
                                 <?php if ( $publication_logo ) { ?>
                                     <span class="publication-logo-container">
                             			<?php echo wp_get_attachment_image( $publication_logo['ID'], 'full', false, array(
@@ -67,7 +67,7 @@
         </div>
         <div class="post-content">
 			<span class="published-information-container">
-				<span class="published-information">Originally published in <a class="publication" href="<?php echo $publicationLink; ?>" target="_blank"><?php echo $publicationName; ?></a></span>
+				<span class="published-information">Originally published in <a class="publication" href="<?php echo $publicationLink; ?>" target="_blank" rel="noopener noreferrer"><?php echo $publicationName; ?></a></span>
 			</span>
 			<?php if ( get_field('article_content')){ ?>
 				<div class="post-content-inner article-content">

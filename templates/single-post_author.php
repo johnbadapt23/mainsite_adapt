@@ -16,7 +16,7 @@
                 </span>
                  <?php if ( get_field ( 'linked_in_url' ) ) { ?>
                     <span class="button-container">
-                        <a class="linkedin-button" href="<?php echo get_field('linked_in_url'); ?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-white-new.svg" alt="" width="20"/>Follow on LinkedIn</a>
+                        <a class="linkedin-button" href="<?php echo get_field('linked_in_url'); ?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-white-new.svg" alt="" width="20"/>Follow on LinkedIn</a>
                     </span>
                 <?php } ?>                
             </div>
@@ -273,7 +273,7 @@ endwhile; ?>
                         }
                         ?>
                         <?php if(get_field('event_link')){ ?> 
-                            <a href="<?php echo get_field( 'event_link' ); ?>" target="_blank" >                                       
+                            <a href="<?php echo get_field( 'event_link' ); ?>" target="_blank" rel="noopener noreferrer">
                             <span class="item event-item background-black <?php echo $firstClass; ?> <?php echo $date->format('Y'); ?>" data-date="<?php echo $date->format('Y'); ?>" <?php echo $id_attribute; ?>>
                                 <span class="container">                                    
                                     <span class="date-content-container">

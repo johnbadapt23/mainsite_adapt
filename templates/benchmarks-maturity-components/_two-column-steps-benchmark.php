@@ -62,7 +62,7 @@
                         <a class="stdBtn std-button red-button" href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>"><?php echo get_sub_field( 'button_text' ); ?></a>
                     <?php } else if( get_sub_field( 'link_type' ) == 'scroll_to_id') { ?> 
                         <?php $file = get_sub_field( 'file' ); ?>
-                        <a class="scroll-to std-button red-button" href="#<?php echo get_sub_field( 'scroll_to_id' ); ?>" target="_blank"><?php echo get_sub_field( 'button_text' ); ?></a>
+                        <a class="scroll-to std-button red-button" href="#<?php echo get_sub_field( 'scroll_to_id' ); ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'button_text' ); ?></a>
                     <?php } else { ?> 
                         <a class="formPopupHubspot stdBtn std-button red-button" href="#formPopupSteps"><?php echo get_sub_field( 'button_text' ); ?></a>
                         <div style="display: none;">         

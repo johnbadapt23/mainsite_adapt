@@ -89,7 +89,7 @@
                                                             </div>                         
                                                         <?php } else { ?> 
                                                             <?php if ( get_sub_field( 'file' ) ) { ?>
-                                                                <a class="text-link red-text large-link-text red-underline-link  download-text-link" href="<?php the_sub_field( 'file' ); ?>" target="_blank"><?php echo get_sub_field( 'link_text' ); ?></a>
+                                                                <a class="text-link red-text large-link-text red-underline-link  download-text-link" href="<?php the_sub_field( 'file' ); ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'link_text' ); ?></a>
                                                             <?php } ?>
                                                         <?php } ?>
                                                     <?php endwhile; ?>

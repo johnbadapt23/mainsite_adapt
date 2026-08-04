@@ -11,7 +11,7 @@
                             <a class="stdBtn std-button scroll-to-button red-outline-button" href="#<?php echo get_sub_field( 'scroll_to_id' ); ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
                         <?php } else if( get_sub_field( 'link_type' ) =='file') { ?> 
                             <?php $file = get_sub_field( 'file' ); ?>
-                            <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank"><?php echo get_sub_field( 'link_text' ); ?></a>
+                            <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'link_text' ); ?></a>
                         <?php } else if( get_sub_field( 'link_type' ) =='download-form') { ?>
                             <a class="formPopupHubspot download-file-button stdBtn std-button red-outline-button" href="#stickyCardFormPopup"><?php echo get_sub_field( 'link_text' ); ?></a>
                             <div style="display: none;">         
@@ -98,7 +98,7 @@
                             <a class="stdBtn std-button scroll-to-button red-outline-button" href="#<?php echo get_sub_field( 'scroll_to_id' ); ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
                         <?php } else if( get_sub_field( 'link_type' ) =='file') { ?> 
                             <?php $file = get_sub_field( 'file' ); ?>
-                            <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank"><?php echo get_sub_field( 'link_text' ); ?></a>
+                            <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'link_text' ); ?></a>
                         <?php } else if( get_sub_field( 'link_type' ) =='download-form') { ?>
                             <a class="formPopupHubspot download-file-button stdBtn std-button red-outline-button" href="#formPopup"><?php echo get_sub_field( 'link_text' ); ?></a>
                             <div style="display: none;">         

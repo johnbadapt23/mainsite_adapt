@@ -158,7 +158,7 @@ if($years){
                 }
                 ?>
                 <?php if (get_field('event_link')): ?> 
-                    <a href="<?php echo get_field('event_link'); ?>" target="_blank">
+                    <a href="<?php echo get_field('event_link'); ?>" target="_blank" rel="noopener noreferrer">
                 <?php endif; ?>                    
                     <span class="item event-item background-black <?php echo $year; ?> <?php echo $firstClass; ?>" data-date="<?php echo $year; ?>" <?php echo $id_attribute; ?>>
                         <span class="container">

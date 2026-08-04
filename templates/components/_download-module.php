@@ -21,7 +21,7 @@
             <span class="title-container"><?php echo get_sub_field( 'title' ); ?></span>
             <span class="text"><?php echo get_sub_field( 'text' ); ?></span>
             <span class="button-container">
-                <a class="site-button download-link-button" href="<?php echo get_sub_field( 'download_link' ); ?>" target="_blank">Download</a>
+                <a class="site-button download-link-button" href="<?php echo get_sub_field( 'download_link' ); ?>" target="_blank" rel="noopener noreferrer">Download</a>
             </span>
         </div>
     </div>

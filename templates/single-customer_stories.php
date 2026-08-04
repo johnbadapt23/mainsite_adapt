@@ -144,15 +144,15 @@ $displayed_posts[] = get_the_ID();
                                     }
                                 </script>
                                 <span class="share-linked-in share">
-                                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
+                                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
                                         <span class="image-icon-container">
                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
                                         </span>
                                     </a>
-                                </span>								
+                                </span>
                                 <span class="share-email share">
-                                    <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
+                                    <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank" rel="noopener noreferrer">
                                         <span class="image-icon-container">
                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" alt="Share via Email" width="24px"/>
@@ -352,15 +352,15 @@ $displayed_posts[] = get_the_ID();
                                     }
                                 </script>
                                 <span class="share-linked-in share">
-                                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
+                                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
                                         <span class="image-icon-container">
                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
                                         </span>
                                     </a>
-                                </span>								
+                                </span>
                                 <span class="share-email share">
-                                    <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
+                                    <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank" rel="noopener noreferrer">
                                         <span class="image-icon-container">
                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" alt="Share via Email" width="24px"/>
@@ -671,7 +671,7 @@ $displayed_posts[] = get_the_ID();
                                 <span class="text white-text p-small"><?php echo get_sub_field( 'socials_text' ); ?></span>
                                 <span class="social-links">
                                     <?php if ($linkedInLink) {?>
-                                        <a class="social-link linkedin" href="<?php echo $linkedInLink;?>" target="_blank">
+                                        <a class="social-link linkedin" href="<?php echo $linkedInLink;?>" target="_blank" rel="noopener noreferrer">
                                             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                                 viewBox="0 0 20 20" style="enable-background:new 0 0 20 20;" xml:space="preserve">
                                             <style type="text/css">
@@ -689,7 +689,7 @@ $displayed_posts[] = get_the_ID();
                                         </a>
                                     <?php } ?>
                                     <?php if ($youtubeLink) {?>
-                                    <a class="social-link youtube" href="<?php echo $youtubeLink;?>" target="_blank">
+                                    <a class="social-link youtube" href="<?php echo $youtubeLink;?>" target="_blank" rel="noopener noreferrer">
                                         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                             viewBox="0 0 23 15" style="enable-background:new 0 0 23 15;" xml:space="preserve">
                                         <style type="text/css">
@@ -714,7 +714,7 @@ $displayed_posts[] = get_the_ID();
                                 <span class="text white-text"><?php echo get_sub_field( 'socials_text' ); ?></span>
                                 <span class="social-links">
                                     <?php if ($linkedInLink) {?>
-                                        <a class="social-link linkedin" href="<?php echo $linkedInLink;?>" target="_blank">
+                                        <a class="social-link linkedin" href="<?php echo $linkedInLink;?>" target="_blank" rel="noopener noreferrer">
                                             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                                 viewBox="0 0 20 20" style="enable-background:new 0 0 20 20;" xml:space="preserve">
                                             <style type="text/css">
@@ -732,7 +732,7 @@ $displayed_posts[] = get_the_ID();
                                         </a>
                                     <?php } ?>
                                     <?php if ($youtubeLink) {?>
-                                    <a class="social-link youtube" href="<?php echo $youtubeLink;?>" target="_blank">
+                                    <a class="social-link youtube" href="<?php echo $youtubeLink;?>" target="_blank" rel="noopener noreferrer">
                                         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                             viewBox="0 0 23 15" style="enable-background:new 0 0 23 15;" xml:space="preserve">
                                         <style type="text/css">

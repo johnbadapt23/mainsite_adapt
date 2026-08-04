@@ -5,9 +5,9 @@
     			<h2><?php echo get_sub_field( 'title' ); ?></h2>
     			<span class="location-title"><?php echo get_sub_field( 'location_title' ); ?></span>
     			<p class="address"><?php echo get_sub_field( 'address' ); ?></p>
-    			<a class="web-link" href="<?php echo get_sub_field( 'link' ); ?>" target="_blank"><?php echo get_sub_field( 'link_text' ); ?></a>
+    			<a class="web-link" href="<?php echo get_sub_field( 'link' ); ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'link_text' ); ?></a>
     			<a class="phone-number" href="tel:<?php echo get_sub_field( 'phone_number' ); ?>"><?php echo get_sub_field( 'phone_number' ); ?></a>
-    			<a class="directions-link" href="<?php echo get_sub_field( 'directions_link' ); ?>" target="_blank">Get Directions</a>
+    			<a class="directions-link" href="<?php echo get_sub_field( 'directions_link' ); ?>" target="_blank" rel="noopener noreferrer">Get Directions</a>
             </span>
         </div>
         <div class="column one-half image-column">

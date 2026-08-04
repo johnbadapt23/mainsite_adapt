@@ -30,7 +30,7 @@
                                             <a class="red-text red-underline-link red-arrow text-link" href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
                                         <?php } else if( get_sub_field( 'link_type' ) =='file') { ?> 
                                             <?php $file = get_sub_field( 'file' ); ?>
-                                            <a class="red-text text-link red-underline-link download-text-link" href="<?php echo $file['url']; ?>" target="_blank"><?php echo get_sub_field( 'link_text' ); ?></a>
+                                            <a class="red-text text-link red-underline-link download-text-link" href="<?php echo $file['url']; ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'link_text' ); ?></a>
                                         <?php } else if( get_sub_field( 'link_type' ) =='download-form') { ?>
                                             <a class="formPopupHubspot red-text text-link red-underline-link download-text-link" href="#formPopup<?php echo $counter; ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
                                             <div style="display: none;">         

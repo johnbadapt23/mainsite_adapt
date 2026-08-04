@@ -62,7 +62,7 @@
                                             <h3 class="title">
                                                 <?php the_title(); ?>
                                                 <?php if ( get_field('linkedin')) { ?>
-                                                    <a class="linkedin-link" href="<?php echo get_field('linkedin');?>" target="_blank"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" alt="LinkedIn" width="20"/></a>
+                                                    <a class="linkedin-link" href="<?php echo get_field('linkedin');?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" alt="LinkedIn" width="20"/></a>
                                                 <?php } ?>
                                             </h3>
                                             <p class="job-title"><?php echo get_field( 'job_title' ); ?></p>
@@ -115,7 +115,7 @@
                     <span class="company-with">with</span>
                     <?php while ( have_rows( 'company' ) ) : the_row(); ?>
                         <?php if (get_sub_field( 'link' )){ ?>
-                            <a class="company" href="<?php echo get_sub_field( 'link' ); ?>" target="_blank"><?php echo get_sub_field( 'company_name' ); ?></a>
+                            <a class="company" href="<?php echo get_sub_field( 'link' ); ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'company_name' ); ?></a>
                         <?php } else { ?>
                             <span class="company"><?php echo get_sub_field( 'company_name' ); ?></span>
                         <?php } ?>

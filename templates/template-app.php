@@ -29,7 +29,7 @@ get_header();
 								<?php while ( have_rows( 'bottom_icons' ) ) : the_row(); ?>
 									<?php $icon = get_sub_field( 'icon' ); ?>
 									<?php if (get_sub_field( 'icon_link' )){ ?>
-										<a href="<?php echo get_sub_field( 'icon_link' ); ?>" target="_blank">
+										<a href="<?php echo get_sub_field( 'icon_link' ); ?>" target="_blank" rel="noopener noreferrer">
 											<img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" width="130"/>
 										</a>
 									<?php } else { ?>

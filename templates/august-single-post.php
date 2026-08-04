@@ -209,7 +209,7 @@
 	                            });
 	                        </script>
                             <span class="share-linked-in share">
-                                <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank">
+                                <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
                                     <?php if($typePost == 'insights' || $typePost == 'expert'){ ?>
                                         <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-white.svg" alt="Share on LinkedIn" width="32px"/>
                                     <?php } else { ?>
@@ -218,7 +218,7 @@
                                 </a>
                             </span>
                             <span class="share-twitter share">
-                                <a class="twitterShare" href="https://twitter.com/intent/tweet?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&text=<?php the_excerpt(); ?>" target="_blank">
+                                <a class="twitterShare" href="https://twitter.com/intent/tweet?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&text=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
                                     <?php if($typePost == 'insights' || $typePost == 'expert'){ ?>
                                         <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/twitter-white.svg" alt="Tweet" width="32px"/>
                                     <?php } else { ?>
@@ -227,7 +227,7 @@
                                 </a>
                             </span>
                             <span class="share-email share">
-                                <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
+                                <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank" rel="noopener noreferrer">
                                     <?php if($typePost == 'insights' || $typePost == 'expert'){ ?>
                                         <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email-white.svg" alt="Share via Email" width="32px"/>
                                     <?php } else { ?>
@@ -294,7 +294,7 @@
                             <span class="media-contact publication">
                             	<?php while ( have_rows( 'publication' ) ) : the_row(); ?>
                                     <?php $publication_logo = get_sub_field( 'publication_logo' ); ?>
-                                    <a class="publicaton-link" href="<?php echo get_sub_field( 'publication_link' ); ?>" target="_blank">
+                                    <a class="publicaton-link" href="<?php echo get_sub_field( 'publication_link' ); ?>" target="_blank" rel="noopener noreferrer">
                                         <?php if ( $publication_logo ) { ?>
                                             <span class="publication-logo-container">
                                     			<?php echo wp_get_attachment_image( $publication_logo['ID'], 'full', false, array(
@@ -485,7 +485,7 @@
                                             $postID = get_the_ID();
                                             $postURL = get_permalink();
                                         ?>
-                                        <span class="preview-cta-bottom-module">Already an ADAPT Research & Advisory Client? <a class="login-link"  href="https://research.adapt.com.au/login/?mepr-unauth-page=<?php echo $postID;?>&redirect_to=<?php echo $portalURL;?>" target="_blank">Login here</a></span>
+                                        <span class="preview-cta-bottom-module">Already an ADAPT Research & Advisory Client? <a class="login-link"  href="https://research.adapt.com.au/login/?mepr-unauth-page=<?php echo $postID;?>&redirect_to=<?php echo $portalURL;?>" target="_blank" rel="noopener noreferrer">Login here</a></span>
                                     </div> 
                                 </div>                                       
                                 <?php endwhile; ?>
@@ -538,7 +538,7 @@
             <div class="post-content">
                 <?php if($typePost == 'press-release'){ ?>
                     <span class="published-information-container">
-                        <span class="published-information">Originally published in <a class="publication" href="<?php echo $publicationLink; ?>" target="_blank"><?php echo $publicationName; ?></a></span>
+                        <span class="published-information">Originally published in <a class="publication" href="<?php echo $publicationLink; ?>" target="_blank" rel="noopener noreferrer"><?php echo $publicationName; ?></a></span>
                     </span>
                 <?php } ?>
                 <?php if ( get_field('article_content')){ ?>

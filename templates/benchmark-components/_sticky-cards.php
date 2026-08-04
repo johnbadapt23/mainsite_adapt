@@ -16,33 +16,33 @@
                                     <a class="stdBtn std-button scroll-to-button red-outline-button" href="#<?php echo get_sub_field( 'scroll_to_id' ); ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
                                 <?php } else if( get_sub_field( 'link_type' ) =='file') { ?> 
                                     <?php $file = get_sub_field( 'file' ); ?>
-                                    <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank"><?php echo get_sub_field( 'link_text' ); ?></a>
+                                    <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'link_text' ); ?></a>
                                 <?php } else if( get_sub_field( 'link_type' ) =='download-form') { ?>
                                     <a class="formPopupHubspot download-file-button stdBtn std-button red-outline-button" href="#stickyCardFormPopup"><?php echo get_sub_field( 'link_text' ); ?></a>
-                                    <div style="display: none;">         
+                                    <div style="display: none;">
                                         <div class="preview-cta-form login-form-container" id="stickyCardFormPopup">
                                             <div class="form-container"><?php echo get_sub_field( 'form_code' ); ?></div>
                                         </div>
-                                    </div> 
-                                <?php } else { ?>                                 
+                                    </div>
+                                <?php } else { ?>
                                     <a class="formPopupHubspot stdBtn std-button red-outline-button" href="#formPopupStickyCards"><?php echo get_sub_field( 'link_text' ); ?></a>
-                                    <div style="display: none;">         
+                                    <div style="display: none;">
                                         <div class="preview-cta-form login-form-container" id="formPopupStickyCards">
                                             <div class="form-container"><?php echo get_sub_field( 'form_code' ); ?></div>
                                         </div>
-                                    </div> 
-                                <?php } ?>        
+                                    </div>
+                                <?php } ?>
                             <?php endwhile; ?>
                         <?php else : ?>
                             <?php // no rows found ?>
                         <?php endif; ?>
-                    </span>	
-                <?php } ?>    		
+                    </span>
+                <?php } ?>
             <?php } else { ?>
                 <span class="title-block <?php echo get_sub_field('title_position'); ?>">
                     <?php if ( get_sub_field ( 'title' ) ) { ?><h2 class="text-black bold-red"><?php echo get_sub_field( 'title' ); ?></h2><?php } ?>
                     <?php if ( get_sub_field ( 'sub_title' ) ) { ?><span class="sub-title secondary-dark"><?php echo get_sub_field( 'sub_title' ); ?></span><?php } ?>
-                </span>                
+                </span>
                 <?php if ( get_sub_field ( 'button_position' ) == 'top' ) { ?>
                     <span class="link-container desktop">
                         <?php if ( have_rows( 'button' ) ) : ?>
@@ -53,28 +53,28 @@
                                     <a class="stdBtn std-button scroll-to-button red-outline-button" href="#<?php echo get_sub_field( 'scroll_to_id' ); ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
                                 <?php } else if( get_sub_field( 'link_type' ) =='file') { ?> 
                                     <?php $file = get_sub_field( 'file' ); ?>
-                                    <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank"><?php echo get_sub_field( 'link_text' ); ?></a>
+                                    <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'link_text' ); ?></a>
                                 <?php } else if( get_sub_field( 'link_type' ) =='download-form') { ?>
                                     <a class="formPopupHubspot download-file-button stdBtn std-button red-outline-button" href="#stickyCardFormPopup"><?php echo get_sub_field( 'link_text' ); ?></a>
-                                    <div style="display: none;">         
+                                    <div style="display: none;">
                                         <div class="preview-cta-form login-form-container" id="stickyCardFormPopup">
                                             <div class="form-container"><?php echo get_sub_field( 'form_code' ); ?></div>
                                         </div>
-                                    </div> 
-                                <?php } else { ?>                                 
+                                    </div>
+                                <?php } else { ?>
                                     <a class="formPopupHubspot stdBtn std-button red-outline-button" href="#formPopupStickyCards"><?php echo get_sub_field( 'link_text' ); ?></a>
-                                    <div style="display: none;">         
+                                    <div style="display: none;">
                                         <div class="preview-cta-form login-form-container" id="formPopupStickyCards">
                                             <div class="form-container"><?php echo get_sub_field( 'form_code' ); ?></div>
                                         </div>
-                                    </div> 
-                                <?php } ?>        
+                                    </div>
+                                <?php } ?>
                             <?php endwhile; ?>
                         <?php else : ?>
                             <?php // no rows found ?>
                         <?php endif; ?>
-                    </span>	
-                <?php } ?>    		
+                    </span>
+                <?php } ?>
             <?php } ?>
 		</div>
        <div class="sticky-columns-wrapper desktop">
@@ -141,7 +141,7 @@
                             <a class="stdBtn std-button scroll-to-button red-outline-button" href="#<?php echo get_sub_field( 'scroll_to_id' ); ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
                         <?php } else if( get_sub_field( 'link_type' ) =='file') { ?> 
                             <?php $file = get_sub_field( 'file' ); ?>
-                            <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank"><?php echo get_sub_field( 'link_text' ); ?></a>
+                            <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'link_text' ); ?></a>
                         <?php } else if( get_sub_field( 'link_type' ) =='download-form') { ?>
                             <a class="formPopupHubspot download-file-button stdBtn std-button red-outline-button" href="#formPopup"><?php echo get_sub_field( 'link_text' ); ?></a>
                             <div style="display: none;">         
@@ -173,7 +173,7 @@
                                 <a class="stdBtn std-button scroll-to-button red-outline-button" href="#<?php echo get_sub_field( 'scroll_to_id' ); ?>"><?php echo get_sub_field( 'link_text' ); ?></a>
                             <?php } else if( get_sub_field( 'link_type' ) =='file') { ?> 
                                 <?php $file = get_sub_field( 'file' ); ?>
-                                <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank"><?php echo get_sub_field( 'link_text' ); ?></a>
+                                <a class="download-file-button std-button red-outline-button" href="<?php echo $file['url']; ?>" target="_blank" rel="noopener noreferrer"><?php echo get_sub_field( 'link_text' ); ?></a>
                             <?php } else if( get_sub_field( 'link_type' ) =='download-form') { ?>
                                 <a class="formPopupHubspot download-file-button stdBtn std-button red-outline-button" href="#stickyCardFormPopup"><?php echo get_sub_field( 'link_text' ); ?></a>
                                 <div style="display: none;">         

@@ -8,7 +8,7 @@
                     <div class="image" style="background-image: url(<?php echo get_field('speaker_image'); ?>)">
                     </div>
                     <?php if ( get_field ( 'linked_in_url' ) ) { ?>
-                        <a class="linkedIn" href="<?php echo get_field('linked_in_url'); ?>" target="_blank"></a>
+                        <a class="linkedIn" href="<?php echo get_field('linked_in_url'); ?>" target="_blank" rel="noopener noreferrer"></a>
                     <?php } ?>
                 </div>
 

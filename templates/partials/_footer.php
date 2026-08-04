@@ -30,7 +30,7 @@ $accessLinkText = get_field( 'access_the_portal_link_text', 'options'  );
 															</span>
 														<?php endwhile; ?>
 														<?php if ($portal_link == 'yes'){ ?>
-															<a class="footer-link portal text-red external-link" href="<?php echo $accessLink; ?>" target="_blank"><?php echo $accessLinkText; ?></a>
+															<a class="footer-link portal text-red external-link" href="<?php echo $accessLink; ?>" target="_blank" rel="noopener noreferrer"><?php echo $accessLinkText; ?></a>
 														<?php } ?>
 														</span>
 												<?php else : ?>
@@ -41,7 +41,7 @@ $accessLinkText = get_field( 'access_the_portal_link_text', 'options'  );
 														<span class="footer-column-title follow-us-title">Follow Us</span>
 														<span class="social-links">
 															<?php if ($linkedInLink) {?>
-																<a class="social-link linkedin" href="<?php echo $linkedInLink;?>" target="_blank" aria-label="LinkedIn">
+																<a class="social-link linkedin" href="<?php echo $linkedInLink;?>" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
 																	<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 																		viewBox="0 0 20 20" style="enable-background:new 0 0 20 20;" xml:space="preserve">
 																	<style type="text/css">
@@ -59,7 +59,7 @@ $accessLinkText = get_field( 'access_the_portal_link_text', 'options'  );
 																</a>
 															<?php } ?>
 															<?php if ($youtubeLink) {?>
-															<a class="social-link youtube" href="<?php echo $youtubeLink;?>" target="_blank" aria-label="YouTube">
+															<a class="social-link youtube" href="<?php echo $youtubeLink;?>" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
 																<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 																	viewBox="0 0 23 15" style="enable-background:new 0 0 23 15;" xml:space="preserve">
 																<style type="text/css">

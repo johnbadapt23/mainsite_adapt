@@ -325,7 +325,7 @@
                                             <ul>
                                                 <?php while ( have_rows( 'links' ) ) : the_row(); ?>
                                                     <li>
-                                                        <a class="events-links" href="<?php echo get_sub_field( 'link' ); ?>" target="_blank">
+                                                        <a class="events-links" href="<?php echo get_sub_field( 'link' ); ?>" target="_blank" rel="noopener noreferrer">
                                                             <?php echo get_sub_field( 'link_text' ); ?>
                                                             <?php if(get_sub_field('link_month')){ ?><span class="event-month text-red"><?php echo get_sub_field('link_month'); ?></span><?php } ?>
                                                         </a>

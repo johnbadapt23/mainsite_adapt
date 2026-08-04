@@ -106,7 +106,7 @@
                         	}
                         </script>
                         <span class="email-link">
-                            <a class="email-button" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank">
+                            <a class="email-button" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo the_permalink(); ?>" target="_blank" rel="noopener noreferrer">
                                 <span class="image-icon-container">
                                     <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="" width="32px"/>
                                     <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" alt="" width="32px"/>

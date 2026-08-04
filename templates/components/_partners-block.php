@@ -9,7 +9,7 @@
                         <span class="partners-logo-container">
         					<?php while ( have_rows( 'partner' ) ) : the_row(); ?>
                                 <?php if ( get_sub_field( 'partner_link' )) { ?>
-                                    <a href="<?php echo get_sub_field( 'partner_link' ); ?>" target="_blank">
+                                    <a href="<?php echo get_sub_field( 'partner_link' ); ?>" target="_blank" rel="noopener noreferrer">
                                 <?php } ?>
                                     <span class="partners-logo">
                                         <?php $logo = get_sub_field( 'partner_logo' ); ?>

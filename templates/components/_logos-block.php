@@ -19,7 +19,7 @@
         				<?php while ( have_rows( 'logos' ) ) : the_row(); ?>
         					<?php $logo = get_sub_field( 'logo' ); ?>
                             <?php if ( get_sub_field( 'link' )) { ?>
-                                <a href="<?php echo get_sub_field( 'link' ); ?>" target="_blank">
+                                <a href="<?php echo get_sub_field( 'link' ); ?>" target="_blank" rel="noopener noreferrer">
                             <?php } ?>
                                 <span class="slide">
                 					<?php if ( $logo ) { ?>
