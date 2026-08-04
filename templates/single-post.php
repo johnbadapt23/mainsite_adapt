@@ -46,7 +46,7 @@ foreach( $theTerms1 as $theTerm ){
         <div class="container">
             <span class="back-container">
                 <?php if( $isPodcast1 ) : ?>
-                <a class="back" href="/resource-type/podcast/" target="_self">Podcasts</a>
+                <a class="back" href="/resource-type/podcast/" target="_self">All podcast episodes</a>
                 <?php else : ?>
                 <a class="back" href="/all-resources/" target="_self">Resources</a>
                 <?php endif; ?>
