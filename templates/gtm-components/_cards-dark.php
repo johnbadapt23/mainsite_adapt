@@ -13,13 +13,19 @@
 								<span class="bg-container first-bg">
 									<?php $icon = get_sub_field( 'icon' ); ?>
 									<?php if ( $icon ) { ?>
-										<img src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+										<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+											'alt'     => $icon['alt'],
+											'loading' => false,
+										) ); ?>
 									<?php } ?>
 								</span>
 								<span class="bg-container hover-bg">
 									<?php $hover_icon = get_sub_field( 'hover_icon' ); ?>
 									<?php if ( $hover_icon ) { ?>
-										<img loading="lazy" src="<?php echo $hover_icon['url']; ?>" alt="<?php echo $hover_icon['alt']; ?>" />
+										<?php echo wp_get_attachment_image( $hover_icon['ID'], 'full', false, array(
+											'alt'     => $hover_icon['alt'],
+											'loading' => 'lazy',
+										) ); ?>
 									<?php } ?>
 								</span>
 							</span>
@@ -54,8 +60,11 @@
 									<span class="gtm-icon-column column one-quarter">
 										<?php $icon = get_sub_field( 'icon' ); ?>
 										<?php if ( $icon ) { ?>
-											<span class="icon-container">												
-												<img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+											<span class="icon-container">
+												<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+													'alt'     => $icon['alt'],
+													'loading' => 'lazy',
+												) ); ?>
 											</span>
 										<?php } ?>
 										<span class="labelLarge primary-white"><?php echo get_sub_field( 'title' ); ?></span>
@@ -89,8 +98,11 @@
 									<span class="gtm-icon-column">
 										<?php $icon = get_sub_field( 'icon' ); ?>
 										<?php if ( $icon ) { ?>
-											<span class="icon-container">												
-												<img loading="lazy" src="<?php echo esc_url( $icon['url'] ); ?>" alt="<?php echo esc_attr( $icon['alt'] ); ?>" />
+											<span class="icon-container">
+												<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+													'alt'     => $icon['alt'],
+													'loading' => 'lazy',
+												) ); ?>
 											</span>
 										<?php } ?>
 										<span class="labelMedium primary-white"><?php echo esc_html( get_sub_field( 'title' ) ); ?></span>

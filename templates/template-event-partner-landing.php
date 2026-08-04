@@ -12,7 +12,10 @@ get_header();
             <span class="logo-container">
                 <?php $header_logo = get_field( 'header_logo' ); ?>
                 <?php if ( $header_logo ) { ?>
-                    <img src="<?php echo $header_logo['url']; ?>" alt="<?php echo $header_logo['alt']; ?>" />
+                    <?php echo wp_get_attachment_image( $header_logo['ID'], 'full', false, array(
+                        'alt'     => $header_logo['alt'],
+                        'loading' => false,
+                    ) ); ?>
                 <?php } ?>            
             </span>
             <span class="text-container-right">

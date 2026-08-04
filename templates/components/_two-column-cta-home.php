@@ -37,13 +37,20 @@
                 <div class="image-inner-container">
                     <?php $image = get_sub_field( 'image' ); ?>
         			<?php if ( $image ) { ?>
-        				<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+        				<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+        					'alt'     => $image['alt'],
+        					'loading' => false,
+        				) ); ?>
         			<?php } ?>
                     <?php if ( get_sub_field('caption')) { ?>
                         <span class="caption-text"><?php echo get_sub_field('caption'); ?>
                             <?php $arrow_image = get_sub_field( 'arrow_image' ); ?>
                 			<?php if ( $arrow_image ) { ?>
-                				<img loading="lazy" class="arrow" src="<?php echo $arrow_image['url']; ?>" alt="<?php echo $arrow_image['alt']; ?>" />
+                				<?php echo wp_get_attachment_image( $arrow_image['ID'], 'full', false, array(
+                					'class'   => 'arrow',
+                					'alt'     => $arrow_image['alt'],
+                					'loading' => 'lazy',
+                				) ); ?>
                 			<?php } ?>
                         </span>
                     <?php } ?>

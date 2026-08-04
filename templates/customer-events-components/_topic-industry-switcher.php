@@ -48,11 +48,19 @@
                 <div class="image-outer">
                     <?php $image = get_sub_field( 'image' ); ?>
                     <?php if ( $image ) { ?>
-                        <img class="desktop mobile-hide" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                        <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                            'class'   => 'desktop mobile-hide',
+                            'alt'     => $image['alt'],
+                            'loading' => false,
+                        ) ); ?>
                     <?php } ?>
                     <?php $mobile_image = get_sub_field( 'mobile_image' ); ?>
                     <?php if ( $mobile_image ) { ?>
-                        <img loading="lazy" class="mobile desktop-hide" src="<?php echo $mobile_image['url']; ?>" alt="<?php echo $mobile_image['alt']; ?>" />
+                        <?php echo wp_get_attachment_image( $mobile_image['ID'], 'full', false, array(
+                            'class'   => 'mobile desktop-hide',
+                            'alt'     => $mobile_image['alt'],
+                            'loading' => 'lazy',
+                        ) ); ?>
                     <?php } ?>
                 </div>
             </div>

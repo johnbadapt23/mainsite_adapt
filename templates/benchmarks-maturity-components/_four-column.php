@@ -7,7 +7,10 @@
                 <?php $title_icon = get_sub_field( 'title_icon' ); ?>
                 <span class="icon-container">
                     <?php if ( $title_icon ) { ?>
-                        <img src="<?php echo $title_icon['url']; ?>" alt="<?php echo $title_icon['alt']; ?>" />
+                        <?php echo wp_get_attachment_image( $title_icon['ID'], 'full', false, array(
+                            'alt'     => $title_icon['alt'],
+                            'loading' => false,
+                        ) ); ?>
                     <?php } ?>
                 </span>
                 <span class="title-text font-ibm text-red"><?php echo get_sub_field( 'title' ); ?></span>

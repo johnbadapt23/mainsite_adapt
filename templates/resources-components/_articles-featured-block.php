@@ -46,7 +46,10 @@
                                             <span class="bg-container">
                                                 <?php $featured_image = get_field( 'featured_image' ); ?>
                                                 <?php if ( $featured_image ) { ?>
-                                                	<img src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                	<?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                                		'alt'     => $featured_image['alt'],
+                                                		'loading' => false,
+                                                	) ); ?>
                                                 <?php } ?>
                                             </span>
                                         </a>
@@ -87,7 +90,10 @@
                                         <span class="bg-container">
                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                             <?php if ( $featured_image ) { ?>
-                                            	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                            	<?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                            		'alt'     => $featured_image['alt'],
+                                            		'loading' => 'lazy',
+                                            	) ); ?>
                                             <?php } ?>
                                         </span>
                                     </a>
@@ -136,7 +142,10 @@
                                                 <span class="bg-container">
                                                     <?php $featured_image = get_field( 'featured_image' ); ?>
                                                     <?php if ( $featured_image ) { ?>
-                                                    	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                                    		'alt'     => $featured_image['alt'],
+                                                    		'loading' => 'lazy',
+                                                    	) ); ?>
                                                     <?php } ?>
                                                 </span>
                                             </a>
@@ -177,7 +186,10 @@
                                             <span class="bg-container">
                                                 <?php $featured_image = get_field( 'featured_image' ); ?>
                                                 <?php if ( $featured_image ) { ?>
-                                                	<img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                	<?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                                		'alt'     => $featured_image['alt'],
+                                                		'loading' => 'lazy',
+                                                	) ); ?>
                                                 <?php } ?>
                                             </span>
                                         </a>

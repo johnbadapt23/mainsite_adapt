@@ -23,7 +23,11 @@
                             <?php } ?>
                                 <span class="slide">
                 					<?php if ( $logo ) { ?>
-                						<img class="logo" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                						<?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                							'class'   => 'logo',
+                							'alt'     => $logo['alt'],
+                							'loading' => false,
+                						) ); ?>
                 					<?php } ?>
                                 </span>
                             <?php if ( get_sub_field( 'link' )) { ?>

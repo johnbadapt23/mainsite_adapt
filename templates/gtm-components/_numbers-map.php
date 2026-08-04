@@ -7,7 +7,10 @@
             <span class="background-container">
                 <?php $background_image = get_sub_field( 'background_image' ); ?>
                 <?php if ( $background_image ) { ?>
-                    <img src="<?php echo $background_image['url']; ?>" alt="<?php echo $background_image['alt']; ?>" />
+                    <?php echo wp_get_attachment_image( $background_image['ID'], 'full', false, array(
+                        'alt'     => $background_image['alt'],
+                        'loading' => false,
+                    ) ); ?>
                 <?php } ?>
             </span>
             <span class="column-container">

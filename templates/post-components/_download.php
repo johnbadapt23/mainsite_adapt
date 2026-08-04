@@ -2,7 +2,10 @@
 	<?php $image = get_sub_field( 'image' ); ?>
 	<?php if ( $image ) { ?>
 		<span class="download-image-container">
-			<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+			<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+				'alt'     => $image['alt'],
+				'loading' => false,
+			) ); ?>
 		</span>
 	<?php } ?>
 	<span class="download-title labelXXLarge text-black"><?php echo get_sub_field( 'title' ); ?></span>

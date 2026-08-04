@@ -61,18 +61,24 @@ $displayed_posts[] = get_the_ID();
                     <?php if ( $company_logo_background ) { ?>
                         <span class="company-logo-container background-company-logo">
                             <span class="logo-container-background">
-                                <img src="<?php echo $company_logo_background['url']; ?>" alt="<?php echo $company_logo_background['alt']; ?>" />
+                                <?php echo wp_get_attachment_image( $company_logo_background['ID'], 'full', false, array(
+                                    'alt'     => $company_logo_background['alt'],
+                                    'loading' => false,
+                                ) ); ?>
                             </span>
                         </span>
                     <?php } else { ?>
                         <?php if ( $company_logo ) { ?>
                             <span class="company-logo-container">
                                 <span class="logo-container">
-                                    <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                    <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                        'alt'     => $company_logo['alt'],
+                                        'loading' => 'lazy',
+                                    ) ); ?>
                                 </span>
                             </span>
-                        <?php } ?> 
-                    <?php } ?>     
+                        <?php } ?>
+                    <?php } ?>
                     <span class="labelMedium text-black"><?php echo get_field( 'company_name' ); ?></span>
                     <span class="sector-container">
                         <span class="sector-icon"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/sector.svg" alt="" width="20"/></span>
@@ -163,7 +169,10 @@ $displayed_posts[] = get_the_ID();
                                             <span class="icon-inner">
                                                 <?php $icon = get_sub_field( 'icon' ); ?>
                                                 <?php if ( $icon ) { ?>
-                                                    <img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                                                    <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                                                        'alt'     => $icon['alt'],
+                                                        'loading' => 'lazy',
+                                                    ) ); ?>
                                                 <?php } ?>                                    
                                             </span>
                                         </span>
@@ -198,18 +207,24 @@ $displayed_posts[] = get_the_ID();
                     <?php if ( $company_logo_background ) { ?>
                         <span class="company-logo-container background-company-logo desktop-hide">
                             <span class="logo-container-background">
-                                <img loading="lazy" src="<?php echo $company_logo_background['url']; ?>" alt="<?php echo $company_logo_background['alt']; ?>" />
+                                <?php echo wp_get_attachment_image( $company_logo_background['ID'], 'full', false, array(
+                                    'alt'     => $company_logo_background['alt'],
+                                    'loading' => 'lazy',
+                                ) ); ?>
                             </span>
                         </span>
                     <?php } else { ?>
                         <?php if ( $company_logo ) { ?>
                             <span class="company-logo-container desktop-hide">
                                 <span class="logo-container">
-                                    <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                    <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                        'alt'     => $company_logo['alt'],
+                                        'loading' => 'lazy',
+                                    ) ); ?>
                                 </span>
                             </span>
-                        <?php } ?> 
-                    <?php } ?>                         
+                        <?php } ?>
+                    <?php } ?>
                     <h1 class="story-title text-black"><?php the_title(); ?></h1>
                     <span class="desktop-hide company-info">
                         <span class="divider-line"></span>
@@ -254,7 +269,10 @@ $displayed_posts[] = get_the_ID();
                                     <span class="bg-container">
                                         <?php $video_poster = get_field( 'video_poster' ); ?>
                                         <?php if ( $video_poster ) { ?>
-                                            <img loading="lazy" src="<?php echo $video_poster['url']; ?>" alt="<?php echo $video_poster['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $video_poster['ID'], 'full', false, array(
+                                                'alt'     => $video_poster['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         <?php } ?>
                                         <span class="gradient-overlay"></span>
                                         <span class="video-button"></span>
@@ -288,9 +306,12 @@ $displayed_posts[] = get_the_ID();
                                     <span class="image-content-container">
                                         <?php $image = get_sub_field( 'image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                'alt'     => $image['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         <?php } ?>
-                                        <?php if( get_sub_field( 'image_caption' )){ ?> 
+                                        <?php if( get_sub_field( 'image_caption' )){ ?>
                                             <span class="caption"><?php echo get_sub_field( 'image_caption' ); ?></span>
                                         <?php } ?>                                        
                                     </span>
@@ -356,7 +377,10 @@ $displayed_posts[] = get_the_ID();
                                             <span class="icon-inner">
                                                 <?php $icon = get_sub_field( 'icon' ); ?>
                                                 <?php if ( $icon ) { ?>
-                                                    <img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                                                    <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                                                        'alt'     => $icon['alt'],
+                                                        'loading' => 'lazy',
+                                                    ) ); ?>
                                                 <?php } ?>                                    
                                             </span>
                                         </span>
@@ -448,19 +472,25 @@ $displayed_posts[] = get_the_ID();
                                     <?php if ( $company_logo_background ) { ?>
                                         <span class="company-logo-container background-company-logo">
                                             <span class="logo-container-background">
-                                                <img loading="lazy" src="<?php echo $company_logo_background['url']; ?>" alt="<?php echo $company_logo_background['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $company_logo_background['ID'], 'full', false, array(
+                                                    'alt'     => $company_logo_background['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             </span>
                                         </span>
                                     <?php } else { ?>
                                         <?php if ( $company_logo ) { ?>
                                             <span class="company-logo-container">
                                                 <span class="logo-container">
-                                                    <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                    <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                        'alt'     => $company_logo['alt'],
+                                                        'loading' => 'lazy',
+                                                    ) ); ?>
                                                 </span>
                                             </span>
-                                        <?php } ?> 
-                                    <?php } ?>                                                                                                                
-                                </span> 
+                                        <?php } ?>
+                                    <?php } ?>
+                                </span>
                                 <span class="related-bottom">
                                     <?php
                                     $terms = get_the_terms(get_the_ID(), 'customer-stories-categories');
@@ -585,7 +615,10 @@ $displayed_posts[] = get_the_ID();
                                                 <span class="bg-container">
                                                     <?php $image = get_sub_field( 'image' ); ?>
                                                     <?php if ( $image ) { ?>
-                                                        <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                            'alt'     => $image['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     <?php } ?>
                                                 </span>
                                             </span>
@@ -597,7 +630,10 @@ $displayed_posts[] = get_the_ID();
                                                 <span class="bg-container">
                                                     <?php $image = get_sub_field( 'image' ); ?>
                                                     <?php if ( $image ) { ?>
-                                                        <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                            'alt'     => $image['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     <?php } ?>
                                                 </span>
                                             </span>

@@ -21,7 +21,10 @@
                         <div class="logo-container" <?php if( get_sub_field( 'logo_height' )){ ?>style="height: <?php echo get_sub_field( 'logo_height' ); ?>px;"<?php } ?>>
                             <?php $image_logo = get_sub_field( 'image_logo' ); ?>
                             <?php if ( $image_logo ) { ?>
-                                <img src="<?php echo $image_logo['url']; ?>" alt="<?php echo $image_logo['alt']; ?>" />
+                                <?php echo wp_get_attachment_image( $image_logo['ID'], 'full', false, array(
+                                    'alt'     => $image_logo['alt'],
+                                    'loading' => false,
+                                ) ); ?>
                             <?php } ?>
                         </div>
                         <?php if ($columnCount == 1){ ?>

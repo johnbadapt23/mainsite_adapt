@@ -109,7 +109,11 @@ $accessLinkText = get_field( 'access_the_portal_link_text', 'options'  );
 					<?php $footer_icon = get_field( 'footer_icon', 'options'  ); ?>
 					<?php if ( $footer_icon ) { ?>
 						<a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-							<img loading="lazy" class="logo" src="<?php echo $footer_icon['url']; ?>" alt="<?php echo $footer_icon['alt']; ?>" />
+							<?php echo wp_get_attachment_image( $footer_icon['ID'], 'full', false, array(
+								'class'   => 'logo',
+								'alt'     => $footer_icon['alt'],
+								'loading' => 'lazy',
+							) ); ?>
 						</a>
 					<?php } ?>
 					<span class="copyright text-medium-grey">ADAPT &copy; <?php echo date('Y'); ?></span>

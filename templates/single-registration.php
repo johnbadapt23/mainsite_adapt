@@ -19,7 +19,10 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 				<span class="logo-container">
 					<?php $header_logo = get_field( 'header_logo' ); ?>
 					<?php if ( $header_logo ) { ?>
-						<img src="<?php echo $header_logo['url']; ?>" alt="<?php echo $header_logo['alt']; ?>" />
+						<?php echo wp_get_attachment_image( $header_logo['ID'], 'full', false, array(
+							'alt'     => $header_logo['alt'],
+							'loading' => false,
+						) ); ?>
 					<?php } ?>            
 				</span>
 				<span class="text-container-right">
@@ -49,7 +52,10 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 				<?php if(get_field( 'banner_logo' )) { ?>
 					<?php $bannerLogo = get_field('banner_logo'); ?>
 					<span class="banner-icon" <?php if( get_field( 'banner_logo_height' )){ ?>style="height: <?php echo get_field( 'banner_logo_height' ); ?>px;"<?php } ?>>
-						<img loading="lazy" src="<?php echo $bannerLogo['url']; ?>" alt="<?php echo $bannerLogo['alt']; ?>"/>
+						<?php echo wp_get_attachment_image( $bannerLogo['ID'], 'full', false, array(
+							'alt'     => $bannerLogo['alt'],
+							'loading' => 'lazy',
+						) ); ?>
 					</span>
 				<?php } ?>
 				<h1 class="text-white"><?php the_title(); ?></h1>
@@ -164,7 +170,10 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 														<?php $company_logo = get_field( 'company_logo' ); ?>
 														<?php if ( $company_logo ) { ?>
 															<span class="company-logo">
-															<img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+															<?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+																'alt'     => $company_logo['alt'],
+																'loading' => 'lazy',
+															) ); ?>
 														</span>
 														<?php } ?>
 													</div>
@@ -456,7 +465,10 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 												<span class="icon-container">
 													<?php $icon = get_sub_field( 'icon' ); ?>
 													<?php if ( $icon ) { ?>
-														<img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+														<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+															'alt'     => $icon['alt'],
+															'loading' => 'lazy',
+														) ); ?>
 													<?php } ?>
 												</span>
 												<span class="resources-item-title"><?php echo get_sub_field( 'title' ); ?></span>
@@ -497,7 +509,10 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 									<div class="logo-container" <?php if( get_sub_field( 'logo_height' )){ ?>style="height: <?php echo get_sub_field( 'logo_height' ); ?>px;"<?php } ?>>
 										<?php $image_logo = get_sub_field( 'image_logo' ); ?>
 										<?php if ( $image_logo ) { ?>
-											<img loading="lazy" src="<?php echo $image_logo['url']; ?>" alt="<?php echo $image_logo['alt']; ?>" />
+											<?php echo wp_get_attachment_image( $image_logo['ID'], 'full', false, array(
+												'alt'     => $image_logo['alt'],
+												'loading' => 'lazy',
+											) ); ?>
 										<?php } ?>
 									</div>
 									<?php if ($columnCount == 1){ ?>

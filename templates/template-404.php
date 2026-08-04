@@ -6,7 +6,10 @@
             <span class="not-found-image-container">
                 <?php $image = get_field( '404_image', 'options' ); ?>
                 <?php if ($image ) { ?>
-                	<img src="<?php echo$image['url']; ?>" alt="<?php echo$image['alt']; ?>" />
+                	<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                		'alt'     => $image['alt'],
+                		'loading' => false,
+                	) ); ?>
                 <?php } ?>
             </span>
             <span class="not-found-button-container button-container">

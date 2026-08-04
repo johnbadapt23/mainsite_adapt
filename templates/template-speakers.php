@@ -15,7 +15,11 @@ get_header();
             <?php $rotating_image = get_field( 'rotating_image', 'options' ); ?>
             <span class="rotating-image-container">
                 <?php if ( $rotating_image ) { ?>
-                    <img id="rotatingImage" src="<?php echo $rotating_image['url']; ?>" alt="<?php echo $rotating_image['alt']; ?>" />
+                    <?php echo wp_get_attachment_image( $rotating_image['ID'], 'full', false, array(
+                        'id'      => 'rotatingImage',
+                        'alt'     => $rotating_image['alt'],
+                        'loading' => false,
+                    ) ); ?>
                 <?php } ?>
             </span>
         </div>
@@ -34,12 +38,18 @@ get_header();
                                 <?php $speaker_image = get_field( 'speaker_image' ); ?>
                                 <span class="bg-container<?php if ( $speaker_image ) { ?><?php } else { ?> no-background<?php } ?>">
                                     <?php if ( $speaker_image ) { ?>
-                                        <img loading="lazy" src="<?php echo $speaker_image['url']; ?>" alt="<?php echo $speaker_image['alt']; ?>" />
+                                        <?php echo wp_get_attachment_image( $speaker_image['ID'], 'full', false, array(
+                                            'alt'     => $speaker_image['alt'],
+                                            'loading' => 'lazy',
+                                        ) ); ?>
                                         <span class="speaker-opacity"></span>
                                     <?php } else { ?>
                                         <?php $generic_headshot = get_field( 'generic_headshot', 'options' ); ?>
                                         <?php if ( $generic_headshot ) { ?>
-                                            <img loading="lazy" src="<?php echo $generic_headshot['url']; ?>" alt="<?php echo $generic_headshot['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $generic_headshot['ID'], 'full', false, array(
+                                                'alt'     => $generic_headshot['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         <?php } ?>
                                     <?php } ?>
                                 </span>
@@ -61,11 +71,17 @@ get_header();
                                     <span class="bg-container">
                                         <?php $speaker_image = get_field( 'speaker_image' ); ?>
                                         <?php if ( $speaker_image ) { ?>
-                                            <img loading="lazy" src="<?php echo $speaker_image['url']; ?>" alt="<?php echo $speaker_image['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $speaker_image['ID'], 'full', false, array(
+                                                'alt'     => $speaker_image['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         <?php } else { ?>
                                             <?php $generic_headshot = get_field( 'generic_headshot', 'options' ); ?>
                                             <?php if ( $generic_headshot ) { ?>
-                                            	<img loading="lazy" src="<?php echo $generic_headshot['url']; ?>" alt="<?php echo $generic_headshot['alt']; ?>" />
+                                            	<?php echo wp_get_attachment_image( $generic_headshot['ID'], 'full', false, array(
+                                            		'alt'     => $generic_headshot['alt'],
+                                            		'loading' => 'lazy',
+                                            	) ); ?>
                                             <?php } ?>
                                         <?php } ?>
                                     </span>
@@ -81,7 +97,10 @@ get_header();
                                 <?php $company_logo = get_field( 'company_logo' ); ?>
                                 <?php if ( $company_logo ) { ?>
                                     <span class="company-logo">
-                                       <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                       <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                           'alt'     => $company_logo['alt'],
+                                           'loading' => 'lazy',
+                                       ) ); ?>
                                    </span>
                                 <?php } ?>
                             </div>

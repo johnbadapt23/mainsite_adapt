@@ -68,7 +68,10 @@ if ($q && $q->parent != 0) {
                                                 <span class="related-top">
                                                     <?php if ( $video_poster ) { ?>
                                                     <span class="background-image-container bg-container">
-                                                            <img src="<?php echo $video_poster['url']; ?>" alt="<?php echo $video_poster['alt']; ?>" />
+                                                            <?php echo wp_get_attachment_image( $video_poster['ID'], 'full', false, array(
+                                                                'alt'     => $video_poster['alt'],
+                                                                'loading' => false,
+                                                            ) ); ?>
                                                         </span>
                                                     <?php } ?>                                                                                                                                                       
                                                 </span> 
@@ -79,11 +82,14 @@ if ($q && $q->parent != 0) {
                                                             <?php if ( $company_logo ) { ?>
                                                                 <span class="company-logo-container">
                                                                     <span class="logo-container">
-                                                                        <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                                        <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                                            'alt'     => $company_logo['alt'],
+                                                                            'loading' => 'lazy',
+                                                                        ) ); ?>
                                                                     </span>
                                                                 </span>
                                                             <?php } ?>
-                                                        </span>                                                       
+                                                        </span>
                                                         <span class="bottom-section">
                                                             <?php
                                                             $terms = get_the_terms(get_the_ID(), 'customer-stories-categories');
@@ -295,7 +301,10 @@ if ($q && $q->parent != 0) {
                                             <?php if ( $company_logo ) { ?>
                                                 <span class="company-logo-container">
                                                     <span class="logo-container">
-                                                        <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                            'alt'     => $company_logo['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     </span>
                                                 </span>
                                             <?php } ?>
@@ -310,7 +319,10 @@ if ($q && $q->parent != 0) {
                                                     <?php while ( have_rows( 'bio' ) ) : the_row(); ?>
                                                         <?php $image = get_sub_field( 'image' ); ?>
                                                         <?php if ( $image ) { ?>
-                                                            <span class="bio-image-container"><img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" /></span>
+                                                            <span class="bio-image-container"><?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                                'alt'     => $image['alt'],
+                                                                'loading' => 'lazy',
+                                                            ) ); ?></span>
                                                         <?php } ?>
                                                         <span class="bio-text">
                                                             <span class="labelLarge text-black"><?php echo get_sub_field( 'name' ); ?></span>
@@ -407,7 +419,11 @@ if ($q && $q->parent != 0) {
                                                     <?php if(get_sub_field( 'company_link' )) { ?>
                                                         <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                                     <?php } ?>
-                                                        <img loading="lazy" class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                            'class'   => 'colour-image',
+                                                            'alt'     => $logo['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     <?php if(get_sub_field( 'company_link' )) { ?>
                                                         </a>
                                                     <?php } ?>
@@ -429,7 +445,11 @@ if ($q && $q->parent != 0) {
                                                     <?php if(get_sub_field( 'company_link' )) { ?>
                                                         <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                                     <?php } ?>
-                                                        <img loading="lazy" class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                            'class'   => 'colour-image',
+                                                            'alt'     => $logo['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     <?php if(get_sub_field( 'company_link' )) { ?>
                                                         </a>
                                                     <?php } ?>
@@ -459,7 +479,11 @@ if ($q && $q->parent != 0) {
                                                     <?php if(get_sub_field( 'company_link' )) { ?>
                                                         <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                                     <?php } ?>
-                                                        <img loading="lazy" class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                            'class'   => 'colour-image',
+                                                            'alt'     => $logo['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     <?php if(get_sub_field( 'company_link' )) { ?>
                                                         </a>
                                                     <?php } ?>
@@ -481,7 +505,11 @@ if ($q && $q->parent != 0) {
                                                     <?php if(get_sub_field( 'company_link' )) { ?>
                                                         <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                                     <?php } ?>
-                                                        <img loading="lazy" class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                            'class'   => 'colour-image',
+                                                            'alt'     => $logo['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     <?php if(get_sub_field( 'company_link' )) { ?>
                                                         </a>
                                                     <?php } ?>
@@ -628,14 +656,20 @@ if ($q && $q->parent != 0) {
                                     <?php if ( $company_logo_background ) { ?>
                                         <span class="company-logo-container background-company-logo">
                                             <span class="logo-container-background">
-                                                <img loading="lazy" src="<?php echo $company_logo_background['url']; ?>" alt="<?php echo $company_logo_background['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $company_logo_background['ID'], 'full', false, array(
+                                                    'alt'     => $company_logo_background['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             </span>
                                         </span>
                                     <?php } else { ?>
                                         <?php if ( $company_logo ) { ?>
                                             <span class="company-logo-container">
                                                 <span class="logo-container">
-                                                    <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                    <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                        'alt'     => $company_logo['alt'],
+                                                        'loading' => 'lazy',
+                                                    ) ); ?>
                                                 </span>
                                             </span>
                                         <?php } ?> 
@@ -768,7 +802,10 @@ if ($q && $q->parent != 0) {
                                     <?php if ( $company_logo ) { ?>
                                         <span class="company-logo-container">
                                             <span class="logo-container">
-                                                <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                    'alt'     => $company_logo['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             </span>
                                         </span>
                                     <?php } ?>
@@ -783,7 +820,10 @@ if ($q && $q->parent != 0) {
                                             <?php while ( have_rows( 'bio' ) ) : the_row(); ?>
                                                 <?php $image = get_sub_field( 'image' ); ?>
                                                 <?php if ( $image ) { ?>
-                                                    <span class="bio-image-container"><img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" /></span>
+                                                    <span class="bio-image-container"><?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                        'alt'     => $image['alt'],
+                                                        'loading' => 'lazy',
+                                                    ) ); ?></span>
                                                 <?php } ?>
                                                 <span class="bio-text">
                                                     <span class="labelLarge text-black"><?php echo get_sub_field( 'name' ); ?></span>
@@ -889,7 +929,10 @@ if ($q && $q->parent != 0) {
                                                 <span class="bg-container">
                                                     <?php $image = get_sub_field( 'image' ); ?>
                                                     <?php if ( $image ) { ?>
-                                                        <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                            'alt'     => $image['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     <?php } ?>
                                                 </span>
                                             </span>
@@ -901,7 +944,10 @@ if ($q && $q->parent != 0) {
                                                 <span class="bg-container">
                                                     <?php $image = get_sub_field( 'image' ); ?>
                                                     <?php if ( $image ) { ?>
-                                                        <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                            'alt'     => $image['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     <?php } ?>
                                                 </span>
                                             </span>

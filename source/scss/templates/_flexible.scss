@@ -5905,19 +5905,19 @@ section.parallax-image-module {
         img {
             float: left;
             width: 100%;
+        }
 
-            &.desktop-hide {
-                display: none;
+        .desktop-hide {
+            display: none;
+        }
+
+        @media (max-width:1023px) {
+            .desktop-hide {
+                display: block;
             }
 
-            @media (max-width:1023px) {
-                &.desktop-hide {
-                    display: block;
-                }
-
-                &.mobile-hide {
-                    display: none;
-                }
+            .mobile-hide {
+                display: none;
             }
         }
     }

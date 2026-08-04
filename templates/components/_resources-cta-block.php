@@ -19,13 +19,19 @@
             		<?php $image = get_sub_field( 'image' ); ?>
                     <div class="main-image-container">
                 		<?php if ( $image ) { ?>
-                			<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                			<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                				'alt'     => $image['alt'],
+                				'loading' => false,
+                			) ); ?>
                 		<?php } ?>
                     </div>
                     <span class="overlay-image-container">
                         <?php $overlay_image = get_sub_field( 'overlay_image' ); ?>
             			<?php if ( $overlay_image ) { ?>
-            				<img loading="lazy" src="<?php echo $overlay_image['url']; ?>" alt="<?php echo $overlay_image['alt']; ?>" />
+            				<?php echo wp_get_attachment_image( $overlay_image['ID'], 'full', false, array(
+            					'alt'     => $overlay_image['alt'],
+            					'loading' => 'lazy',
+            				) ); ?>
             			<?php } ?>
                     </span>
                 </div>

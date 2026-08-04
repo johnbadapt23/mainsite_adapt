@@ -18,7 +18,10 @@
                                         <span class="bg-container">
                         					<?php $logo = get_sub_field( 'logo' ); ?>
                         					<?php if ( $logo ) { ?>
-                        						<img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                        						<?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                        							'alt'     => $logo['alt'],
+                        							'loading' => false,
+                        						) ); ?>
                         					<?php } ?>
                                         </span>
                                     </span>
@@ -28,7 +31,10 @@
                                         <span class="bg-container">
                                             <?php $card_image = get_sub_field( 'card_image' ); ?>
                         					<?php if ( $card_image ) { ?>
-                        						<img loading="lazy" src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
+                        						<?php echo wp_get_attachment_image( $card_image['ID'], 'full', false, array(
+                        							'alt'     => $card_image['alt'],
+                        							'loading' => 'lazy',
+                        						) ); ?>
                         					<?php } ?>
                                         </span>
                                     </span>
@@ -56,7 +62,10 @@
                                         <span class="bg-container">
                                             <?php $card_image = get_sub_field( 'card_image' ); ?>
                         					<?php if ( $card_image ) { ?>
-                        						<img loading="lazy" src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
+                        						<?php echo wp_get_attachment_image( $card_image['ID'], 'full', false, array(
+                        							'alt'     => $card_image['alt'],
+                        							'loading' => 'lazy',
+                        						) ); ?>
                         					<?php } ?>
                                         </span>
                                     </span>
@@ -104,7 +113,10 @@
                                         <span class="bg-container">
                         					<?php $logo = get_sub_field( 'logo' ); ?>
                         					<?php if ( $logo ) { ?>
-                        						<img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                        						<?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                        							'alt'     => $logo['alt'],
+                        							'loading' => 'lazy',
+                        						) ); ?>
                         					<?php } ?>
                                         </span>
                                     </span>
@@ -114,7 +126,10 @@
                                         <span class="bg-container">
                                             <?php $card_image = get_sub_field( 'card_image' ); ?>
                         					<?php if ( $card_image ) { ?>
-                        						<img loading="lazy" src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
+                        						<?php echo wp_get_attachment_image( $card_image['ID'], 'full', false, array(
+                        							'alt'     => $card_image['alt'],
+                        							'loading' => 'lazy',
+                        						) ); ?>
                         					<?php } ?>
                                         </span>
                                     </span>
@@ -142,7 +157,10 @@
                                         <span class="bg-container">
                                             <?php $card_image = get_sub_field( 'card_image' ); ?>
                         					<?php if ( $card_image ) { ?>
-                        						<img loading="lazy" src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
+                        						<?php echo wp_get_attachment_image( $card_image['ID'], 'full', false, array(
+                        							'alt'     => $card_image['alt'],
+                        							'loading' => 'lazy',
+                        						) ); ?>
                         					<?php } ?>
                                         </span>
                                     </span>

@@ -34,7 +34,10 @@
 	                                    <span class="bg-container">
 	                                        <?php $image = get_sub_field( 'image' ); ?>
 	                    					<?php if ( $image ) { ?>
-	                    						<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+	                    						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+	                    						    'alt'     => $image['alt'],
+	                    						    'loading' => false,
+	                    						) ); ?>
 	                    					<?php } ?>
                                             <span class="opacity-overlay">
                                                 <span class="video-overlay-button"></span>
@@ -48,7 +51,10 @@
 	                                    <span class="bg-container">
 	                                        <?php $image = get_sub_field( 'image' ); ?>
 	                    					<?php if ( $image ) { ?>
-	                    						<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+	                    						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+	                    						    'alt'     => $image['alt'],
+	                    						    'loading' => 'lazy',
+	                    						) ); ?>
 	                    					<?php } ?>
                                             <span class="opacity-overlay">
                                                 <span class="download-overlay-button"></span>
@@ -72,7 +78,10 @@
     	                                                <span class="bg-container">
     	                                                    <?php $image = get_sub_field( 'image' ); ?>
     	                                					<?php if ( $image ) { ?>
-    	                                						<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+    	                                						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+    	                                						    'alt'     => $image['alt'],
+    	                                						    'loading' => 'lazy',
+    	                                						) ); ?>
     	                                					<?php } ?>
     	                                                </span>
     	                                            </span>
@@ -147,7 +156,10 @@
 	                                    <span class="bg-container">
 	                                        <?php $image = get_sub_field( 'image' ); ?>
 	                    					<?php if ( $image ) { ?>
-	                    						<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+	                    						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+	                    						    'alt'     => $image['alt'],
+	                    						    'loading' => 'lazy',
+	                    						) ); ?>
 	                    					<?php } ?>
                                             <span class="opacity-overlay">
                                                 <span class="video-overlay-button"></span>
@@ -161,7 +173,10 @@
 	                                    <span class="bg-container">
 	                                        <?php $image = get_sub_field( 'image' ); ?>
 	                    					<?php if ( $image ) { ?>
-	                    						<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+	                    						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+	                    						    'alt'     => $image['alt'],
+	                    						    'loading' => 'lazy',
+	                    						) ); ?>
 	                    					<?php } ?>
                                             <span class="opacity-overlay">
                                                 <span class="download-overlay-button"></span>
@@ -185,7 +200,10 @@
     	                                                <span class="bg-container">
     	                                                    <?php $image = get_sub_field( 'image' ); ?>
     	                                					<?php if ( $image ) { ?>
-    	                                						<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+    	                                						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+    	                                						    'alt'     => $image['alt'],
+    	                                						    'loading' => 'lazy',
+    	                                						) ); ?>
     	                                					<?php } ?>
     	                                                </span>
     	                                            </span>

@@ -13,7 +13,11 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                             <?php } ?>
-                                                <img class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                    'class'   => 'colour-image',
+                                                    'alt'     => $logo['alt'],
+                                                    'loading' => false,
+                                                ) ); ?>
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 </a>
                                             <?php } ?>
@@ -35,7 +39,11 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                             <?php } ?>
-                                                <img loading="lazy" class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                    'class'   => 'colour-image',
+                                                    'alt'     => $logo['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 </a>
                                             <?php } ?>
@@ -65,7 +73,11 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                             <?php } ?>
-                                                <img loading="lazy" class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                    'class'   => 'colour-image',
+                                                    'alt'     => $logo['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 </a>
                                             <?php } ?>
@@ -87,7 +99,11 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank">
                                             <?php } ?>
-                                                <img loading="lazy" class="colour-image" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                    'class'   => 'colour-image',
+                                                    'alt'     => $logo['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 </a>
                                             <?php } ?>

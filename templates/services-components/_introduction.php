@@ -37,7 +37,10 @@
                 <span class="bg-container contained-image">
                     <?php $side_image = get_sub_field( 'side_image' ); ?>
                     <?php if ( $side_image ) { ?>
-                        <img src="<?php echo $side_image['url']; ?>" alt="<?php echo $side_image['alt']; ?>" />
+                        <?php echo wp_get_attachment_image( $side_image['ID'], 'full', false, array(
+                            'alt'     => $side_image['alt'],
+                            'loading' => false,
+                        ) ); ?>
                     <?php } ?>
                 </span>
                 <span class="fade"></span>

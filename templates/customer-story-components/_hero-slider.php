@@ -17,13 +17,19 @@
                                         <span class="related-inner image-related">
                                             <?php if ( $video_poster ) { ?>
                                                 <span class="background-image-container bg-container">
-                                                    <img src="<?php echo $video_poster['url']; ?>" alt="<?php echo $video_poster['alt']; ?>" />
+                                                    <?php echo wp_get_attachment_image( $video_poster['ID'], 'full', false, array(
+                                                        'alt'     => $video_poster['alt'],
+                                                        'loading' => false,
+                                                    ) ); ?>
                                                 </span>
                                                 <span class="gradient-container"></span>
                                             <?php } else { ?>
                                                 <?php if ( $generic_backup_image ) { ?>
                                                     <span class="background-image-container bg-container">
-                                                        <img loading="lazy" src="<?php echo $generic_backup_image['url']; ?>" alt="<?php echo $generic_backup_image['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $generic_backup_image['ID'], 'full', false, array(
+                                                            'alt'     => $generic_backup_image['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     </span>
                                                     <span class="gradient-container"></span>
                                                 <?php } ?>
@@ -33,10 +39,13 @@
                                                 <?php if ( $company_logo ) { ?>
                                                     <span class="company-logo-container">
                                                         <span class="logo-container">
-                                                            <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                            <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                                'alt'     => $company_logo['alt'],
+                                                                'loading' => 'lazy',
+                                                            ) ); ?>
                                                         </span>
                                                     </span>
-                                                <?php } ?>                                                                                                    
+                                                <?php } ?>
                                             </span>
                                             <span class="related-bottom">                                
                                                 <?php $showtitle = 'yes' ?>
@@ -116,13 +125,19 @@
                                             <span class="related-top">
                                                 <?php if ( $video_poster ) { ?>
                                                     <span class="background-image-container bg-container">
-                                                        <img loading="lazy" src="<?php echo $video_poster['url']; ?>" alt="<?php echo $video_poster['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $video_poster['ID'], 'full', false, array(
+                                                            'alt'     => $video_poster['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     </span>
                                                     <span class="gradient-container"></span>
                                                 <?php } else { ?>
                                                     <?php if ( $generic_backup_image ) { ?>
                                                         <span class="background-image-container bg-container">
-                                                            <img loading="lazy" src="<?php echo $generic_backup_image['url']; ?>" alt="<?php echo $generic_backup_image['alt']; ?>" />
+                                                            <?php echo wp_get_attachment_image( $generic_backup_image['ID'], 'full', false, array(
+                                                                'alt'     => $generic_backup_image['alt'],
+                                                                'loading' => 'lazy',
+                                                            ) ); ?>
                                                         </span>
                                                         <span class="gradient-container"></span>
                                                     <?php } ?>
@@ -131,10 +146,13 @@
                                                 <?php if ( $company_logo ) { ?>
                                                     <span class="company-logo-container">
                                                         <span class="logo-container">
-                                                            <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                            <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                                'alt'     => $company_logo['alt'],
+                                                                'loading' => 'lazy',
+                                                            ) ); ?>
                                                         </span>
                                                     </span>
-                                                <?php } ?>                                                                                                    
+                                                <?php } ?>
                                             </span>
                                             <span class="related-bottom">                                
                                                 <?php $showtitle = 'yes' ?>

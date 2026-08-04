@@ -56,7 +56,10 @@
                         <?php $image = get_sub_field( 'image' ); ?>
                         <?php if ( $image ) { ?>
                             <div class="sticky-image-container" style="--i: <?php echo $i; ?>;">
-                                <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                    'alt'     => $image['alt'],
+                                    'loading' => false,
+                                ) ); ?>
                             </div>
                         <?php } ?>
                         <?php $i++; ?>
@@ -77,7 +80,10 @@
                         <?php $image = get_sub_field( 'image' ); ?>
                         <?php if ( $image ) { ?>
                             <div class="image-container-full">
-                                <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                    'alt'     => $image['alt'],
+                                    'loading' => 'lazy',
+                                ) ); ?>
                             </div>
                         <?php } ?>
                     </div>

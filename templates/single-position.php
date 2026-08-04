@@ -41,7 +41,10 @@
                                                         <span class="bg-container">
                                                             <?php $speaker_image = get_field( 'team_member_image' ); ?>
                                                             <?php if ( $speaker_image ) { ?>
-                                                                <img src="<?php echo $speaker_image['url']; ?>" alt="<?php echo $speaker_image['alt']; ?>" />
+                                                                <?php echo wp_get_attachment_image( $speaker_image['ID'], 'full', false, array(
+                                                                    'alt'     => $speaker_image['alt'],
+                                                                    'loading' => false,
+                                                                ) ); ?>
                                                             <?php } ?>
                                                         </span>
                                                         <span class="border-offset"></span>

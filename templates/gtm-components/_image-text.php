@@ -15,7 +15,10 @@
                     <?php $mobile_image = get_sub_field( 'mobile_image' ); ?>
                     <?php if ( $mobile_image ) { ?>
                         <span class="background-container">
-                            <img src="<?php echo $mobile_image['url']; ?>" alt="<?php echo $mobile_image['alt']; ?>" />
+                            <?php echo wp_get_attachment_image( $mobile_image['ID'], 'full', false, array(
+                                'alt'     => $mobile_image['alt'],
+                                'loading' => false,
+                            ) ); ?>
                         </span>
                     <?php } ?>
                 </div>
@@ -56,7 +59,10 @@
                 <div class="map-container">
                     <?php $desktop_image = get_sub_field( 'desktop_image' ); ?>
                     <?php if ( $desktop_image ) { ?>
-                        <img loading="lazy" src="<?php echo $desktop_image['url']; ?>" alt="<?php echo $desktop_image['alt']; ?>" />
+                        <?php echo wp_get_attachment_image( $desktop_image['ID'], 'full', false, array(
+                            'alt'     => $desktop_image['alt'],
+                            'loading' => 'lazy',
+                        ) ); ?>
                     <?php } ?>
                 </div>
             </div>

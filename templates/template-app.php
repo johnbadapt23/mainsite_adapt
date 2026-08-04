@@ -16,7 +16,11 @@ get_header();
 					<div class="app-inner-container">
 						<?php $top_icon = get_sub_field( 'top_icon' ); ?>
 						<?php if ( $top_icon ) { ?>
-							<span class="top-icon-container"><img src="<?php echo $top_icon['url']; ?>" alt="<?php echo $top_icon['alt']; ?>" width="250"/></span>
+							<span class="top-icon-container"><?php echo wp_get_attachment_image( $top_icon['ID'], 'full', false, array(
+								'width'   => '250',
+								'alt'     => $top_icon['alt'],
+								'loading' => false,
+							) ); ?></span>
 						<?php } ?>
 						<h2 class="title"><?php echo get_sub_field( 'title' ); ?></h2>
 						<span class="text"><?php echo get_sub_field( 'text' ); ?></span>
@@ -30,7 +34,11 @@ get_header();
 										</a>
 									<?php } else { ?>
 										<?php if ( $icon ) { ?>
-											<img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" width="130"/>
+											<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+												'width'   => '130',
+												'alt'     => $icon['alt'],
+												'loading' => 'lazy',
+											) ); ?>
 										<?php } ?>
 									<?php } ?>
 								<?php endwhile; ?>
@@ -66,7 +74,10 @@ get_header();
 						<?php $main_image = get_sub_field( 'main_image' ); ?>
 						<?php if ( $main_image ) { ?>
 							<span class="main-image-container">
-								<img loading="lazy" src="<?php echo $main_image['url']; ?>" alt="<?php echo $main_image['alt']; ?>" />
+								<?php echo wp_get_attachment_image( $main_image['ID'], 'full', false, array(
+									'alt'     => $main_image['alt'],
+									'loading' => 'lazy',
+								) ); ?>
 							</span>
 						<?php } ?>
 					</div>

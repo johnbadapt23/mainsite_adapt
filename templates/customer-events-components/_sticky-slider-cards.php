@@ -40,7 +40,10 @@
                                                 <span class="image-container">
                                                     <span class="bg-container">
                                                         <?php if ( $image ) { ?>
-                                                            <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                            <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                                'alt'     => $image['alt'],
+                                                                'loading' => false,
+                                                            ) ); ?>
                                                         <?php } ?>
                                                     </span>
                                                 </span>
@@ -52,7 +55,10 @@
                                                             <span class="icon-container">
                                                                 <?php $icon = get_sub_field( 'icon' ); ?>
                                                                 <?php if ( $icon ) { ?>
-                                                                    <img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                                                                    <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                                                                        'alt'     => $icon['alt'],
+                                                                        'loading' => 'lazy',
+                                                                    ) ); ?>
                                                                 <?php } ?>
                                                             </span>
                                                             <span class="text-container">
@@ -103,7 +109,10 @@
                                         <div class="slider-bg-container bg-container <?php echo ($image_index === 0) ? 'active' : ''; ?>">
                                             <?php $image = get_sub_field( 'image' ); ?>
                                             <?php if ( $image ) { ?>
-                                                <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                    'alt'     => $image['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             <?php } ?>
                                         </div>
                                         <?php $image_index++; ?>

@@ -76,7 +76,10 @@
                             <a class="publicaton-link" href="<?php echo get_sub_field( 'publication_link' ); ?>" target="_blank">
                                 <?php if ( $publication_logo ) { ?>
                                     <span class="publication-logo-container">
-                            			<img loading="lazy" src="<?php echo $publication_logo['url']; ?>" alt="<?php echo $publication_logo['alt']; ?>" />
+                            			<?php echo wp_get_attachment_image( $publication_logo['ID'], 'full', false, array(
+                            				'alt'     => $publication_logo['alt'],
+                            				'loading' => 'lazy',
+                            			) ); ?>
                                     </span>
                         		<?php } else { ?>
                                     <?php echo get_sub_field( 'publication_name' ); ?>

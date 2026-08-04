@@ -13,7 +13,10 @@
                                 <?php if ( $logo ) { ?>
                                     <span class="ticker-logo-container">
                                         <span class="bg-container">
-                                            <img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                'alt'     => $logo['alt'],
+                                                'loading' => false,
+                                            ) ); ?>
                                         </span>
                                     </span>
                                 <?php } ?>
@@ -28,7 +31,10 @@
                                 <?php if ( $logo ) { ?>
                                     <span class="ticker-logo-container">
                                         <span class="bg-container">
-                                            <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                'alt'     => $logo['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         </span>
                                     </span>
                                 <?php } ?>
@@ -43,7 +49,10 @@
                                 <?php if ( $logo ) { ?>
                                     <span class="ticker-logo-container">
                                         <span class="bg-container">
-                                            <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                'alt'     => $logo['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         </span>
                                     </span>
                                 <?php } ?>

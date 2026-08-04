@@ -10,7 +10,10 @@
                             <?php $slide_image = get_sub_field( 'slide_image' ); ?>
                             <?php if ( $slide_image ) { ?>
                                 <span class="image-container">
-                                    <img src="<?php echo $slide_image['url']; ?>" alt="<?php echo $slide_image['alt']; ?>" />
+                                    <?php echo wp_get_attachment_image( $slide_image['ID'], 'full', false, array(
+                                        'alt'     => $slide_image['alt'],
+                                        'loading' => false,
+                                    ) ); ?>
                                 </span>
                             <?php } ?>
                         </div>
@@ -30,7 +33,10 @@
                                     <?php $icon = get_sub_field( 'icon' ); ?>
                                     <?php if ( $icon ) { ?>
                                         <span class="icon">
-                                            <img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                                                'alt'     => $icon['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         </span>
                                     <?php } ?>
                                     <span class="text">

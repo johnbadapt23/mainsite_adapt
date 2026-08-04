@@ -20,13 +20,19 @@
                                     <?php $arrow = get_sub_field( 'arrow' ); ?>
                                     <span class="arrow-container">
                     					<?php if ( $arrow ) { ?>
-                    						<img src="<?php echo $arrow['url']; ?>" alt="<?php echo $arrow['alt']; ?>" />
+                    						<?php echo wp_get_attachment_image( $arrow['ID'], 'full', false, array(
+                    							'alt'     => $arrow['alt'],
+                    							'loading' => false,
+                    						) ); ?>
                     					<?php } ?>
                                     </span>
                 					<?php $image = get_sub_field( 'image' ); ?>
                                     <span class="staff-image-container">
                     					<?php if ( $image ) { ?>
-                    						<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                    						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                    							'alt'     => $image['alt'],
+                    							'loading' => 'lazy',
+                    						) ); ?>
                     					<?php } ?>
                                     </span>
                                 </div>
@@ -64,13 +70,19 @@
                                     <?php $arrow = get_sub_field( 'mobile_arrow' ); ?>
                                     <span class="arrow-container">
                     					<?php if ( $arrow ) { ?>
-                    						<img loading="lazy" src="<?php echo $arrow['url']; ?>" alt="<?php echo $arrow['alt']; ?>" />
+                    						<?php echo wp_get_attachment_image( $arrow['ID'], 'full', false, array(
+                    							'alt'     => $arrow['alt'],
+                    							'loading' => 'lazy',
+                    						) ); ?>
                     					<?php } ?>
                                     </span>
                 					<?php $image = get_sub_field( 'image' ); ?>
                                     <span class="staff-image-container">
                     					<?php if ( $image ) { ?>
-                    						<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                    						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                    							'alt'     => $image['alt'],
+                    							'loading' => 'lazy',
+                    						) ); ?>
                     					<?php } ?>
                                     </span>
                                 </div>

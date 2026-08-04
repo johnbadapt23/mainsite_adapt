@@ -90,11 +90,17 @@
                                         <span class="bg-container">
                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                             <?php if ( $video_poster_image ) { ?>
-                                                <img loading="lazy" src="<?php echo $video_poster_image['url']; ?>" alt="<?php echo $video_poster_image['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
+                                                    'alt'     => $video_poster_image['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             <?php } else { ?>
                                                 <?php $featured_image = get_field( 'featured_image' ); ?>
                                                 <?php if ( $featured_image ) { ?>
-                                                    <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                    <?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                                        'alt'     => $featured_image['alt'],
+                                                        'loading' => 'lazy',
+                                                    ) ); ?>
                                                 <?php } ?>
                                             <?php } ?>
                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -114,12 +120,15 @@
                                         <span class="bg-container">
                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                             <?php if ( $featured_image ) { ?>
-                                                <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                                    'alt'     => $featured_image['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             <?php } ?>
                                         </span>
                                     </a>
                                 </span>
-                            <?php } ?>                        
+                            <?php } ?>
                             <span class="item-content-container">
                                 <span class="topic-filter">
                                         <?php if (yoast_get_primary_term_id('topic')) {

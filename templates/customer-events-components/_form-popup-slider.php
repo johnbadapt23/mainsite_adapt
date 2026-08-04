@@ -32,7 +32,10 @@
                                             <span class="logo-container">
                                                 <?php $title_logo = get_sub_field( 'title_logo' ); ?>
                                                 <?php if ( $title_logo ) { ?>
-                                                    <img src="<?php echo $title_logo['url']; ?>" alt="<?php echo $title_logo['alt']; ?>" />
+                                                    <?php echo wp_get_attachment_image( $title_logo['ID'], 'full', false, array(
+                                                        'alt'     => $title_logo['alt'],
+                                                        'loading' => false,
+                                                    ) ); ?>
                                                 <?php } ?>
                                             </span>
                                             <span class="arrow-container"></span>
@@ -42,41 +45,68 @@
                                                 <span class="slide-bg-container">
                                                     <?php $image_one = get_sub_field( 'image_one' ); ?>
                                                     <?php if ( $image_one ) { ?>
-                                                        <img loading="lazy" src="<?php echo $image_one['url']; ?>" alt="<?php echo $image_one['alt']; ?>"/>
+                                                        <?php echo wp_get_attachment_image( $image_one['ID'], 'full', false, array(
+                                                            'alt'     => $image_one['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     <?php } ?>
                                                 </span>
                                                 <span class="slide-bg-container">
                                                     <?php $image_two = get_sub_field( 'image_two' ); ?>
                                                     <?php if ( $image_two ) { ?>
-                                                        <img loading="lazy" src="<?php echo $image_two['url']; ?>" alt="<?php echo $image_two['alt']; ?>"/>
+                                                        <?php echo wp_get_attachment_image( $image_two['ID'], 'full', false, array(
+                                                            'alt'     => $image_two['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     <?php } ?>
                                                 </span>
                                                 <span class="slide-bg-container">
                                                     <?php $image_three = get_sub_field( 'image_three' ); ?>
                                                     <?php if ( $image_three ) { ?>
-                                                        <img loading="lazy" src="<?php echo $image_three['url']; ?>" alt="<?php echo $image_three['alt']; ?>"/>
-                                                    <?php } ?>   
+                                                        <?php echo wp_get_attachment_image( $image_three['ID'], 'full', false, array(
+                                                            'alt'     => $image_three['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
+                                                    <?php } ?>
                                                 </span>
                                             </span>
                                         </span>                                                            
                                     </span>
                                 </a>
                             <?php } else { ?> 
-                                <span class="form-embed" style="display: none;">                                
-                                    <?php echo get_sub_field( 'form_embed_code' ); ?>
-                                </span>
                                 <?php if(get_sub_field( 'form_data_id' )){ ?> 
                                     <?php $dataForm = get_sub_field( 'form_data_id' ); ?>
                                 <?php } ?>                              
-                                <?php if(get_sub_field( 'form_button_code' )){ ?> 
-                                    <?php echo get_sub_field( 'form_button_code' ); ?>
-                                <?php } ?>                                                     
+                                <?php
+                                    $formButtonCode = get_sub_field( 'form_button_code' );
+                                    $formEmbedCode  = get_sub_field( 'form_embed_code' );
+
+                                    // Pull the bare form key ('i' value) out of the embed script, e.g. 'i':'zktbjjj'
+                                    $formKey = '';
+                                    if ( $formEmbedCode && preg_match( "/'i'\s*:\s*'([a-zA-Z0-9]+)/", $formEmbedCode, $m ) ) {
+                                        $formKey = $m[1];
+                                    }
+
+                                    if ( $formButtonCode && $formKey ) {
+                                        if ( preg_match( '/<a\b[^>]*>/i', $formButtonCode, $m ) && stripos( $m[0], 'href=' ) === false ) {
+                                            $hrefTag = '<a href="https://formcrafts.com/a/' . esc_attr( $formKey ) . '"';
+                                            $fixedTag = preg_replace( '/<a\b/i', $hrefTag, $m[0], 1 );
+                                            $formButtonCode = preg_replace( '/<a\b[^>]*>/i', $fixedTag, $formButtonCode, 1 );
+                                        }
+                                        echo $formButtonCode;
+                                    } elseif ( $formButtonCode ) {
+                                        echo $formButtonCode; // fallback if key extraction fails
+                                    }
+                                ?>                                        
                                 <span class="form-popup-slide" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>>
                                     <span class="logo-arrow-container" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>>
                                         <span class="logo-container" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>>
                                             <?php $title_logo = get_sub_field( 'title_logo' ); ?>
                                             <?php if ( $title_logo ) { ?>
-                                                <img loading="lazy" src="<?php echo $title_logo['url']; ?>" alt="<?php echo $title_logo['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $title_logo['ID'], 'full', false, array(
+                                                    'alt'     => $title_logo['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             <?php } ?>
                                         </span>
                                         <span class="arrow-container" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>></span>
@@ -86,20 +116,41 @@
                                             <span class="slide-bg-container">
                                                 <?php $image_one = get_sub_field( 'image_one' ); ?>
                                                 <?php if ( $image_one ) { ?>
-                                                    <img loading="lazy" src="<?php echo $image_one['url']; ?>" alt="<?php echo $image_one['alt']; ?>" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>/>
+                                                    <?php $image_one_attrs = array(
+                                                        'alt'     => $image_one['alt'],
+                                                        'loading' => 'lazy',
+                                                    );
+                                                    if ( $dataForm ) {
+                                                        $image_one_attrs['data-fc-open'] = $dataForm;
+                                                    }
+                                                    echo wp_get_attachment_image( $image_one['ID'], 'full', false, $image_one_attrs ); ?>
                                                 <?php } ?>
                                             </span>
                                             <span class="slide-bg-container">
                                                 <?php $image_two = get_sub_field( 'image_two' ); ?>
                                                 <?php if ( $image_two ) { ?>
-                                                    <img loading="lazy" src="<?php echo $image_two['url']; ?>" alt="<?php echo $image_two['alt']; ?>" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>/>
+                                                    <?php $image_two_attrs = array(
+                                                        'alt'     => $image_two['alt'],
+                                                        'loading' => 'lazy',
+                                                    );
+                                                    if ( $dataForm ) {
+                                                        $image_two_attrs['data-fc-open'] = $dataForm;
+                                                    }
+                                                    echo wp_get_attachment_image( $image_two['ID'], 'full', false, $image_two_attrs ); ?>
                                                 <?php } ?>
                                             </span>
                                             <span class="slide-bg-container">
                                                 <?php $image_three = get_sub_field( 'image_three' ); ?>
                                                 <?php if ( $image_three ) { ?>
-                                                    <img loading="lazy" src="<?php echo $image_three['url']; ?>" alt="<?php echo $image_three['alt']; ?>" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>/>
-                                                <?php } ?>   
+                                                    <?php $image_three_attrs = array(
+                                                        'alt'     => $image_three['alt'],
+                                                        'loading' => 'lazy',
+                                                    );
+                                                    if ( $dataForm ) {
+                                                        $image_three_attrs['data-fc-open'] = $dataForm;
+                                                    }
+                                                    echo wp_get_attachment_image( $image_three['ID'], 'full', false, $image_three_attrs ); ?>
+                                                <?php } ?>
                                             </span>
                                         </span>
                                     </span>                                                            

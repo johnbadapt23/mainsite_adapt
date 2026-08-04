@@ -10,7 +10,10 @@
 						<span class="bg-container">
 							<?php $arrow_image = get_sub_field( 'arrow_image' ); ?>
 							<?php if ( $arrow_image ) { ?>
-								<img src="<?php echo $arrow_image['url']; ?>" alt="<?php echo $arrow_image['alt']; ?>" />
+								<?php echo wp_get_attachment_image( $arrow_image['ID'], 'full', false, array(
+									'alt'     => $arrow_image['alt'],
+									'loading' => false,
+								) ); ?>
 							<?php } ?>
 						</span>
 					</span>
@@ -29,7 +32,10 @@
 									<span class="image-container">
 										<span class="bg-container">
 											<?php if ( $image ) { ?>
-												<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+												<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+													'alt'     => $image['alt'],
+													'loading' => 'lazy',
+												) ); ?>
 											<?php } ?>
 										</span>
 										<span class="enlarge-image"></span>
@@ -56,7 +62,10 @@
 										<span class="image-container">
 											<span class="bg-container">
 												<?php if ( $image ) { ?>
-													<img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+													<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+														'alt'     => $image['alt'],
+														'loading' => 'lazy',
+													) ); ?>
 												<?php } ?>
 											</span>
 											<span class="enlarge-image"></span>

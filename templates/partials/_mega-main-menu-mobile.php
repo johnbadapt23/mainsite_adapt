@@ -38,7 +38,10 @@
                         <li class="main-dropdown services-menu it-leaders-menu">
                             <a><span class="icon-container">
                                     <?php if ( $itIcon ) { ?>
-                                        <img src="<?php echo $itIcon['url']; ?>" alt="<?php echo $itIcon['alt']; ?>" />
+                                        <?php echo wp_get_attachment_image( $itIcon['ID'], 'full', false, array(
+                                            'alt'     => $itIcon['alt'],
+                                            'loading' => false,
+                                        ) ); ?>
                                     <?php } ?>
                                 </span>
                                 <span class="services-inner-title">
@@ -60,7 +63,10 @@
                                             <span class="background-pink overview-container-inner">
                                                 <?php if ( $itOverviewImage ) { ?>
                                                     <span class="overview-image">
-                                                        <img loading="lazy" src="<?php echo $itOverviewImage['url']; ?>" alt="<?php echo $itOverviewImage['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $itOverviewImage['ID'], 'full', false, array(
+                                                            'alt'     => $itOverviewImage['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     </span>
                                                     <span class="overview-content">
                                                         <span class="text-black labelLarge"><?php echo $itOverviewTitle; ?></span>
@@ -113,7 +119,10 @@
                         <li class="main-dropdown services-menu tech-vendors-menu">
                             <a><span class="icon-container">
                                     <?php if ( $techIcon ) { ?>
-                                        <img loading="lazy" src="<?php echo $techIcon['url']; ?>" alt="<?php echo $techIcon['alt']; ?>" />
+                                        <?php echo wp_get_attachment_image( $techIcon['ID'], 'full', false, array(
+                                            'alt'     => $techIcon['alt'],
+                                            'loading' => 'lazy',
+                                        ) ); ?>
                                     <?php } ?>
                                 </span>
                                 <span class="services-inner-title">
@@ -135,7 +144,10 @@
                                             <span class="background-pink overview-container-inner">
                                                 <?php if ( $techOverviewImage ) { ?>
                                                     <span class="overview-image">
-                                                        <img loading="lazy" src="<?php echo $techOverviewImage['url']; ?>" alt="<?php echo $techOverviewImage['alt']; ?>" />
+                                                        <?php echo wp_get_attachment_image( $techOverviewImage['ID'], 'full', false, array(
+                                                            'alt'     => $techOverviewImage['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
                                                     </span>
                                                     <span class="overview-content">
                                                         <span class="text-black labelLarge"><?php echo $techOverviewTitle; ?></span>
@@ -503,7 +515,10 @@
                                             <?php $logo = get_sub_field( 'logo' ); ?>
                                             <span class="logo-tile" style="background-color: <?php echo get_sub_field( 'tile_background_colour' ); ?>">
                                                 <?php if ( $logo ) { ?>
-                                                    <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                                    <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                        'alt'     => $logo['alt'],
+                                                        'loading' => 'lazy',
+                                                    ) ); ?>
                                                 <?php } ?>
                                             </span>
                                             <?php if (get_sub_field( 'link' )) { ?>

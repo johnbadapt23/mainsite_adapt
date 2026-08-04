@@ -19,11 +19,19 @@
                                     <div class="bg-container contained">
                                         <?php $image = get_sub_field( 'image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <img class="desktop-image" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                'class'   => 'desktop-image',
+                                                'alt'     => $image['alt'],
+                                                'loading' => false,
+                                            ) ); ?>
                                         <?php } ?>
                                         <?php $image = get_sub_field( 'mobile_image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <img loading="lazy" class="mobile-image" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                'class'   => 'mobile-image',
+                                                'alt'     => $image['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         <?php } ?>
                                     </div>
                                 </div>

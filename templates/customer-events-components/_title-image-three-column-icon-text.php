@@ -8,11 +8,19 @@
             <div class="image-inner-container">
                 <?php $image = get_sub_field( 'image' ); ?>
                 <?php if ( $image ) { ?>
-                    <img class="desktop-image mobile-hide" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                    <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                        'class'   => 'desktop-image mobile-hide',
+                        'alt'     => $image['alt'],
+                        'loading' => false,
+                    ) ); ?>
                 <?php } ?>
                 <?php $mobile_image = get_sub_field( 'mobile_image' ); ?>
                 <?php if ( $mobile_image ) { ?>
-                    <img loading="lazy" class="dmobile-image desktop-hide" src="<?php echo $mobile_image['url']; ?>" alt="<?php echo $mobile_image['alt']; ?>" />
+                    <?php echo wp_get_attachment_image( $mobile_image['ID'], 'full', false, array(
+                        'class'   => 'dmobile-image desktop-hide',
+                        'alt'     => $mobile_image['alt'],
+                        'loading' => 'lazy',
+                    ) ); ?>
                 <?php } ?>
             </div>
         </div>
@@ -23,7 +31,10 @@
                         <span class="icon-container">
                             <?php $icon = get_sub_field( 'icon' ); ?>
                             <?php if ( $icon ) { ?>
-                                <img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                                <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                                    'alt'     => $icon['alt'],
+                                    'loading' => 'lazy',
+                                ) ); ?>
                             <?php } ?>
                         </span>
                         <span class="text-container">

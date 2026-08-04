@@ -9,7 +9,10 @@
                         <span class="portrait-image-container mobile">
                             <span class="image-container">
                                 <span class="bg-container">
-    		                        <img src="<?php echo $portrait_image['url']; ?>" alt="<?php echo $portrait_image['alt']; ?>" />
+    		                        <?php echo wp_get_attachment_image( $portrait_image['ID'], 'full', false, array(
+    		                            'alt'     => $portrait_image['alt'],
+    		                            'loading' => false,
+    		                        ) ); ?>
                                 </span>
                             </span>
                         </span>
@@ -26,7 +29,10 @@
                     <span class="portrait-image-container desktop">
                         <span class="image-container">
                             <span class="bg-container">
-		                        <img loading="lazy" src="<?php echo $portrait_image['url']; ?>" alt="<?php echo $portrait_image['alt']; ?>" />
+		                        <?php echo wp_get_attachment_image( $portrait_image['ID'], 'full', false, array(
+		                            'alt'     => $portrait_image['alt'],
+		                            'loading' => 'lazy',
+		                        ) ); ?>
                             </span>
                         </span>
                     </span>
@@ -36,7 +42,10 @@
                     <span class="square-image-container">
                         <span class="image-container">
                             <span class="bg-container">
-		                        <img loading="lazy" src="<?php echo $square_image['url']; ?>" alt="<?php echo $square_image['alt']; ?>" />
+		                        <?php echo wp_get_attachment_image( $square_image['ID'], 'full', false, array(
+		                            'alt'     => $square_image['alt'],
+		                            'loading' => 'lazy',
+		                        ) ); ?>
                             </span>
                         </span>
                     </span>

@@ -7,13 +7,20 @@
                     <span class="icon-container">
                         <?php $icon = get_sub_field( 'icon' ); ?>
                         <?php if ( $icon ) { ?>
-                            <img src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                            <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                                'alt'     => $icon['alt'],
+                                'loading' => false,
+                            ) ); ?>
                         <?php } ?>
                     </span>
                     <span class="headerLarge bold-red text-black"><?php echo get_sub_field( 'heading' ); ?></span>
                     <?php $graphic = get_sub_field( 'image' ); ?>
                     <?php if ( $graphic ) { ?>
-                        <img loading="lazy" class="mobile-image" src="<?php echo $graphic['url']; ?>" alt="<?php echo $graphic['alt']; ?>" />
+                        <?php echo wp_get_attachment_image( $graphic['ID'], 'full', false, array(
+                            'class'   => 'mobile-image',
+                            'alt'     => $graphic['alt'],
+                            'loading' => 'lazy',
+                        ) ); ?>
                     <?php } ?>
                     <span class="labelXL text-black"><?php echo get_sub_field( 'text' ); ?></span>
                     <span class="labelXsmall medium-grey"><?php echo get_sub_field( 'source_text' ); ?></span>
@@ -22,7 +29,11 @@
             <div class="column one-half image-column">                
                 <?php $graphic = get_sub_field( 'image' ); ?>
                 <?php if ( $graphic ) { ?>
-                    <img loading="lazy" class="desktop-image" src="<?php echo $graphic['url']; ?>" alt="<?php echo $graphic['alt']; ?>" />
+                    <?php echo wp_get_attachment_image( $graphic['ID'], 'full', false, array(
+                        'class'   => 'desktop-image',
+                        'alt'     => $graphic['alt'],
+                        'loading' => 'lazy',
+                    ) ); ?>
                 <?php } ?>
             </div>
         </div>

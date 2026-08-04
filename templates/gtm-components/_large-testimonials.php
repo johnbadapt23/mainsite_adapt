@@ -3,7 +3,10 @@
         <div class="background-container">
             <?php $background_image = get_sub_field( 'background_image' ); ?>
             <?php if ( $background_image ) { ?>
-                <img src="<?php echo $background_image['url']; ?>" alt="<?php echo $background_image['alt']; ?>" />
+                <?php echo wp_get_attachment_image( $background_image['ID'], 'full', false, array(
+                    'alt'     => $background_image['alt'],
+                    'loading' => false,
+                ) ); ?>
             <?php } ?>
         </div>  
         <div class="large-quote-slide-container">
@@ -14,7 +17,10 @@
                             <span class="logo-container">
                                 <?php $logo = get_sub_field( 'logo' ); ?>
                                 <?php if ( $logo ) { ?>
-                                    <img loading="lazy" src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                                    <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                        'alt'     => $logo['alt'],
+                                        'loading' => 'lazy',
+                                    ) ); ?>
                                 <?php } ?>
                             </span>
                             <span class="quote-container">
@@ -24,7 +30,10 @@
                                     <span class="image-column">
                                         <?php $quote_image = get_sub_field( 'quote_image' ); ?>
                                         <?php if ( $quote_image ) { ?>
-                                            <img loading="lazy" src="<?php echo $quote_image['url']; ?>" alt="<?php echo $quote_image['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $quote_image['ID'], 'full', false, array(
+                                                'alt'     => $quote_image['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         <?php } ?>
                                     </span>
                                     <span class="name-role">

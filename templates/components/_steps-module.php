@@ -31,19 +31,30 @@
                                     <?php if ( $pre_image_image ) { ?>
                                         <span class="pre-image-container">
                                             <span class="pre-image-inner">
-                                                <img class="pre-image" src="<?php echo $pre_image_image['url']; ?>" alt="<?php echo $pre_image_image['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $pre_image_image['ID'], 'full', false, array(
+                                                    'class'   => 'pre-image',
+                                                    'alt'     => $pre_image_image['alt'],
+                                                    'loading' => false,
+                                                ) ); ?>
                                             </span>
                                         </span>
                                     <?php } ?>
                                     <div class="bg-container">
                                         <?php $image = get_sub_field( 'image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                'alt'     => $image['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         <?php } ?>
                                     </div>
                                     <?php $post_image_image = get_sub_field( 'post_image_image' ); ?>
                         			<?php if ( $post_image_image ) { ?>
-                        				<img loading="lazy" class="post-image" src="<?php echo $post_image_image['url']; ?>" alt="<?php echo $post_image_image['alt']; ?>" />
+                        				<?php echo wp_get_attachment_image( $post_image_image['ID'], 'full', false, array(
+                        					'class'   => 'post-image',
+                        					'alt'     => $post_image_image['alt'],
+                        					'loading' => 'lazy',
+                        				) ); ?>
                         			<?php } ?>
                                 </div>
                             </div>
@@ -61,15 +72,27 @@
                                     <?php if ( $pre_image_image ) { ?>
                                         <span class="pre-image-container">
                                             <span class="pre-image-inner">
-                                                <img loading="lazy" class="pre-image" src="<?php echo $pre_image_image['url']; ?>" alt="<?php echo $pre_image_image['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $pre_image_image['ID'], 'full', false, array(
+                                                    'class'   => 'pre-image',
+                                                    'alt'     => $pre_image_image['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             </span>
                                         </span>
                                     <?php } ?>
                                     <?php if ( $image ) { ?>
-                                        <img loading="lazy" class="main-image<?php if ( $pre_image_image ) { ?> full-width-image<?php } ?>" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                        <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                            'class'   => 'main-image' . ( $pre_image_image ? ' full-width-image' : '' ),
+                                            'alt'     => $image['alt'],
+                                            'loading' => 'lazy',
+                                        ) ); ?>
                                     <?php } ?>
                                     <?php if ( $post_image_image ) { ?>
-                        				<img loading="lazy" class="post-image" src="<?php echo $post_image_image['url']; ?>" alt="<?php echo $post_image_image['alt']; ?>" />
+                        				<?php echo wp_get_attachment_image( $post_image_image['ID'], 'full', false, array(
+                        					'class'   => 'post-image',
+                        					'alt'     => $post_image_image['alt'],
+                        					'loading' => 'lazy',
+                        				) ); ?>
                         			<?php } ?>
                                 </div>
                                 <span class="text"><?php echo get_sub_field( 'text' ); ?></span>

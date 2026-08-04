@@ -10,7 +10,10 @@
 					<div class="card">
 						<?php $arrow_image = get_sub_field( 'arrow_image' ); ?>
 						<?php if ( $arrow_image ) { ?>
-							<span class="arrow-container"><img src="<?php echo $arrow_image['url']; ?>" alt="<?php echo $arrow_image['alt']; ?>" /></span>
+							<span class="arrow-container"><?php echo wp_get_attachment_image( $arrow_image['ID'], 'full', false, array(
+								'alt'     => $arrow_image['alt'],
+								'loading' => false,
+							) ); ?></span>
 						<?php } ?>
 						<span class="content-container">
 							<div class="counter-title-container">

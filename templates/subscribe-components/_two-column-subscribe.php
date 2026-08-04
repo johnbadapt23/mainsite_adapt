@@ -17,7 +17,10 @@
                                 <span class="image-container">
                                     <span class="bg-container contained-image">
                                         <?php if ( $image ) { ?>
-                    						<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                    						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                    							'alt'     => $image['alt'],
+                    							'loading' => false,
+                    						) ); ?>
                     					<?php } ?>
                                     </span>
                                 </span>

@@ -8,7 +8,10 @@
                         <span class="logo-column" data-aos="fade-up" data-aos-anchor-placement="center-bottom" data-aos-duration="800">
                             <span class="image-container">
                                 <span class="bg-container">
-                        			<img src="<?php echo $logo['url']; ?>" alt="<?php echo $logo['alt']; ?>" />
+                        			<?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                        				'alt'     => $logo['alt'],
+                        				'loading' => false,
+                        			) ); ?>
                                 </span>
                             </span>
                         </span>

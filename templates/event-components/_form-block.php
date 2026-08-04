@@ -9,7 +9,10 @@
                          <span class="bg-container">
                              <?php $image = get_sub_field( 'image' ); ?>
                  			<?php if ( $image ) { ?>
-                 				<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                 				<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                 					'alt'     => $image['alt'],
+                 					'loading' => false,
+                 				) ); ?>
                  			<?php } ?>
                          </span>
                          <span class="arrow-container">
@@ -17,7 +20,10 @@
                                  <span class="bg-container">
                                      <?php $arrow_image = get_sub_field( 'arrow_image' ); ?>
                          			<?php if ( $arrow_image ) { ?>
-                         				<img loading="lazy" src="<?php echo $arrow_image['url']; ?>" alt="<?php echo $arrow_image['alt']; ?>" />
+                         				<?php echo wp_get_attachment_image( $arrow_image['ID'], 'full', false, array(
+                         					'alt'     => $arrow_image['alt'],
+                         					'loading' => 'lazy',
+                         				) ); ?>
                          			<?php } ?>
                                 </span>
                             </span>

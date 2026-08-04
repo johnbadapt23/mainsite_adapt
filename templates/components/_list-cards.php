@@ -40,7 +40,10 @@
                                         <span class="bg-container">
                                             <?php $card_image = get_sub_field( 'card_image' ); ?>
                         					<?php if ( $card_image ) { ?>
-                        						<img src="<?php echo $card_image['url']; ?>" alt="<?php echo $card_image['alt']; ?>" />
+                        						<?php echo wp_get_attachment_image( $card_image['ID'], 'full', false, array(
+                        							'alt'     => $card_image['alt'],
+                        							'loading' => false,
+                        						) ); ?>
                         					<?php } ?>
                                         </span>
                                     </span>

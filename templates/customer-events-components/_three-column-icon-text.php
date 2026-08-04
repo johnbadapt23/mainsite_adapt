@@ -7,7 +7,10 @@
                         <span class="icon-container">
                             <?php $icon = get_sub_field( 'icon' ); ?>
                             <?php if ( $icon ) { ?>
-                                <img src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" />
+                                <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                                    'alt'     => $icon['alt'],
+                                    'loading' => false,
+                                ) ); ?>
                             <?php } ?>
                         </span>
                         <span class="text-container">

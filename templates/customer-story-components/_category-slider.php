@@ -55,17 +55,23 @@
                                 <?php if ( $company_logo_background ) { ?>
                                     <span class="company-logo-container background-company-logo">
                                         <span class="logo-container-background">
-                                            <img src="<?php echo $company_logo_background['url']; ?>" alt="<?php echo $company_logo_background['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $company_logo_background['ID'], 'full', false, array(
+                                                'alt'     => $company_logo_background['alt'],
+                                                'loading' => false,
+                                            ) ); ?>
                                         </span>
                                     </span>
                                 <?php } else { ?>
                                     <?php if ( $company_logo ) { ?>
                                         <span class="company-logo-container">
                                             <span class="logo-container">
-                                                <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                                <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                    'alt'     => $company_logo['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?>
                                             </span>
                                         </span>
-                                    <?php } ?> 
+                                    <?php } ?>
                                 <?php } ?>                                                  
                             </span> 
                             <span class="related-bottom">
@@ -188,7 +194,10 @@
                                 <?php if ( $company_logo ) { ?>
                                     <span class="company-logo-container">
                                         <span class="logo-container">
-                                            <img loading="lazy" src="<?php echo $company_logo['url']; ?>" alt="<?php echo $company_logo['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                'alt'     => $company_logo['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         </span>
                                     </span>
                                 <?php } ?>
@@ -203,7 +212,10 @@
                                         <?php while ( have_rows( 'bio' ) ) : the_row(); ?>
                                             <?php $image = get_sub_field( 'image' ); ?>
                                             <?php if ( $image ) { ?>
-                                                <span class="bio-image-container"><img loading="lazy" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" /></span>
+                                                <span class="bio-image-container"><?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                    'alt'     => $image['alt'],
+                                                    'loading' => 'lazy',
+                                                ) ); ?></span>
                                             <?php } ?>
                                             <span class="bio-text">
                                                 <span class="labelLarge text-black"><?php echo get_sub_field( 'name' ); ?></span>
