@@ -222,6 +222,17 @@ function my_enqueue_scripts() {
     wp_enqueue_script('lottie-player', 'https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js', array(), '2.0.12', false);
     wp_enqueue_script('lottie-interactivity', 'https://unpkg.com/@lottiefiles/lottie-interactivity@1.6.2/dist/lottie-interactivity.min.js', array(), '1.6.2', false);
 
+    // Prefills hidden UTM fields on embedded HubSpot forms (.hs-form-html)
+    // from the current page's query string, and hides the row once filled.
+    // No-op on pages without a HubSpot form embed, so safe to load site-wide.
+    wp_enqueue_script(
+        'utm-form-fields',
+        get_template_directory_uri() . '/assets/js/utm-form-fields.js',
+        array(),
+        filemtime(get_template_directory(). '/assets/js/utm-form-fields.js'),
+        true
+    );
+
     wp_enqueue_script(
         'main-js',
         get_template_directory_uri() . '/assets/js/main.min.js',
