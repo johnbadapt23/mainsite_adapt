@@ -837,13 +837,18 @@
 
 		// Customer events scroll magic
 
-		// Ensure GSAP and ScrollMagic are loaded
-		TweenLite.defaultEase = Linear.easeNone;
-		var controllerTeam = new ScrollMagic.Controller();
-
 		const $scrollContainers = $('.fixed-scroller-inner');
 
 		if ($scrollContainers.length && $(window).width() > 767) {
+			// Ensure GSAP and ScrollMagic are loaded -- moved inside this guard
+			// because GSAP is now only enqueued on the templates that actually
+			// use it (see my_enqueue_scripts() in functions.php). Referencing
+			// TweenLite/ScrollMagic unconditionally at the top level broke
+			// every other page with "TweenLite is not defined" once GSAP
+			// stopped loading site-wide.
+			TweenLite.defaultEase = Linear.easeNone;
+			var controllerTeam = new ScrollMagic.Controller();
+
 			$scrollContainers.each(function() {
 				const $scrollContainer = $(this);
 				const $featuredContainerOuter = $scrollContainer.closest('.fixed-scroller');
@@ -902,13 +907,15 @@
 			AOS.refresh();
 		}
 
-		// scrolling grow text 
-		// Ensure GSAP and ScrollMagic are loaded
-		var controllerText = new ScrollMagic.Controller();
-
+		// scrolling grow text
 		var $scrollingContainers = $('.scrolling-container');
 
 		if ($scrollingContainers.length && $(window).width() > 767) {
+			// Ensure GSAP and ScrollMagic are loaded -- moved inside this guard
+			// for the same reason as the customer-events scroll magic block
+			// above (GSAP is conditionally enqueued now, not site-wide).
+			var controllerText = new ScrollMagic.Controller();
+
 			$scrollingContainers.each(function() {
 				var $scrollContainer = $(this);
 				var $fixedScrollerContainer = $scrollContainer.closest('.map-fixed-scroller-container');
