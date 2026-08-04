@@ -26,10 +26,31 @@
 <?php } else { ?>
     <?php setPostViews(get_the_ID()); ?>
 <?php } ?>
+
+<?php
+$theTerms1 = get_the_terms( $post->ID, 'resource-type' );
+$isPodcast1 = false;
+
+foreach( $theTerms1 as $theTerm ){
+    if( $theTerm->slug == 'podcast' ){
+        $isPodcast1 = true;
+        break;
+    }
+}
+?>
+                        
+
+
 <?php if($typePost == 'best-practice'){ ?>
     <section class="post-title-block best-practices-title-block background-light-grey">
         <div class="container">
-            <span class="back-container"><a class="back" href="/all-resources/" target="_self">Resources</a></span>
+            <span class="back-container">
+                <?php if( $isPodcast1 ) : ?>
+                <a class="back" href="/resource-type/podcast/" target="_self">Podcasts</a>
+                <?php else : ?>
+                <a class="back" href="/all-resources/" target="_self">Resources</a>
+                <?php endif; ?>
+            </span>
             <div class="best-practices-inner">
                 <span class="type-topic">
                     <?php if (yoast_get_primary_term_id('topic')) {
@@ -129,18 +150,7 @@
                         <span class="excerpt h5-style"><?php echo $excerpt; ?></span>
                     <?php } ?>      
                     
-                    <?php 
-                    $theTerms1 = get_the_terms( $post->ID, 'resource-type' );
-                    $isPodcast1 = false;
-
-                    foreach( $theTerms1 as $theTerm ){
-                        if( $theTerm->slug == 'podcast' ){
-                            $isPodcast1 = true;
-                            break;
-                        }
-                    }
-
-                    if( $isPodcast1 && get_field('podcast_available') == 'yes' && ( get_field('podcast_spotify') || get_field('podcast_itunes') || get_field('podcast_youtube') ) ) : ?>
+                    <?php if( $isPodcast1 && get_field('podcast_available') == 'yes' && ( get_field('podcast_spotify') || get_field('podcast_itunes') || get_field('podcast_youtube') ) ) : ?>
                     <div class="podcast-listen-on-container">
                         <div class="podcast-listen-on-wrapper">
                             <div style="display: none;">Listen on:</div>
