@@ -37,6 +37,7 @@ foreach( $theTerms1 as $theTerm ){
         break;
     }
 }
+
 ?>
                         
 
@@ -137,7 +138,13 @@ foreach( $theTerms1 as $theTerm ){
             <?php } elseif($typePost == 'media'){ ?>
                 <span class="back-container"><a class="back" href="/resource-type/media/" target="_self">Media</a></span>
             <?php } else { ?>
-                <span class="back-container"><a class="back <?php if($typePost == 'insights' || $typePost == 'expert'){ ?> white-text<?php } ?>" href="/all-resources/" target="_self">Resources</a></span>
+                <span class="back-container">
+                    <?php if( $isPodcast1 ) : ?>
+                    <a class="back white-tex" href="/resource-type/podcast/" target="_self">All podcast episodes</a>
+                    <?php else : ?>
+                    <a class="back <?php if($typePost == 'insights' || $typePost == 'expert'){ ?> white-text<?php } ?>" href="/all-resources/" target="_self">Resources</a>
+                    <?php endif; ?>
+                </span>
             <?php }?>
             <div class="introduction-hero-module">
                 <h1 class="post-title"><?php the_title();?></h1>
