@@ -112,7 +112,7 @@
 					<a class="back resources-lisiting" href="/all-resources/">Resources</a>
 				</span>
 				<span class="close-container">
-					<button type="button" class="close-menu"></button>
+					<button type="button" class="close-menu" aria-label="Close menu"></button>
 				</span>
 			</div>
 		</div>
@@ -140,7 +140,7 @@
 			<div class="container">
 				<form action="/search-results" method="get">
 					<input class="searchInput" type="text" name="searchWords" id="mobilesearch" placeholder="Search" value="" />
-					<button type="submit" class="search-button-mobile"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify-placeholder.svg" alt="" width="20"/></button>
+					<button type="submit" class="search-button-mobile" aria-label="Search"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify-placeholder.svg" alt="" width="20"/></button>
 					<input type="hidden" value="1" name="sentence" />
 					<a class="search-clear" onclick="ClearFields();"></a>
 				</form>
@@ -729,7 +729,7 @@
 		}
 		</script>
 		<span class="close-clear-container" id="searchClear">
-			<button type="button" class="search-close"></button>
+			<button type="button" class="search-close" aria-label="Close search"></button>
 			<a class="search-clear" onclick="ClearFields();">Clear</a>
 		</span>
 	</div>

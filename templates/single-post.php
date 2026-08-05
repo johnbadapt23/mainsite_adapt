@@ -563,7 +563,7 @@ foreach( $theTerms1 as $theTerm ){
                 <div class="featured-video-audio-container" style="float: left; width: 100%; padding: 0 100px;">
                     <div class="audio-player" data-vimeo-id="<?php echo $video_link; ?>">
                         <div class="vimeo-hidden" aria-hidden="true"></div>
-                        <button class="play-pause" type="button">▶</button>
+                        <button class="play-pause" type="button" aria-label="Play">▶</button>
                         <input type="range" class="seek-bar" min="0" max="100" value="0">
                         <span class="current-time">0:00</span> / <span class="duration">0:00</span>
                     </div>
@@ -602,8 +602,8 @@ foreach( $theTerms1 as $theTerm ){
                                         paused ? player.play() : player.pause();
                                     }).catch(function (err) { console.error('Vimeo play error:', err); });
                                 });
-                                player.on('play', function () { playBtn.textContent = '⏸'; });
-                                player.on('pause', function () { playBtn.textContent = '▶'; });
+                                player.on('play', function () { playBtn.textContent = '⏸'; playBtn.setAttribute('aria-label', 'Pause'); });
+                                player.on('pause', function () { playBtn.textContent = '▶'; playBtn.setAttribute('aria-label', 'Play'); });
 
                                 player.on('timeupdate', function (d) {
                                     seekBar.max = d.duration;

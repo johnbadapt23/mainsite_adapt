@@ -117,9 +117,9 @@ $accessLinkText = get_field( 'access_the_portal_link_text', 'options'  );
 						</a>
 					<?php } ?>
 					<span class="copyright text-medium-grey">ADAPT &copy; <?php echo date('Y'); ?></span>
-					<span class="back-to-top">
+					<button type="button" class="back-to-top" aria-label="Back to top">
 						<img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/scroll-up.svg" alt="" width="60" class="scroll-up"/>
-					</span>
+					</button>
 				</div>
 				<?php if ( have_rows( 'footer_bottom', 'options' ) ) : ?>
 					<?php while ( have_rows( 'footer_bottom', 'options' ) ) : the_row(); ?>
