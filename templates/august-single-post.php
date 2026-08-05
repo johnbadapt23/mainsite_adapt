@@ -168,7 +168,10 @@
                                     <span class="bg-container">
                                         <?php $featured_image = get_field( 'featured_image' ); ?>
                                         <?php if ( $featured_image ) { ?>
-                                            <img loading="lazy" src="<?php echo $featured_image['url']; ?>" alt="<?php echo $featured_image['alt']; ?>" />
+                                            <?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                                'alt'     => $featured_image['alt'],
+                                                'loading' => 'lazy',
+                                            ) ); ?>
                                         <?php } ?>
                                     </span>
                                 </span>
@@ -620,7 +623,12 @@
                                                 <span class="image-container">
                                                     <span class="bg-container">
                                                         <?php $team_member_image = get_field( 'team_member_image' ); ?>
-                                                        <img loading="lazy" src="<?php echo $team_member_image['url']; ?>" alt="<?php echo $team_member_image['alt']; ?>" />
+                                                        <?php if ( $team_member_image ) { ?>
+                                                            <?php echo wp_get_attachment_image( $team_member_image['ID'], 'full', false, array(
+                                                                'alt'     => $team_member_image['alt'],
+                                                                'loading' => 'lazy',
+                                                            ) ); ?>
+                                                        <?php } ?>
                                                     </span>
                                                     <span class="border-offset"></span>
                                                 </span>

@@ -10,7 +10,12 @@
                 <span class="image-container">
                     <span class="bg-container">
                         <?php $team_member_image = get_field( 'team_member_image' ); ?>
-                        <img src="<?php echo $team_member_image['url']; ?>" alt="<?php echo $team_member_image['alt']; ?>" />
+                        <?php if ( $team_member_image ) { ?>
+                            <?php echo wp_get_attachment_image( $team_member_image['ID'], 'full', false, array(
+                                'alt'     => $team_member_image['alt'],
+                                'loading' => false,
+                            ) ); ?>
+                        <?php } ?>
                     </span>
                     <span class="border-offset"></span>
                 </span>

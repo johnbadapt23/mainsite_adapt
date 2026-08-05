@@ -16,7 +16,12 @@
                             <div class="column image-column <?php the_sub_field('image_position'); ?>">
                                 <?php $image = get_sub_field('image'); ?>
                                 <div class="image-container">
-                                    <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                    <?php if ( $image ) { ?>
+                                        <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                            'alt'     => $image['alt'],
+                                            'loading' => false,
+                                        ) ); ?>
+                                    <?php } ?>
                                 </div>
                             </div>
                             <?php if ( have_rows( 'text_block' ) ): ?>

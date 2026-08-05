@@ -30,7 +30,13 @@ get_header();
 									<?php $icon = get_sub_field( 'icon' ); ?>
 									<?php if (get_sub_field( 'icon_link' )){ ?>
 										<a href="<?php echo get_sub_field( 'icon_link' ); ?>" target="_blank" rel="noopener noreferrer">
-											<img loading="lazy" src="<?php echo $icon['url']; ?>" alt="<?php echo $icon['alt']; ?>" width="130"/>
+											<?php if ( $icon ) { ?>
+												<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+													'width'   => '130',
+													'alt'     => $icon['alt'],
+													'loading' => 'lazy',
+												) ); ?>
+											<?php } ?>
 										</a>
 									<?php } else { ?>
 										<?php if ( $icon ) { ?>

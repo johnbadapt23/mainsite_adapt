@@ -44,7 +44,12 @@
                                     <a class="popup-vimeo" href="https://vimeo.com/<?php echo $videoURL; ?>">
                                         <span class="image-container">
                                             <span class="bg-container">
-                                                <img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                                                <?php if ( $image ) { ?>
+                                                    <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                        'alt'     => $image['alt'],
+                                                        'loading' => false,
+                                                    ) ); ?>
+                                                <?php } ?>
                                             </span>
                                             <span class="video-button-icon"></span>
                                         </span>

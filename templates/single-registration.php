@@ -36,7 +36,13 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 	<div class="imageSizeContainer">
 		<div class="bgContainer">
 			<?php $banner_image = get_field( 'banner_background_image' ); ?>
-			<img loading="lazy" class="desktop" src="<?php echo $banner_image['url']; ?>" alt="<?php echo $banner_image['alt']; ?>"/>
+			<?php if ( $banner_image ) { ?>
+				<?php echo wp_get_attachment_image( $banner_image['ID'], 'full', false, array(
+					'class'   => 'desktop',
+					'alt'     => $banner_image['alt'],
+					'loading' => 'lazy',
+				) ); ?>
+			<?php } ?>
 			<?php if( get_field('banner_opacity_overlay') == 'no-overlay'){ ?>
 			<?php } else { ?>
 				<span class="opacity-overlay"></span>

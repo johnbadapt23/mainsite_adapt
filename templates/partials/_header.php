@@ -20,9 +20,21 @@
 				<span class="logo">
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logoHeader">
 						<?php $imagedark = get_field( 'icon', 'options' ); ?>
-						<img class="dark" src="<?php echo $imagedark['url']; ?>" alt="<?php echo $imagedark['alt'] ?: 'Adapt'; ?>" />
+						<?php if ( $imagedark ) { ?>
+							<?php echo wp_get_attachment_image( $imagedark['ID'], 'full', false, array(
+								'class'   => 'dark',
+								'alt'     => $imagedark['alt'] ?: 'Adapt',
+								'loading' => false,
+							) ); ?>
+						<?php } ?>
 						<?php $imageLight = get_field( 'logo_dark_theme', 'options' ); ?>
-						<img class="light" src="<?php echo $imageLight['url']; ?>" alt="<?php echo $imageLight['alt'] ?: 'Adapt'; ?>" />
+						<?php if ( $imageLight ) { ?>
+							<?php echo wp_get_attachment_image( $imageLight['ID'], 'full', false, array(
+								'class'   => 'light',
+								'alt'     => $imageLight['alt'] ?: 'Adapt',
+								'loading' => false,
+							) ); ?>
+						<?php } ?>
 					</a>
 				</span>
 			</span>
@@ -110,7 +122,13 @@
 					<span class="logo">
 						<a href="/all-resources" class="logoHeader">
 							<?php $imagedarksmall = get_field( 'logo_small', 'options' ); ?>
-							<img loading="lazy" class="dark" src="<?php echo $imagedarksmall['url']; ?>" alt="<?php echo $imagedarksmall['alt']; ?>" />
+							<?php if ( $imagedarksmall ) { ?>
+								<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'full', false, array(
+									'class'   => 'dark',
+									'alt'     => $imagedarksmall['alt'],
+									'loading' => 'lazy',
+								) ); ?>
+							<?php } ?>
 						</a>
 						<a class="resources-link-mobile" href="/all-resources" target="_self">Resources</a>
 					</span>
@@ -242,9 +260,21 @@
 					<span class="logo">
 						<a href="/all-resources" class="logoHeader">
 							<?php $imagedarksmall = get_field( 'logo_small', 'options' ); ?>
-							<img loading="lazy" class="dark" src="<?php echo $imagedarksmall['url']; ?>" alt="<?php echo $imagedarksmall['alt']; ?>" />
+							<?php if ( $imagedarksmall ) { ?>
+								<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'full', false, array(
+									'class'   => 'dark',
+									'alt'     => $imagedarksmall['alt'],
+									'loading' => 'lazy',
+								) ); ?>
+							<?php } ?>
 							<?php $imageLightSmall = get_field( 'logo_small_dark_theme', 'options' ); ?>
-							<img loading="lazy" class="light" src="<?php echo $imageLightSmall['url']; ?>" alt="<?php echo $imageLightSmall['alt']; ?>" />
+							<?php if ( $imageLightSmall ) { ?>
+								<?php echo wp_get_attachment_image( $imageLightSmall['ID'], 'full', false, array(
+									'class'   => 'light',
+									'alt'     => $imageLightSmall['alt'],
+									'loading' => 'lazy',
+								) ); ?>
+							<?php } ?>
 						</a>
 						<a class="resources-link-mobile" href="/all-resources" target="_self">Resources</a>
 					</span>
@@ -644,7 +674,13 @@
 				<span class="logo">
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logoHeader">
 						<?php $imagedarksmall = get_field( 'logo_small', 'options' ); ?>
-						<img loading="lazy" class="dark" src="<?php echo $imagedarksmall['url']; ?>" alt="<?php echo $imagedarksmall['alt']; ?>" />
+						<?php if ( $imagedarksmall ) { ?>
+							<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'full', false, array(
+								'class'   => 'dark',
+								'alt'     => $imagedarksmall['alt'],
+								'loading' => 'lazy',
+							) ); ?>
+						<?php } ?>
 					</a>
 				</span>
 				<span class="search-title">

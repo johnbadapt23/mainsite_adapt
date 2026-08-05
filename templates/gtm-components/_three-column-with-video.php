@@ -23,7 +23,13 @@
                     <div class="image-container">
                         <div class="bg-container">
                             <?php $image = get_sub_field('poster_image'); ?>
-                            <img class="desktop" src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+                            <?php if ( $image ) { ?>
+                                <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                    'class'   => 'desktop',
+                                    'alt'     => $image['alt'],
+                                    'loading' => false,
+                                ) ); ?>
+                            <?php } ?>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>                                
                                 <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>"></a>
                             <?php } ?>
