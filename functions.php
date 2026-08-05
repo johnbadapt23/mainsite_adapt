@@ -735,7 +735,28 @@ function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
         return $new_orderby;
     }
 
-    list( $post_type, $taxonomy ) = apto_get_query_post_type_taxonomy( $query );
+    // These three are provided by the Advanced Post Types Order plugin, not
+    // this theme. Guarding against them missing (plugin deactivated, or a
+    // future update renames one) so this degrades to the default order
+    // instead of a fatal "Call to undefined function" on every front-end
+    // page that runs a resource-type query.
+    if ( ! function_exists( 'apto_get_query_post_type_taxonomy' )
+        || ! function_exists( 'apto_get_order_type' )
+        || ! function_exists( 'apto_get_order_list' )
+    ) {
+        return $new_orderby;
+    }
+
+    $post_type_taxonomy = apto_get_query_post_type_taxonomy( $query );
+
+    // Defensive against the plugin ever returning something other than a
+    // clean [post_type, taxonomy] pair -- list() on anything shorter throws
+    // an "Undefined array key" warning per element on PHP 8.
+    if ( ! is_array( $post_type_taxonomy ) || count( $post_type_taxonomy ) < 2 ) {
+        return $new_orderby;
+    }
+
+    list( $post_type, $taxonomy ) = $post_type_taxonomy;
 
     if ( 'resource-type' !== $taxonomy ) {
         return $new_orderby;
@@ -764,7 +785,10 @@ function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
 
     $order_list = apto_get_order_list( $post_type, $term_id, $taxonomy, $query );
 
-    if ( count( $order_list ) > 0 ) {
+    // count() on a non-array/non-Countable is a fatal TypeError on PHP 8, so
+    // check the type before counting rather than assuming the plugin always
+    // returns an array.
+    if ( is_array( $order_list ) && count( $order_list ) > 0 ) {
         // Manually ordered via Advanced Post Types Order — respect it
         $new_orderby = "FIELD({$wpdb->posts}.ID, " . implode( ',', array_map( 'absint', $order_list ) ) . ")";
     } else {
