@@ -1028,7 +1028,7 @@ if($keyword != '') {
                                                 <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg" alt=""/>
                                             </span>
                                         </span>
-                                        <h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>
+                                        <span class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></span>
                                         <p class="text-black"><?php echo get_field( 'text', 'options' ); ?></p>
 
                     					<span class="form-popup-button-container with-white-arrow with-arrow"><?php echo get_field( 'form_button', 'options' ); ?></span>

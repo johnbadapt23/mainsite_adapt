@@ -92,7 +92,7 @@ $accessLinkText = get_field( 'access_the_portal_link_text', 'options'  );
 						<span class="image-container">
 							<img src="<?php echo get_template_directory_uri(); ?>/assets/images/bottom-subscribe-image.svg" alt="" width="40"/>
 						</span>
-						<h5 class="labelXLarge text-white"><?php echo get_field( 'title', 'options' ); ?></h5>
+						<span class="labelXLarge text-white"><?php echo get_field( 'title', 'options' ); ?></span>
 						<p class="text-white"><?php echo get_field( 'text', 'options' ); ?></p>
 						<?php if ( have_rows( 'subscribe_button', 'options') ) : ?>
 							<?php while ( have_rows( 'subscribe_button', 'options' ) ) : the_row(); ?>

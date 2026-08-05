@@ -4365,3 +4365,24 @@ body.position {
 
     }
 }
+
+// Touch-target sizing: .search-button-mobile (20x20) and .search-clear
+// (20x20) are both under the 24x24px minimum Lighthouse/WCAG recommend.
+// Expanding the tappable area via a transparent ::after pseudo-element
+// rather than resizing the elements themselves keeps every existing visual
+// (icon size, layout, spacing) pixel-identical -- only the invisible hit
+// area grows.
+.search-button-mobile,
+.search-clear {
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 24px;
+        height: 24px;
+    }
+}

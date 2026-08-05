@@ -139,7 +139,7 @@
 			</div>
 			<div class="container">
 				<form action="/search-results" method="get">
-					<input class="searchInput" type="text" name="searchWords" id="mobilesearch" placeholder="Search" value="" />
+					<input class="searchInput" type="text" name="searchWords" id="mobilesearch" placeholder="Search" aria-label="Search" value="" />
 					<button type="submit" class="search-button-mobile" aria-label="Search"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify-placeholder.svg" alt="" width="20"/></button>
 					<input type="hidden" value="1" name="sentence" />
 					<a class="search-clear" onclick="ClearFields();"></a>
@@ -226,7 +226,7 @@
 									</span>
 								</span>
 								<span class="form-content">
-									<h5 class="labelMedium text-red"><?php echo get_sub_field( 'title' ); ?></h5>
+									<span class="labelMedium text-red"><?php echo get_sub_field( 'title' ); ?></span>
 									<p class="text-black"><?php echo get_sub_field( 'text' ); ?></p>
 									<?php if ( have_rows( 'button' ) ) : ?>
 										<?php while ( have_rows( 'button' ) ) : the_row(); ?>
@@ -691,7 +691,7 @@
 		<div class="column search-link">
 			<span class="search-container">
 				<form action="/search-results" method="get">
-					<input class="searchInput" type="text" name="searchWords" id="search" placeholder="Search for insights" value="" />
+					<input class="searchInput" type="text" name="searchWords" id="search" placeholder="Search for insights" aria-label="Search for insights" value="" />
 					<input type="hidden" value="1" name="sentence" />
 				</form>
 			</span>

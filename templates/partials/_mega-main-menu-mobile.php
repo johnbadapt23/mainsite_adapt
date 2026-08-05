@@ -442,7 +442,7 @@
                                         </span>
                                     </span>
                                     <span class="form-content">
-                    					<h5 class="labelMedium text-red"><?php echo get_sub_field( 'title' ); ?></h5>
+                    					<span class="labelMedium text-red"><?php echo get_sub_field( 'title' ); ?></span>
                     					<p class="text-black"><?php echo get_sub_field( 'text' ); ?></p>
                                         <?php if ( have_rows( 'button' ) ) : ?>
                                 			<?php while ( have_rows( 'button' ) ) : the_row(); ?>
@@ -510,7 +510,10 @@
                                     <span class="logo-link-column-container column-container test">                                                                      
                                         <span class="link-logo-column column">
                                             <?php if (get_sub_field( 'link' )) { ?>
-                                                <a href="<?php echo get_sub_field( 'link' ); ?>" target="_self">
+                                                <?php // Decorative duplicate of the title-link below (same href) --
+                                                      // hidden from assistive tech and the tab order so it isn't
+                                                      // announced twice with no name of its own. ?>
+                                                <a href="<?php echo get_sub_field( 'link' ); ?>" target="_self" aria-hidden="true" tabindex="-1">
                                             <?php } ?>
                                             <?php $logo = get_sub_field( 'logo' ); ?>
                                             <span class="logo-tile" style="background-color: <?php echo get_sub_field( 'tile_background_colour' ); ?>">

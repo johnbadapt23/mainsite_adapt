@@ -784,7 +784,7 @@ if($keyword != '') {
                                 </div>
                                 <div class="sidebar market-trend-reports-sidebar">
                                     <span class="subscribe-sidebar-form background-pink">
-                                        <h5 class="labelXXLarge text-black"><?php the_field( 'title', 'options' ); ?></h5>
+                                        <span class="labelXXLarge text-black"><?php the_field( 'title', 'options' ); ?></span>
                                         <p class="text-black"><?php the_field( 'text', 'options' ); ?></p>
                                         <span class="subscribe-form-container"><?php the_field( 'form_embed', 'options' ); ?></span>
                     					<span class="form-popup-button-container with-white-arrow with-arrow"><?php the_field( 'form_button', 'options' ); ?></span>

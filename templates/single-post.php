@@ -564,7 +564,7 @@ foreach( $theTerms1 as $theTerm ){
                     <div class="audio-player" data-vimeo-id="<?php echo $video_link; ?>">
                         <div class="vimeo-hidden" aria-hidden="true"></div>
                         <button class="play-pause" type="button" aria-label="Play">▶</button>
-                        <input type="range" class="seek-bar" min="0" max="100" value="0">
+                        <input type="range" class="seek-bar" min="0" max="100" value="0" aria-label="Seek audio position">
                         <span class="current-time">0:00</span> / <span class="duration">0:00</span>
                     </div>
 
@@ -930,7 +930,7 @@ foreach( $theTerms1 as $theTerm ){
                                     <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg" alt=""/>
                                 </span>
                             </span>
-                            <h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>
+                            <span class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></span>
                             <p class="text-black"><?php echo get_field( 'text', 'options' ); ?></p>    				
                             <span class="form-popup-button-container with-white-arrow with-arrow"><?php echo get_field( 'form_button', 'options' ); ?></span>
                         </span>
@@ -944,7 +944,7 @@ foreach( $theTerms1 as $theTerm ){
                                     <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/pink-subscribe-envelope.svg" alt=""/>
                                 </span>
                             </span>
-                            <h5 class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></h5>
+                            <span class="labelXXLarge text-black"><?php echo get_field( 'title', 'options' ); ?></span>
                             <p class="text-black"><?php echo get_field( 'text', 'options' ); ?></p>
 
                             <span class="form-popup-button-container with-white-arrow with-arrow"><?php echo get_field( 'form_button', 'options' ); ?></span>
