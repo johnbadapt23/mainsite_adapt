@@ -719,4 +719,60 @@ add_filter(
     3
 );
 
+
+
+
+
+
+
+
+
+add_filter( 'apto/get_orderby', 'my_theme_apto_resource_type_orderby', 10, 3 );
+function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
+    global $wpdb;
+
+    if ( is_admin() ) {
+        return $new_orderby;
+    }
+
+    list( $post_type, $taxonomy ) = apto_get_query_post_type_taxonomy( $query );
+
+    if ( 'resource-type' !== $taxonomy ) {
+        return $new_orderby;
+    }
+
+    // Don't override if this query already resolves to an "automatic" APTO order
+    if ( 'auto' === apto_get_order_type( $query ) ) {
+        return $new_orderby;
+    }
+
+    // Resolve the resource-type term_id from this query's own tax_query
+    $term_id = 0;
+    foreach ( (array) $query->get( 'tax_query' ) as $clause ) {
+        if ( is_array( $clause ) && isset( $clause['taxonomy'] ) && 'resource-type' === $clause['taxonomy'] ) {
+            $term = get_term_by( $clause['field'], reset( (array) $clause['terms'] ), 'resource-type' );
+            if ( $term ) {
+                $term_id = $term->term_id;
+            }
+            break;
+        }
+    }
+
+    if ( ! $term_id ) {
+        return $new_orderby;
+    }
+
+    $order_list = apto_get_order_list( $post_type, $term_id, $taxonomy, $query );
+
+    if ( count( $order_list ) > 0 ) {
+        // Manually ordered via Advanced Post Types Order — respect it
+        $new_orderby = "FIELD({$wpdb->posts}.ID, " . implode( ',', array_map( 'absint', $order_list ) ) . ")";
+    } else {
+        // No manual order set for this term — fall back to date, newest first
+        $new_orderby = "{$wpdb->posts}.post_date DESC";
+    }
+
+    return $new_orderby;
+}
+
 ?>

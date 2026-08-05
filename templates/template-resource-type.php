@@ -197,20 +197,15 @@ if($keyword != '') {
                     )
                 );
 
-                if($filterTopic != '') {
-                    if(empty($filterTopic)){
-
-                    } else {
-                        // print_r($filterType);
-                        array_push($args['tax_query'],array(
-                                'taxonomy' => 'topic',
-                                'field' => 'slug',
-                                'terms' => $filterTopic,
-                                'operator' => 'IN'
-                            )
-                        );
-                    }
+                if ( ! empty( $filterTopic ) ) {
+                    $args['tax_query'][] = array(
+                        'taxonomy' => 'topic',
+                        'field'    => 'slug',
+                        'terms'    => $filterTopic,
+                        'operator' => 'IN',
+                    );
                 }
+
                 $posts = new WP_Query( $args );
                 if( $posts->have_posts() ): ?>
                     <?php $postCounter = 1; ?>
