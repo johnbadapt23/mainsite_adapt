@@ -63,7 +63,7 @@
 					<?php endif; ?>
 				</span>
 				<span class="buttonWrapper">
-		            <a class="nav">
+		            <a class="nav" aria-label="Open menu">
 		                <span class="ham"></span>
 		            </a>
 		    	</span>
@@ -125,7 +125,7 @@
 							<?php if ( $imagedarksmall ) { ?>
 								<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'full', false, array(
 									'class'   => 'dark',
-									'alt'     => $imagedarksmall['alt'],
+									'alt'     => $imagedarksmall['alt'] ?: 'Adapt',
 									'loading' => 'lazy',
 								) ); ?>
 							<?php } ?>
@@ -142,7 +142,7 @@
 					<input class="searchInput" type="text" name="searchWords" id="mobilesearch" placeholder="Search" aria-label="Search" value="" />
 					<button type="submit" class="search-button-mobile" aria-label="Search"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify-placeholder.svg" alt="" width="20"/></button>
 					<input type="hidden" value="1" name="sentence" />
-					<a class="search-clear" onclick="ClearFields();"></a>
+					<a class="search-clear" onclick="ClearFields();" aria-label="Clear search"></a>
 				</form>
 				<div class="resources-nav">
 					<ul>
@@ -263,7 +263,7 @@
 							<?php if ( $imagedarksmall ) { ?>
 								<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'full', false, array(
 									'class'   => 'dark',
-									'alt'     => $imagedarksmall['alt'],
+									'alt'     => $imagedarksmall['alt'] ?: 'Adapt',
 									'loading' => 'lazy',
 								) ); ?>
 							<?php } ?>
@@ -271,7 +271,7 @@
 							<?php if ( $imageLightSmall ) { ?>
 								<?php echo wp_get_attachment_image( $imageLightSmall['ID'], 'full', false, array(
 									'class'   => 'light',
-									'alt'     => $imageLightSmall['alt'],
+									'alt'     => $imageLightSmall['alt'] ?: 'Adapt',
 									'loading' => 'lazy',
 								) ); ?>
 							<?php } ?>
@@ -677,7 +677,7 @@
 						<?php if ( $imagedarksmall ) { ?>
 							<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'full', false, array(
 								'class'   => 'dark',
-								'alt'     => $imagedarksmall['alt'],
+								'alt'     => $imagedarksmall['alt'] ?: 'Adapt',
 								'loading' => 'lazy',
 							) ); ?>
 						<?php } ?>

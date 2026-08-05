@@ -225,7 +225,7 @@
                                             <a href="<?php echo get_term_link($postTopic); ?>" class="topic-filter-text">/ <?php echo $postTopic->name; ?></a>
                                         <?php } ?>
                                     </span>
-                                    <a href="<?php the_permalink(); ?>" class="title text-black"><h5 class="title text-black"><?php the_title(); ?></h5></a>
+                                    <a href="<?php the_permalink(); ?>" class="title text-black"><span class="title text-black"><?php the_title(); ?></span></a>
                                 </div>
                             </div>
                         <?php endwhile; ?>

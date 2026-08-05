@@ -255,6 +255,20 @@ section.post-title-block {
                         font-size: 16px;
                         line-height: 19px;
                         margin-bottom: 4px;
+                        position: relative;
+
+                        // Touch-target sizing: line-height alone renders under
+                        // the 24px minimum. Invisible ::after expands only the
+                        // tappable area, text/layout untouched.
+                        &::after {
+                            content: '';
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            transform: translateY(-50%);
+                            width: 100%;
+                            height: 24px;
+                        }
                     }
                 }
 
@@ -310,6 +324,19 @@ section.post-title-block {
                         line-height: 19px;
                         margin-bottom: 4px;
                         color: #000;
+                        position: relative;
+
+                        // Touch-target sizing: same invisible-hit-area
+                        // technique as .type-topic a above.
+                        &::after {
+                            content: '';
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            transform: translateY(-50%);
+                            width: 100%;
+                            height: 24px;
+                        }
                     }
                 }
             }
