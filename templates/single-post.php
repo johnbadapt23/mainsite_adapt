@@ -241,8 +241,9 @@ foreach( $theTerms1 as $theTerm ){
                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                             <?php if ( $video_poster_image ) { ?>
                                                 <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
-                                                    'alt'     => $video_poster_image['alt'],
-                                                    'loading' => 'lazy',
+                                                    'alt'          => $video_poster_image['alt'],
+                                                    'loading'      => 'eager',
+                                                    'fetchpriority' => 'high',
                                                 ) ); ?>
                                             <?php } ?>
                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -461,8 +462,9 @@ foreach( $theTerms1 as $theTerm ){
                                 <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                 <?php if ( $video_poster_image ) { ?>
                                     <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
-                                        'alt'     => $video_poster_image['alt'],
-                                        'loading' => 'lazy',
+                                        'alt'          => $video_poster_image['alt'],
+                                        'loading'      => 'eager',
+                                        'fetchpriority' => 'high',
                                     ) ); ?>
                                 <?php } ?>
                                 <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
