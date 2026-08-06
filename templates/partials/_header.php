@@ -584,7 +584,7 @@
 				</div>
 			</div>
 			<span class="buttonWrapperResources">
-				<a class="navResources">
+				<a class="navResources" aria-label="Open menu">
 					<span class="ham"></span>
 				</a>
 			</span>
@@ -593,7 +593,7 @@
 			<div class="single-post-sticky">
 				<div class="container">
 					<span class="buttonWrapperSingleResources">
-						<a class="navSingleResources">
+						<a class="navSingleResources" aria-label="Open menu">
 							<span class="ham"></span>
 						</a>
 					</span>
