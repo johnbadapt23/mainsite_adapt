@@ -646,6 +646,14 @@ add_filter( 'rocket_delay_js_exclusions', function( $exclusions ) {
 } );
 
 
+add_filter( 'pre_get_rocket_option_remove_unused_css', function( $value ) {
+    if ( is_front_page() ) {
+        return 0;
+    }
+    return $value;
+} );
+
+
 
 
 add_filter('wpseo_use_page_analysis', '__return_false');
