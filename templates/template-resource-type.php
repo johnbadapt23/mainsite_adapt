@@ -1330,7 +1330,7 @@ section.podcast-newsletter .absolute-top {
     z-index: -1;
 }
 </style>
-<section class="podcast-newsletter background-red">
+<!-- <section class="podcast-newsletter background-red">
     <span class="absolute-top background-black"></span>
     <span class="absolute-bottom background-black"></span>
     <div class="container" style="text-align: center; padding-top: 80px; padding-bottom: 80px;">
@@ -1349,5 +1349,5 @@ section.podcast-newsletter .absolute-top {
             </div>
         </div>
     </div>
-</section>
+</section> -->
 <?php endif; ?>
