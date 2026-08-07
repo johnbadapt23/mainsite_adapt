@@ -1158,7 +1158,7 @@
 		// term with an AND operator would match zero posts, since no single
 		// post is tagged with every expertise term.
 		function getSelectedFilters() {
-			var checkedExpertise = $('#speakerFilter > .expertise-checkbox input:checked');
+			var checkedExpertise = $('#speakerFilter input:checked');
 			var hasSelection = checkedExpertise.length > 0;
 			var selectedExpertise = hasSelection
 				? checkedExpertise
