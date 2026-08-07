@@ -24,7 +24,7 @@
                     <span class="categories">
                         <?php
                         $term_m = 'category';
-                        $filterCat = $_GET['categories'];
+                        $filterCat = isset( $_GET['categories'] ) ? array_map( 'sanitize_text_field', (array) $_GET['categories'] ) : '';
                         ?>
                         <?php
                         $terms = get_terms( $term_m, array(

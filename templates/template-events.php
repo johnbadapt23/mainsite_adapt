@@ -7,7 +7,7 @@ get_header();
 ?>
 
 <main id="main" role="main" class="events">
-<?php $keyword = $_GET['searchWords']; ?>
+<?php $keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : ''; ?>
     <section class="postHeader post-events">
         <div class="container">
             <div class="headerWrapper">
@@ -20,12 +20,12 @@ get_header();
                 <div class="formContainer">
                     <form action="" name="insightsFilter" class="insightsFilter" method="get">
                         <span class="search">
-                            <input class="searchInput" type="text" name="searchWords" id="search" <?php if ($keyword != ''){?> value="<?php echo $keyword; ?>" <?php } else { ?>value=""<?php } ?> placeholder="<?php the_field( 'events_search_placeholder_text', 'option' ); ?>" />
+                            <input class="searchInput" type="text" name="searchWords" id="search" <?php if ($keyword != ''){?> value="<?php echo esc_attr( $keyword ); ?>" <?php } else { ?>value=""<?php } ?> placeholder="<?php the_field( 'events_search_placeholder_text', 'option' ); ?>" />
                             <input class="searchButton" type="image" alt="Search" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify.svg" />
                         </span>
                         <span class="submitContainer">
                             <?php if ($keyword != '' ) { ?>
-                                <span class="results">Showing results for <strong><?php echo $keyword; ?></strong></span>
+                                <span class="results">Showing results for <strong><?php echo esc_html( $keyword ); ?></strong></span>
                                 <a class="clear" href="/edge-events">Clear</a>
                             <?php } ?>
                         </span>

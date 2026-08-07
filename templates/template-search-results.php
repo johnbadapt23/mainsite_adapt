@@ -8,8 +8,8 @@ get_header();
 ?>
 <?php global $displayed_posts;
 $displayed_posts = array ();
-$keyword = $_GET['searchWords'];
-$filterType = $_GET['filter-type'];
+$keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : '';
+$filterType = isset( $_GET['filter-type'] ) ? sanitize_text_field( $_GET['filter-type'] ) : '';
 
 if($keyword != '') {
     $args = array(
@@ -33,11 +33,11 @@ if($keyword != '') {
     <section class="filter-title-block search-filter-title-block">
         <div class="container">
             <div class="title-container">
-                <h2 class="type-title h1-stlye text-black"><span class="text-medium-grey">Search results for: </span><?php echo $keyword; ?></h2>
+                <h2 class="type-title h1-stlye text-black"><span class="text-medium-grey">Search results for: </span><?php echo esc_html( $keyword ); ?></h2>
             </div>
             <div class="topic-button-container-outer">
                 <div class="topic-button-container filter-button-container">
-                    <a href="/search-results?searchWords=<?php echo $keyword; ?>&sentence=1"class="filter-button<?php if($filterType == '') { ?> selected<?php }?>">All</a>
+                    <a href="/search-results?searchWords=<?php echo urlencode( $keyword ); ?>&sentence=1"class="filter-button<?php if($filterType == '') { ?> selected<?php }?>">All</a>
 
                     <?php $terms = array(); ?>
                     <?php $loop = new WP_Query( $args ); ?>
@@ -59,7 +59,7 @@ if($keyword != '') {
                     <?php endif; ?>
                     <?php wp_reset_query(); ?>
                     <?php foreach($terms as $term) { ?>
-                        <a href="/search-results?searchWords=<?php echo $keyword; ?>&sentence=1&filter-type=<?php echo $term -> slug; ?>"class="filter-button<?php if($filterType == '') { } else { if ($term -> slug == $filterType ) { ?> selected<?php }}?><?php if ($term->slug == 'peer-insights'){ ?> peer-insights<?php } ?>"><?php echo $term -> name; ?></a>
+                        <a href="/search-results?searchWords=<?php echo urlencode( $keyword ); ?>&sentence=1&filter-type=<?php echo $term -> slug; ?>"class="filter-button<?php if($filterType == '') { } else { if ($term -> slug == $filterType ) { ?> selected<?php }}?><?php if ($term->slug == 'peer-insights'){ ?> peer-insights<?php } ?>"><?php echo $term -> name; ?></a>
                     <?php } ?>
                 </div>
             </div>

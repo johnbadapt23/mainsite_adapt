@@ -7,8 +7,8 @@ $displayed_posts = array ();
 
 $q = get_queried_object();
 $resourceType = get_field( 'type', $q );
-$keyword = $_GET['searchWords'];
-$filterTopic = $_GET['filter-topic'];
+$keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : '';
+$filterTopic = isset( $_GET['filter-topic'] ) ? sanitize_text_field( $_GET['filter-topic'] ) : '';
 
 if($keyword != '') {
     $args = array(

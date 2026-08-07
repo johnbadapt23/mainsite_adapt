@@ -1,4 +1,4 @@
-<?php $postType = $_GET['post_type']; ?>
+<?php $postType = isset( $_GET['post_type'] ) ? sanitize_text_field( $_GET['post_type'] ) : ''; ?>
 
     <section class="postHeader">
         <div class="container">
@@ -34,7 +34,7 @@
                                 <span class="more">More</span>
                                 <?php
                                 $term_m = 'category';
-                                $filterCat = $_GET['categories'];
+                                $filterCat = isset( $_GET['categories'] ) ? array_map( 'sanitize_text_field', (array) $_GET['categories'] ) : '';
                                 ?>
                                 <?php
                                 $terms = get_terms( $term_m, array(
@@ -53,7 +53,7 @@
                                 <span class="title">Type</span>
                                 <?php
                                 $term_m = 'article-type';
-                                $filterType = $_GET['types'];
+                                $filterType = isset( $_GET['types'] ) ? array_map( 'sanitize_text_field', (array) $_GET['types'] ) : '';
                                 ?>
                                 <?php
                                 $terms = get_terms( $term_m, array(
@@ -72,7 +72,7 @@
                                 <span class="title">Event</span>
                                 <?php
                                 $term_m = 'insights-event';
-                                $filterEvent = $_GET['events'];
+                                $filterEvent = isset( $_GET['events'] ) ? array_map( 'sanitize_text_field', (array) $_GET['events'] ) : '';
                                 ?>
                                 <?php
                                 $terms = get_terms( $term_m, array(
@@ -91,7 +91,7 @@
                                 <span class="title">Duration</span>
                                 <?php
                                 $term_m = 'article-duration';
-                                $filterDuration = $_GET['duration'];
+                                $filterDuration = isset( $_GET['duration'] ) ? array_map( 'sanitize_text_field', (array) $_GET['duration'] ) : '';
                                 ?>
                                 <?php
                                 $terms = get_terms( $term_m, array(
@@ -130,7 +130,7 @@
                                 <span class="more">More</span>
                                 <?php
                                 $term_m = 'event-category';
-                                $filterCat = $_GET['categories'];
+                                $filterCat = isset( $_GET['categories'] ) ? array_map( 'sanitize_text_field', (array) $_GET['categories'] ) : '';
                                 ?>
                                 <?php
                                 $terms = get_terms( $term_m, array(
@@ -149,7 +149,7 @@
                                 <span class="title">Type</span>
                                 <?php
                                 $term_m = 'event-type';
-                                $filterType = $_GET['types'];
+                                $filterType = isset( $_GET['types'] ) ? array_map( 'sanitize_text_field', (array) $_GET['types'] ) : '';
                                 ?>
                                 <?php
                                 $terms = get_terms( $term_m, array(
@@ -169,7 +169,7 @@
                                 <span class="title">Duration</span>
                                 <?php
                                 $term_m = 'event-duration';
-                                $filterDuration = $_GET['duration'];
+                                $filterDuration = isset( $_GET['duration'] ) ? array_map( 'sanitize_text_field', (array) $_GET['duration'] ) : '';
                                 ?>
                                 <?php
                                 $terms = get_terms( $term_m, array(

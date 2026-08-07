@@ -7,7 +7,7 @@ get_header();
 ?>
 
 <main id="main" role="main" class="events">
-<?php $keyword = $_GET['searchWords']; ?>
+<?php $keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : ''; ?>
     <section class="postHeader post-events">
         <div class="container">
             <div class="headerWrapper">
@@ -20,7 +20,7 @@ get_header();
                 <div class="formContainer">
                     <form action="" name="insightsFilter" class="insightsFilter" method="get">
                         <span class="search">
-                            <input class="searchInput" type="text" name="searchWords" id="search" <?php if ($keyword != ''){?> value="<?php echo $keyword; ?>" <?php } else { ?>value=""<?php } ?> placeholder="SEARCH FOR.. OR FILTER" />
+                            <input class="searchInput" type="text" name="searchWords" id="search" <?php if ($keyword != ''){?> value="<?php echo esc_attr( $keyword ); ?>" <?php } else { ?>value=""<?php } ?> placeholder="SEARCH FOR.. OR FILTER" />
                             <input class="searchButton" type="image" alt="Search" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify.svg" />
                         </span>
                         <span class="spacer"></span>
@@ -28,7 +28,7 @@ get_header();
                             <span class="more">More</span>
                             <?php
                             $term_m = 'event-category';
-                            $filterCat = $_GET['categories'];
+                            $filterCat = isset( $_GET['categories'] ) ? array_map( 'sanitize_text_field', (array) $_GET['categories'] ) : '';
                             ?>
                             <?php
                             $terms = get_terms( $term_m, array(
@@ -47,7 +47,7 @@ get_header();
                             <span class="title">Type</span>
                             <?php
                             $term_m = 'event-type';
-                            $filterType = $_GET['types'];
+                            $filterType = isset( $_GET['types'] ) ? array_map( 'sanitize_text_field', (array) $_GET['types'] ) : '';
                             ?>
                             <?php
                             $terms = get_terms( $term_m, array(
@@ -67,7 +67,7 @@ get_header();
                             <span class="title">Duration</span>
                             <?php
                             $term_m = 'event-duration';
-                            $filterDuration = $_GET['duration'];
+                            $filterDuration = isset( $_GET['duration'] ) ? array_map( 'sanitize_text_field', (array) $_GET['duration'] ) : '';
                             ?>
                             <?php
                             $terms = get_terms( $term_m, array(
