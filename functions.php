@@ -228,6 +228,27 @@ function adapt_page_needs_lottie() {
     return false;
 }
 
+// GSAP/ScrollTrigger are only actually used by main.js's fixed-scroller /
+// sticky-slider-cards animations, which only these 8 templates can ever
+// render (each get_template_part() call for those ACF flexible-content
+// layouts is hardcoded inside these specific templates' dispatch code --
+// confirmed no other template references them). Pulled out of
+// my_enqueue_scripts() into its own function so header.php's preconnect
+// hint (cdnjs.cloudflare.com) can check the same condition instead of
+// preconnecting to an origin most pages never actually contact.
+function adapt_page_needs_gsap() {
+    return is_page_template( array(
+        'templates/template-benchmarking.php',
+        'templates/template-comparison.php',
+        'templates/template-customer-events.php',
+        'templates/template-ecosystem-advisors.php',
+        'templates/template-ecosystem-consulting.php',
+        'templates/template-edge-consulting.php',
+        'templates/template-evr.php',
+        'templates/template-partnered-research.php',
+    ) );
+}
+
 function my_enqueue_scripts() {
     // filemtime() needs a filesystem path, not the public URL. Passing
     // get_template_directory_uri() here silently failed (filemtime() can't
@@ -242,23 +263,9 @@ function my_enqueue_scripts() {
         [],
         filemtime(get_template_directory(). '/assets/css/main.min.css')
     );
-    // GSAP/ScrollTrigger are only actually used by main.js's fixed-scroller /
-    // sticky-slider-cards animations, which only these 8 templates can ever
-    // render (each get_template_part() call for those ACF flexible-content
-    // layouts is hardcoded inside these specific templates' dispatch code --
-    // confirmed no other template references them). Loading ~2 CDN scripts
-    // on the other 60+ templates that never touch GSAP was pure waste.
-    $gsap_templates = array(
-        'templates/template-benchmarking.php',
-        'templates/template-comparison.php',
-        'templates/template-customer-events.php',
-        'templates/template-ecosystem-advisors.php',
-        'templates/template-ecosystem-consulting.php',
-        'templates/template-edge-consulting.php',
-        'templates/template-evr.php',
-        'templates/template-partnered-research.php',
-    );
-    if ( is_page_template( $gsap_templates ) ) {
+    // Loading ~2 CDN scripts on the 60+ templates that never touch GSAP was
+    // pure waste -- see adapt_page_needs_gsap().
+    if ( adapt_page_needs_gsap() ) {
         wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js', array(), null, true);
         wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js', array(), null, true);
     }

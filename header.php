@@ -34,15 +34,28 @@
      page load; nothing that actually ran changes. -->
 <!-- fonts.gstatic.com preconnect removed: fonts here are all self-hosted via
      @font-face, no Google Fonts stylesheet is ever loaded, so that hint
-     pointed at a domain the page never actually contacts. Preconnecting to
-     the CDNs the page *does* contact on (nearly) every load instead. -->
+     pointed at a domain the page never actually contacts. -->
+<?php
+    // Lighthouse flags more than ~4 preconnects as counterproductive (each
+    // one costs a DNS lookup + TLS handshake the browser does eagerly,
+    // competing with the page's actual critical requests) -- "use sparingly,
+    // only for the most important origins". unpkg.com and cdnjs.cloudflare.com
+    // are only actually contacted on the specific pages that load Lottie or
+    // GSAP (see adapt_page_needs_lottie() / adapt_page_needs_gsap() in
+    // functions.php, the same conditions those scripts are enqueued under),
+    // so preconnecting to them unconditionally on every other page was
+    // exactly the kind of waste that warning is about.
+?>
+<?php if ( adapt_page_needs_lottie() ) { ?>
 <link rel="preconnect" href="https://unpkg.com">
+<?php } ?>
+<?php if ( adapt_page_needs_gsap() ) { ?>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<?php } ?>
 <!-- GTM (below) and the HubSpot script loader (near the end of <head>) are
-     both unconditional on every page -- Lighthouse's live audit showed
-     these as some of the heaviest third-party chains on the page, so
-     preconnecting gets the TLS handshake for both started immediately
-     instead of only once the browser reaches each <script> tag. -->
+     both unconditional on every page, and were confirmed the heaviest
+     third-party chains in the live Lighthouse run, so these two stay
+     unconditional. -->
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="preconnect" href="https://js.hsforms.net">
 <!-- lottie-player / lottie-interactivity moved to wp_enqueue_script() in
