@@ -37,24 +37,29 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      # npm ci is normally preferred for CI, but it requires package-lock.json
-      # to already be in sync with package.json. Using npm install here so the
-      # first run (and any future dependency changes) resolve correctly without
-      # needing a manually regenerated lockfile first.
+      # package-lock.json was regenerated (Aug 2026) to lockfileVersion 3 --
+      # it had been stuck on the old lockfileVersion 1 format, which doesn't
+      # store full resolution/integrity data, so every npm install had to
+      # re-resolve the whole dependency tree from the registry from scratch
+      # (npm's own "old lockfile ... this is a one-time fix-up" warning, except
+      # it repeated on every single run since CI never commits the result back).
+      # It was also genuinely out of sync with package.json (npm ci failed
+      # with dozens of "Missing"/"Invalid" entries). Now that the lockfile is
+      # current and in sync, npm ci is the right tool: it installs exactly
+      # what's pinned, skips dependency resolution entirely, and -- combined
+      # with the cache: 'npm' above -- lets actions/setup-node skip re-downloading
+      # anything when package-lock.json hasn't changed since the last run.
+      # If dependencies are ever added/updated, regenerate the lockfile locally
+      # with `npm install` and commit it -- npm ci will hard-fail otherwise.
       - name: Install dependencies
-        run: npm install
+        run: npm ci --no-audit --no-fund
 
-      # gulpfile.js eager-loads every file under source/gulp/tasks (via
-      # require-dir with recurse:true), including build/fonts.js. That file
-      # requires "gulp-fontgen" at the top, and gulp-fontgen throws at
-      # require-time (not task-run-time) if the system "fontforge" binary
-      # isn't installed -- so *any* gulp invocation fails on a bare runner,
-      # even one that only asks for build:styles/build:scripts. ubuntu-latest
-      # doesn't ship fontforge, so it has to be installed explicitly here.
-      - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y fontforge
-
+      # fontforge is no longer needed here: gulp-fontgen's require() was moved
+      # inside the build:fonts task itself (source/gulp/tasks/build/fonts.js),
+      # so loading the task registry for build:styles/build:scripts no longer
+      # transitively requires it. See that file for the full explanation.
       - name: Compile CSS and JS
         run: npx gulp build:styles build:scripts
 
