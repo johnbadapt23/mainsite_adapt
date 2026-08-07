@@ -8,7 +8,7 @@
             <div class="image-inner-container">
                 <?php $image = get_sub_field( 'image' ); ?>
                 <?php if ( $image ) { ?>
-                    <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                    <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                         'class'   => 'desktop-image mobile-hide',
                         'alt'     => $image['alt'],
                         'loading' => 'lazy',
@@ -16,7 +16,7 @@
                 <?php } ?>
                 <?php $mobile_image = get_sub_field( 'mobile_image' ); ?>
                 <?php if ( $mobile_image ) { ?>
-                    <?php echo wp_get_attachment_image( $mobile_image['ID'], 'full', false, array(
+                    <?php echo wp_get_attachment_image( $mobile_image['ID'], 'adapt-optimized', false, array(
                         'class'   => 'dmobile-image desktop-hide',
                         'alt'     => $mobile_image['alt'],
                         'loading' => 'lazy',
@@ -31,7 +31,7 @@
                         <span class="icon-container">
                             <?php $icon = get_sub_field( 'icon' ); ?>
                             <?php if ( $icon ) { ?>
-                                <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                                <?php echo wp_get_attachment_image( $icon['ID'], 'adapt-optimized', false, array(
                                     'alt'     => $icon['alt'],
                                     'loading' => 'lazy',
                                 ) ); ?>

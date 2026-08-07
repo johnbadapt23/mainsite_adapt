@@ -6,7 +6,7 @@
             <span class="not-found-image-container">
                 <?php $image = get_field( '404_image', 'options' ); ?>
                 <?php if ($image ) { ?>
-                	<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                	<?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                 		'alt'     => $image['alt'],
                 		'loading' => 'lazy',
                 	) ); ?>

@@ -47,7 +47,7 @@
                                     <span class="image-container">
                                         <span class="bg-container contained-image">
                             				<?php if ( $icon ) { ?>
-                            					<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                            					<?php echo wp_get_attachment_image( $icon['ID'], 'adapt-optimized', false, array(
                             						'alt'     => $icon['alt'],
                             						'loading' => 'lazy',
                             					) ); ?>

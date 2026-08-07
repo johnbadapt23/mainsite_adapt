@@ -24,7 +24,7 @@
                         <div class="bg-container">
                             <?php $image = get_sub_field('poster_image'); ?>
                             <?php if ( $image ) { ?>
-                                <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                                     'class'   => 'desktop',
                                     'alt'     => $image['alt'],
                                     'loading' => 'lazy',
@@ -45,7 +45,7 @@
                         <span class="icon-container">
                             <?php $icon = get_sub_field( 'icon' ); ?>
                             <?php if ( $icon ) { ?>
-                                <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                                <?php echo wp_get_attachment_image( $icon['ID'], 'adapt-optimized', false, array(
                                     'alt'     => $icon['alt'],
                                     'loading' => 'lazy',
                                 ) ); ?>

@@ -99,7 +99,7 @@
                         <?php $image = get_sub_field( 'image' ); ?>
                         <?php if ( $image ) { ?>
                             <div class="sticky-image-container<?php if ( get_sub_field ( 'add_shadow_to_image' ) == 'yes' ) { ?> shadow<?php } ?>" style="--i: <?php echo $i; ?>;">
-                                <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                                     'alt'     => $image['alt'],
                                     'loading' => 'lazy',
                                 ) ); ?>
@@ -123,7 +123,7 @@
                         <?php $image = get_sub_field( 'image' ); ?>
                         <?php if ( $image ) { ?>
                             <div class="image-container-full">
-                                <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                                     'alt'     => $image['alt'],
                                     'loading' => 'lazy',
                                 ) ); ?>

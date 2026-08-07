@@ -9,7 +9,7 @@
                          <span class="bg-container">
                              <?php $image = get_sub_field( 'image' ); ?>
                  			<?php if ( $image ) { ?>
-                 				<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                 				<?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                  					'alt'     => $image['alt'],
                  					'loading' => 'lazy',
                  				) ); ?>
@@ -20,7 +20,7 @@
                                  <span class="bg-container">
                                      <?php $arrow_image = get_sub_field( 'arrow_image' ); ?>
                          			<?php if ( $arrow_image ) { ?>
-                         				<?php echo wp_get_attachment_image( $arrow_image['ID'], 'full', false, array(
+                         				<?php echo wp_get_attachment_image( $arrow_image['ID'], 'adapt-optimized', false, array(
                          					'alt'     => $arrow_image['alt'],
                          					'loading' => 'lazy',
                          				) ); ?>

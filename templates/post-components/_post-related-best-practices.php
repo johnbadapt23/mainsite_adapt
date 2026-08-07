@@ -15,7 +15,7 @@
                                         <span class="bg-container">
                                             <?php $best_practice_listing_image = get_field( 'best_practice_listing_image' ); ?>
                                             <?php if ( $best_practice_listing_image ) { ?>
-                                                <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $best_practice_listing_image['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>
@@ -112,7 +112,7 @@
                                         <span class="bg-container">
                                             <?php $best_practice_listing_image = get_field( 'best_practice_listing_image' ); ?>
                                             <?php if ( $best_practice_listing_image ) { ?>
-                                                <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $best_practice_listing_image['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>

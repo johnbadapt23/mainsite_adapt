@@ -3,7 +3,7 @@
         <div class="background-container">
             <?php $background_image = get_sub_field( 'background_image' ); ?>
             <?php if ( $background_image ) { ?>
-                <?php echo wp_get_attachment_image( $background_image['ID'], 'full', false, array(
+                <?php echo wp_get_attachment_image( $background_image['ID'], 'adapt-optimized', false, array(
                     'alt'     => $background_image['alt'],
                     'loading' => 'lazy',
                 ) ); ?>
@@ -17,7 +17,7 @@
                             <span class="logo-container">
                                 <?php $logo = get_sub_field( 'logo' ); ?>
                                 <?php if ( $logo ) { ?>
-                                    <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                    <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                         'alt'     => $logo['alt'],
                                         'loading' => 'lazy',
                                     ) ); ?>
@@ -30,7 +30,7 @@
                                     <span class="image-column">
                                         <?php $quote_image = get_sub_field( 'quote_image' ); ?>
                                         <?php if ( $quote_image ) { ?>
-                                            <?php echo wp_get_attachment_image( $quote_image['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $quote_image['ID'], 'adapt-optimized', false, array(
                                                 'alt'     => $quote_image['alt'],
                                                 'loading' => 'lazy',
                                             ) ); ?>

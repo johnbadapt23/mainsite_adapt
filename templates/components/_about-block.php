@@ -4,7 +4,7 @@
             <?php $top_corner_icon = get_sub_field( 'top_corner_icon' ); ?>
 			<?php if ( $top_corner_icon ) { ?>
                 <span class="top-corner-icon">
-	                <?php echo wp_get_attachment_image( $top_corner_icon['ID'], 'full', false, array(
+	                <?php echo wp_get_attachment_image( $top_corner_icon['ID'], 'adapt-optimized', false, array(
 	                    'alt'     => $top_corner_icon['alt'],
 	                    'loading' => 'lazy',
 	                ) ); ?>
@@ -31,7 +31,7 @@
     		<?php $rotating_icon = get_sub_field( 'rotating_icon' ); ?>
             <span class="rotating-image-container">
         		<?php if ( $rotating_icon ) { ?>
-        			<?php echo wp_get_attachment_image( $rotating_icon['ID'], 'full', false, array(
+        			<?php echo wp_get_attachment_image( $rotating_icon['ID'], 'adapt-optimized', false, array(
         				'id'      => 'rotatingImage',
         				'alt'     => $rotating_icon['alt'],
         				'loading' => 'lazy',

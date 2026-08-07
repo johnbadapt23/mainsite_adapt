@@ -11,7 +11,7 @@
                             <span class="bg-container contained-image">
             					<?php $logo = get_sub_field( 'logo' ); ?>
             					<?php if ( $logo ) { ?>
-            						<?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+            						<?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
             							'alt'     => $logo['alt'],
             							'loading' => 'lazy',
             						) ); ?>

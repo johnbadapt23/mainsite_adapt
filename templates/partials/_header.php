@@ -21,7 +21,7 @@
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logoHeader">
 						<?php $imagedark = get_field( 'icon', 'options' ); ?>
 						<?php if ( $imagedark ) { ?>
-							<?php echo wp_get_attachment_image( $imagedark['ID'], 'full', false, array(
+							<?php echo wp_get_attachment_image( $imagedark['ID'], 'adapt-optimized', false, array(
 								'class'   => 'dark',
 								'alt'     => $imagedark['alt'] ?: 'Adapt',
 								'loading' => false,
@@ -29,7 +29,7 @@
 						<?php } ?>
 						<?php $imageLight = get_field( 'logo_dark_theme', 'options' ); ?>
 						<?php if ( $imageLight ) { ?>
-							<?php echo wp_get_attachment_image( $imageLight['ID'], 'full', false, array(
+							<?php echo wp_get_attachment_image( $imageLight['ID'], 'adapt-optimized', false, array(
 								'class'   => 'light',
 								'alt'     => $imageLight['alt'] ?: 'Adapt',
 								'loading' => false,
@@ -123,7 +123,7 @@
 						<a href="/all-resources" class="logoHeader">
 							<?php $imagedarksmall = get_field( 'logo_small', 'options' ); ?>
 							<?php if ( $imagedarksmall ) { ?>
-								<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'full', false, array(
+								<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'adapt-optimized', false, array(
 									'class'   => 'dark',
 									'alt'     => $imagedarksmall['alt'] ?: 'Adapt',
 									'loading' => 'lazy',
@@ -261,7 +261,7 @@
 						<a href="/all-resources" class="logoHeader">
 							<?php $imagedarksmall = get_field( 'logo_small', 'options' ); ?>
 							<?php if ( $imagedarksmall ) { ?>
-								<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'full', false, array(
+								<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'adapt-optimized', false, array(
 									'class'   => 'dark',
 									'alt'     => $imagedarksmall['alt'] ?: 'Adapt',
 									'loading' => 'lazy',
@@ -269,7 +269,7 @@
 							<?php } ?>
 							<?php $imageLightSmall = get_field( 'logo_small_dark_theme', 'options' ); ?>
 							<?php if ( $imageLightSmall ) { ?>
-								<?php echo wp_get_attachment_image( $imageLightSmall['ID'], 'full', false, array(
+								<?php echo wp_get_attachment_image( $imageLightSmall['ID'], 'adapt-optimized', false, array(
 									'class'   => 'light',
 									'alt'     => $imageLightSmall['alt'] ?: 'Adapt',
 									'loading' => 'lazy',
@@ -342,14 +342,14 @@
 																				<span class="bg-container">
 																					<?php $video_poster_image = get_field( 'video_poster' ); ?>
 							                                                        <?php if ( $video_poster_image ) { ?>
-							                                                        	<?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
+							                                                        	<?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
 							                                                        		'alt'     => $video_poster_image['alt'],
 							                                                        		'loading' => 'lazy',
 							                                                        	) ); ?>
 							                                                        <?php } else { ?>
 																						<?php $featured_image = get_field( 'featured_image' ); ?>
 													                                    <?php if ( $featured_image ) { ?>
-													                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+													                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
 													                                    		'alt'     => $featured_image['alt'],
 													                                    		'loading' => 'lazy',
 													                                    	) ); ?>
@@ -395,14 +395,14 @@
 																				<span class="bg-container">
 																					<?php $video_poster_image = get_field( 'video_poster' ); ?>
 							                                                        <?php if ( $video_poster_image ) { ?>
-							                                                        	<?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
+							                                                        	<?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
 							                                                        		'alt'     => $video_poster_image['alt'],
 							                                                        		'loading' => 'lazy',
 							                                                        	) ); ?>
 							                                                        <?php } else { ?>
 																						<?php $featured_image = get_field( 'featured_image' ); ?>
 													                                    <?php if ( $featured_image ) { ?>
-													                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+													                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
 													                                    		'alt'     => $featured_image['alt'],
 													                                    		'loading' => 'lazy',
 													                                    	) ); ?>
@@ -456,14 +456,14 @@
 																				<span class="bg-container">
 																					<?php $video_poster_image = get_field( 'video_poster' ); ?>
 							                                                        <?php if ( $video_poster_image ) { ?>
-							                                                        	<?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
+							                                                        	<?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
 							                                                        		'alt'     => $video_poster_image['alt'],
 							                                                        		'loading' => 'lazy',
 							                                                        	) ); ?>
 							                                                        <?php } else { ?>
 																						<?php $featured_image = get_field( 'featured_image' ); ?>
 													                                    <?php if ( $featured_image ) { ?>
-													                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+													                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
 													                                    		'alt'     => $featured_image['alt'],
 													                                    		'loading' => 'lazy',
 													                                    	) ); ?>
@@ -512,14 +512,14 @@
 																				<span class="bg-container">
 																					<?php $video_poster_image = get_field( 'video_poster' ); ?>
 							                                                        <?php if ( $video_poster_image ) { ?>
-							                                                        	<?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
+							                                                        	<?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
 							                                                        		'alt'     => $video_poster_image['alt'],
 							                                                        		'loading' => 'lazy',
 							                                                        	) ); ?>
 							                                                        <?php } else { ?>
 																						<?php $featured_image = get_field( 'featured_image' ); ?>
 													                                    <?php if ( $featured_image ) { ?>
-													                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+													                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
 													                                    		'alt'     => $featured_image['alt'],
 													                                    		'loading' => 'lazy',
 													                                    	) ); ?>
@@ -675,7 +675,7 @@
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="logoHeader">
 						<?php $imagedarksmall = get_field( 'logo_small', 'options' ); ?>
 						<?php if ( $imagedarksmall ) { ?>
-							<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'full', false, array(
+							<?php echo wp_get_attachment_image( $imagedarksmall['ID'], 'adapt-optimized', false, array(
 								'class'   => 'dark',
 								'alt'     => $imagedarksmall['alt'] ?: 'Adapt',
 								'loading' => 'lazy',

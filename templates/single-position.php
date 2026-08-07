@@ -41,7 +41,7 @@
                                                         <span class="bg-container">
                                                             <?php $speaker_image = get_field( 'team_member_image' ); ?>
                                                             <?php if ( $speaker_image ) { ?>
-                                                                <?php echo wp_get_attachment_image( $speaker_image['ID'], 'full', false, array(
+                                                                <?php echo wp_get_attachment_image( $speaker_image['ID'], 'adapt-optimized', false, array(
                                                                     'alt'     => $speaker_image['alt'],
                                                                     'loading' => 'lazy',
                                                                 ) ); ?>

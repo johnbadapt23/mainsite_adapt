@@ -13,7 +13,7 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank" rel="noopener noreferrer">
                                             <?php } ?>
-                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                     'class'   => 'colour-image',
                                                     'alt'     => $logo['alt'],
                                                     'loading' => 'lazy',
@@ -39,7 +39,7 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank" rel="noopener noreferrer">
                                             <?php } ?>
-                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                     'class'   => 'colour-image',
                                                     'alt'     => $logo['alt'],
                                                     'loading' => 'lazy',
@@ -73,7 +73,7 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank" rel="noopener noreferrer">
                                             <?php } ?>
-                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                     'class'   => 'colour-image',
                                                     'alt'     => $logo['alt'],
                                                     'loading' => 'lazy',
@@ -99,7 +99,7 @@
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 <a href="<?php echo get_sub_field( 'company_link' );?>" target="_blank" rel="noopener noreferrer">
                                             <?php } ?>
-                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                     'class'   => 'colour-image',
                                                     'alt'     => $logo['alt'],
                                                     'loading' => 'lazy',

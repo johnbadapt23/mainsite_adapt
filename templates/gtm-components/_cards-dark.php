@@ -13,7 +13,7 @@
 								<span class="bg-container first-bg">
 									<?php $icon = get_sub_field( 'icon' ); ?>
 									<?php if ( $icon ) { ?>
-										<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+										<?php echo wp_get_attachment_image( $icon['ID'], 'adapt-optimized', false, array(
 											'alt'     => $icon['alt'],
 											'loading' => 'lazy',
 										) ); ?>
@@ -22,7 +22,7 @@
 								<span class="bg-container hover-bg">
 									<?php $hover_icon = get_sub_field( 'hover_icon' ); ?>
 									<?php if ( $hover_icon ) { ?>
-										<?php echo wp_get_attachment_image( $hover_icon['ID'], 'full', false, array(
+										<?php echo wp_get_attachment_image( $hover_icon['ID'], 'adapt-optimized', false, array(
 											'alt'     => $hover_icon['alt'],
 											'loading' => 'lazy',
 										) ); ?>
@@ -61,7 +61,7 @@
 										<?php $icon = get_sub_field( 'icon' ); ?>
 										<?php if ( $icon ) { ?>
 											<span class="icon-container">
-												<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+												<?php echo wp_get_attachment_image( $icon['ID'], 'adapt-optimized', false, array(
 													'alt'     => $icon['alt'],
 													'loading' => 'lazy',
 												) ); ?>
@@ -99,7 +99,7 @@
 										<?php $icon = get_sub_field( 'icon' ); ?>
 										<?php if ( $icon ) { ?>
 											<span class="icon-container">
-												<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+												<?php echo wp_get_attachment_image( $icon['ID'], 'adapt-optimized', false, array(
 													'alt'     => $icon['alt'],
 													'loading' => 'lazy',
 												) ); ?>

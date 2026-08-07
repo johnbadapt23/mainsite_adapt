@@ -16,7 +16,7 @@
                                         <div class="question">
                                             <span class="icon-container">
                                                 <?php if ( $red_icon ) { ?>
-                                                    <?php echo wp_get_attachment_image( $red_icon['ID'], 'full', false, array(
+                                                    <?php echo wp_get_attachment_image( $red_icon['ID'], 'adapt-optimized', false, array(
                                                         'class'   => 'red-icon',
                                                         'alt'     => $red_icon['alt'],
                                                         'loading' => 'lazy',
@@ -41,7 +41,7 @@
                 <?php $image = get_sub_field( 'image' ); ?>
                 <?php if ( $image ) { ?>
                     <span class="image-container">
-                        <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                        <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                             'alt'     => $image['alt'],
                             'loading' => 'lazy',
                         ) ); ?>

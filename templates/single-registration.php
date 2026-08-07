@@ -19,7 +19,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 				<span class="logo-container">
 					<?php $header_logo = get_field( 'header_logo' ); ?>
 					<?php if ( $header_logo ) { ?>
-						<?php echo wp_get_attachment_image( $header_logo['ID'], 'full', false, array(
+						<?php echo wp_get_attachment_image( $header_logo['ID'], 'adapt-optimized', false, array(
 							'alt'     => $header_logo['alt'],
 							'loading' => 'lazy',
 						) ); ?>
@@ -37,7 +37,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 		<div class="bgContainer">
 			<?php $banner_image = get_field( 'banner_background_image' ); ?>
 			<?php if ( $banner_image ) { ?>
-				<?php echo wp_get_attachment_image( $banner_image['ID'], 'full', false, array(
+				<?php echo wp_get_attachment_image( $banner_image['ID'], 'adapt-optimized', false, array(
 					'class'   => 'desktop',
 					'alt'     => $banner_image['alt'],
 					'loading' => 'lazy',
@@ -58,7 +58,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 				<?php if(get_field( 'banner_logo' )) { ?>
 					<?php $bannerLogo = get_field('banner_logo'); ?>
 					<span class="banner-icon" <?php if( get_field( 'banner_logo_height' )){ ?>style="height: <?php echo get_field( 'banner_logo_height' ); ?>px;"<?php } ?>>
-						<?php echo wp_get_attachment_image( $bannerLogo['ID'], 'full', false, array(
+						<?php echo wp_get_attachment_image( $bannerLogo['ID'], 'adapt-optimized', false, array(
 							'alt'     => $bannerLogo['alt'],
 							'loading' => 'lazy',
 						) ); ?>
@@ -176,7 +176,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 														<?php $company_logo = get_field( 'company_logo' ); ?>
 														<?php if ( $company_logo ) { ?>
 															<span class="company-logo">
-															<?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+															<?php echo wp_get_attachment_image( $company_logo['ID'], 'adapt-optimized', false, array(
 																'alt'     => $company_logo['alt'],
 																'loading' => 'lazy',
 															) ); ?>
@@ -471,7 +471,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 												<span class="icon-container">
 													<?php $icon = get_sub_field( 'icon' ); ?>
 													<?php if ( $icon ) { ?>
-														<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+														<?php echo wp_get_attachment_image( $icon['ID'], 'adapt-optimized', false, array(
 															'alt'     => $icon['alt'],
 															'loading' => 'lazy',
 														) ); ?>
@@ -515,7 +515,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 									<div class="logo-container" <?php if( get_sub_field( 'logo_height' )){ ?>style="height: <?php echo get_sub_field( 'logo_height' ); ?>px;"<?php } ?>>
 										<?php $image_logo = get_sub_field( 'image_logo' ); ?>
 										<?php if ( $image_logo ) { ?>
-											<?php echo wp_get_attachment_image( $image_logo['ID'], 'full', false, array(
+											<?php echo wp_get_attachment_image( $image_logo['ID'], 'adapt-optimized', false, array(
 												'alt'     => $image_logo['alt'],
 												'loading' => 'lazy',
 											) ); ?>

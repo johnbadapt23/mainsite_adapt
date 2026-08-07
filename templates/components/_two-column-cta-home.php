@@ -37,7 +37,7 @@
                 <div class="image-inner-container">
                     <?php $image = get_sub_field( 'image' ); ?>
         			<?php if ( $image ) { ?>
-        				<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+        				<?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
         					'alt'     => $image['alt'],
         					'loading' => 'lazy',
         				) ); ?>
@@ -46,7 +46,7 @@
                         <span class="caption-text"><?php echo get_sub_field('caption'); ?>
                             <?php $arrow_image = get_sub_field( 'arrow_image' ); ?>
                 			<?php if ( $arrow_image ) { ?>
-                				<?php echo wp_get_attachment_image( $arrow_image['ID'], 'full', false, array(
+                				<?php echo wp_get_attachment_image( $arrow_image['ID'], 'adapt-optimized', false, array(
                 					'class'   => 'arrow',
                 					'alt'     => $arrow_image['alt'],
                 					'loading' => 'lazy',

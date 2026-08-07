@@ -16,7 +16,7 @@
 							<span class="image-container">
 								<span class="bg-container contained-image">
 									<?php if ( $arrow ) { ?>
-										<?php echo wp_get_attachment_image( $arrow['ID'], 'full', false, array(
+										<?php echo wp_get_attachment_image( $arrow['ID'], 'adapt-optimized', false, array(
 											'alt'     => $arrow['alt'],
 											'loading' => 'lazy',
 										) ); ?>
@@ -59,7 +59,7 @@
 		<div class="image-overlay-container">
 			<?php $image = get_sub_field( 'image' ); ?>
 			<?php if ( $image ) { ?>
-				<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+				<?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
 					'alt'     => $image['alt'],
 					'loading' => 'lazy',
 				) ); ?>

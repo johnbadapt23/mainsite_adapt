@@ -11,7 +11,7 @@
                                     <a href="/resource-type/<?php echo $resource_type_term->slug; ?>">
                                         <?php $featured_image = get_sub_field( 'image' ); ?>
                                         <?php if ( $featured_image ) { ?>
-                                            <?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
                                                 'alt'     => $featured_image['alt'],
                                                 'loading' => 'lazy',
                                             ) ); ?>

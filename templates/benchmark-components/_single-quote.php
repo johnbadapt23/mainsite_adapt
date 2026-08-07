@@ -15,7 +15,7 @@
                         <span class="logo-text-container<?php if ( $logo ) { ?><?php } else { ?> no-logo<?php } ?>">	                            
                             <?php if ( $logo ) { ?>
                                 <span class="logo-container">
-                                    <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                    <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                         'alt'     => $logo['alt'],
                                         'loading' => 'lazy',
                                     ) ); ?>

@@ -17,7 +17,7 @@
                                         <span class="related-inner image-related">
                                             <?php if ( $video_poster ) { ?>
                                                 <span class="background-image-container bg-container">
-                                                    <?php echo wp_get_attachment_image( $video_poster['ID'], 'full', false, array(
+                                                    <?php echo wp_get_attachment_image( $video_poster['ID'], 'adapt-optimized', false, array(
                                                         'alt'     => $video_poster['alt'],
                                                         'loading' => 'lazy',
                                                     ) ); ?>
@@ -26,7 +26,7 @@
                                             <?php } else { ?>
                                                 <?php if ( $generic_backup_image ) { ?>
                                                     <span class="background-image-container bg-container">
-                                                        <?php echo wp_get_attachment_image( $generic_backup_image['ID'], 'full', false, array(
+                                                        <?php echo wp_get_attachment_image( $generic_backup_image['ID'], 'adapt-optimized', false, array(
                                                             'alt'     => $generic_backup_image['alt'],
                                                             'loading' => 'lazy',
                                                         ) ); ?>
@@ -39,7 +39,7 @@
                                                 <?php if ( $company_logo ) { ?>
                                                     <span class="company-logo-container">
                                                         <span class="logo-container">
-                                                            <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                            <?php echo wp_get_attachment_image( $company_logo['ID'], 'adapt-optimized', false, array(
                                                                 'alt'     => $company_logo['alt'],
                                                                 'loading' => 'lazy',
                                                             ) ); ?>
@@ -125,7 +125,7 @@
                                             <span class="related-top">
                                                 <?php if ( $video_poster ) { ?>
                                                     <span class="background-image-container bg-container">
-                                                        <?php echo wp_get_attachment_image( $video_poster['ID'], 'full', false, array(
+                                                        <?php echo wp_get_attachment_image( $video_poster['ID'], 'adapt-optimized', false, array(
                                                             'alt'     => $video_poster['alt'],
                                                             'loading' => 'lazy',
                                                         ) ); ?>
@@ -134,7 +134,7 @@
                                                 <?php } else { ?>
                                                     <?php if ( $generic_backup_image ) { ?>
                                                         <span class="background-image-container bg-container">
-                                                            <?php echo wp_get_attachment_image( $generic_backup_image['ID'], 'full', false, array(
+                                                            <?php echo wp_get_attachment_image( $generic_backup_image['ID'], 'adapt-optimized', false, array(
                                                                 'alt'     => $generic_backup_image['alt'],
                                                                 'loading' => 'lazy',
                                                             ) ); ?>
@@ -146,7 +146,7 @@
                                                 <?php if ( $company_logo ) { ?>
                                                     <span class="company-logo-container">
                                                         <span class="logo-container">
-                                                            <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                                            <?php echo wp_get_attachment_image( $company_logo['ID'], 'adapt-optimized', false, array(
                                                                 'alt'     => $company_logo['alt'],
                                                                 'loading' => 'lazy',
                                                             ) ); ?>

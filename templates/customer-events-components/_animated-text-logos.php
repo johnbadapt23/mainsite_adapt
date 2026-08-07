@@ -13,7 +13,7 @@
                                 <?php if ( $logo ) { ?>
                                     <span class="ticker-logo-container">
                                         <span class="bg-container">
-                                            <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                 'alt'     => $logo['alt'],
                                                 'loading' => 'lazy',
                                             ) ); ?>
@@ -31,7 +31,7 @@
                                 <?php if ( $logo ) { ?>
                                     <span class="ticker-logo-container">
                                         <span class="bg-container">
-                                            <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                 'alt'     => $logo['alt'],
                                                 'loading' => 'lazy',
                                             ) ); ?>
@@ -49,7 +49,7 @@
                                 <?php if ( $logo ) { ?>
                                     <span class="ticker-logo-container">
                                         <span class="bg-container">
-                                            <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                 'alt'     => $logo['alt'],
                                                 'loading' => 'lazy',
                                             ) ); ?>

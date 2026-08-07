@@ -15,7 +15,7 @@
 					<?php if ( $logo_id ) { ?>
 						<span class="ticker-logo-container">
 							<span class="bg-container">
-								<?= wp_get_attachment_image($logo_id, 'full'); ?>
+								<?= wp_get_attachment_image($logo_id, 'adapt-optimized'); ?>
 							</span>
 						</span>
 					<?php } ?>
@@ -34,7 +34,7 @@
 					<?php if ( $logo_id ) { ?>
 						<span class="ticker-logo-container">
 							<span class="bg-container">
-								<?= wp_get_attachment_image($logo_id, 'full'); ?>
+								<?= wp_get_attachment_image($logo_id, 'adapt-optimized'); ?>
 							</span>
 						</span>
 					<?php } ?>

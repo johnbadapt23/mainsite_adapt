@@ -31,7 +31,7 @@
                                     <?php if ( $pre_image_image ) { ?>
                                         <span class="pre-image-container">
                                             <span class="pre-image-inner">
-                                                <?php echo wp_get_attachment_image( $pre_image_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $pre_image_image['ID'], 'adapt-optimized', false, array(
                                                     'class'   => 'pre-image',
                                                     'alt'     => $pre_image_image['alt'],
                                                     'loading' => 'lazy',
@@ -42,7 +42,7 @@
                                     <div class="bg-container">
                                         <?php $image = get_sub_field( 'image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                                                 'alt'     => $image['alt'],
                                                 'loading' => 'lazy',
                                             ) ); ?>
@@ -50,7 +50,7 @@
                                     </div>
                                     <?php $post_image_image = get_sub_field( 'post_image_image' ); ?>
                         			<?php if ( $post_image_image ) { ?>
-                        				<?php echo wp_get_attachment_image( $post_image_image['ID'], 'full', false, array(
+                        				<?php echo wp_get_attachment_image( $post_image_image['ID'], 'adapt-optimized', false, array(
                         					'class'   => 'post-image',
                         					'alt'     => $post_image_image['alt'],
                         					'loading' => 'lazy',
@@ -72,7 +72,7 @@
                                     <?php if ( $pre_image_image ) { ?>
                                         <span class="pre-image-container">
                                             <span class="pre-image-inner">
-                                                <?php echo wp_get_attachment_image( $pre_image_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $pre_image_image['ID'], 'adapt-optimized', false, array(
                                                     'class'   => 'pre-image',
                                                     'alt'     => $pre_image_image['alt'],
                                                     'loading' => 'lazy',
@@ -81,14 +81,14 @@
                                         </span>
                                     <?php } ?>
                                     <?php if ( $image ) { ?>
-                                        <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                        <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                                             'class'   => 'main-image' . ( $pre_image_image ? ' full-width-image' : '' ),
                                             'alt'     => $image['alt'],
                                             'loading' => 'lazy',
                                         ) ); ?>
                                     <?php } ?>
                                     <?php if ( $post_image_image ) { ?>
-                        				<?php echo wp_get_attachment_image( $post_image_image['ID'], 'full', false, array(
+                        				<?php echo wp_get_attachment_image( $post_image_image['ID'], 'adapt-optimized', false, array(
                         					'class'   => 'post-image',
                         					'alt'     => $post_image_image['alt'],
                         					'loading' => 'lazy',

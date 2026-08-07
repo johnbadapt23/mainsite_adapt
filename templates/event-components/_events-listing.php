@@ -169,7 +169,7 @@ if($years){
                                         <span class="bg-container">
                                             <?php $listing_image = get_field( 'listing_image' ); ?>
                                             <?php if ( $listing_image ) { ?>
-                                            	<?php echo wp_get_attachment_image( $listing_image['ID'], 'full', false, array(
+                                            	<?php echo wp_get_attachment_image( $listing_image['ID'], 'adapt-optimized', false, array(
                                             		'alt'     => $listing_image['alt'],
                                             		'loading' => 'lazy',
                                             	) ); ?>

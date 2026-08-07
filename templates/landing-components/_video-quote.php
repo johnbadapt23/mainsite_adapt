@@ -13,7 +13,7 @@
                     <div class="bg-container">
                         <?php $poster_image = get_sub_field( 'poster_image' ); ?>
                         <?php if ( $poster_image ) { ?>
-                            <?php echo wp_get_attachment_image( $poster_image['ID'], 'full', false, array(
+                            <?php echo wp_get_attachment_image( $poster_image['ID'], 'adapt-optimized', false, array(
                                 'alt'     => $poster_image['alt'],
                                 'loading' => 'lazy',
                             ) ); ?>

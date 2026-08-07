@@ -23,7 +23,7 @@
                             <?php } ?>
                                 <span class="slide">
                 					<?php if ( $logo ) { ?>
-                						<?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                						<?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                 							'class'   => 'logo',
                 							'alt'     => $logo['alt'],
                 							'loading' => 'lazy',

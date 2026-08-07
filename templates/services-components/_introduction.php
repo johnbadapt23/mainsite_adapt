@@ -37,7 +37,7 @@
                 <span class="bg-container contained-image">
                     <?php $side_image = get_sub_field( 'side_image' ); ?>
                     <?php if ( $side_image ) { ?>
-                        <?php echo wp_get_attachment_image( $side_image['ID'], 'full', false, array(
+                        <?php echo wp_get_attachment_image( $side_image['ID'], 'adapt-optimized', false, array(
                             'alt'     => $side_image['alt'],
                             'loading' => 'lazy',
                         ) ); ?>

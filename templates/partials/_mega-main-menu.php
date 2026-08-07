@@ -41,7 +41,7 @@
                             <span class="it-leaders-switch services-hover active">
                                 <span class="icon-container">
                                     <?php if ( $itIcon ) { ?>
-                                        <?php echo wp_get_attachment_image( $itIcon['ID'], 'full', false, array(
+                                        <?php echo wp_get_attachment_image( $itIcon['ID'], 'adapt-optimized', false, array(
                                             'alt'     => $itIcon['alt'],
                                             'loading' => false,
                                         ) ); ?>
@@ -64,7 +64,7 @@
                             <span class="tech-leaders-switch services-hover">
                                 <span class="icon-container">
                                     <?php if ( $techIcon ) { ?>
-                                        <?php echo wp_get_attachment_image( $techIcon['ID'], 'full', false, array(
+                                        <?php echo wp_get_attachment_image( $techIcon['ID'], 'adapt-optimized', false, array(
                                             'alt'     => $techIcon['alt'],
                                             'loading' => 'lazy',
                                         ) ); ?>
@@ -95,7 +95,7 @@
                                                     <span class="background-pink overview-container-inner">
                                                         <?php if ( $itOverviewImage ) { ?>
                                                             <span class="overview-image">
-                                                                <?php echo wp_get_attachment_image( $itOverviewImage['ID'], 'full', false, array(
+                                                                <?php echo wp_get_attachment_image( $itOverviewImage['ID'], 'adapt-optimized', false, array(
                                                                     'alt'     => $itOverviewImage['alt'],
                                                                     'loading' => 'lazy',
                                                                 ) ); ?>
@@ -160,7 +160,7 @@
                                                     <span class="background-pink overview-container-inner">
                                                         <?php if ( $techOverviewImage ) { ?>
                                                             <span class="overview-image">
-                                                                <?php echo wp_get_attachment_image( $techOverviewImage['ID'], 'full', false, array(
+                                                                <?php echo wp_get_attachment_image( $techOverviewImage['ID'], 'adapt-optimized', false, array(
                                                                     'alt'     => $techOverviewImage['alt'],
                                                                     'loading' => 'lazy',
                                                                 ) ); ?>
@@ -535,7 +535,7 @@
                                                     <?php $logo = get_sub_field( 'logo' ); ?>
                                                     <span class="logo-tile" style="background-color: <?php echo get_sub_field( 'tile_background_colour' ); ?>">
                                                         <?php if ( $logo ) { ?>
-                                                            <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                            <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                                 'alt'     => $logo['alt'],
                                                                 'loading' => 'lazy',
                                                             ) ); ?>

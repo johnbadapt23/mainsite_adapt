@@ -17,14 +17,14 @@
                                             <span class="bg-container">
                                                 <?php $speaker_image = get_field( 'speaker_image' ); ?>
                                                 <?php if ( $speaker_image ) { ?>
-                                                	<?php echo wp_get_attachment_image( $speaker_image['ID'], 'full', false, array(
+                                                	<?php echo wp_get_attachment_image( $speaker_image['ID'], 'adapt-optimized', false, array(
                                                 		'alt'     => $speaker_image['alt'],
                                                 		'loading' => 'lazy',
                                                 	) ); ?>
                                                 <?php } else { ?>
                                                     <?php $generic_headshot = get_field( 'generic_headshot', 'options' ); ?>
                                                     <?php if ( $generic_headshot ) { ?>
-                                                    	<?php echo wp_get_attachment_image( $generic_headshot['ID'], 'full', false, array(
+                                                    	<?php echo wp_get_attachment_image( $generic_headshot['ID'], 'adapt-optimized', false, array(
                                                     		'alt'     => $generic_headshot['alt'],
                                                     		'loading' => 'lazy',
                                                     	) ); ?>
@@ -43,14 +43,14 @@
                                                 <span class="bg-container">
                                                     <?php $speaker_image = get_field( 'speaker_image' ); ?>
                                                     <?php if ( $speaker_image ) { ?>
-                                                    	<?php echo wp_get_attachment_image( $speaker_image['ID'], 'full', false, array(
+                                                    	<?php echo wp_get_attachment_image( $speaker_image['ID'], 'adapt-optimized', false, array(
                                                     		'alt'     => $speaker_image['alt'],
                                                     		'loading' => 'lazy',
                                                     	) ); ?>
                                                     <?php } else { ?>
                                                         <?php $generic_headshot = get_field( 'generic_headshot', 'options' ); ?>
                                                         <?php if ( $generic_headshot ) { ?>
-                                                        	<?php echo wp_get_attachment_image( $generic_headshot['ID'], 'full', false, array(
+                                                        	<?php echo wp_get_attachment_image( $generic_headshot['ID'], 'adapt-optimized', false, array(
                                                         		'alt'     => $generic_headshot['alt'],
                                                         		'loading' => 'lazy',
                                                         	) ); ?>
@@ -69,7 +69,7 @@
                                             <?php $company_logo = get_field( 'company_logo' ); ?>
                                             <?php if ( $company_logo ) { ?>
                                                 <span class="company-logo">
-                                        	       <?php echo wp_get_attachment_image( $company_logo['ID'], 'full', false, array(
+                                        	       <?php echo wp_get_attachment_image( $company_logo['ID'], 'adapt-optimized', false, array(
                                         	           'alt'     => $company_logo['alt'],
                                         	           'loading' => 'lazy',
                                         	       ) ); ?>
@@ -162,14 +162,14 @@
                                             <span class="bg-container">
                                                 <?php $speaker_image = get_field( 'speaker_image' ); ?>
                                                 <?php if ( $speaker_image ) { ?>
-                                                	<?php echo wp_get_attachment_image( $speaker_image['ID'], 'full', false, array(
+                                                	<?php echo wp_get_attachment_image( $speaker_image['ID'], 'adapt-optimized', false, array(
                                                 		'alt'     => $speaker_image['alt'],
                                                 		'loading' => 'lazy',
                                                 	) ); ?>
                                                 <?php } else { ?>
                                                     <?php $generic_headshot = get_field( 'generic_headshot', 'options' ); ?>
                                                     <?php if ( $generic_headshot ) { ?>
-                                                    	<?php echo wp_get_attachment_image( $generic_headshot['ID'], 'full', false, array(
+                                                    	<?php echo wp_get_attachment_image( $generic_headshot['ID'], 'adapt-optimized', false, array(
                                                     		'alt'     => $generic_headshot['alt'],
                                                     		'loading' => 'lazy',
                                                     	) ); ?>

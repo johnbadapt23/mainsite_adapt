@@ -81,7 +81,7 @@
                         <span class="bg-container">
                             <?php $best_practice_listing_image = get_field( 'best_practice_listing_image' ); ?>
                             <?php if ( $best_practice_listing_image ) { ?>
-                                <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'full', false, array(
+                                <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'adapt-optimized', false, array(
                                     'alt'     => $best_practice_listing_image['alt'],
                                     'loading' => 'lazy',
                                 ) ); ?>
@@ -145,7 +145,7 @@
                                         <span class="bg-container">
                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                             <?php if ( $video_poster_image ) { ?>
-                                                <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $video_poster_image['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>
@@ -168,7 +168,7 @@
                                     <span class="bg-container">
                                         <?php $featured_image = get_field( 'featured_image' ); ?>
                                         <?php if ( $featured_image ) { ?>
-                                            <?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
                                                 'alt'     => $featured_image['alt'],
                                                 'loading' => 'lazy',
                                             ) ); ?>
@@ -300,7 +300,7 @@
                                     <a class="publicaton-link" href="<?php echo get_sub_field( 'publication_link' ); ?>" target="_blank" rel="noopener noreferrer">
                                         <?php if ( $publication_logo ) { ?>
                                             <span class="publication-logo-container">
-                                    			<?php echo wp_get_attachment_image( $publication_logo['ID'], 'full', false, array(
+                                    			<?php echo wp_get_attachment_image( $publication_logo['ID'], 'adapt-optimized', false, array(
                                     				'alt'     => $publication_logo['alt'],
                                     				'loading' => 'lazy',
                                     			) ); ?>
@@ -349,7 +349,7 @@
                             <span class="bg-container">
                                 <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                 <?php if ( $video_poster_image ) { ?>
-                                    <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
+                                    <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
                                         'alt'     => $video_poster_image['alt'],
                                         'loading' => 'lazy',
                                     ) ); ?>
@@ -414,7 +414,7 @@
                     </div>
                     <?php if ( $image ) { ?>
                         <div class="preview-image-container">
-                            <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                            <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                                 'alt'     => $image['alt'],
                                 'loading' => 'lazy',
                             ) ); ?>
@@ -451,7 +451,7 @@
                                                     <span class="bg-container">
                                                         <?php $image = get_sub_field( 'image' ); ?>
                                                         <?php if ( $image ) { ?>
-                                                            <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                                            <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                                                                 'alt'     => $image['alt'],
                                                                 'loading' => 'lazy',
                                                             ) ); ?>
@@ -624,7 +624,7 @@
                                                     <span class="bg-container">
                                                         <?php $team_member_image = get_field( 'team_member_image' ); ?>
                                                         <?php if ( $team_member_image ) { ?>
-                                                            <?php echo wp_get_attachment_image( $team_member_image['ID'], 'full', false, array(
+                                                            <?php echo wp_get_attachment_image( $team_member_image['ID'], 'adapt-optimized', false, array(
                                                                 'alt'     => $team_member_image['alt'],
                                                                 'loading' => 'lazy',
                                                             ) ); ?>

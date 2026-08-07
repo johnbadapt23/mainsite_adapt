@@ -19,7 +19,7 @@
             		<?php $image = get_sub_field( 'image' ); ?>
                     <div class="main-image-container">
                 		<?php if ( $image ) { ?>
-                			<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                			<?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                 				'alt'     => $image['alt'],
                 				'loading' => 'lazy',
                 			) ); ?>
@@ -28,7 +28,7 @@
                     <span class="overlay-image-container">
                         <?php $overlay_image = get_sub_field( 'overlay_image' ); ?>
             			<?php if ( $overlay_image ) { ?>
-            				<?php echo wp_get_attachment_image( $overlay_image['ID'], 'full', false, array(
+            				<?php echo wp_get_attachment_image( $overlay_image['ID'], 'adapt-optimized', false, array(
             					'alt'     => $overlay_image['alt'],
             					'loading' => 'lazy',
             				) ); ?>

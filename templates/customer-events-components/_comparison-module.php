@@ -30,7 +30,7 @@
                                 <span class="image-value">
                                     <?php $adapt_image_value = get_sub_field( 'adapt_image_value' ); ?>
                                     <?php if ( $adapt_image_value ) { ?>
-                                        <?php echo wp_get_attachment_image( $adapt_image_value['ID'], 'full', false, array(
+                                        <?php echo wp_get_attachment_image( $adapt_image_value['ID'], 'adapt-optimized', false, array(
                                             'alt'     => $adapt_image_value['alt'],
                                             'loading' => 'lazy',
                                         ) ); ?>
@@ -46,7 +46,7 @@
                                 <span class="image-value">
                                     <?php $gartner_image_value = get_sub_field( 'gartner_image_value' ); ?>
                                     <?php if ( $gartner_image_value ) { ?>
-                                        <?php echo wp_get_attachment_image( $gartner_image_value['ID'], 'full', false, array(
+                                        <?php echo wp_get_attachment_image( $gartner_image_value['ID'], 'adapt-optimized', false, array(
                                             'alt'     => $gartner_image_value['alt'],
                                             'loading' => 'lazy',
                                         ) ); ?>

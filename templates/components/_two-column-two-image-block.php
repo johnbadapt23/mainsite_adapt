@@ -9,7 +9,7 @@
                         <span class="portrait-image-container mobile">
                             <span class="image-container">
                                 <span class="bg-container">
-    		                        <?php echo wp_get_attachment_image( $portrait_image['ID'], 'full', false, array(
+    		                        <?php echo wp_get_attachment_image( $portrait_image['ID'], 'adapt-optimized', false, array(
     		                            'alt'     => $portrait_image['alt'],
     		                            'loading' => 'lazy',
     		                        ) ); ?>
@@ -29,7 +29,7 @@
                     <span class="portrait-image-container desktop">
                         <span class="image-container">
                             <span class="bg-container">
-		                        <?php echo wp_get_attachment_image( $portrait_image['ID'], 'full', false, array(
+		                        <?php echo wp_get_attachment_image( $portrait_image['ID'], 'adapt-optimized', false, array(
 		                            'alt'     => $portrait_image['alt'],
 		                            'loading' => 'lazy',
 		                        ) ); ?>
@@ -42,7 +42,7 @@
                     <span class="square-image-container">
                         <span class="image-container">
                             <span class="bg-container">
-		                        <?php echo wp_get_attachment_image( $square_image['ID'], 'full', false, array(
+		                        <?php echo wp_get_attachment_image( $square_image['ID'], 'adapt-optimized', false, array(
 		                            'alt'     => $square_image['alt'],
 		                            'loading' => 'lazy',
 		                        ) ); ?>

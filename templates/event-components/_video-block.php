@@ -27,7 +27,7 @@ $bg = get_sub_field('background_colour') ?: 'background-black';
                             $image = get_sub_field('poster_image'); 
                             $image_id = attachment_url_to_postid( $image['url'] );
                             ?>
-                            <?= wp_get_attachment_image($image_id, 'full', false, array('class' => 'desktop')); ?>
+                            <?= wp_get_attachment_image($image_id, 'adapt-optimized', false, array('class' => 'desktop')); ?>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>
                                 <span class="opacity-overlay"></span>
                                 <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>"></a>

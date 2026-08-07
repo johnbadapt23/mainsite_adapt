@@ -19,7 +19,7 @@
                                             <span class="bg-container">
                                                 <?php $team_member_image = get_field( 'team_member_image' ); ?>
                                                 <?php if ( $team_member_image ) { ?>
-                                                    <?php echo wp_get_attachment_image( $team_member_image['ID'], 'full', false, array(
+                                                    <?php echo wp_get_attachment_image( $team_member_image['ID'], 'adapt-optimized', false, array(
                                                         'alt'     => $team_member_image['alt'],
                                                         'loading' => 'lazy',
                                                     ) ); ?>
@@ -56,7 +56,7 @@
                                             <span class="bg-container">
                                                 <?php $team_member_image = get_field( 'team_member_image' ); ?>
                                                 <?php if ( $team_member_image ) { ?>
-                                                    <?php echo wp_get_attachment_image( $team_member_image['ID'], 'full', false, array(
+                                                    <?php echo wp_get_attachment_image( $team_member_image['ID'], 'adapt-optimized', false, array(
                                                         'alt'     => $team_member_image['alt'],
                                                         'loading' => 'lazy',
                                                     ) ); ?>
@@ -93,7 +93,7 @@
                                     <span class="bg-container">
                                         <?php $team_member_image = get_field( 'team_member_image' ); ?>
                                         <?php if ( $team_member_image ) { ?>
-                                            <?php echo wp_get_attachment_image( $team_member_image['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $team_member_image['ID'], 'adapt-optimized', false, array(
                                                 'alt'     => $team_member_image['alt'],
                                                 'loading' => 'lazy',
                                             ) ); ?>

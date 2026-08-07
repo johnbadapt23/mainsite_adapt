@@ -13,7 +13,7 @@
                         $image_id = attachment_url_to_postid( $image['url'] );
                         ?>
             			<?php if ( $image_id ) { ?>
-                            <?= wp_get_attachment_image($image_id, 'full'); ?>
+                            <?= wp_get_attachment_image($image_id, 'adapt-optimized'); ?>
             			<?php } ?>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                                         $popup_form_image_id = attachment_url_to_postid( $popup_form_image['url'] );
                                         ?>
                                         <?php if ( $popup_form_image_id ) { ?>
-                                            <?= wp_get_attachment_image($popup_form_image_id, 'full'); ?>
+                                            <?= wp_get_attachment_image($popup_form_image_id, 'adapt-optimized'); ?>
                                         <?php } ?>
                                         <h4 role="heading" aria-level="2" class="text-white"><?php echo get_sub_field( 'popup_form_title' ); ?></h4>
                                         <p class="p-xsmall medium-grey "><?php echo get_sub_field( 'popup_form_text' ); ?></p>
@@ -77,7 +77,7 @@
                                     $popup_form_thank_you_image_id = attachment_url_to_postid( $popup_form_thank_you_image['url'] );
                                     ?>
                                     <?php if ( $popup_form_thank_you_image_id ) { ?>
-                                        <?= wp_get_attachment_image($popup_form_thank_you_image_id, 'full'); ?>
+                                        <?= wp_get_attachment_image($popup_form_thank_you_image_id, 'adapt-optimized'); ?>
                                     <?php } ?>
                                     <h4 class="white-text"><?php the_sub_field( 'popup_form_thank_you_title' ); ?></h4>
                                     <p class="p-xsmall white-text"><?php the_sub_field( 'popup_form_thank_you_text' ); ?></p>

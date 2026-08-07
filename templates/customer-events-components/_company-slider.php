@@ -13,7 +13,7 @@
                                 <span class="logo-container-inner">
                                     <?php $logo_white = get_sub_field( 'logo_white' ); ?>
                                     <?php if ( $logo_white ) { ?>
-                                        <?php echo wp_get_attachment_image( $logo_white['ID'], 'full', false, array(
+                                        <?php echo wp_get_attachment_image( $logo_white['ID'], 'adapt-optimized', false, array(
                                             'class'   => 'logo-white',
                                             'alt'     => $logo_white['alt'],
                                             'loading' => 'lazy',
@@ -21,7 +21,7 @@
                                     <?php } ?>
                                     <?php $logo_dark = get_sub_field( 'logo_dark' ); ?>
                                     <?php if ( $logo_dark ) { ?>
-                                        <?php echo wp_get_attachment_image( $logo_dark['ID'], 'full', false, array(
+                                        <?php echo wp_get_attachment_image( $logo_dark['ID'], 'adapt-optimized', false, array(
                                             'class'   => 'logo-dark',
                                             'alt'     => $logo_dark['alt'],
                                             'loading' => 'lazy',

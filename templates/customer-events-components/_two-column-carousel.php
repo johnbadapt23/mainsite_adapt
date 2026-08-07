@@ -62,7 +62,7 @@
                                         <span class="bg-container">
                                             <?php $logo = $logo_up1['logo']; ?>
                                             <?php if ( $logo ) { ?>
-                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $logo['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>
@@ -79,7 +79,7 @@
                                         <span class="bg-container">
                                             <?php $logo = $logo_up1['logo']; ?>
                                             <?php if ( $logo ) { ?>
-                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $logo['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>
@@ -100,7 +100,7 @@
                                         <span class="bg-container">
                                             <?php $logo = $logo_down['logo']; ?>
                                             <?php if ( $logo ) { ?>
-                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $logo['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>
@@ -117,7 +117,7 @@
                                         <span class="bg-container">
                                             <?php $logo = $logo_down['logo']; ?>
                                             <?php if ( $logo ) { ?>
-                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $logo['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>
@@ -138,7 +138,7 @@
                                         <span class="bg-container">
                                             <?php $logo = $logo_up2['logo']; ?>
                                             <?php if ( $logo ) { ?>
-                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $logo['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>
@@ -155,7 +155,7 @@
                                         <span class="bg-container">
                                             <?php $logo = $logo_up2['logo']; ?>
                                             <?php if ( $logo ) { ?>
-                                                <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $logo['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $logo['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>

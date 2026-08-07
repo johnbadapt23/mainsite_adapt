@@ -6,7 +6,7 @@
                 <span class="icon-container">
                     <?php $icon = get_sub_field( 'icon' ); ?>
                     <?php if ( $icon ) { ?>
-                        <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+                        <?php echo wp_get_attachment_image( $icon['ID'], 'adapt-optimized', false, array(
                             'alt'     => $icon['alt'],
                             'loading' => 'lazy',
                         ) ); ?>
@@ -15,7 +15,7 @@
                 <span class="headerLarge bold-black secondary-dark"><?php echo get_sub_field( 'quote' ); ?></span>
                 <?php $graphic = get_sub_field( 'graphic' ); ?>
                 <?php if ( $graphic ) { ?>
-                    <?php echo wp_get_attachment_image( $graphic['ID'], 'full', false, array(
+                    <?php echo wp_get_attachment_image( $graphic['ID'], 'adapt-optimized', false, array(
                         'class'   => 'mobile-image',
                         'alt'     => $graphic['alt'],
                         'loading' => 'lazy',
@@ -50,7 +50,7 @@
                 <?php } else { ?>
                     <?php $graphic = get_sub_field( 'graphic' ); ?>
                     <?php if ( $graphic ) { ?>
-                        <?php echo wp_get_attachment_image( $graphic['ID'], 'full', false, array(
+                        <?php echo wp_get_attachment_image( $graphic['ID'], 'adapt-optimized', false, array(
                             'class'   => 'desktop-image',
                             'alt'     => $graphic['alt'],
                             'loading' => 'lazy',

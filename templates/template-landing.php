@@ -14,7 +14,7 @@ get_header();
                 <span class="logo-container">
                     <?php $header_logo = get_field( 'header_logo' ); ?>
                     <?php if ( $header_logo ) { ?>
-                        <?php echo wp_get_attachment_image( $header_logo['ID'], 'full', false, array(
+                        <?php echo wp_get_attachment_image( $header_logo['ID'], 'adapt-optimized', false, array(
                             'alt'     => $header_logo['alt'],
                             'loading' => 'lazy',
                         ) ); ?>

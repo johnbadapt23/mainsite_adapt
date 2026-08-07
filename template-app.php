@@ -16,7 +16,7 @@ get_header();
 					<div class="app-inner-container">
 						<?php $top_icon = get_sub_field( 'top_icon' ); ?>
 						<?php if ( $top_icon ) { ?>
-							<span class="top-icon-container"><?php echo wp_get_attachment_image( $top_icon['ID'], 'full', false, array(
+							<span class="top-icon-container"><?php echo wp_get_attachment_image( $top_icon['ID'], 'adapt-optimized', false, array(
 								'alt'     => $top_icon['alt'],
 								'width'   => '250',
 								'loading' => 'lazy',
@@ -31,7 +31,7 @@ get_header();
 									<?php if (get_sub_field( 'icon_link' )){ ?>
 										<a href="<?php the_sub_field( 'icon_link' ); ?>" target="_blank" rel="noopener noreferrer">
 											<?php if ( $icon ) { ?>
-												<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+												<?php echo wp_get_attachment_image( $icon['ID'], 'adapt-optimized', false, array(
 													'alt'     => $icon['alt'],
 													'width'   => '130',
 													'loading' => 'lazy',
@@ -40,7 +40,7 @@ get_header();
 										</a>
 									<?php } else { ?>
 										<?php if ( $icon ) { ?>
-											<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
+											<?php echo wp_get_attachment_image( $icon['ID'], 'adapt-optimized', false, array(
 												'alt'     => $icon['alt'],
 												'width'   => '130',
 												'loading' => 'lazy',
@@ -80,7 +80,7 @@ get_header();
 						<?php $main_image = get_sub_field( 'main_image' ); ?>
 						<?php if ( $main_image ) { ?>
 							<span class="main-image-container">
-								<?php echo wp_get_attachment_image( $main_image['ID'], 'full', false, array(
+								<?php echo wp_get_attachment_image( $main_image['ID'], 'adapt-optimized', false, array(
 									'alt'     => $main_image['alt'],
 									'loading' => 'lazy',
 								) ); ?>

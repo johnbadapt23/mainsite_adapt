@@ -20,7 +20,7 @@
                                     <?php $arrow = get_sub_field( 'arrow' ); ?>
                                     <span class="arrow-container">
                     					<?php if ( $arrow ) { ?>
-                    						<?php echo wp_get_attachment_image( $arrow['ID'], 'full', false, array(
+                    						<?php echo wp_get_attachment_image( $arrow['ID'], 'adapt-optimized', false, array(
                     							'alt'     => $arrow['alt'],
                     							'loading' => 'lazy',
                     						) ); ?>
@@ -29,7 +29,7 @@
                 					<?php $image = get_sub_field( 'image' ); ?>
                                     <span class="staff-image-container">
                     					<?php if ( $image ) { ?>
-                    						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                    						<?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                     							'alt'     => $image['alt'],
                     							'loading' => 'lazy',
                     						) ); ?>
@@ -70,7 +70,7 @@
                                     <?php $arrow = get_sub_field( 'mobile_arrow' ); ?>
                                     <span class="arrow-container">
                     					<?php if ( $arrow ) { ?>
-                    						<?php echo wp_get_attachment_image( $arrow['ID'], 'full', false, array(
+                    						<?php echo wp_get_attachment_image( $arrow['ID'], 'adapt-optimized', false, array(
                     							'alt'     => $arrow['alt'],
                     							'loading' => 'lazy',
                     						) ); ?>
@@ -79,7 +79,7 @@
                 					<?php $image = get_sub_field( 'image' ); ?>
                                     <span class="staff-image-container">
                     					<?php if ( $image ) { ?>
-                    						<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                    						<?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                     							'alt'     => $image['alt'],
                     							'loading' => 'lazy',
                     						) ); ?>

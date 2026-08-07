@@ -139,7 +139,7 @@ if($keyword != '') {
                                         <span class="bg-container">
                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                             <?php if ( $featured_image ) { ?>
-                                                <?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
                                                 	'alt'     => $featured_image['alt'],
                                                 	'loading' => 'lazy',
                                                 ) ); ?>
@@ -148,7 +148,7 @@ if($keyword != '') {
                                         <span class="bg-container bg-container-hover">
                                             <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                             <?php if ( $listing_hover_image ) { ?>
-                                                <?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-optimized', false, array(
                                                 	'alt'     => $listing_hover_image['alt'],
                                                 	'loading' => 'lazy',
                                                 ) ); ?>
@@ -220,7 +220,7 @@ if($keyword != '') {
                                         <span class="bg-container">
                                             <?php $best_practice_listing_image = get_field( 'best_practice_listing_image' ); ?>
                                             <?php if ( $best_practice_listing_image ) { ?>
-                                                <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'adapt-optimized', false, array(
                                                 	'alt'     => $best_practice_listing_image['alt'],
                                                 	'loading' => 'lazy',
                                                 ) ); ?>
@@ -272,7 +272,7 @@ if($keyword != '') {
                                     <span class="bg-container">
                                         <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                         <?php if ( $video_poster_image ) { ?>
-                                            <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
                                             	'alt'     => $video_poster_image['alt'],
                                             	'loading' => 'lazy',
                                             ) ); ?>
@@ -342,7 +342,7 @@ if($keyword != '') {
                                         <span class="bg-container">
                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                             <?php if ( $featured_image ) { ?>
-                                                <?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
                                                 	'alt'     => $featured_image['alt'],
                                                 	'loading' => 'lazy',
                                                 ) ); ?>
@@ -401,14 +401,14 @@ if($keyword != '') {
                                              <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                              <?php $best_practice_listing_image = get_field( 'best_practice_listing_image' ); ?>
                                             <?php if ( $featured_image ) { ?>
-                                                <?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
                                                 	'alt'     => $featured_image['alt'],
                                                 	'loading' => 'lazy',
                                                 ) ); ?>
                                             <?php } elseif ( $video_poster_image ){ ?> 
                                                  <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                 <?php if ( $video_poster_image ) { ?>
-                                                    <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'full', false, array(
+                                                    <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
                                                     	'alt'     => $video_poster_image['alt'],
                                                     	'loading' => 'lazy',
                                                     ) ); ?>
@@ -423,7 +423,7 @@ if($keyword != '') {
                                                 <?php } ?>                                            
                                             <?php } else { ?>
                                                 <?php if ( $best_practice_listing_image ) { ?>
-                                                <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'adapt-optimized', false, array(
                                                 	'alt'     => $best_practice_listing_image['alt'],
                                                 	'loading' => 'lazy',
                                                 ) ); ?>

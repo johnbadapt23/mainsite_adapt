@@ -18,7 +18,7 @@
                                     <span class="image-container">
                                         <span class="bg-container contained-image">
                                             <?php if ( $slide_icon ) { ?>
-                                                <?php echo wp_get_attachment_image( $slide_icon['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $slide_icon['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $slide_icon['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>

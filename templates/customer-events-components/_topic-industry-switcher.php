@@ -48,7 +48,7 @@
                 <div class="image-outer">
                     <?php $image = get_sub_field( 'image' ); ?>
                     <?php if ( $image ) { ?>
-                        <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                        <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                             'class'   => 'desktop mobile-hide',
                             'alt'     => $image['alt'],
                             'loading' => 'lazy',
@@ -56,7 +56,7 @@
                     <?php } ?>
                     <?php $mobile_image = get_sub_field( 'mobile_image' ); ?>
                     <?php if ( $mobile_image ) { ?>
-                        <?php echo wp_get_attachment_image( $mobile_image['ID'], 'full', false, array(
+                        <?php echo wp_get_attachment_image( $mobile_image['ID'], 'adapt-optimized', false, array(
                             'class'   => 'mobile desktop-hide',
                             'alt'     => $mobile_image['alt'],
                             'loading' => 'lazy',

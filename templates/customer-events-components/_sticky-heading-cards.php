@@ -19,7 +19,7 @@
                                     <div class="bg-container contained">
                                         <?php $image = get_sub_field( 'image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                                                 'class'   => 'desktop-image',
                                                 'alt'     => $image['alt'],
                                                 'loading' => 'lazy',
@@ -27,7 +27,7 @@
                                         <?php } ?>
                                         <?php $image = get_sub_field( 'mobile_image' ); ?>
                                         <?php if ( $image ) { ?>
-                                            <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
+                                            <?php echo wp_get_attachment_image( $image['ID'], 'adapt-optimized', false, array(
                                                 'class'   => 'mobile-image',
                                                 'alt'     => $image['alt'],
                                                 'loading' => 'lazy',

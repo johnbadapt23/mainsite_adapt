@@ -32,7 +32,7 @@
                                             <span class="logo-container">
                                                 <?php $title_logo = get_sub_field( 'title_logo' ); ?>
                                                 <?php if ( $title_logo ) { ?>
-                                                    <?php echo wp_get_attachment_image( $title_logo['ID'], 'full', false, array(
+                                                    <?php echo wp_get_attachment_image( $title_logo['ID'], 'adapt-optimized', false, array(
                                                         'alt'     => $title_logo['alt'],
                                                         'loading' => 'lazy',
                                                     ) ); ?>
@@ -45,7 +45,7 @@
                                                 <span class="slide-bg-container">
                                                     <?php $image_one = get_sub_field( 'image_one' ); ?>
                                                     <?php if ( $image_one ) { ?>
-                                                        <?php echo wp_get_attachment_image( $image_one['ID'], 'full', false, array(
+                                                        <?php echo wp_get_attachment_image( $image_one['ID'], 'adapt-optimized', false, array(
                                                             'alt'     => $image_one['alt'],
                                                             'loading' => 'lazy',
                                                         ) ); ?>
@@ -54,7 +54,7 @@
                                                 <span class="slide-bg-container">
                                                     <?php $image_two = get_sub_field( 'image_two' ); ?>
                                                     <?php if ( $image_two ) { ?>
-                                                        <?php echo wp_get_attachment_image( $image_two['ID'], 'full', false, array(
+                                                        <?php echo wp_get_attachment_image( $image_two['ID'], 'adapt-optimized', false, array(
                                                             'alt'     => $image_two['alt'],
                                                             'loading' => 'lazy',
                                                         ) ); ?>
@@ -63,7 +63,7 @@
                                                 <span class="slide-bg-container">
                                                     <?php $image_three = get_sub_field( 'image_three' ); ?>
                                                     <?php if ( $image_three ) { ?>
-                                                        <?php echo wp_get_attachment_image( $image_three['ID'], 'full', false, array(
+                                                        <?php echo wp_get_attachment_image( $image_three['ID'], 'adapt-optimized', false, array(
                                                             'alt'     => $image_three['alt'],
                                                             'loading' => 'lazy',
                                                         ) ); ?>
@@ -103,7 +103,7 @@
                                         <span class="logo-container" <?php if($dataForm){ ?> data-fc-open="<?php echo $dataForm; ?>"<?php } ?>>
                                             <?php $title_logo = get_sub_field( 'title_logo' ); ?>
                                             <?php if ( $title_logo ) { ?>
-                                                <?php echo wp_get_attachment_image( $title_logo['ID'], 'full', false, array(
+                                                <?php echo wp_get_attachment_image( $title_logo['ID'], 'adapt-optimized', false, array(
                                                     'alt'     => $title_logo['alt'],
                                                     'loading' => 'lazy',
                                                 ) ); ?>
@@ -123,7 +123,7 @@
                                                     if ( $dataForm ) {
                                                         $image_one_attrs['data-fc-open'] = $dataForm;
                                                     }
-                                                    echo wp_get_attachment_image( $image_one['ID'], 'full', false, $image_one_attrs ); ?>
+                                                    echo wp_get_attachment_image( $image_one['ID'], 'adapt-optimized', false, $image_one_attrs ); ?>
                                                 <?php } ?>
                                             </span>
                                             <span class="slide-bg-container">
@@ -136,7 +136,7 @@
                                                     if ( $dataForm ) {
                                                         $image_two_attrs['data-fc-open'] = $dataForm;
                                                     }
-                                                    echo wp_get_attachment_image( $image_two['ID'], 'full', false, $image_two_attrs ); ?>
+                                                    echo wp_get_attachment_image( $image_two['ID'], 'adapt-optimized', false, $image_two_attrs ); ?>
                                                 <?php } ?>
                                             </span>
                                             <span class="slide-bg-container">
@@ -149,7 +149,7 @@
                                                     if ( $dataForm ) {
                                                         $image_three_attrs['data-fc-open'] = $dataForm;
                                                     }
-                                                    echo wp_get_attachment_image( $image_three['ID'], 'full', false, $image_three_attrs ); ?>
+                                                    echo wp_get_attachment_image( $image_three['ID'], 'adapt-optimized', false, $image_three_attrs ); ?>
                                                 <?php } ?>
                                             </span>
                                         </span>
