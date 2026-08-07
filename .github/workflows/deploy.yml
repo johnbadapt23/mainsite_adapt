@@ -125,15 +125,26 @@ jobs:
           local-path: './'
           remote-path: ${{ vars.STAGING_REMOTE_PATH || secrets.STAGING_REMOTE_PATH }}
           sync: 'delta'
+          # NOTE: this value gets spliced UNQUOTED into a shell command inside
+          # the action's own script, so it must never contain literal parens
+          # -- git's long-form ":(exclude)pattern" pathspec syntax breaks
+          # bash parsing there ("syntax error near unexpected token '('").
+          # Using the parenthesis-free short-form ":!pattern" instead.
+          # ":!_archive" alone also fails (a separate git quirk: "Unimplemented
+          # pathspec magic '_'" when '_' immediately follows '!') -- worked
+          # around with a wildcard so '_' isn't the first character after '!'.
+          # Both forms verified locally against this repo's real git history
+          # before committing (git ls-files -- . <pathspec> to confirm exactly
+          # what does/doesn't get excluded).
           sync-delta-excludes: >-
-            :(exclude).git*
-            :(exclude).github
-            :(exclude)node_modules
-            :(exclude)source
-            :(exclude)_archive
-            :(exclude)package.json
-            :(exclude)package-lock.json
-            :(exclude)gulpfile.js
-            :(exclude)faviconData.json
-            :(exclude)README.md
+            :!/.git*
+            :!/.github
+            :!/node_modules
+            :!/source
+            :!*_archive*
+            :!/package.json
+            :!/package-lock.json
+            :!/gulpfile.js
+            :!/faviconData.json
+            :!/README.md
           sync-delta-includes: 'assets/css/main.min.css,assets/js/main.min.js'
