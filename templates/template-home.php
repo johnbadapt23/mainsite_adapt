@@ -7,7 +7,7 @@
 get_header();
 
 ?>
-<span class="loading-animation">
+<!-- <span class="loading-animation">
     <span class="v-wrap">
         <span class="v-box">
             <span class="animator-player">
@@ -15,7 +15,7 @@ get_header();
             </span>
         </span>
     </span>
-</span>
+</span> -->
 
 <main class="page flexible" id="main">
     <?php if ( have_rows( 'content_blocks' ) ): ?>
