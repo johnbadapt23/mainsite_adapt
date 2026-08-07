@@ -2,69 +2,43 @@
     <?php $expertise_ids = get_sub_field('expertise'); ?>
     <?php if ($expertise_ids): ?>
 
-        <?php 
+        <?php
         $carousel_posts = array(); // Store all posts for output & width calculation
 
-        // ---------- LOOP 1: Checked adapt_analyst ----------
-        $checked_args = array(
+        // ---------- Speakers, excluding adapt-analysts / adapt-advisors ----------
+        $args = array(
             'post_type'      => 'speaker',
             'posts_per_page' => -1,
             'tax_query'      => array(
+                'relation' => 'AND',
                 array(
                     'taxonomy' => 'expertise',
                     'field'    => 'term_id',
                     'terms'    => $expertise_ids,
                     'operator' => 'IN',
                 ),
-            ),
-            'meta_query' => array(
-                array(
-                    'key'     => 'adapt_analyst',
-                    'value'   => '1', // checked
-                    'compare' => '=',
-                ),
-            ),
-            'orderby' => 'menu_order',
-            'order'   => 'ASC',
-        );
-
-        $checked_query = new WP_Query($checked_args);
-        if ($checked_query->have_posts()):
-            $carousel_posts = array_merge($carousel_posts, $checked_query->posts);
-        endif;
-        wp_reset_postdata();
-
-        // ---------- LOOP 2: Unchecked / not 1 / empty ----------
-        $unchecked_args = array(
-            'post_type'      => 'speaker',
-            'posts_per_page' => -1,
-            'tax_query'      => array(
                 array(
                     'taxonomy' => 'expertise',
                     'field'    => 'term_id',
-                    'terms'    => $expertise_ids,
-                    'operator' => 'IN',
+                    'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
+                    'operator' => 'NOT IN',
                 ),
             ),
-            'meta_query' => array(
-                'relation' => 'OR',
-                array(
-                    'key'     => 'adapt_analyst',
-                    'compare' => 'NOT EXISTS', // key doesn't exist
-                ),
-                array(
-                    'key'     => 'adapt_analyst',
-                    'value'   => '1',          // key exists but not 1
-                    'compare' => '!=',
-                ),
-            ),
+            // Replaced by the expertise tax_query exclusion above.
+            // 'meta_query' => array(
+            //     array(
+            //         'key'     => 'adapt_analyst',
+            //         'value'   => '1', // checked
+            //         'compare' => '=',
+            //     ),
+            // ),
             'orderby' => 'menu_order',
             'order'   => 'ASC',
         );
 
-        $unchecked_query = new WP_Query($unchecked_args);
-        if ($unchecked_query->have_posts()):
-            $carousel_posts = array_merge($carousel_posts, $unchecked_query->posts);
+        $speakers_query = new WP_Query($args);
+        if ($speakers_query->have_posts()):
+            $carousel_posts = array_merge($carousel_posts, $speakers_query->posts);
         endif;
         wp_reset_postdata();
 

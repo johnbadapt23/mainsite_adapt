@@ -273,26 +273,34 @@ function filter_speakers_callback() {
         'paged' => $paged,
         'offset' => $offset,
         'tax_query' => array(
+            'relation' => 'AND',
             array(
                 'taxonomy' => 'expertise',
                 'field'    => 'slug',
                 'terms'    => $expertise_slugs,
                 'operator' => 'IN',
             ),
+            array(
+                'taxonomy' => 'expertise',
+                'field'    => 'term_id',
+                'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
+                'operator' => 'NOT IN',
+            ),
         ),
         'ignore_custom_sort' => true,
-        'meta_query'     => array(
-            'relation' => 'OR',
-            array(
-                'key'     => 'adapt_analyst',
-                'compare' => 'EXISTS',
-            ),
-            array(
-                'key'     => 'adapt_analyst',
-                'compare' => 'NOT EXISTS',
-            ),
-            
-        ),                        
+        // Replaced by the expertise tax_query exclusion above.
+        // 'meta_query'     => array(
+        //     'relation' => 'OR',
+        //     array(
+        //         'key'     => 'adapt_analyst',
+        //         'compare' => 'EXISTS',
+        //     ),
+        //     array(
+        //         'key'     => 'adapt_analyst',
+        //         'compare' => 'NOT EXISTS',
+        //     ),
+        //
+        // ),
         'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),
     );
 

@@ -91,27 +91,35 @@
                                 'posts_per_page' => 12,
                                 'paged'         => isset($_POST['paged']) ? intval($_POST['paged']) : 1,
                                 'tax_query'      => array(
+                                    'relation' => 'AND',
                                     array(
                                         'taxonomy' => 'expertise',
                                         'field'    => 'term_id',
                                         'terms'    => $expertise_ids,
                                         'operator' => 'IN',
                                     ),
+                                    array(
+                                        'taxonomy' => 'expertise',
+                                        'field'    => 'term_id',
+                                        'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
+                                        'operator' => 'NOT IN',
+                                    ),
                                 ),
                                 'ignore_custom_sort' => true,
-                                'meta_query'     => array(
-                                    'relation' => 'OR',
-                                    array(
-                                        'key'     => 'adapt_analyst',
-                                        'compare' => 'EXISTS',
-                                    ),
-                                    array(
-                                        'key'     => 'adapt_analyst',
-                                        'compare' => 'NOT EXISTS',
-                                    ),
-                                   
-                                ),                                
-                                'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),                                
+                                // Replaced by the expertise tax_query exclusion above.
+                                // 'meta_query'     => array(
+                                //     'relation' => 'OR',
+                                //     array(
+                                //         'key'     => 'adapt_analyst',
+                                //         'compare' => 'EXISTS',
+                                //     ),
+                                //     array(
+                                //         'key'     => 'adapt_analyst',
+                                //         'compare' => 'NOT EXISTS',
+                                //     ),
+                                //
+                                // ),
+                                'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),
                             );
 
                             // Run the query
