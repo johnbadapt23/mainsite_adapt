@@ -6,6 +6,35 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<?php
+    // The homepage's LCP element is a CSS background-image (not an <img>),
+    // set via inline style in templates/components/_two-column-text-home-v2.php
+    // (rendered as content_blocks row 3, id="home-two-column-text-3").
+    // fetchpriority can only be set on <img>/<link>/<script>/<iframe> elements,
+    // never on a CSS background-image, so Lighthouse's "fetchpriority=high
+    // should be applied" can't be satisfied by touching that element itself.
+    // The standard workaround is to preload the same URL with
+    // fetchpriority="high" here, as early in <head> as possible, which gives
+    // the browser the same early/high-priority fetch signal for it.
+    // get_field() (not have_rows()/the_row()) is used deliberately: it reads
+    // the raw content_blocks array without touching ACF's row-loop cursor,
+    // so this can't interfere with the main have_rows('content_blocks') loop
+    // later in template-home.php.
+    if ( is_page_template( 'templates/template-home.php' ) ) {
+        $adapt_home_blocks = get_field( 'content_blocks' );
+        $adapt_lcp_row = ( is_array( $adapt_home_blocks ) && isset( $adapt_home_blocks[2] ) ) ? $adapt_home_blocks[2] : null;
+        if (
+            is_array( $adapt_lcp_row )
+            && isset( $adapt_lcp_row['acf_fc_layout'] ) && $adapt_lcp_row['acf_fc_layout'] === 'two_column_text'
+            && ! empty( $adapt_lcp_row['background_image']['url'] )
+        ) {
+            ?>
+<link rel="preload" as="image" fetchpriority="high" href="<?php echo esc_url( $adapt_lcp_row['background_image']['url'] ); ?>">
+            <?php
+        }
+    }
+?>
+
 <!-- <title> is now injected automatically by wp_head() below, via the
      add_theme_support('title-tag') declared in includes/_setup.php. This
      used to be a hardcoded title tag here that called wp_title() directly,
