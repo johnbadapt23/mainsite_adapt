@@ -332,20 +332,6 @@ function filter_speakers_callback() {
         'paged' => $paged,
         'offset' => $offset,
         'ignore_custom_sort' => true,
-        // Replaced by the expertise tax_query below (previously an
-        // adapt_analyst meta_query that matched every post either way).
-        // 'meta_query'     => array(
-        //     'relation' => 'OR',
-        //     array(
-        //         'key'     => 'adapt_analyst',
-        //         'compare' => 'EXISTS',
-        //     ),
-        //     array(
-        //         'key'     => 'adapt_analyst',
-        //         'compare' => 'NOT EXISTS',
-        //     ),
-        //
-        // ),
         'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),
     );
 
@@ -392,7 +378,7 @@ function filter_speakers_callback() {
             $filter_slugs = implode(' ', $term_slugs);
             ?>
             <div class="one-third speaker-item one-third column" data-filter="<?php echo esc_attr($filter_slugs); ?>">
-                <a class="slide-out-bio" href="#<?php echo $post_slug; ?>" id="<?php echo $post_slug; ?>">
+                <a class="slide-out-bio" href="#<?php echo esc_attr( $post_slug ); ?>" id="<?php echo esc_attr( $post_slug ); ?>">
                     <span class="image-container">
                         <span class="bg-container">
                             <?php $team_member_image = get_field('speaker_image'); ?>
@@ -410,14 +396,14 @@ function filter_speakers_callback() {
                         <span class="learn-more red-text text-link external-link">Learn More</span>
                     </span>
                 </a>
-                <div id="<?php echo $post_slug; ?>" class="full-bio">
+                <div id="<?php echo esc_attr( $post_slug ); ?>" class="full-bio">
                     <div class="bio-content-wrapper">
                         <span class="close-bio"></span>
                         <span class="bio-top">
                             <span class="image-container">
                                 <span class="bg-container">
                                     <?php $team_member_image = get_field( 'speaker_image' ); ?>
-                                    <img src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
+                                    <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
                                 </span>
                                 <span class="border-offset"></span>
                             </span>
@@ -490,11 +476,11 @@ function filter_partners_callback() {
             $filter_slugs = implode(' ', $term_slugs);
             ?>
             <div class="one-third speaker-item one-third column" data-filter="<?php echo esc_attr( $filter_slugs ); ?>">
-                <a class="slide-out-bio" href="#<?php echo $post_slug; ?>" id="<?php echo $post_slug; ?>">
+                <a class="slide-out-bio" href="#<?php echo esc_attr( $post_slug ); ?>" id="<?php echo esc_attr( $post_slug ); ?>">
                     <span class="image-container">
                         <span class="bg-container">
                             <?php $team_member_image = get_field( 'logo' ); ?>
-                            <img src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
+                            <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
                         </span>
                         <span class="text-container mobile-hide">
                             <h5 class="labelMedium"><?php the_title(); ?></h5>                                                    
@@ -505,14 +491,14 @@ function filter_partners_callback() {
                         <span class="text-link red-text external-link red-underline-link">Learn More</span>                                                   
                     </span>                                                                             
                 </a>
-                <div id="<?php echo $post_slug; ?>" class="full-bio">
+                <div id="<?php echo esc_attr( $post_slug ); ?>" class="full-bio">
                     <div class="bio-content-wrapper">
                         <span class="close-bio"></span>
                         <span class="bio-top">
                             <span class="image-container">
                                 <span class="bg-container">
                                     <?php $team_member_image = get_field( 'logo' ); ?>
-                                    <img src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
+                                    <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
                                 </span>
                                 <span class="border-offset"></span>
                             </span>
@@ -585,11 +571,11 @@ function edge_filter_partners_callback() {
             $filter_slugs = implode(' ', $term_slugs);
             ?>
             <div class="one-third speaker-item one-third column" data-filter="<?php echo esc_attr( $filter_slugs ); ?>">
-                <a class="slide-out-bio" href="#<?php echo $post_slug; ?>" id="<?php echo $post_slug; ?>">
+                <a class="slide-out-bio" href="#<?php echo esc_attr( $post_slug ); ?>" id="<?php echo esc_attr( $post_slug ); ?>">
                     <span class="image-container">
                         <span class="bg-container">
                             <?php $team_member_image = get_field( 'logo' ); ?>
-                            <img src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
+                            <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
                         </span>
                         <span class="text-container mobile-hide">
                             <h5 class="labelMedium"><?php the_title(); ?></h5>                                                    
@@ -600,14 +586,14 @@ function edge_filter_partners_callback() {
                         <span class="text-link red-text external-link red-underline-link">Learn More</span>                                                   
                     </span>                                                                           
                 </a>
-                <div id="<?php echo $post_slug; ?>" class="full-bio">
+                <div id="<?php echo esc_attr( $post_slug ); ?>" class="full-bio">
                     <div class="bio-content-wrapper">
                         <span class="close-bio"></span>
                         <span class="bio-top">
                             <span class="image-container">
                                 <span class="bg-container">
                                     <?php $team_member_image = get_field( 'logo' ); ?>
-                                    <img src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
+                                    <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
                                 </span>
                                 <span class="border-offset"></span>
                             </span>
@@ -654,9 +640,6 @@ add_filter( 'posts_where', 'wpza_replace_repeater_field' );
 remove_all_actions('wp_mail_failed');
 
 
-
-
-
 /**
  * Exclude specific JS files from WP Rocket Delay JS only on the homepage.
  */
@@ -686,8 +669,6 @@ add_filter( 'pre_get_rocket_option_remove_unused_css', function( $value ) {
     }
     return $value;
 } );
-
-
 
 
 add_filter('wpseo_use_page_analysis', '__return_false');
@@ -760,14 +741,6 @@ add_filter(
     10,
     3
 );
-
-
-
-
-
-
-
-
 
 add_filter( 'apto/get_orderby', 'my_theme_apto_resource_type_orderby', 10, 3 );
 function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
