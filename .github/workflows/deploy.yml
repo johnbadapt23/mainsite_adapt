@@ -82,36 +82,38 @@ jobs:
       #
       # milanmk/actions-file-deployer supports SFTP with password auth (no
       # SSH key needed) using only plain SFTP put/delete/stat operations --
-      # no remote shell command execution required, so it should work on a
-      # shell-disabled SFTP-only account like this one. It also has a "delta"
-      # sync mode that diffs against the last deployed git revision instead
-      # of re-uploading everything.
+      # no remote shell command execution required, so it worked on this
+      # shell-disabled SFTP-only account (confirmed: a `sync: full` run
+      # completed in ~2min vs the old action's ~7min).
       #
-      # Starting with sync: full (byte-for-byte the same upload behavior as
-      # the old action -- uploads everything, deletes nothing) specifically
-      # to verify this action's SFTP connection actually works against this
-      # account before trusting it with delta mode's add/delete behavior.
-      # Once a run with sync: full succeeds, switch the "sync" value below
-      # from "full" to "delta" -- that's the actual speed win (only files
-      # that changed since the last deploy get transferred).
-      - name: Prepare deploy files
-        run: |
-          mkdir -p /tmp/deploy_staging
-          rsync -a \
-            --exclude=.git \
-            --exclude=.github \
-            --exclude=.gitignore \
-            --exclude=.gitattributes \
-            --exclude=node_modules \
-            --exclude=source \
-            --exclude=_archive \
-            --exclude=package.json \
-            --exclude=package-lock.json \
-            --exclude=gulpfile.js \
-            --exclude=faviconData.json \
-            --exclude=README.md \
-            ./ /tmp/deploy_staging/
-
+      # Now switched to sync: 'delta', its real incremental mode. Two things
+      # that are NOT obvious from the README, found by reading its
+      # action.yml source directly, and worth understanding before touching
+      # this again:
+      #
+      #  - local-path is now './' (the actual git checkout), NOT a
+      #    pre-filtered staging copy like the "full" run used. Delta mode
+      #    determines what changed by running `git diff -- <local-path> ...`
+      #    against the *real* repo -- if local-path pointed at an rsync'd
+      #    copy outside the git working tree (like /tmp/deploy_staging was),
+      #    that pathspec would match nothing and delta would silently
+      #    upload zero files every run. Exclusions for delta mode are
+      #    instead done via sync-delta-excludes, using git pathspec syntax
+      #    (":(exclude)pattern", no leading slash -- a leading "/" is taken
+      #    as a literal filesystem path by this particular syntax form and
+      #    breaks; verified locally against this repo's real git history).
+      #
+      #  - assets/css/main.min.css and assets/js/main.min.js are committed
+      #    to git, but only ever *regenerated* by the "Compile CSS and JS"
+      #    step above -- they don't get re-committed by CI. That means a
+      #    plain git-diff-based delta would only pick them up as "changed"
+      #    on commits where someone manually rebuilt and committed them --
+      #    NOT on commits that only touch source/scss or source/js, since
+      #    source/ is excluded from deploy and the compiled output isn't
+      #    re-committed to reflect it. Left alone, that would silently
+      #    deploy stale compiled CSS/JS whenever only the source changed.
+      #    sync-delta-includes forces these two files into every deploy
+      #    regardless of what git diff reports, closing that gap.
       - name: Deploy over SFTP
         uses: milanmk/actions-file-deployer@master
         with:
@@ -120,6 +122,18 @@ jobs:
           remote-port: ${{ vars.STAGING_PORT || 22 }}
           remote-user: ${{ secrets.STAGING_USERNAME }}
           remote-password: ${{ secrets.STAGING_PASS }}
-          local-path: '/tmp/deploy_staging/'
+          local-path: './'
           remote-path: ${{ vars.STAGING_REMOTE_PATH || secrets.STAGING_REMOTE_PATH }}
-          sync: 'full'
+          sync: 'delta'
+          sync-delta-excludes: >-
+            :(exclude).git*
+            :(exclude).github
+            :(exclude)node_modules
+            :(exclude)source
+            :(exclude)_archive
+            :(exclude)package.json
+            :(exclude)package-lock.json
+            :(exclude)gulpfile.js
+            :(exclude)faviconData.json
+            :(exclude)README.md
+          sync-delta-includes: 'assets/css/main.min.css,assets/js/main.min.js'
