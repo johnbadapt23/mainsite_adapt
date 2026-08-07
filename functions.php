@@ -278,7 +278,7 @@ function filter_speakers_callback() {
                 'taxonomy' => 'expertise',
                 'field'    => 'slug',
                 'terms'    => $expertise_slugs,
-                'operator' => 'IN',
+                'operator' => 'AND',
             ),
         ),
         'ignore_custom_sort' => true,
