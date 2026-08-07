@@ -1152,7 +1152,7 @@
 		// have ALL the sent terms), that matched zero posts, since no single
 		// post is tagged with every expertise term.
 		function getSelectedFilters() {
-			var selectedExpertise = $('#speakerFilter input:checked');
+			var selectedExpertise = $('#speakerFilter > .expertise-checkbox input:checked');
 
 			return selectedExpertise.map(function() {
 				return this.value;
