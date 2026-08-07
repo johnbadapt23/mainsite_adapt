@@ -23,7 +23,7 @@
 									</span>
 								</span>
 							</div>
-							<h4 class="black-text"><?php echo get_sub_field( 'title' ); ?></h4>
+							<h4 role="heading" aria-level="3" class="black-text"><?php echo get_sub_field( 'title' ); ?></h4>
 							<span class="content-container-bottom">
 								<span class="card-text"><?php echo get_sub_field( 'text' ); ?></span>
 							</span>

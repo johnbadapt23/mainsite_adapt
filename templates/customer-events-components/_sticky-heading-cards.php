@@ -13,7 +13,7 @@
                 <div class="container">
                     <?php while ( have_rows( 'cards' ) ) : the_row(); ?>
                         <div class="scrolling-card">
-                            <h4 class="card-title"><?php the_sub_field( 'card_title' ); ?></h4>
+                            <h4 role="heading" aria-level="3" class="card-title"><?php the_sub_field( 'card_title' ); ?></h4>
                             <div class="card-image-container">
                                 <div class="image-container contained">
                                     <div class="bg-container contained">

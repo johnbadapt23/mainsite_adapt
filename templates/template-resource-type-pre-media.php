@@ -357,7 +357,7 @@ if($keyword != '') {
                                                                                         <a href="<?php echo get_term_link($postTopic); ?>" class="topic-filter-text">/ <?php echo $postTopic->name; ?></a>
                                                                                     <?php } ?>
                                                                                 </span>
-                                                                                <a href="<?php the_permalink(); ?>" class="title text-white"><h4 class="title text-white labelLarge"><?php the_title(); ?></h4></a>
+                                                                                <a href="<?php the_permalink(); ?>" class="title text-white"><h4 role="heading" aria-level="2" class="title text-white labelLarge"><?php the_title(); ?></h4></a>
                                                                             </div>
                                                                         </div>
                                                                     </div>

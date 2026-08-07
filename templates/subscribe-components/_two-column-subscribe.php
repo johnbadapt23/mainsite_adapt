@@ -10,7 +10,7 @@
                         <span class="top-content">
                             <span class="text-content">
                                 <span class="pre-title"><?php echo get_sub_field( 'pre_title' ); ?></span>
-            					<h4 class="black-text"><?php echo get_sub_field( 'title' ); ?></h4>
+            					<h4 role="heading" aria-level="3" class="black-text"><?php echo get_sub_field( 'title' ); ?></h4>
                             </span>
         					<?php $image = get_sub_field( 'image' ); ?>
                             <span class="card-image-container">

@@ -31,7 +31,7 @@
 						</span>
 						<span class="content-container">
 							<span class="content-container-inner">
-								<h4 class="card-title"><?php echo get_sub_field( 'card_title' ); ?></h4>
+								<h4 role="heading" aria-level="3" class="card-title"><?php echo get_sub_field( 'card_title' ); ?></h4>
 								<span class="card-text"><?php echo get_sub_field( 'card_text' ); ?></span>
 							</span>
 						</span>

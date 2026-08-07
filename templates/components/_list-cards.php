@@ -13,7 +13,7 @@
                             <div class="list-card-front background-tertiary-black">
                                 <div class="title-container">
                                     <?php $card_title = get_sub_field( 'card_title' ); ?>
-                                    <h4 class="white-text"><?php echo $card_title; ?></h4>
+                                    <h4 role="heading" aria-level="3" class="white-text"><?php echo $card_title; ?></h4>
                                 </div>
                                 <?php if ( have_rows( 'card_list' ) ) : ?>
                                     <div class="hover-list-container">

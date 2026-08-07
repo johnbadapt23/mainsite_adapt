@@ -84,7 +84,7 @@
                     <?php while ( have_rows( 'sticky_content' ) ) : the_row(); ?>
                         <div class="text-block-wrapper">
                             <div class="text-block">
-                                <h4 class="header-medium"><?php echo get_sub_field( 'title' ); ?></h4>
+                                <h4 role="heading" aria-level="3" class="header-medium"><?php echo get_sub_field( 'title' ); ?></h4>
                                 <p class="p-large text-dark-grey"><?php the_sub_field( 'text' ); ?></p>
                             </div>
                         </div>

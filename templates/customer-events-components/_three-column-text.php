@@ -23,7 +23,7 @@
                         <div class="column-inner">
                             <span class="white-text counter-text labelSmall"><?php echo $counter; ?></span>
                             <span>
-                                <h4 class="headerSmall <?php echo $textColour; ?>"><?php echo get_sub_field( 'title' ); ?></h4>
+                                <h4 role="heading" aria-level="3" class="headerSmall <?php echo $textColour; ?>"><?php echo get_sub_field( 'title' ); ?></h4>
                                 <p class="p-medium <?php echo $greyText ; ?>"><?php echo get_sub_field( 'text' ); ?></p>
                             </span>
                         </div>

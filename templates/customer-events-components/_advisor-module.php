@@ -9,7 +9,7 @@
             <span class="title-container-inner"> 
                 <h2 class="h1-style black-text bold-red"><?php echo get_sub_field( 'title' ); ?></h2>
                 <?php if (get_sub_field( 'text' )) { ?> 
-                    <h5 class="black-text"><?php echo get_sub_field( 'text' ); ?>  </h5>
+                    <h5 role="heading" aria-level="3" class="black-text"><?php echo get_sub_field( 'text' ); ?>  </h5>
                 <?php } ?>
             </span>        
         </div>

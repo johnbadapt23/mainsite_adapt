@@ -38,7 +38,7 @@
         </div>
         <div class="speakerRight">
             <h1 class="title"><?php echo the_title(); ?></h1>
-            <h3 class="subtitle"><?php echo get_field('speaker_description'); ?></h3>
+            <h3 role="heading" aria-level="2" class="subtitle"><?php echo get_field('speaker_description'); ?></h3>
             <hr>
             <?php if ( get_field ( 'logo' ) ) { ?>
                 <div class="logoWrapper">

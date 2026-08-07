@@ -1171,7 +1171,7 @@ $filterBy = array();
 
             <?php endwhile; ?>
             <?php else : ?>
-                    <h3><?php esc_html_e( 'Sorry, no results found.' ); ?></h3>
+                    <h3 role="heading" aria-level="2"><?php esc_html_e( 'Sorry, no results found.' ); ?></h3>
                 <?php endif; ?>
                 <?php wp_pagenavi( array( 'query' => $loop ) ); ?>
                 <?php wp_reset_query(); ?>

@@ -18,7 +18,7 @@
 				<?php while ( have_rows( 'slides' ) ) : the_row(); ?>
 					<div class="quote-slide">
 						<div class="quote-slider-inner">
-							<h4 class="quote text-white"><?php echo get_sub_field( 'quote' ); ?></h4>
+							<h4 role="heading" aria-level="3" class="quote text-white"><?php echo get_sub_field( 'quote' ); ?></h4>
 							<span class="bottom">
 								<span class="credits">
 									<span class="quote-title text-white labelMedium"><?php echo get_sub_field( 'title' ); ?></span>

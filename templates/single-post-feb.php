@@ -2323,7 +2323,7 @@
             <div class="inner">
                 <div class="titleBlock">
     	            <?php if ( get_field ('member_content_article_page_overlay_title', 'option') ) { ?>
-    	                <h3><?php the_field('member_content_article_page_overlay_title', 'option'); ?></h3>
+    	                <h3 role="heading" aria-level="2"><?php the_field('member_content_article_page_overlay_title', 'option'); ?></h3>
     	            <?php } ?>
     				<?php if ( get_field ('member_content_article_page_overlay_sub_title', 'option') ) { ?>
     	                <p><?php the_field('member_content_article_page_overlay_sub_title', 'option'); ?></p>

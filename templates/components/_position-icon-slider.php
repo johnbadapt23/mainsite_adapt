@@ -26,7 +26,7 @@
                                         </span>
                                     </span>
                                 </span>
-                                <h4 class="slide-title text-black"><?php echo get_sub_field( 'slide_title' ); ?></h4>
+                                <h4 role="heading" aria-level="3" class="slide-title text-black"><?php echo get_sub_field( 'slide_title' ); ?></h4>
                             </div>
                         </div>
                     <?php endwhile; ?>

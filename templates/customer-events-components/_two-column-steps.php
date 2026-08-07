@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         <div class="column one-half text-column">
-                            <h4 class="title red-text"><?php echo get_sub_field( 'title' ); ?></h4>
+                            <h4 role="heading" aria-level="3" class="title red-text"><?php echo get_sub_field( 'title' ); ?></h4>
                             <h4 class="sub-title <?php echo $textcolor; ?>"><?php echo get_sub_field( 'sub_title' ); ?></h4>
                             <span class="mobile-image-container">
                                 <?php $image = get_sub_field( 'image' ); ?>

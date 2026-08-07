@@ -13,7 +13,7 @@
 				<?php while ( have_rows( 'slides' ) ) : the_row(); ?>
 					<div class="quote-slide">
 						<div class="quote-slider-inner">
-							<h4 class="quote text-black"><?php echo get_sub_field( 'quote' ); ?></h4>
+							<h4 role="heading" aria-level="3" class="quote text-black"><?php echo get_sub_field( 'quote' ); ?></h4>
 							<span class="quote-title text-black"><?php echo get_sub_field( 'title' ); ?></span>
 							<span class="quote-business red-text"><?php echo get_sub_field( 'business_name' ); ?></span>
 						</div>

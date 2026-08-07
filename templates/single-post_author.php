@@ -27,7 +27,7 @@
             </div>
             <div class="column details-column">
                 <h1 class="title"><?php echo the_title(); ?></h1>
-                <h3 class="subtitle h1-style"><?php echo get_field('speaker_description'); ?></h3>                
+                <h3 role="heading" aria-level="2" class="subtitle h1-style"><?php echo get_field('speaker_description'); ?></h3>                
                 <div class="textBlock black-text">
                     <?php echo get_field('small_description'); ?>
                 </div>

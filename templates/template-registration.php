@@ -70,7 +70,7 @@
 										   <span class="item-top">
 											   <span class="upcoming-button">Upcoming</span>
 											   <span class="listing-date text-red"><?php echo $date->format('l, j F, Y'); ?> @<?php echo get_field( 'event_start_time' ); ?></span>
-											   <h3 class="item-title text-black"><?php the_title(); ?></h3>
+											   <h3 role="heading" aria-level="2" class="item-title text-black"><?php the_title(); ?></h3>
 											   <?php
 											   		$text = get_field( 'sub_title' );
 											   		$trimmed_content = wp_trim_words( $text, $num_words = 22, $more = null );

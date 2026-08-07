@@ -34,7 +34,7 @@
                     <?php $switchCounter=1; ?>
                     <?php while ( have_rows( 'switch_content' ) ) : the_row(); ?>
                         <span class="switch-container <?php if($switchCounter==1){ ?> active<?php } ?>">
-                            <h4 class="switch-title text-black"><?php echo get_sub_field( 'title' ); ?></h4>
+                            <h4 role="heading" aria-level="3" class="switch-title text-black"><?php echo get_sub_field( 'title' ); ?></h4>
                             <span class="text-container bold-red text-black"><?php echo get_sub_field( 'text' ); ?></span>					
                         </span>
                         <?php $switchCounter++; ?>

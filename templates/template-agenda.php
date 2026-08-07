@@ -376,7 +376,7 @@ get_header();
                     <h2><?php the_sub_field( 'title' ); ?></h2>
 
 
-                    <h4><?php the_sub_field( 'day' ); ?> <?php the_sub_field( 'date' ); ?></h4>
+                    <h4 role="heading" aria-level="3"><?php the_sub_field( 'day' ); ?> <?php the_sub_field( 'date' ); ?></h4>
 
                 </div>
 

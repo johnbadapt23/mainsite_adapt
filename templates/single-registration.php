@@ -166,7 +166,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 															</span>
 															<span class="border-offset"></span>
 														</span>
-														<h3 class="title">
+														<h3 role="heading" aria-level="2" class="title">
 															<?php the_title(); ?>
 															<?php if ( get_field('linked_in_url')) { ?>
 																<a class="linkedin-link" href="<?php echo get_field('linked_in_url');?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" alt="LinkedIn" width="20"/></a>

@@ -34,7 +34,7 @@
                     </div>
                     <div class="text-column one-half column">
                         <?php if(get_sub_field( 'column_types' ) == 'text-only'){ ?>
-                            <h4 class="black-text"><?php echo get_sub_field( 'title' ); ?></h4>
+                            <h4 role="heading" aria-level="3" class="black-text"><?php echo get_sub_field( 'title' ); ?></h4>
                         <?php } else { ?>
                             <h2 class="black-text"><?php echo get_sub_field( 'title' ); ?></h2>
                         <?php } ?>

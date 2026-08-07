@@ -34,7 +34,7 @@ get_header();
                                                 </span>
                                             </span>
                                             <span class="content-container">
-                                                <h4 class="black-text"><?php echo get_sub_field( 'title' ); ?></h4>
+                                                <h4 role="heading" aria-level="2" class="black-text"><?php echo get_sub_field( 'title' ); ?></h4>
                                                 <span class="text black-text"><?php echo get_sub_field( 'text' ); ?></span>
                                             </span>
                                             <span class="button-container">

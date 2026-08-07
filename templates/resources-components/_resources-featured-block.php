@@ -311,7 +311,7 @@
                                                         <a href="<?php echo get_term_link($postTopic); ?>" class="topic-filter-text">/ <?php echo $postTopic->name; ?></a>
                                                     <?php } ?>
                                                 </span>
-                                                <a href="<?php the_permalink(); ?>" class="title text-black"><h4 class="title text-black labelLarge"><?php the_title(); ?></h4></a>
+                                                <a href="<?php the_permalink(); ?>" class="title text-black"><h4 role="heading" aria-level="3" class="title text-black labelLarge"><?php the_title(); ?></h4></a>
                                             </div>
                                         </div>
                                     </div>

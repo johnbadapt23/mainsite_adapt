@@ -81,7 +81,7 @@
 				<?php while ( have_rows( 'link_card' ) ) : the_row(); ?>
                     <div class="link-card one-quarter background-red">
                         <div class="link-card-inner">
-        					<h4 class="text-white"><?php echo get_sub_field( 'title' ); ?></h4>
+        					<h4 role="heading" aria-level="3" class="text-white"><?php echo get_sub_field( 'title' ); ?></h4>
                             <span class="button-container">
                                 <?php if(get_sub_field( 'button_type' ) == 'scroll-to-link') { ?>
                                     <a href="#<?php echo get_sub_field( 'scroll_to_id' ); ?>" class="scroll-to-button std-button white-button">

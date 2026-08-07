@@ -197,7 +197,7 @@
 <?php if($postType == 'post') { ?>
     <section class="blogWrapper">
         <div class="container">
-            <h3>Showing results for: "<?php the_search_query(); ?>"</h3>
+            <h3 role="heading" aria-level="2">Showing results for: "<?php the_search_query(); ?>"</h3>
             <hr/>
             <div id="loop" class="grid">
                 <?php $counter = -1; ?>

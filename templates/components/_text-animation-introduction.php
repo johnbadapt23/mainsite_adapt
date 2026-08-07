@@ -64,7 +64,7 @@
                                         <?php if ( $popup_form_image_id ) { ?>
                                             <?= wp_get_attachment_image($popup_form_image_id, 'full'); ?>
                                         <?php } ?>
-                                        <h4 class="text-white"><?php echo get_sub_field( 'popup_form_title' ); ?></h4>
+                                        <h4 role="heading" aria-level="2" class="text-white"><?php echo get_sub_field( 'popup_form_title' ); ?></h4>
                                         <p class="p-xsmall medium-grey "><?php echo get_sub_field( 'popup_form_text' ); ?></p>
                                     </span>
                                     <span class="form">

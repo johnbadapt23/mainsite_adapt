@@ -9,7 +9,7 @@
                     <div class="faq-column <?php if(get_sub_field( 'title' )){ ?><?php } else { ?> no-padding-top<?php } ?>">
                         <?php if(get_sub_field( 'title' )){ ?> 
                             <div class="faq-column-inner">
-                                <h4 class="secondary-text headerXsmall group-title"><?php echo get_sub_field( 'title' ); ?></h4>                            
+                                <h4 role="heading" aria-level="3" class="secondary-text headerXsmall group-title"><?php echo get_sub_field( 'title' ); ?></h4>                            
                                 <?php if ( have_rows( 'faq_item' ) ) : ?>
                                     <?php while ( have_rows( 'faq_item' ) ) : the_row(); ?>
                                         <span class="faq-item">

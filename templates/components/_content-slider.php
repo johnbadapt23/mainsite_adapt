@@ -41,7 +41,7 @@
                                     </div>
                                 </div>
                                 <div class="text-column">
-                                    <h4 class="<?php echo $textColour; ?>"><?php echo get_sub_field( 'text' ); ?></h4>
+                                    <h4 role="heading" aria-level="3" class="<?php echo $textColour; ?>"><?php echo get_sub_field( 'text' ); ?></h4>
                                     <span class="bottom-container">
                                         <span class="caption-sub-title text-medium-grey"><?php echo get_sub_field( 'caption_sub_title' ); ?></span>
                                         <span class="caption-title <?php echo $textColour; ?>"><?php echo get_sub_field( 'caption_title' ); ?></span>

@@ -261,7 +261,7 @@ $displayed_posts[] = get_the_ID();
                         <?php } ?>   
 
                     </span>                    
-                    <h5><?php the_excerpt(); ?></h5>
+                    <h5 role="heading" aria-level="2"><?php the_excerpt(); ?></h5>
                     <?php if(get_field( 'video_url' )){ ?> 
                         <span class="video-content-outer">
                             <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_field('video_url'); ?>">
@@ -610,7 +610,7 @@ $displayed_posts[] = get_the_ID();
                                 <?php while ( have_rows( 'slides' ) ) : the_row(); ?>
                                     <div class="full-suite-slide">
                                         <div class="column one-half text-column">
-                                            <h4 class="white-text"><?php echo get_sub_field( 'title' ); ?></h4>
+                                            <h4 role="heading" aria-level="3" class="white-text"><?php echo get_sub_field( 'title' ); ?></h4>
                                             <span class="image-container hide-desktop">
                                                 <span class="bg-container">
                                                     <?php $image = get_sub_field( 'image' ); ?>

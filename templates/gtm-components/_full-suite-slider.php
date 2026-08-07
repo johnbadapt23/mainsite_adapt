@@ -18,7 +18,7 @@
                     <?php while ( have_rows( 'slides' ) ) : the_row(); ?>
                         <div class="full-suite-slide">
                             <div class="column one-half text-column">
-                                <h4 class="white-text labelXXL"><?php echo get_sub_field( 'title' ); ?></h4>
+                                <h4 role="heading" aria-level="3" class="white-text labelXXL"><?php echo get_sub_field( 'title' ); ?></h4>
                                  <span class="image-container hide-desktop">
                                     <span class="bg-container">
                                         <?php $image = get_sub_field( 'image' ); ?>
