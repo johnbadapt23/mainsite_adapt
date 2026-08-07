@@ -32,6 +32,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 (full history, not just the last commit) is needed
+          # for the deploy action's "delta" sync mode further down, which
+          # diffs against the previously-deployed revision to figure out what
+          # changed. Harmless for the "full" sync mode used for now too.
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -63,32 +69,57 @@ jobs:
       - name: Compile CSS and JS
         run: npx gulp build:styles build:scripts
 
+      # Two prior deploy approaches were tried and ruled out here:
+      #  1. wlixcc/SFTP-Deploy-Action (original) -- always does a full,
+      #     non-incremental "sftp put -r" of every file, every run (confirmed
+      #     by reading its entrypoint.sh). Its rsyncArgs only pre-filters
+      #     files into a local staging folder, it never diffs against the
+      #     remote. Slow (~7min) but reliably worked against this account.
+      #  2. Plain `rsync` over SSH -- real incremental diffing, but requires
+      #     a remote SSH *shell* (rsync invokes `rsync --server` on the far
+      #     end). This account rejected it outright: "Shell access is
+      #     disabled". Reverted.
+      #
+      # milanmk/actions-file-deployer supports SFTP with password auth (no
+      # SSH key needed) using only plain SFTP put/delete/stat operations --
+      # no remote shell command execution required, so it should work on a
+      # shell-disabled SFTP-only account like this one. It also has a "delta"
+      # sync mode that diffs against the last deployed git revision instead
+      # of re-uploading everything.
+      #
+      # Starting with sync: full (byte-for-byte the same upload behavior as
+      # the old action -- uploads everything, deletes nothing) specifically
+      # to verify this action's SFTP connection actually works against this
+      # account before trusting it with delta mode's add/delete behavior.
+      # Once a run with sync: full succeeds, switch the "sync" value below
+      # from "full" to "delta" -- that's the actual speed win (only files
+      # that changed since the last deploy get transferred).
+      - name: Prepare deploy files
+        run: |
+          mkdir -p /tmp/deploy_staging
+          rsync -a \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=.gitignore \
+            --exclude=.gitattributes \
+            --exclude=node_modules \
+            --exclude=source \
+            --exclude=_archive \
+            --exclude=package.json \
+            --exclude=package-lock.json \
+            --exclude=gulpfile.js \
+            --exclude=faviconData.json \
+            --exclude=README.md \
+            ./ /tmp/deploy_staging/
+
       - name: Deploy over SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
+        uses: milanmk/actions-file-deployer@master
         with:
-          username: ${{ secrets.STAGING_USERNAME }}
-          server: ${{ vars.STAGING_HOST }}
-          port: ${{ vars.STAGING_PORT || 22 }}
-          password: ${{ secrets.STAGING_PASS }}
-          local_path: './'
-          remote_path: ${{ vars.STAGING_REMOTE_PATH || secrets.STAGING_REMOTE_PATH }}
-          sftp_only: true
-          # Only files WordPress actually needs at runtime go to the server --
-          # repo/git metadata, build tooling, and build-time-only inputs stay
-          # out. (download-monitor/ is kept: the Download Monitor plugin
-          # auto-discovers content-download.php there by convention, even
-          # though nothing in this repo explicitly references it by name.)
-          rsyncArgs: >-
-            --exclude=.git
-            --exclude=.github
-            --exclude=.gitignore
-            --exclude=.gitattributes
-            --exclude=node_modules
-            --exclude=source
-            --exclude=_archive
-            --exclude=package.json
-            --exclude=package-lock.json
-            --exclude=gulpfile.js
-            --exclude=faviconData.json
-            --exclude=README.md
-          sftpArgs: '-o ConnectTimeout=5'
+          remote-protocol: 'sftp'
+          remote-host: ${{ vars.STAGING_HOST }}
+          remote-port: ${{ vars.STAGING_PORT || 22 }}
+          remote-user: ${{ secrets.STAGING_USERNAME }}
+          remote-password: ${{ secrets.STAGING_PASS }}
+          local-path: '/tmp/deploy_staging/'
+          remote-path: ${{ vars.STAGING_REMOTE_PATH || secrets.STAGING_REMOTE_PATH }}
+          sync: 'full'
