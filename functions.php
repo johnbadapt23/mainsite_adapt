@@ -290,20 +290,29 @@ function filter_speakers_callback() {
         'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),
     );
 
-    // Only filter by expertise when the user actually selected something --
-    // an empty $expertise_slugs here means "no filters applied", which
-    // should show every post of this post_type rather than none.
-    if ( ! empty( $expertise_slugs ) ) {
-        $args['tax_query'] = array(
-            'relation' => 'AND',
-            array(
+    // An empty $expertise_slugs means "no filters applied" -- but that
+    // still shouldn't include posts with no expertise terms at all, so we
+    // always apply a tax_query rather than skipping it entirely:
+    //  - selection made: post must have ALL of the selected terms
+    //    (operator AND).
+    //  - no selection: post just needs SOME term in the taxonomy
+    //    (operator EXISTS, no 'terms' needed) -- this excludes untagged
+    //    posts without having to enumerate every expertise slug in PHP or
+    //    have the JS distinguish "nothing checked" from "every box
+    //    checked".
+    $args['tax_query'] = array(
+        ! empty( $expertise_slugs )
+            ? array(
                 'taxonomy' => 'expertise',
                 'field'    => 'slug',
                 'terms'    => $expertise_slugs,
                 'operator' => 'AND',
+            )
+            : array(
+                'taxonomy' => 'expertise',
+                'operator' => 'EXISTS',
             ),
-        );
-    }
+    );
 
     $speakers_query = new WP_Query($args);
 
