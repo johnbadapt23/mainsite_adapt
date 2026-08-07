@@ -38,6 +38,13 @@
      the CDNs the page *does* contact on (nearly) every load instead. -->
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<!-- GTM (below) and the HubSpot script loader (near the end of <head>) are
+     both unconditional on every page -- Lighthouse's live audit showed
+     these as some of the heaviest third-party chains on the page, so
+     preconnecting gets the TLS handshake for both started immediately
+     instead of only once the browser reaches each <script> tag. -->
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="preconnect" href="https://js.hsforms.net">
 <!-- lottie-player / lottie-interactivity moved to wp_enqueue_script() in
      functions.php (my_enqueue_scripts), pinned to their current resolved
      versions instead of "@latest". Output below by wp_head(). -->
