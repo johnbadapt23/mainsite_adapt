@@ -253,6 +253,53 @@ function my_enqueue_scripts() {
 }
 add_action('wp_enqueue_scripts', 'my_enqueue_scripts');
 
+// Shared helpers for the 3 AJAX filter callbacks below (speakers,
+// partners, edge partners). Their query-building and HTML render loops
+// differ enough (different taxonomies/post types/ACF fields, and
+// edge_filter_partners_callback even has a structurally different CTA
+// button than filter_partners_callback) that merging them into one
+// parameterized function isn't worth the regression risk -- but the
+// request-param setup and the pagination markup were byte-for-byte
+// identical across all 3, so those are pulled out here instead.
+
+/**
+ * Pulls the paged/expertise/posts-per-page/offset params every one of
+ * the 3 AJAX filter callbacks reads off $_POST the same way.
+ */
+function adapt_get_ajax_filter_request_params() {
+    $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
+    $expertise_slugs = isset($_POST['expertise']) ? array_map('sanitize_text_field', $_POST['expertise']) : array();
+    $posts_per_page = 12; // Number of posts per page
+    $offset = ($paged - 1) * $posts_per_page;
+
+    return array( $paged, $expertise_slugs, $posts_per_page, $offset );
+}
+
+/**
+ * Renders the "pagination" fragment of the AJAX filter responses --
+ * identical markup in all 3 callbacks, just driven by whichever
+ * WP_Query ran.
+ */
+function adapt_render_ajax_filter_pagination( $query, $paged ) {
+    ob_start();
+    ?>
+    <div class="container">
+        <div class="wp-pagenavi" role="navigation">
+        <?php
+        echo paginate_links(array(
+            'total' => $query->max_num_pages,
+            'current' => $paged,
+            'format' => '?paged=%#%',
+            'prev_text' => __('Previous'),
+            'next_text' => __('Next'),
+        ));
+        ?>
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
 // Speaker Ajax filtering
 add_action('wp_ajax_filter_speakers', 'filter_speakers_callback');
 add_action('wp_ajax_nopriv_filter_speakers', 'filter_speakers_callback');
@@ -262,16 +309,13 @@ function filter_speakers_callback() {
     // matches the nonce main.js sends via ajaxobject.nonce.
     check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
 
-    $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
-    $expertise_slugs = isset($_POST['expertise']) ? array_map('sanitize_text_field', $_POST['expertise']) : array();
+    list( $paged, $expertise_slugs, $posts_per_page, $offset ) = adapt_get_ajax_filter_request_params();
     // Set by main.js: true when the user actually checked at least one
     // expertise box; false when nothing's checked and $expertise_slugs is
     // instead every checkbox shown on the page (these are ACF-configured
     // per module instance, so we can't infer "no selection" just by
     // comparing $expertise_slugs against some fixed list here).
     $has_selection = ! empty( $_POST['hasSelection'] );
-    $posts_per_page = 12; // Number of posts per page
-    $offset = ($paged - 1) * $posts_per_page; 
 
     $referer = wp_get_referer();
 
@@ -402,23 +446,7 @@ function filter_speakers_callback() {
 
     $response['speakers'] = ob_get_clean();
 
-    ob_start();
-?>
-    <div class="container">
-        <div class="wp-pagenavi" role="navigation">
-        <?php 
-        echo paginate_links(array(
-            'total' => $speakers_query->max_num_pages,
-            'current' => $paged,
-            'format' => '?paged=%#%',
-            'prev_text' => __('Previous'),
-            'next_text' => __('Next'),
-        ));
-        ?>
-        </div>
-    </div>
-<?php
-    $response['pagination'] = ob_get_clean();
+    $response['pagination'] = adapt_render_ajax_filter_pagination( $speakers_query, $paged );
 
     wp_reset_postdata();
 
@@ -433,10 +461,7 @@ add_action('wp_ajax_nopriv_filter_partners', 'filter_partners_callback');
 function filter_partners_callback() {
     check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
 
-    $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
-    $expertise_slugs = isset($_POST['expertise']) ? array_map('sanitize_text_field', $_POST['expertise']) : array();
-    $posts_per_page = 12; // Number of posts per page
-    $offset = ($paged - 1) * $posts_per_page;
+    list( $paged, $expertise_slugs, $posts_per_page, $offset ) = adapt_get_ajax_filter_request_params();
 
     $args = array(
         'post_type' => 'partners',
@@ -516,23 +541,7 @@ function filter_partners_callback() {
 
     $response['partners'] = ob_get_clean();
 
-    ob_start();
-?>
-    <div class="container">
-        <div class="wp-pagenavi" role="navigation">
-        <?php 
-        echo paginate_links(array(
-            'total' => $partners_query->max_num_pages,
-            'current' => $paged,
-            'format' => '?paged=%#%',
-            'prev_text' => __('Previous'),
-            'next_text' => __('Next'),
-        ));
-        ?>
-        </div>
-    </div>
-<?php
-    $response['pagination'] = ob_get_clean();
+    $response['pagination'] = adapt_render_ajax_filter_pagination( $partners_query, $paged );
 
     wp_reset_postdata();
 
@@ -547,10 +556,7 @@ add_action('wp_ajax_nopriv_edge_filter_partners', 'edge_filter_partners_callback
 function edge_filter_partners_callback() {
     check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
 
-    $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
-    $expertise_slugs = isset($_POST['expertise']) ? array_map('sanitize_text_field', $_POST['expertise']) : array();
-    $posts_per_page = 12; // Number of posts per page
-    $offset = ($paged - 1) * $posts_per_page;
+    list( $paged, $expertise_slugs, $posts_per_page, $offset ) = adapt_get_ajax_filter_request_params();
 
     $args = array(
         'post_type' => 'edge_partners',
@@ -632,23 +638,7 @@ function edge_filter_partners_callback() {
 
     $response['partners'] = ob_get_clean();
 
-    ob_start();
-?>
-    <div class="container">
-        <div class="wp-pagenavi" role="navigation">
-        <?php 
-        echo paginate_links(array(
-            'total' => $partners_query->max_num_pages,
-            'current' => $paged,
-            'format' => '?paged=%#%',
-            'prev_text' => __('Previous'),
-            'next_text' => __('Next'),
-        ));
-        ?>
-        </div>
-    </div>
-<?php
-    $response['pagination'] = ob_get_clean();
+    $response['pagination'] = adapt_render_ajax_filter_pagination( $partners_query, $paged );
 
     wp_reset_postdata();
 
