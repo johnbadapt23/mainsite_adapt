@@ -280,12 +280,6 @@ function filter_speakers_callback() {
                 'terms'    => $expertise_slugs,
                 'operator' => 'IN',
             ),
-            array(
-                'taxonomy' => 'expertise',
-                'field'    => 'term_id',
-                'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
-                'operator' => 'NOT IN',
-            ),
         ),
         'ignore_custom_sort' => true,
         // Replaced by the expertise tax_query exclusion above.
