@@ -255,6 +255,12 @@ add_action('wp_ajax_nopriv_filter_speakers', 'filter_speakers_callback');
 function filter_speakers_callback() {
     $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
     $expertise_slugs = isset($_POST['expertise']) ? array_map('sanitize_text_field', $_POST['expertise']) : array();
+    // Set by main.js: true when the user actually checked at least one
+    // expertise box; false when nothing's checked and $expertise_slugs is
+    // instead every checkbox shown on the page (these are ACF-configured
+    // per module instance, so we can't infer "no selection" just by
+    // comparing $expertise_slugs against some fixed list here).
+    $has_selection = ! empty( $_POST['hasSelection'] );
     $posts_per_page = 12; // Number of posts per page
     $offset = ($paged - 1) * $posts_per_page; 
 
@@ -290,29 +296,36 @@ function filter_speakers_callback() {
         'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),
     );
 
-    // An empty $expertise_slugs means "no filters applied" -- but that
-    // still shouldn't include posts with no expertise terms at all, so we
-    // always apply a tax_query rather than skipping it entirely:
-    //  - selection made: post must have ALL of the selected terms
-    //    (operator AND).
-    //  - no selection: post just needs SOME term in the taxonomy
-    //    (operator EXISTS, no 'terms' needed) -- this excludes untagged
-    //    posts without having to enumerate every expertise slug in PHP or
-    //    have the JS distinguish "nothing checked" from "every box
-    //    checked".
-    $args['tax_query'] = array(
-        ! empty( $expertise_slugs )
-            ? array(
+    // $expertise_slugs is always non-empty in normal operation (either the
+    // user's real selection, or every checkbox shown on the page when
+    // nothing's checked -- see getSelectedFilters() in main.js). The
+    // operator is what actually distinguishes the two cases:
+    //  - real selection ($has_selection true): post must have ALL of the
+    //    selected terms (operator AND).
+    //  - no selection ($has_selection false): post just needs ANY of the
+    //    terms shown on this page (operator IN) -- shows everything
+    //    relevant to this module instance's ACF-configured expertise list
+    //    while still excluding posts with none of those terms.
+    if ( ! empty( $expertise_slugs ) ) {
+        $args['tax_query'] = array(
+            array(
                 'taxonomy' => 'expertise',
                 'field'    => 'slug',
                 'terms'    => $expertise_slugs,
-                'operator' => 'AND',
-            )
-            : array(
+                'operator' => $has_selection ? 'AND' : 'IN',
+            ),
+        );
+    } else {
+        // Safety net: no slugs at all (e.g. this page renders zero
+        // expertise checkboxes). Still exclude untagged posts rather than
+        // skipping tax_query entirely.
+        $args['tax_query'] = array(
+            array(
                 'taxonomy' => 'expertise',
                 'operator' => 'EXISTS',
             ),
-    );
+        );
+    }
 
     $speakers_query = new WP_Query($args);
 

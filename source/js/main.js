@@ -1142,31 +1142,45 @@
 			fetchSpeakers(1); // Fetch speakers with selected filters (starting from page 1)
 		});
 
-		// Function to get selected filters. Returns an empty array when
-		// nothing is checked -- the AJAX handler (filter_speakers_callback
-		// in functions.php) treats an empty expertise list as "no filter
-		// applied" and shows every post. This used to fall back to grabbing
-		// every checkbox's value when none were checked, which meant "no
-		// filter" was actually sent as "every expertise term selected at
-		// once" -- combined with the tax_query's AND operator (a post must
-		// have ALL the sent terms), that matched zero posts, since no single
+		// Function to get selected filters. Only looks at the checkboxes
+		// that are direct children of #speakerFilter under .expertise-checkbox
+		// -- the ADAPT Analysts/Advisors checkboxes are nested one level
+		// deeper in a wrapper div and are intentionally excluded here.
+		//
+		// If nothing is checked, falls back to every checkbox actually
+		// offered on this page (these are ACF-configured per module
+		// instance, so the set of options varies page to page). hasSelection
+		// tells the AJAX handler (filter_speakers_callback in functions.php)
+		// whether this is a real selection or the fallback -- it needs that
+		// to pick the right tax_query operator: AND (must match every
+		// selected term) for a real selection, IN (match any of the shown
+		// terms) for the fallback. Without that distinction, sending every
+		// term with an AND operator would match zero posts, since no single
 		// post is tagged with every expertise term.
 		function getSelectedFilters() {
-			var selectedExpertise = $('#speakerFilter > .expertise-checkbox input:checked');
+			var checkedExpertise = $('#speakerFilter > .expertise-checkbox input:checked');
+			var hasSelection = checkedExpertise.length > 0;
+			var selectedExpertise = hasSelection
+				? checkedExpertise
+				: $('#speakerFilter > .expertise-checkbox input');
 
-			return selectedExpertise.map(function() {
-				return this.value;
-			}).get(); // Convert jQuery object to array of values
+			return {
+				values: selectedExpertise.map(function() {
+					return this.value;
+				}).get(), // Convert jQuery object to array of values
+				hasSelection: hasSelection
+			};
 		}
 
 		// Function to fetch speakers based on selected filters and pagination
 		function fetchSpeakers(page) {
 			page = page || 1; // Default page to 1 if undefined
-			var expertise = getSelectedFilters(); // Get selected filters (empty array if none checked)
+			var filters = getSelectedFilters(); // Get selected filters (or all shown, if none checked)
 			var data = {
 				action: 'filter_speakers',
 				paged: page, // Pass paged as parameter
-				expertise: expertise
+				expertise: filters.values,
+				hasSelection: filters.hasSelection ? 1 : 0
 			};
 
 			// AJAX request to fetch filtered speakers
