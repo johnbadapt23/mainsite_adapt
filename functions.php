@@ -272,17 +272,9 @@ function filter_speakers_callback() {
         'posts_per_page' => $posts_per_page,
         'paged' => $paged,
         'offset' => $offset,
-        'tax_query' => array(
-            'relation' => 'AND',
-            array(
-                'taxonomy' => 'expertise',
-                'field'    => 'slug',
-                'terms'    => $expertise_slugs,
-                'operator' => 'AND',
-            ),
-        ),
         'ignore_custom_sort' => true,
-        // Replaced by the expertise tax_query exclusion above.
+        // Replaced by the expertise tax_query below (previously an
+        // adapt_analyst meta_query that matched every post either way).
         // 'meta_query'     => array(
         //     'relation' => 'OR',
         //     array(
@@ -297,6 +289,21 @@ function filter_speakers_callback() {
         // ),
         'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),
     );
+
+    // Only filter by expertise when the user actually selected something --
+    // an empty $expertise_slugs here means "no filters applied", which
+    // should show every post of this post_type rather than none.
+    if ( ! empty( $expertise_slugs ) ) {
+        $args['tax_query'] = array(
+            'relation' => 'AND',
+            array(
+                'taxonomy' => 'expertise',
+                'field'    => 'slug',
+                'terms'    => $expertise_slugs,
+                'operator' => 'AND',
+            ),
+        );
+    }
 
     $speakers_query = new WP_Query($args);
 
