@@ -84,11 +84,14 @@
                 <div class="speakers" id="speakers-container">
                     <?php
                         $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+                        $posts_per_page = 12; // Number of posts per page
+                        $offset = ($paged - 1) * $posts_per_page; 
                         if ( $expertise_ids ) {
                             // Set up the query arguments
                             $args = array(
                                 'post_type'      => 'speaker',
-                                'posts_per_page' => 12,
+                                'posts_per_page' => $posts_per_page,
+                                'offset' => $offset,
                                 'paged'         => isset($_POST['paged']) ? intval($_POST['paged']) : 1,
                                 'tax_query'      => array(
                                     'relation' => 'AND',
