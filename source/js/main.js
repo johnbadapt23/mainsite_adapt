@@ -1178,6 +1178,7 @@
 			var filters = getSelectedFilters(); // Get selected filters (or all shown, if none checked)
 			var data = {
 				action: 'filter_speakers',
+				nonce: ajaxobject.nonce,
 				paged: page, // Pass paged as parameter
 				expertise: filters.values,
 				hasSelection: filters.hasSelection ? 1 : 0
@@ -1272,6 +1273,7 @@
 			var expertise = getSelectedFiltersPartners(); // Get selected filters
 			var data = {
 				action: 'filter_partners',
+				nonce: ajaxobject.nonce,
 				paged: page, // Pass paged as parameter
 				expertise: expertise.length > 0 ? expertise : 'all' // If no filters, send 'all'
 			};
@@ -1365,6 +1367,7 @@
 			var expertise = getSelectedFiltersEdgePartners(); // Get selected filters
 			var data = {
 				action: 'edge_filter_partners',
+				nonce: ajaxobject.nonce,
 				paged: page, // Pass paged as parameter
 				expertise: expertise.length > 0 ? expertise : 'all' // If no filters, send 'all'
 			};

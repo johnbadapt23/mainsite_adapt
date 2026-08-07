@@ -241,9 +241,14 @@ function my_enqueue_scripts() {
         true
     );
 
-    // Localize the script with AJAX URL
+    // Localize the script with AJAX URL. The nonce is checked by the
+    // filter_speakers / filter_partners / edge_filter_partners AJAX
+    // handlers in functions.php (check_ajax_referer) -- all 3 read-only
+    // filter endpoints, but WordPress's own recommended practice for
+    // every AJAX handler regardless.
     wp_localize_script('main-js', 'ajaxobject', array(
-        'ajaxurl' => admin_url('admin-ajax.php')
+        'ajaxurl' => admin_url('admin-ajax.php'),
+        'nonce'   => wp_create_nonce('adapt_filter_nonce'),
     ));
 }
 add_action('wp_enqueue_scripts', 'my_enqueue_scripts');
@@ -253,6 +258,10 @@ add_action('wp_ajax_filter_speakers', 'filter_speakers_callback');
 add_action('wp_ajax_nopriv_filter_speakers', 'filter_speakers_callback');
 
 function filter_speakers_callback() {
+    // Dies with -1 on failure (default check_ajax_referer behavior) --
+    // matches the nonce main.js sends via ajaxobject.nonce.
+    check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
+
     $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
     $expertise_slugs = isset($_POST['expertise']) ? array_map('sanitize_text_field', $_POST['expertise']) : array();
     // Set by main.js: true when the user actually checked at least one
@@ -422,10 +431,12 @@ add_action('wp_ajax_filter_partners', 'filter_partners_callback');
 add_action('wp_ajax_nopriv_filter_partners', 'filter_partners_callback');
 
 function filter_partners_callback() {
+    check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
+
     $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
     $expertise_slugs = isset($_POST['expertise']) ? array_map('sanitize_text_field', $_POST['expertise']) : array();
     $posts_per_page = 12; // Number of posts per page
-    $offset = ($paged - 1) * $posts_per_page; 
+    $offset = ($paged - 1) * $posts_per_page;
 
     $args = array(
         'post_type' => 'partners',
@@ -534,10 +545,12 @@ add_action('wp_ajax_edge_filter_partners', 'edge_filter_partners_callback');
 add_action('wp_ajax_nopriv_edge_filter_partners', 'edge_filter_partners_callback');
 
 function edge_filter_partners_callback() {
+    check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
+
     $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
     $expertise_slugs = isset($_POST['expertise']) ? array_map('sanitize_text_field', $_POST['expertise']) : array();
     $posts_per_page = 12; // Number of posts per page
-    $offset = ($paged - 1) * $posts_per_page; 
+    $offset = ($paged - 1) * $posts_per_page;
 
     $args = array(
         'post_type' => 'edge_partners',
