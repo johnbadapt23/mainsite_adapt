@@ -179,6 +179,55 @@ add_action('template_redirect', function() {
 });
 
 
+// Lottie player is a ~150-200KB third-party bundle (lottie-player +
+// lottie-interactivity, loaded from unpkg) that was previously enqueued on
+// every single page regardless of whether that page actually used it -- the
+// same waste GSAP/ScrollTrigger had before it was scoped below. Unlike GSAP
+// though, every component that renders a <lottie-player> is dispatched
+// through an ACF flexible-content field (a different field name and set of
+// layouts per template), so a static template whitelist isn't enough on its
+// own -- we also need to know whether the *current page's* content actually
+// includes one of those layouts.
+//
+// This only checks whether the layout is present, not whether its own
+// animation sub-field is filled in (a couple of these layouts fall back to a
+// static image when the animation field is left empty). Loading lottie
+// unnecessarily in that rare case is a much smaller cost than risking a
+// false negative that silently drops a real animation on a live page.
+function adapt_page_needs_lottie() {
+    if ( is_page_template( 'templates/template-home.php' ) ) {
+        // Unconditional loading-screen animation at the top of the
+        // template, not gated by any ACF field.
+        return true;
+    }
+
+    $field_by_template = array(
+        'templates/template-flexible.php'      => array( 'content_blocks', array( 'introduction_with_animation', 'values_full_screen_blocks' ) ),
+        'templates/template-gtm.php'           => array( 'content', array( 'stats_card' ) ),
+        'templates/template-market-buyer.php'  => array( 'content_blocks', array( 'two_column_animation_and_icons' ) ),
+        'templates/template-services.php'      => array( 'content_blocks', array( 'two_column_animation_and_icons' ) ),
+        'templates/template-thank-you-new.php' => array( 'content_blocks', array( 'thank_you_introduction' ) ),
+    );
+
+    foreach ( $field_by_template as $template => $config ) {
+        if ( ! is_page_template( $template ) ) {
+            continue;
+        }
+        list( $field_name, $layouts ) = $config;
+        if ( have_rows( $field_name ) ) {
+            while ( have_rows( $field_name ) ) {
+                the_row();
+                if ( in_array( get_row_layout(), $layouts, true ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    return false;
+}
+
 function my_enqueue_scripts() {
     // filemtime() needs a filesystem path, not the public URL. Passing
     // get_template_directory_uri() here silently failed (filemtime() can't
@@ -218,9 +267,12 @@ function my_enqueue_scripts() {
     // Moved into the enqueue system and pinned to the exact version "@latest"
     // was resolving to at time of writing, so behavior today is unchanged but
     // the site no longer silently picks up a new, unreviewed release the next
-    // time unpkg's @latest alias moves.
-    wp_enqueue_script('lottie-player', 'https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js', array(), '2.0.12', false);
-    wp_enqueue_script('lottie-interactivity', 'https://unpkg.com/@lottiefiles/lottie-interactivity@1.6.2/dist/lottie-interactivity.min.js', array(), '1.6.2', false);
+    // time unpkg's @latest alias moves. Now also scoped to only the pages
+    // that actually render a <lottie-player> -- see adapt_page_needs_lottie().
+    if ( adapt_page_needs_lottie() ) {
+        wp_enqueue_script('lottie-player', 'https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js', array(), '2.0.12', false);
+        wp_enqueue_script('lottie-interactivity', 'https://unpkg.com/@lottiefiles/lottie-interactivity@1.6.2/dist/lottie-interactivity.min.js', array(), '1.6.2', false);
+    }
 
     // Prefills hidden UTM fields on embedded HubSpot forms (.hs-form-html)
     // from the current page's query string, and hides the row once filled.
