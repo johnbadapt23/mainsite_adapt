@@ -22,7 +22,7 @@
                     					<?php if ( $arrow ) { ?>
                     						<?php echo wp_get_attachment_image( $arrow['ID'], 'full', false, array(
                     							'alt'     => $arrow['alt'],
-                    							'loading' => false,
+                    							'loading' => 'lazy',
                     						) ); ?>
                     					<?php } ?>
                                     </span>

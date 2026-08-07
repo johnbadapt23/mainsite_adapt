@@ -17,7 +17,7 @@
                         <span class="background-container">
                             <?php echo wp_get_attachment_image( $mobile_image['ID'], 'full', false, array(
                                 'alt'     => $mobile_image['alt'],
-                                'loading' => false,
+                                'loading' => 'lazy',
                             ) ); ?>
                         </span>
                     <?php } ?>

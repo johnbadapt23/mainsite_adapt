@@ -43,7 +43,7 @@
                                     <span class="publication-logo-container">
                             			<?php echo wp_get_attachment_image( $publication_logo['ID'], 'full', false, array(
                             				'alt'     => $publication_logo['alt'],
-                            				'loading' => false,
+                            				'loading' => 'lazy',
                             			) ); ?>
                                     </span>
                         		<?php } else { ?>

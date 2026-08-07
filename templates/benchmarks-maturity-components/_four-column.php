@@ -9,7 +9,7 @@
                     <?php if ( $title_icon ) { ?>
                         <?php echo wp_get_attachment_image( $title_icon['ID'], 'full', false, array(
                             'alt'     => $title_icon['alt'],
-                            'loading' => false,
+                            'loading' => 'lazy',
                         ) ); ?>
                     <?php } ?>
                 </span>

@@ -15,7 +15,7 @@
                                         <span class="bg-container">
                                             <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
                                                 'alt'     => $logo['alt'],
-                                                'loading' => false,
+                                                'loading' => 'lazy',
                                             ) ); ?>
                                         </span>
                                     </span>

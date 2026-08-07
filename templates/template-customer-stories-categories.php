@@ -70,7 +70,7 @@ if ($q && $q->parent != 0) {
                                                     <span class="background-image-container bg-container">
                                                             <?php echo wp_get_attachment_image( $video_poster['ID'], 'full', false, array(
                                                                 'alt'     => $video_poster['alt'],
-                                                                'loading' => false,
+                                                                'loading' => 'lazy',
                                                             ) ); ?>
                                                         </span>
                                                     <?php } ?>                                                                                                                                                       

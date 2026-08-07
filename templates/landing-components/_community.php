@@ -13,7 +13,7 @@
                     <?php if ( $column_one_image_one ) { ?>
                     	<?php echo wp_get_attachment_image( $column_one_image_one['ID'], 'full', false, array(
                     		'alt'     => $column_one_image_one['alt'],
-                    		'loading' => false,
+                    		'loading' => 'lazy',
                     	) ); ?>
                     <?php } ?>
                 </span>               

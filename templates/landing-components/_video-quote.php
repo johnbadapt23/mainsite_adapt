@@ -15,7 +15,7 @@
                         <?php if ( $poster_image ) { ?>
                             <?php echo wp_get_attachment_image( $poster_image['ID'], 'full', false, array(
                                 'alt'     => $poster_image['alt'],
-                                'loading' => false,
+                                'loading' => 'lazy',
                             ) ); ?>
                         <?php } ?>
                         <?php if( get_sub_field( 'vimeo_code' )) { ?>

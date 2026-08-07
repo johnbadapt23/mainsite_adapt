@@ -63,7 +63,7 @@ $displayed_posts[] = get_the_ID();
                             <span class="logo-container-background">
                                 <?php echo wp_get_attachment_image( $company_logo_background['ID'], 'full', false, array(
                                     'alt'     => $company_logo_background['alt'],
-                                    'loading' => false,
+                                    'loading' => 'lazy',
                                 ) ); ?>
                             </span>
                         </span>

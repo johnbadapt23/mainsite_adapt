@@ -19,7 +19,7 @@ get_header();
 							<span class="top-icon-container"><?php echo wp_get_attachment_image( $top_icon['ID'], 'full', false, array(
 								'alt'     => $top_icon['alt'],
 								'width'   => '250',
-								'loading' => false,
+								'loading' => 'lazy',
 							) ); ?></span>
 						<?php } ?>
 						<h2 class="title"><?php the_sub_field( 'title' ); ?></h2>
@@ -34,7 +34,7 @@ get_header();
 												<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
 													'alt'     => $icon['alt'],
 													'width'   => '130',
-													'loading' => false,
+													'loading' => 'lazy',
 												) ); ?>
 											<?php } ?>
 										</a>
@@ -43,7 +43,7 @@ get_header();
 											<?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
 												'alt'     => $icon['alt'],
 												'width'   => '130',
-												'loading' => false,
+												'loading' => 'lazy',
 											) ); ?>
 										<?php } ?>
 									<?php } ?>
@@ -82,7 +82,7 @@ get_header();
 							<span class="main-image-container">
 								<?php echo wp_get_attachment_image( $main_image['ID'], 'full', false, array(
 									'alt'     => $main_image['alt'],
-									'loading' => false,
+									'loading' => 'lazy',
 								) ); ?>
 							</span>
 						<?php } ?>

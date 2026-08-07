@@ -23,7 +23,7 @@
                                 <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
                                     'class'   => 'desktop',
                                     'alt'     => $image['alt'],
-                                    'loading' => false,
+                                    'loading' => 'lazy',
                                 ) ); ?>
                             <?php } ?>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>                                

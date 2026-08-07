@@ -26,7 +26,7 @@
                 						<?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
                 							'class'   => 'logo',
                 							'alt'     => $logo['alt'],
-                							'loading' => false,
+                							'loading' => 'lazy',
                 						) ); ?>
                 					<?php } ?>
                                 </span>

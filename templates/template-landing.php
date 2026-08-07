@@ -16,7 +16,7 @@ get_header();
                     <?php if ( $header_logo ) { ?>
                         <?php echo wp_get_attachment_image( $header_logo['ID'], 'full', false, array(
                             'alt'     => $header_logo['alt'],
-                            'loading' => false,
+                            'loading' => 'lazy',
                         ) ); ?>
                     <?php } ?>            
                 </span>

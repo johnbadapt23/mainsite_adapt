@@ -12,7 +12,7 @@
                                 <span class="image-container">
                                     <?php echo wp_get_attachment_image( $slide_image['ID'], 'full', false, array(
                                         'alt'     => $slide_image['alt'],
-                                        'loading' => false,
+                                        'loading' => 'lazy',
                                     ) ); ?>
                                 </span>
                             <?php } ?>

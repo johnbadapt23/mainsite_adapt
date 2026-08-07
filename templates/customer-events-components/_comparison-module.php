@@ -32,7 +32,7 @@
                                     <?php if ( $adapt_image_value ) { ?>
                                         <?php echo wp_get_attachment_image( $adapt_image_value['ID'], 'full', false, array(
                                             'alt'     => $adapt_image_value['alt'],
-                                            'loading' => false,
+                                            'loading' => 'lazy',
                                         ) ); ?>
                                     <?php } ?>
                                 </span>

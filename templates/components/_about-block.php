@@ -6,7 +6,7 @@
                 <span class="top-corner-icon">
 	                <?php echo wp_get_attachment_image( $top_corner_icon['ID'], 'full', false, array(
 	                    'alt'     => $top_corner_icon['alt'],
-	                    'loading' => false,
+	                    'loading' => 'lazy',
 	                ) ); ?>
                 </span>
 			<?php } ?>

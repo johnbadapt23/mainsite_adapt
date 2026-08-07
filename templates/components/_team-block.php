@@ -21,7 +21,7 @@
                                                 <?php if ( $team_member_image ) { ?>
                                                     <?php echo wp_get_attachment_image( $team_member_image['ID'], 'full', false, array(
                                                         'alt'     => $team_member_image['alt'],
-                                                        'loading' => false,
+                                                        'loading' => 'lazy',
                                                     ) ); ?>
                                                 <?php } ?>
                                             </span>

@@ -16,7 +16,7 @@
                                                 <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
                                                     'class'   => 'colour-image',
                                                     'alt'     => $logo['alt'],
-                                                    'loading' => false,
+                                                    'loading' => 'lazy',
                                                 ) ); ?>
                                             <?php if(get_sub_field( 'company_link' )) { ?>
                                                 </a>

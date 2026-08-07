@@ -10,7 +10,7 @@
             <?php if ( $background_image ) { ?>
                 <?php echo wp_get_attachment_image( $background_image['ID'], 'full', false, array(
                     'alt'     => $background_image['alt'],
-                    'loading' => false,
+                    'loading' => 'lazy',
                 ) ); ?>
             <?php } ?>
         </div>

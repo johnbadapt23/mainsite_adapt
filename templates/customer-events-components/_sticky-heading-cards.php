@@ -22,7 +22,7 @@
                                             <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
                                                 'class'   => 'desktop-image',
                                                 'alt'     => $image['alt'],
-                                                'loading' => false,
+                                                'loading' => 'lazy',
                                             ) ); ?>
                                         <?php } ?>
                                         <?php $image = get_sub_field( 'mobile_image' ); ?>

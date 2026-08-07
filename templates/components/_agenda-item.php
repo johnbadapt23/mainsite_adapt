@@ -19,7 +19,7 @@
                                                 <?php if ( $speaker_image ) { ?>
                                                 	<?php echo wp_get_attachment_image( $speaker_image['ID'], 'full', false, array(
                                                 		'alt'     => $speaker_image['alt'],
-                                                		'loading' => false,
+                                                		'loading' => 'lazy',
                                                 	) ); ?>
                                                 <?php } else { ?>
                                                     <?php $generic_headshot = get_field( 'generic_headshot', 'options' ); ?>

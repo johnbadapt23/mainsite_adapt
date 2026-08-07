@@ -44,7 +44,7 @@
                                         <?php if ( $best_practice_listing_image ) { ?>
                                             <?php echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'full', false, array(
                                                 'alt'     => $best_practice_listing_image['alt'],
-                                                'loading' => false,
+                                                'loading' => 'lazy',
                                             ) ); ?>
                                         <?php } ?>
                                     </span>

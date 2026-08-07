@@ -18,7 +18,7 @@ get_header();
                     <?php echo wp_get_attachment_image( $rotating_image['ID'], 'full', false, array(
                         'id'      => 'rotatingImage',
                         'alt'     => $rotating_image['alt'],
-                        'loading' => false,
+                        'loading' => 'lazy',
                     ) ); ?>
                 <?php } ?>
             </span>

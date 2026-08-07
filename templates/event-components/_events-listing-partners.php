@@ -169,7 +169,7 @@ if($years){
                                         <?php if ($listing_image): ?>
                                             <?php echo wp_get_attachment_image( $listing_image['ID'], 'full', false, array(
                                                 'alt'     => $listing_image['alt'],
-                                                'loading' => false,
+                                                'loading' => 'lazy',
                                             ) ); ?>
                                         <?php endif; ?>
                                     </span>

@@ -42,7 +42,7 @@
                         					<?php if ( $card_image ) { ?>
                         						<?php echo wp_get_attachment_image( $card_image['ID'], 'full', false, array(
                         							'alt'     => $card_image['alt'],
-                        							'loading' => false,
+                        							'loading' => 'lazy',
                         						) ); ?>
                         					<?php } ?>
                                         </span>

@@ -16,7 +16,7 @@
                                         <?php echo wp_get_attachment_image( $logo_white['ID'], 'full', false, array(
                                             'class'   => 'logo-white',
                                             'alt'     => $logo_white['alt'],
-                                            'loading' => false,
+                                            'loading' => 'lazy',
                                         ) ); ?>
                                     <?php } ?>
                                     <?php $logo_dark = get_sub_field( 'logo_dark' ); ?>

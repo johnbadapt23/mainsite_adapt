@@ -9,7 +9,7 @@
                 // this is the above-the-fold desktop hero image). Passing false
                 // stops WP core's own auto-lazy-loading heuristic (which counts
                 // images globally across the page) from adding one on its own.
-                'loading' => false,
+                'loading' => 'lazy',
             ) ); ?>
         <?php } ?>
         <?php $mobile_image = get_sub_field( 'mobile_image' ); ?>

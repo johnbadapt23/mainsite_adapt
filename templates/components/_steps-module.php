@@ -34,7 +34,7 @@
                                                 <?php echo wp_get_attachment_image( $pre_image_image['ID'], 'full', false, array(
                                                     'class'   => 'pre-image',
                                                     'alt'     => $pre_image_image['alt'],
-                                                    'loading' => false,
+                                                    'loading' => 'lazy',
                                                 ) ); ?>
                                             </span>
                                         </span>

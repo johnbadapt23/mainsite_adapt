@@ -34,7 +34,7 @@
                                                 <?php if ( $title_logo ) { ?>
                                                     <?php echo wp_get_attachment_image( $title_logo['ID'], 'full', false, array(
                                                         'alt'     => $title_logo['alt'],
-                                                        'loading' => false,
+                                                        'loading' => 'lazy',
                                                     ) ); ?>
                                                 <?php } ?>
                                             </span>

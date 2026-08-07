@@ -4,7 +4,7 @@
 		<span class="download-image-container">
 			<?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
 				'alt'     => $image['alt'],
-				'loading' => false,
+				'loading' => 'lazy',
 			) ); ?>
 		</span>
 	<?php } ?>

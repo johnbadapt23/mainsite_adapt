@@ -19,7 +19,7 @@ get_header();
 							<span class="top-icon-container"><?php echo wp_get_attachment_image( $top_icon['ID'], 'full', false, array(
 								'width'   => '250',
 								'alt'     => $top_icon['alt'],
-								'loading' => false,
+								'loading' => 'lazy',
 							) ); ?></span>
 						<?php } ?>
 						<h2 class="title"><?php echo get_sub_field( 'title' ); ?></h2>

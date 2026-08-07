@@ -8,7 +8,7 @@
                     <?php if ( $icon ) { ?>
                         <?php echo wp_get_attachment_image( $icon['ID'], 'full', false, array(
                             'alt'     => $icon['alt'],
-                            'loading' => false,
+                            'loading' => 'lazy',
                         ) ); ?>
                     <?php } ?>
                 </span>

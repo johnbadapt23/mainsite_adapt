@@ -28,7 +28,7 @@
 					<?php echo wp_get_attachment_image( $side_image['ID'], 'full', false, array(
 						'id'      => 'rotatingImage',
 						'alt'     => $side_image['alt'],
-						'loading' => false,
+						'loading' => 'lazy',
 					) ); ?>
 				<?php } ?>
 			</span>

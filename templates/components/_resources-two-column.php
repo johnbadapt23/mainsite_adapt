@@ -23,7 +23,7 @@
                             <?php if ( $image_logo ) { ?>
                                 <?php echo wp_get_attachment_image( $image_logo['ID'], 'full', false, array(
                                     'alt'     => $image_logo['alt'],
-                                    'loading' => false,
+                                    'loading' => 'lazy',
                                 ) ); ?>
                             <?php } ?>
                         </div>

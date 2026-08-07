@@ -101,7 +101,7 @@
                             <div class="sticky-image-container<?php if ( get_sub_field ( 'add_shadow_to_image' ) == 'yes' ) { ?> shadow<?php } ?>" style="--i: <?php echo $i; ?>;">
                                 <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
                                     'alt'     => $image['alt'],
-                                    'loading' => false,
+                                    'loading' => 'lazy',
                                 ) ); ?>
                             </div>
                         <?php } ?>

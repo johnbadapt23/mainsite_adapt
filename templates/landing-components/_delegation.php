@@ -45,7 +45,7 @@
                                             <?php if ( $logo ) { ?>
                                                 <?php echo wp_get_attachment_image( $logo['ID'], 'full', false, array(
                                                     'alt'     => $logo['alt'],
-                                                    'loading' => false,
+                                                    'loading' => 'lazy',
                                                 ) ); ?>
                                             <?php } ?>
                                         </span>

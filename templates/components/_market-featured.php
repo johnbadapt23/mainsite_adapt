@@ -34,7 +34,7 @@
                                         <?php if ( $featured_image ) { ?>
                                             <?php echo wp_get_attachment_image( $featured_image['ID'], 'full', false, array(
                                                 'alt'     => $featured_image['alt'],
-                                                'loading' => false,
+                                                'loading' => 'lazy',
                                             ) ); ?>
                                         <?php } ?>
                                     </span>                               

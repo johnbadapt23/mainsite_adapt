@@ -39,7 +39,7 @@
                     <?php if ( $side_image ) { ?>
                         <?php echo wp_get_attachment_image( $side_image['ID'], 'full', false, array(
                             'alt'     => $side_image['alt'],
-                            'loading' => false,
+                            'loading' => 'lazy',
                         ) ); ?>
                     <?php } ?>
                 </span>

@@ -19,7 +19,7 @@
                                                     <?php echo wp_get_attachment_image( $red_icon['ID'], 'full', false, array(
                                                         'class'   => 'red-icon',
                                                         'alt'     => $red_icon['alt'],
-                                                        'loading' => false,
+                                                        'loading' => 'lazy',
                                                     ) ); ?>
                                                 <?php } ?>
                                             </span>

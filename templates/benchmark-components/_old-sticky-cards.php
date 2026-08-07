@@ -58,7 +58,7 @@
                             <div class="sticky-image-container" style="--i: <?php echo $i; ?>;">
                                 <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
                                     'alt'     => $image['alt'],
-                                    'loading' => false,
+                                    'loading' => 'lazy',
                                 ) ); ?>
                             </div>
                         <?php } ?>

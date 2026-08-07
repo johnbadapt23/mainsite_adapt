@@ -12,7 +12,7 @@
 						<?php if ( $arrow_image ) { ?>
 							<span class="arrow-container"><?php echo wp_get_attachment_image( $arrow_image['ID'], 'full', false, array(
 								'alt'     => $arrow_image['alt'],
-								'loading' => false,
+								'loading' => 'lazy',
 							) ); ?></span>
 						<?php } ?>
 						<span class="content-container">

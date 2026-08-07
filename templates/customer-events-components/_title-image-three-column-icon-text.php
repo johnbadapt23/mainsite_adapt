@@ -11,7 +11,7 @@
                     <?php echo wp_get_attachment_image( $image['ID'], 'full', false, array(
                         'class'   => 'desktop-image mobile-hide',
                         'alt'     => $image['alt'],
-                        'loading' => false,
+                        'loading' => 'lazy',
                     ) ); ?>
                 <?php } ?>
                 <?php $mobile_image = get_sub_field( 'mobile_image' ); ?>
