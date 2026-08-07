@@ -305,6 +305,27 @@ function my_enqueue_scripts() {
 }
 add_action('wp_enqueue_scripts', 'my_enqueue_scripts');
 
+// WordPress core enqueues wp-block-library CSS (~18KB, render-blocking) on
+// every single page regardless of whether Gutenberg block markup is actually
+// present. This theme's pages are built entirely through ACF flexible
+// content (get_template_part() dispatch, no the_content() call at all on
+// any of them) -- only templates/template-default.php and
+// templates/template-register.php call the_content(), so those are the only
+// two places block CSS could ever matter. Rather than assuming zero posts
+// anywhere use the block editor, this checks has_blocks() per-page and only
+// dequeues when there's actually nothing to style, so a post that *does*
+// contain block markup keeps working exactly as before.
+function adapt_maybe_dequeue_block_library_css() {
+    if ( is_singular() && has_blocks( get_post() ) ) {
+        return;
+    }
+    wp_dequeue_style( 'wp-block-library' );
+    wp_dequeue_style( 'wp-block-library-theme' );
+    wp_dequeue_style( 'classic-theme-styles' );
+    wp_dequeue_style( 'global-styles' );
+}
+add_action( 'wp_enqueue_scripts', 'adapt_maybe_dequeue_block_library_css', 100 );
+
 // Shared helpers for the 3 AJAX filter callbacks below (speakers,
 // partners, edge partners). Their query-building and HTML render loops
 // differ enough (different taxonomies/post types/ACF fields, and

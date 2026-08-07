@@ -4,7 +4,7 @@
 
 	<?php wp_footer(); ?>
 	
-	<script aysnc src="<?php echo get_template_directory_uri(); ?>/assets/js/modernizr-2.7.1.min.js"></script>
+	<script async src="<?php echo get_template_directory_uri(); ?>/assets/js/modernizr-2.7.1.min.js"></script>
 
 
 
@@ -20,7 +20,7 @@ window.lintrk.q=[]}
 var s = document.getElementsByTagName("script")[0];
 var b = document.createElement("script");
 b.type = "text/javascript";b.async = true;
-b.src = https://snap.licdn.com/li.lms-analytics/insight.min.js;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
 s.parentNode.insertBefore(b, s);})(window.lintrk);
 </script>
 <noscript>
