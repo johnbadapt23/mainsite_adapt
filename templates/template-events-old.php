@@ -1,6 +1,15 @@
 <?php
 /**
- * Template Name: Events Template
+ * Template Name: Events Template (Old)
+ *
+ * Renamed from "Events Template" to disambiguate from template-events.php,
+ * which declared the exact same name -- wp-admin's Page Attributes >
+ * Template dropdown showed two entries labeled identically, and whichever
+ * page has THIS file assigned in the DB (_wp_page_template) would look the
+ * same as one assigned to template-events.php with no way to tell them
+ * apart. This only changes the label; WordPress tracks template assignment
+ * by file path, not by this name, so any page currently using this
+ * template keeps working exactly as before.
  */
 
 get_header();
