@@ -4,7 +4,7 @@ name: Build and Deploy Theme
 #   1. Installs Node deps and compiles CSS/JS from source/ via gulp
 #      (build:styles compiles source/scss -> assets/css/main.min.css,
 #       build:scripts bundles source/js + vendor libs -> assets/js/main.min.js)
-#   2. Uploads the theme to the server over SFTP.
+#   2. Uploads the theme to the server via rsync over SSH.
 #
 # Uses the "staging" GitHub environment (Settings -> Environments -> staging),
 # which has all required values configured:
@@ -63,32 +63,54 @@ jobs:
       - name: Compile CSS and JS
         run: npx gulp build:styles build:scripts
 
-      - name: Deploy over SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
-        with:
-          username: ${{ secrets.STAGING_USERNAME }}
-          server: ${{ vars.STAGING_HOST }}
-          port: ${{ vars.STAGING_PORT || 22 }}
-          password: ${{ secrets.STAGING_PASS }}
-          local_path: './'
-          remote_path: ${{ vars.STAGING_REMOTE_PATH || secrets.STAGING_REMOTE_PATH }}
-          sftp_only: true
-          # Only files WordPress actually needs at runtime go to the server --
-          # repo/git metadata, build tooling, and build-time-only inputs stay
-          # out. (download-monitor/ is kept: the Download Monitor plugin
-          # auto-discovers content-download.php there by convention, even
-          # though nothing in this repo explicitly references it by name.)
-          rsyncArgs: >-
-            --exclude=.git
-            --exclude=.github
-            --exclude=.gitignore
-            --exclude=.gitattributes
-            --exclude=node_modules
-            --exclude=source
-            --exclude=_archive
-            --exclude=package.json
-            --exclude=package-lock.json
-            --exclude=gulpfile.js
-            --exclude=faviconData.json
-            --exclude=README.md
-          sftpArgs: '-o ConnectTimeout=5'
+      # wlixcc/SFTP-Deploy-Action (previously used here) always does a full
+      # recursive "sftp put -r" of every included file, on every run, with no
+      # diffing -- confirmed by reading its entrypoint.sh directly. Its
+      # rsyncArgs option only pre-filters files into a LOCAL staging folder
+      # (that's how the --exclude patterns below work); it never syncs
+      # incrementally against the remote. That's the documented cause of this
+      # action being slow (see wlixcc/SFTP-Deploy-Action#38) and was eating
+      # several minutes of the ~7min build on its own, uploading all ~740
+      # files/~17MB regardless of what actually changed.
+      #
+      # Replaced with a real rsync invocation over SSH, authenticating with
+      # the same STAGING_USERNAME/STAGING_PASS secrets as before (via
+      # sshpass, no new secrets needed). Real rsync compares file size/mtime
+      # against what's already on the server and only transfers what changed
+      # -- repeat deploys with a small diff should take seconds, not minutes.
+      #
+      # Requirement this depends on: the STAGING_PORT (2222) account needs to
+      # accept a real SSH shell command (rsync invokes `rsync --server ...`
+      # remotely over SSH), not just raw SFTP file transfer. Cloudways
+      # generally provides this by default, but if this step fails with a
+      # permission/command-not-found error, that means the account is
+      # SFTP-only and this approach needs reverting to the previous action.
+      #
+      # No --delete flag: matches the old action's behavior of only adding/
+      # updating files, never removing anything from the remote that's no
+      # longer in the repo. Can be added later as a deliberate choice if
+      # stale-file cleanup on the server is wanted.
+      - name: Deploy over rsync/SSH
+        env:
+          SSHPASS: ${{ secrets.STAGING_PASS }}
+          STAGING_USERNAME: ${{ secrets.STAGING_USERNAME }}
+          STAGING_HOST: ${{ vars.STAGING_HOST }}
+          STAGING_PORT: ${{ vars.STAGING_PORT || 22 }}
+          STAGING_REMOTE_PATH: ${{ vars.STAGING_REMOTE_PATH || secrets.STAGING_REMOTE_PATH }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y sshpass
+          sshpass -e rsync -avz \
+            -e "ssh -p $STAGING_PORT -o StrictHostKeyChecking=no -o ConnectTimeout=5" \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=.gitignore \
+            --exclude=.gitattributes \
+            --exclude=node_modules \
+            --exclude=source \
+            --exclude=_archive \
+            --exclude=package.json \
+            --exclude=package-lock.json \
+            --exclude=gulpfile.js \
+            --exclude=faviconData.json \
+            --exclude=README.md \
+            ./ "$STAGING_USERNAME@$STAGING_HOST:$STAGING_REMOTE_PATH"
