@@ -4789,7 +4789,13 @@ section.list-card-module {
                                 opacity: 1;
                             }
 
-                            h4 {
+                            h3 {
+                                // Was h4 -- changed to h3 to fix a
+                                // heading-hierarchy skip (h2 title above
+                                // followed directly by h4 card titles).
+                                // Font styling still pulls from the h4
+                                // design tokens so the visual card title
+                                // size/weight is unchanged.
                                 float: left;
                                 width: 100%;
                                 margin-bottom: 0px;
@@ -4924,7 +4930,7 @@ section.list-card-module {
                                     opacity: 1;
                                 }
 
-                                h4 {
+                                h3 {
                                     color: #000;
                                 }
                             }
