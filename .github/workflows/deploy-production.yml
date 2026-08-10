@@ -17,14 +17,14 @@ name: Build and Deploy Theme (Production)
 #   PRODUCTION_PORT         (environment variable)
 #   PRODUCTION_REMOTE_PATH  (environment variable)
 #   PRODUCTION_USERNAME     (environment secret)
-#   PRODUCTION_SSH_KEY      (environment secret) -- full contents of the
-#                           private key file used to SFTP into this server
+#   PRODUCTION_PASS         (environment secret) -- despite the name, this
+#                           holds the full contents of the private key file
+#                           used to SFTP into this server, not a password
 #                           (the matching public key must already be
 #                           authorized on the server for PRODUCTION_USERNAME).
 #                           Production's SFTP account only accepts key auth,
-#                           not passwords -- PRODUCTION_PASS (used by an
-#                           earlier version of this workflow) doesn't work
-#                           here and can be deleted.
+#                           not passwords -- reusing this existing secret
+#                           slot rather than adding a separate one.
 
 on:
   push:
@@ -88,7 +88,9 @@ jobs:
           # Production's SFTP account is key-auth only (no password) --
           # the action writes this to a temp file and points ssh at it
           # with -i, instead of the netrc/password flow staging uses.
-          ssh-private-key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          # PRODUCTION_PASS actually holds the private key contents (see
+          # the note above), not a password.
+          ssh-private-key: ${{ secrets.PRODUCTION_PASS }}
           local-path: './'
           remote-path: ${{ vars.PRODUCTION_REMOTE_PATH || secrets.PRODUCTION_REMOTE_PATH }}
           # inputs.sync_mode only exists on a manual "Run workflow" dispatch;
