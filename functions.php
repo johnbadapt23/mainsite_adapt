@@ -315,6 +315,41 @@ function my_enqueue_scripts() {
 }
 add_action('wp_enqueue_scripts', 'my_enqueue_scripts');
 
+// WP-PageNavi's stylesheet (handle 'wp-pagenavi-css') is enqueued by the
+// plugin itself on every page, but pagination only actually renders on a
+// handful of listing templates (template-insights.php, template-news.php,
+// etc. -- anywhere wp_pagenavi() is called). On every other page (including
+// the homepage) it was flagged by Lighthouse as a render-blocking request
+// for a stylesheet nothing on the page uses. Rather than track down and
+// dequeue it per-template (it's also pulled in by a few shared partials
+// used across different top-level templates), this defers it everywhere
+// via the standard preload+onload swap -- on the pages that DO use it,
+// the pagination controls are below the initial viewport, so a few
+// milliseconds of async load has no visible effect; on every other page
+// it simply stops blocking render. The <noscript> tag preserves the
+// original enqueued tag as a fallback with JS disabled.
+function adapt_defer_pagenavi_css( $html, $handle ) {
+    if ( 'wp-pagenavi-css' !== $handle ) {
+        return $html;
+    }
+    // Matches rel="stylesheet" or rel='stylesheet' (WP's own output uses
+    // single quotes) without reusing the captured quote character in the
+    // replacement -- reusing it would break if $html happens to use single
+    // quotes, since the replacement's own onload JS string also needs a
+    // quote character.
+    $preload = preg_replace(
+        '/rel=([\'"])stylesheet\1/',
+        'rel="preload" as="style" onload="this.onload=null;this.rel=\'stylesheet\'"',
+        $html,
+        1
+    );
+    if ( null === $preload || $preload === $html ) {
+        return $html;
+    }
+    return $preload . '<noscript>' . $html . '</noscript>';
+}
+add_filter( 'style_loader_tag', 'adapt_defer_pagenavi_css', 10, 2 );
+
 // WordPress core enqueues wp-block-library CSS (~18KB, render-blocking) on
 // every single page regardless of whether Gutenberg block markup is actually
 // present. This theme's pages are built entirely through ACF flexible
