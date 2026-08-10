@@ -20,6 +20,43 @@
 		};
 	}
 
+	// The homepage's HubSpot popup form (#animationForm) used to have its
+	// HubSpot embed snippet (a <script src="//js.hsforms.net/..."> plus a
+	// hbspt.forms.create() call) echoed straight into the live page HTML,
+	// so it ran unconditionally on every homepage load -- HubSpot's loader
+	// then injects ~47KB of inline CSS/JS into <head> immediately, well
+	// before anyone has actually opened the popup. That's the dominant
+	// contributor to this page's JS execution time and forced-reflow
+	// Lighthouse findings.
+	//
+	// The embed markup is now output inside an inert <template id="...">
+	// (templates/components/_text-animation-introduction-v2.php) instead,
+	// which the browser parses but never executes/fetches. This activates
+	// it the first time its popup is actually opened. Script tags taken
+	// from a <template> (or set via innerHTML) don't auto-execute -- that's
+	// deliberate browser behaviour -- so each one is recreated via
+	// document.createElement('script') before insertion, which does run.
+	function adaptActivateEmbeddedTemplate(templateId, targetSelector) {
+		var templateEl = document.getElementById(templateId);
+		var targetEl = document.querySelector(targetSelector);
+		if (!templateEl || !targetEl || targetEl.getAttribute('data-embed-loaded')) {
+			return;
+		}
+		targetEl.setAttribute('data-embed-loaded', '1');
+		var fragment = templateEl.content.cloneNode(true);
+		var oldScripts = fragment.querySelectorAll('script');
+		for (var i = 0; i < oldScripts.length; i++) {
+			var oldScript = oldScripts[i];
+			var newScript = document.createElement('script');
+			for (var a = 0; a < oldScript.attributes.length; a++) {
+				newScript.setAttribute(oldScript.attributes[a].name, oldScript.attributes[a].value);
+			}
+			newScript.textContent = oldScript.textContent;
+			oldScript.parentNode.replaceChild(newScript, oldScript);
+		}
+		targetEl.appendChild(fragment);
+	}
+
 	$(document).ready(function (){
 
 		// STANDARD
@@ -503,7 +540,12 @@
 		$('.formPopupHubspotHome').each(function(){
 			$(this).magnificPopup({
 				type: 'inline',
-				mainClass: 'home-animation-popup'
+				mainClass: 'home-animation-popup',
+				callbacks: {
+					open: function() {
+						adaptActivateEmbeddedTemplate('animationFormEmbed', '#animationForm .form');
+					}
+				}
 			});
 		});
 
