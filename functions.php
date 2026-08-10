@@ -315,21 +315,24 @@ function my_enqueue_scripts() {
 }
 add_action('wp_enqueue_scripts', 'my_enqueue_scripts');
 
-// WP-PageNavi's stylesheet (handle 'wp-pagenavi-css') is enqueued by the
-// plugin itself on every page, but pagination only actually renders on a
-// handful of listing templates (template-insights.php, template-news.php,
-// etc. -- anywhere wp_pagenavi() is called). On every other page (including
-// the homepage) it was flagged by Lighthouse as a render-blocking request
-// for a stylesheet nothing on the page uses. Rather than track down and
-// dequeue it per-template (it's also pulled in by a few shared partials
-// used across different top-level templates), this defers it everywhere
-// via the standard preload+onload swap -- on the pages that DO use it,
-// the pagination controls are below the initial viewport, so a few
+// WP-PageNavi's stylesheet (registered handle 'wp-pagenavi' -- WP's
+// style_loader_tag filter is passed the raw handle, NOT the "{handle}-css"
+// id WordPress auto-generates for the <link> tag, which is what actually
+// shows up in the DOM/devtools) is enqueued by the plugin itself on every
+// page, but pagination only actually renders on a handful of listing
+// templates (template-insights.php, template-news.php, etc. -- anywhere
+// wp_pagenavi() is called). On every other page (including the homepage)
+// it was flagged by Lighthouse as a render-blocking request for a
+// stylesheet nothing on the page uses. Rather than track down and dequeue
+// it per-template (it's also pulled in by a few shared partials used
+// across different top-level templates), this defers it everywhere via
+// the standard preload+onload swap -- on the pages that DO use it, the
+// pagination controls are below the initial viewport, so a few
 // milliseconds of async load has no visible effect; on every other page
 // it simply stops blocking render. The <noscript> tag preserves the
 // original enqueued tag as a fallback with JS disabled.
 function adapt_defer_pagenavi_css( $html, $handle ) {
-    if ( 'wp-pagenavi-css' !== $handle ) {
+    if ( 'wp-pagenavi' !== $handle ) {
         return $html;
     }
     // Matches rel="stylesheet" or rel='stylesheet' (WP's own output uses
