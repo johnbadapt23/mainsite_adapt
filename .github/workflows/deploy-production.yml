@@ -12,12 +12,19 @@ name: Build and Deploy Theme (Production)
 #   - uses PRODUCTION_* vars/secrets instead of STAGING_*
 #
 # Uses the "production" GitHub environment (Settings -> Environments -> production),
-# which has all required values configured:
+# which needs these values configured:
 #   PRODUCTION_HOST         (environment variable)
 #   PRODUCTION_PORT         (environment variable)
 #   PRODUCTION_REMOTE_PATH  (environment variable)
 #   PRODUCTION_USERNAME     (environment secret)
-#   PRODUCTION_PASS         (environment secret)
+#   PRODUCTION_SSH_KEY      (environment secret) -- full contents of the
+#                           private key file used to SFTP into this server
+#                           (the matching public key must already be
+#                           authorized on the server for PRODUCTION_USERNAME).
+#                           Production's SFTP account only accepts key auth,
+#                           not passwords -- PRODUCTION_PASS (used by an
+#                           earlier version of this workflow) doesn't work
+#                           here and can be deleted.
 
 on:
   push:
@@ -78,7 +85,10 @@ jobs:
           remote-host: ${{ vars.PRODUCTION_HOST }}
           remote-port: ${{ vars.PRODUCTION_PORT || 22 }}
           remote-user: ${{ secrets.PRODUCTION_USERNAME }}
-          remote-password: ${{ secrets.PRODUCTION_PASS }}
+          # Production's SFTP account is key-auth only (no password) --
+          # the action writes this to a temp file and points ssh at it
+          # with -i, instead of the netrc/password flow staging uses.
+          ssh-private-key: ${{ secrets.PRODUCTION_SSH_KEY }}
           local-path: './'
           remote-path: ${{ vars.PRODUCTION_REMOTE_PATH || secrets.PRODUCTION_REMOTE_PATH }}
           # inputs.sync_mode only exists on a manual "Run workflow" dispatch;
