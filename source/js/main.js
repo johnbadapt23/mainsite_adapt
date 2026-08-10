@@ -23,19 +23,27 @@
 	// The homepage's HubSpot popup form (#animationForm) used to have its
 	// HubSpot embed snippet (a <script src="//js.hsforms.net/..."> plus a
 	// hbspt.forms.create() call) echoed straight into the live page HTML,
-	// so it ran unconditionally on every homepage load -- HubSpot's loader
-	// then injects ~47KB of inline CSS/JS into <head> immediately, well
-	// before anyone has actually opened the popup. That's the dominant
-	// contributor to this page's JS execution time and forced-reflow
-	// Lighthouse findings.
+	// so it ran synchronously during initial page parsing -- HubSpot's
+	// loader then injects ~47KB of inline CSS/JS into <head> immediately,
+	// competing with the page's actual critical-path resources. That was
+	// the dominant contributor to this page's JS execution time and
+	// forced-reflow Lighthouse findings.
 	//
-	// The embed markup is now output inside an inert <template id="...">
-	// (templates/components/_text-animation-introduction-v2.php) instead,
-	// which the browser parses but never executes/fetches. This activates
-	// it the first time its popup is actually opened. Script tags taken
-	// from a <template> (or set via innerHTML) don't auto-execute -- that's
-	// deliberate browser behaviour -- so each one is recreated via
-	// document.createElement('script') before insertion, which does run.
+	// The embed markup is output inside an inert <template id="..."> in
+	// templates/components/_text-animation-introduction-v2.php, which the
+	// browser parses but never executes/fetches on its own. This activates
+	// it on the window 'load' event below -- i.e. still automatic, no click
+	// required, but only after every other page resource (images,
+	// stylesheets, other scripts) has already finished, so it no longer
+	// competes with anything on the critical rendering path. It's also
+	// activated immediately if the popup is opened before 'load' fires (a
+	// visitor clicking within the first moment or two of arriving), via the
+	// magnificPopup callback further down -- the data-embed-loaded guard
+	// below means whichever of the two happens first wins and the other
+	// becomes a no-op. Script tags taken from a <template> (or set via
+	// innerHTML) don't auto-execute -- that's deliberate browser behaviour
+	// -- so each one is recreated via document.createElement('script')
+	// before insertion, which does run.
 	function adaptActivateEmbeddedTemplate(templateId, targetSelector) {
 		var templateEl = document.getElementById(templateId);
 		var targetEl = document.querySelector(targetSelector);
@@ -4102,5 +4110,12 @@ if ($('.overlapping-card-wrapper').length && $(window).width() > 767) {
         bindMobileToggles();
     });
 
+    // See the adaptActivateEmbeddedTemplate() comment near the top of this
+    // file -- this is the "automatic, no click required" activation path
+    // for the homepage's HubSpot popup form, deferred until every other
+    // page resource has finished loading.
+    $(window).on("load", function() {
+        adaptActivateEmbeddedTemplate('animationFormEmbed', '#animationForm .form');
+    });
 
 })(window.jQuery);
