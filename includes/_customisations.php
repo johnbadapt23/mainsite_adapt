@@ -116,10 +116,18 @@ function custom_body_classs($classes) {
 		array_push($classes, $post->post_type);
 		array_push($classes, sanitize_html_class($post->post_name));
 		//array_push($classes, 'single-post');
+		// This filter replaces $classes wholesale, discarding the
+		// page-id-{ID}/postid-{ID} classes WP core's body_class() would
+		// otherwise add -- re-added here (as a single consistent
+		// "page-id-{ID}" for any singular content, matching the format
+		// requested) so individual pages/posts can still be targeted in
+		// CSS/JS without needing a page template or slug-based hook.
+		array_push($classes, 'page-id-' . $post->ID);
     } else {
 		if($post) {
 			array_push($classes, $post->post_type);
 			array_push($classes, sanitize_html_class($post->post_name));
+			array_push($classes, 'page-id-' . $post->ID);
 			$page_template = get_post_meta( $post->ID, '_wp_page_template', true );
 			if ( strstr($page_template, '/') && !is_singular( 'post' ) ) {
 
