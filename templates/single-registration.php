@@ -119,6 +119,19 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 			</span>
 		</div>
 		<div class="column webinar-column first-column">
+			<?php if ( get_field( 'speaker_logos' ) ) : ?>
+				<div class="speaker-logos-wrapper" style="display: flex; flex-wrap: wrap; align-items: center; gap: 15px; margin-bottom: 25px;">
+					<?php foreach ( get_field( 'speaker_logos' ) as $logo ) : ?>
+						<div class="speaker-logo-item">
+							<?= wp_get_attachment_image( $logo['ID'], 'full', false, array(
+								'alt'   => $logo['alt'],
+								'style' => 'width: auto; max-width: 200px; height: 50px; object-fit: contain;',
+							) ); ?>
+						</div>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+
 			<?php if ( have_rows( 'speakers' ) ) : ?>
 				<div class="speakers-block less-margin">
 					<?php while ( have_rows( 'speakers' ) ) : the_row(); ?>
