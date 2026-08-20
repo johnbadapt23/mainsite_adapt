@@ -1189,13 +1189,35 @@
 
 		// Filter event (change event on checkboxes)
 		$('#speakerFilter').on('change', 'input[type="checkbox"]', function() {
+			var $checkbox = $(this);
+
+			// ADAPT Analysts / ADAPT Advisors are mutually exclusive, and
+			// selecting either one hides (and clears) the Expertise group
+			// below. See _speaker-module.php for the .analyst-advisor-checkboxes
+			// / .expertise-group markup this targets.
+			if ($checkbox.closest('.analyst-advisor-checkboxes').length) {
+				if ($checkbox.is(':checked')) {
+					$checkbox.closest('.analyst-advisor-checkboxes')
+						.find('input[type="checkbox"]').not($checkbox).prop('checked', false);
+					$('#speakerFilter .expertise-group')
+						.find('input[type="checkbox"]:checked').prop('checked', false);
+					$('#speakerFilter .expertise-group').hide();
+				} else {
+					var stillActive = $('#speakerFilter .analyst-advisor-checkboxes input[type="checkbox"]:checked').length > 0;
+					if (!stillActive) {
+						$('#speakerFilter .expertise-group').show();
+					}
+				}
+			}
+
 			fetchSpeakers(1); // Fetch speakers with selected filters (starting from page 1)
 		});
 
 		// Function to get selected filters. Only looks at the checkboxes
-		// that are direct children of #speakerFilter under .expertise-checkbox
-		// -- the ADAPT Analysts/Advisors checkboxes are nested one level
-		// deeper in a wrapper div and are intentionally excluded here.
+		// inside .expertise-group under .expertise-checkbox -- the ADAPT
+		// Analysts/Advisors checkboxes live in a separate
+		// .analyst-advisor-checkboxes wrapper and are intentionally
+		// excluded here.
 		//
 		// If nothing is checked, falls back to every checkbox actually
 		// offered on this page (these are ACF-configured per module
@@ -1212,7 +1234,7 @@
 			var hasSelection = checkedExpertise.length > 0;
 			var selectedExpertise = hasSelection
 				? checkedExpertise
-				: $('#speakerFilter > .expertise-checkbox input');
+				: $('#speakerFilter .expertise-group .expertise-checkbox input');
 
 			return {
 				values: selectedExpertise.map(function() {

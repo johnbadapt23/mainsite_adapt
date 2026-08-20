@@ -21,7 +21,7 @@
                     <div>
                         <form id="speakerFilter">
                             <?php if( in_array(15788,$expertise_ids) || in_array(15789,$expertise_ids)) : ?>
-                            <div style="padding-bottom: 20px;">
+                            <div class="analyst-advisor-checkboxes" style="padding-bottom: 20px;">
                                     <?php
                                         if ( $expertise_ids && ! empty( $expertise_ids ) ) {
                                             // Get terms for the selected expertise IDs
@@ -41,11 +41,18 @@
                                                     </div>
                                                     <?php
                                                 }
-                                            } 
-                                        } 
+                                            }
+                                        }
                                     ?>
-                            </div> 
+                            </div>
                             <?php endif; ?>
+                            <?php
+                                // Wrapped together (title + mobile trigger + the checkboxes
+                                // themselves) so main.js can show/hide the whole "Expertise"
+                                // group as one unit when an ADAPT Analysts/Advisors checkbox
+                                // (above) is toggled -- see the #speakerFilter change handler.
+                            ?>
+                            <div class="expertise-group">
                             <span class="expertise-title">Expertise</span>
                             <span class="mobile-trigger">Filter by expertise</span>
                             <?php
@@ -56,7 +63,7 @@
                                         $expertise_ids = array_diff($expertise_ids, [15788, 15789]);
                                         $expertise_ids = array_values($expertise_ids);
                                     }
-                                    
+
                                     $expertise_terms = get_terms( array(
                                         'taxonomy' => 'expertise',
                                         'hide_empty' => false,
@@ -73,9 +80,10 @@
                                             </div>
                                             <?php
                                         }
-                                    } 
-                                } 
+                                    }
+                                }
                             ?>
+                            </div>
                         </form>
                     </div>
                 </div>
