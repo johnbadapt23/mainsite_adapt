@@ -1191,22 +1191,30 @@
 		$('#speakerFilter').on('change', 'input[type="checkbox"]', function() {
 			var $checkbox = $(this);
 
-			// ADAPT Analysts / ADAPT Advisors are mutually exclusive, and
-			// selecting either one hides (and clears) the Expertise group
-			// below. See _speaker-module.php for the .analyst-advisor-checkboxes
-			// / .expertise-group markup this targets.
+			// ADAPT Analysts / ADAPT Advisors are mutually exclusive. The
+			// Expertise group below is hidden (and cleared) only while
+			// ADAPT Analysts specifically is checked -- it's shown again
+			// if ADAPT Advisors is checked instead, or if neither is
+			// checked. See _speaker-module.php for the
+			// .analyst-advisor-checkboxes / .expertise-group markup this
+			// targets. Matched by label text (not slug/ID) since the
+			// checkbox values are taxonomy term slugs pulled from the DB.
 			if ($checkbox.closest('.analyst-advisor-checkboxes').length) {
 				if ($checkbox.is(':checked')) {
 					$checkbox.closest('.analyst-advisor-checkboxes')
 						.find('input[type="checkbox"]').not($checkbox).prop('checked', false);
+				}
+
+				var analystsChecked = $('#speakerFilter .analyst-advisor-checkboxes input[type="checkbox"]:checked').filter(function() {
+					return /analyst/i.test($(this).siblings('label').text());
+				}).length > 0;
+
+				if (analystsChecked) {
 					$('#speakerFilter .expertise-group')
 						.find('input[type="checkbox"]:checked').prop('checked', false);
 					$('#speakerFilter .expertise-group').hide();
 				} else {
-					var stillActive = $('#speakerFilter .analyst-advisor-checkboxes input[type="checkbox"]:checked').length > 0;
-					if (!stillActive) {
-						$('#speakerFilter .expertise-group').show();
-					}
+					$('#speakerFilter .expertise-group').show();
 				}
 			}
 
