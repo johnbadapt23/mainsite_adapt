@@ -539,7 +539,7 @@ function filter_speakers_callback() {
                         </span>                                               
                     </div>
                     <span class="speaker-button-container">
-                        <span class="std-button form-popup-button-container red-button"><?php echo get_field( 'speaker_form_button', 'options' ); ?></span>
+                        <span class="std-button form-popup-button-container red-button" style="padding: 0;"><?php echo get_field( 'speaker_form_button', 'options' ); ?></span>
                         <span style="display:none"><?php echo get_field( 'speaker_form_script', 'options' ); ?></span>
                     </span>
                 </div>
