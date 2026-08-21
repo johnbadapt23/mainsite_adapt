@@ -546,7 +546,13 @@ function filter_speakers_callback() {
                                 <a href="<?= get_field( 'speaker_form_button_advisor', 'options' ); ?>?which_advisors_are_you_interested_in_meeting=<?= get_the_title(); ?>">Submit an Advisor Enquiry</a>
                             <?php endif; ?>
                         </span>
-                        <span style="display:none"><?php echo get_field( 'speaker_form_script', 'options' ); ?></span>
+                        <span style="display:none">
+                            <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
+                                <?php echo get_field( 'speaker_form_script', 'options' ); ?>
+                            <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
+                                <?php echo get_field( 'speaker_form_script_advisor', 'options' ); ?>
+                            <?php endif; ?>
+                        </span>
                     </span>
                 </div>
                 <div class="click-overlay"></div>
