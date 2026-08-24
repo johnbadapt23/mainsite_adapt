@@ -578,6 +578,19 @@
 			fixedContentPos: false
 		});
 
+		// Speaker "Submit an Enquiry" buttons -- href is a hosted HubSpot
+		// form URL (share-ap1.hsforms.com/...), not an embed snippet, so
+		// this loads it directly in an iframe popup rather than the
+		// .formPopupHubspot 'inline' pattern used elsewhere. See
+		// _speaker-module.php.
+		$('.formPopupHubspotIframe').magnificPopup({
+			type: 'iframe',
+			mainClass: 'mfp-fade',
+			removalDelay: 160,
+			preloader: false,
+			fixedContentPos: false
+		});
+
 		$('.image-popup').magnificPopup({
 			type: 'image',
 			mainClass: 'mfp-post-img'

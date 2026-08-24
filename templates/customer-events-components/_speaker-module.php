@@ -179,18 +179,19 @@
                                                 </span>                                               
                                             </div>
                                             <span class="speaker-button-container">
+                                                <?php
+                                                    // These are hosted HubSpot form URLs (share-ap1.hsforms.com/...),
+                                                    // not embed snippets -- rendered inline via magnificPopup's
+                                                    // 'iframe' type (see .formPopupHubspotIframe init in main.js,
+                                                    // modelled on the existing .popup-vimeo iframe popup). The query
+                                                    // string prefills the HubSpot field with the same internal name
+                                                    // via HubSpot's URL-prefill support.
+                                                ?>
                                                 <span class="std-button form-popup-button-container red-button" style="padding: 0;">
                                                     <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
-                                                        <a href="<?= get_field( 'speaker_form_button', 'options' ); ?>?which_advisors_are_you_interested_in_meeting=<?= get_the_title(); ?>">Submit an Analyst Enquiry</a>
+                                                        <a class="formPopupHubspotIframe" href="<?= get_field( 'speaker_form_button', 'options' ); ?>?which_advisors_are_you_interested_in_meeting=<?= urlencode( get_the_title() ); ?>">Submit an Analyst Enquiry</a>
                                                     <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
-                                                        <a href="<?= get_field( 'speaker_form_button_advisor', 'options' ); ?>?which_advisors_are_you_interested_in_meeting=<?= get_the_title(); ?>">Submit an Advisor Enquiry</a>
-                                                    <?php endif; ?>
-                                                </span>
-                                                <span style="display:none">
-                                                    <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
-                                                        <?php echo get_field( 'speaker_form_script', 'options' ); ?>
-                                                    <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
-                                                        <?php echo get_field( 'speaker_form_script_advisor', 'options' ); ?>
+                                                        <a class="formPopupHubspotIframe" href="<?= get_field( 'speaker_form_button_advisor', 'options' ); ?>?which_advisors_are_you_interested_in_meeting=<?= urlencode( get_the_title() ); ?>">Submit an Advisor Enquiry</a>
                                                     <?php endif; ?>
                                                 </span>
                                             </span>
