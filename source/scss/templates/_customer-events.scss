@@ -2568,7 +2568,7 @@ section.speaker-module {
             width: 100%;
             position: absolute;
             bottom: 0px;
-            width: calc(100% - 170px);
+            width: calc(100% - 155px);
             left: 78px;
             background-color: #f8f8f8;
             padding-bottom: 60px;
@@ -2591,6 +2591,20 @@ section.speaker-module {
                     width: 100%;
                     color: #fff;
                 }
+            }
+        }
+
+        &:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 122px;
+            background: #f8f8f8;
+            
+            @include responsive(767) {
+                height: 102px;
             }
         }
     }
