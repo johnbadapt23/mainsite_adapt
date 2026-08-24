@@ -3,12 +3,12 @@
     "title": "Customer Stories Elements",
     "fields": [
         {
-            "key": "field_67fd929499c89",
-            "label": "Slide Out Story?",
-            "name": "slide_out_story",
+            "key": "field_0b1bfde46aa20",
+            "label": "Company Info",
+            "name": "",
             "aria-label": "",
-            "type": "true_false",
-            "instructions": "Does this not require its own page?",
+            "type": "tab",
+            "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -16,12 +16,8 @@
                 "class": "",
                 "id": ""
             },
-            "message": "",
-            "default_value": 0,
-            "allow_in_bindings": 0,
-            "ui": 0,
-            "ui_on_text": "",
-            "ui_off_text": ""
+            "placement": "top",
+            "endpoint": 0
         },
         {
             "key": "field_67e5ea281d855",
@@ -218,6 +214,23 @@
             "new_lines": "br"
         },
         {
+            "key": "field_92691f11db6e2",
+            "label": "Video",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
             "key": "field_67e5eaaec4876",
             "label": "Video URL",
             "name": "video_url",
@@ -405,6 +418,44 @@
             ]
         },
         {
+            "key": "field_47b2c5543f275",
+            "label": "Quote & Listing",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_67fd929499c89",
+            "label": "Slide Out Story?",
+            "name": "slide_out_story",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Does this not require its own page?",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 0,
+            "allow_in_bindings": 0,
+            "ui": 0,
+            "ui_on_text": "",
+            "ui_off_text": ""
+        },
+        {
             "key": "field_67eb1875b348d",
             "label": "Show Quote in Listing",
             "name": "show_quote_in_listing",
@@ -517,6 +568,52 @@
                     "parent_repeater": "field_685b36a259a69"
                 }
             ]
+        },
+        {
+            "key": "field_67fd935799c8a",
+            "label": "Slide Out Quote",
+            "name": "slide_out_quote",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_67fd929499c89",
+                        "operator": "==",
+                        "value": "1"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": 2,
+            "placeholder": "",
+            "new_lines": "br"
+        },
+        {
+            "key": "field_0c34570b69596",
+            "label": "Content",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
         },
         {
             "key": "field_67e5eac1c4877",
@@ -695,35 +792,6 @@
             "append": ""
         },
         {
-            "key": "field_67fd935799c8a",
-            "label": "Slide Out Quote",
-            "name": "slide_out_quote",
-            "aria-label": "",
-            "type": "textarea",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_67fd929499c89",
-                        "operator": "==",
-                        "value": "1"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "allow_in_bindings": 0,
-            "rows": 2,
-            "placeholder": "",
-            "new_lines": "br"
-        },
-        {
             "key": "field_67fd93a099c8c",
             "label": "Bio",
             "name": "bio",
@@ -894,5 +962,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1787551159
+    "modified": 1787552413
 }

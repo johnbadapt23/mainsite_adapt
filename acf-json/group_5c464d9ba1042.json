@@ -3,8 +3,8 @@
     "title": "Post Elements",
     "fields": [
         {
-            "key": "field_635072ba89b40",
-            "label": "New Fields",
+            "key": "field_ff0d3ef603d7c",
+            "label": "Type & Listing",
             "name": "",
             "aria-label": "",
             "type": "tab",
@@ -17,8 +17,7 @@
                 "id": ""
             },
             "placement": "top",
-            "endpoint": 0,
-            "selected": 0
+            "endpoint": 0
         },
         {
             "key": "field_635072dc89b42",
@@ -123,19 +122,26 @@
             "save_options": 0
         },
         {
-            "key": "field_6350735289b45",
-            "label": "Best Practices Form Embed",
-            "name": "best_practices_form_embed",
+            "key": "field_5c46524ef91bf",
+            "label": "Featured Image",
+            "name": "featured_image",
             "aria-label": "",
-            "type": "textarea",
+            "type": "image",
             "instructions": "",
             "required": 0,
             "conditional_logic": [
                 [
                     {
                         "field": "field_635072dc89b42",
-                        "operator": "==",
-                        "value": "best-practice"
+                        "operator": "!=",
+                        "value": "press-release"
+                    }
+                ],
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "!=",
+                        "value": "expert"
                     }
                 ]
             ],
@@ -144,18 +150,23 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
-            "placeholder": "",
-            "maxlength": "",
-            "rows": "",
-            "new_lines": ""
+            "return_format": "array",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": ""
         },
         {
-            "key": "field_6350737189b46",
-            "label": "Download Button Text",
-            "name": "download_button_text",
+            "key": "field_6350773cb05fe",
+            "label": "Listing Hover Image",
+            "name": "listing_hover_image",
             "aria-label": "",
-            "type": "text",
+            "type": "image",
             "instructions": "",
             "required": 0,
             "conditional_logic": [
@@ -163,7 +174,7 @@
                     {
                         "field": "field_635072dc89b42",
                         "operator": "==",
-                        "value": "best-practice"
+                        "value": "market-trend"
                     }
                 ]
             ],
@@ -172,11 +183,33 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "maxlength": ""
+            "return_format": "array",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": ""
+        },
+        {
+            "key": "field_ccb1dc49836ab",
+            "label": "Video",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
         },
         {
             "key": "field_5c465265f91c0",
@@ -340,51 +373,28 @@
             "save_options": 0
         },
         {
-            "key": "field_5c46524ef91bf",
-            "label": "Featured Image",
-            "name": "featured_image",
+            "key": "field_de818134384ab",
+            "label": "Forms & Downloads",
+            "name": "",
             "aria-label": "",
-            "type": "image",
+            "type": "tab",
             "instructions": "",
             "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_635072dc89b42",
-                        "operator": "!=",
-                        "value": "press-release"
-                    }
-                ],
-                [
-                    {
-                        "field": "field_635072dc89b42",
-                        "operator": "!=",
-                        "value": "expert"
-                    }
-                ]
-            ],
+            "conditional_logic": 0,
             "wrapper": {
                 "width": "",
                 "class": "",
                 "id": ""
             },
-            "return_format": "array",
-            "preview_size": "thumbnail",
-            "library": "all",
-            "min_width": "",
-            "min_height": "",
-            "min_size": "",
-            "max_width": "",
-            "max_height": "",
-            "max_size": "",
-            "mime_types": ""
+            "placement": "top",
+            "endpoint": 0
         },
         {
-            "key": "field_6350773cb05fe",
-            "label": "Listing Hover Image",
-            "name": "listing_hover_image",
+            "key": "field_6350735289b45",
+            "label": "Best Practices Form Embed",
+            "name": "best_practices_form_embed",
             "aria-label": "",
-            "type": "image",
+            "type": "textarea",
             "instructions": "",
             "required": 0,
             "conditional_logic": [
@@ -392,329 +402,7 @@
                     {
                         "field": "field_635072dc89b42",
                         "operator": "==",
-                        "value": "market-trend"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "return_format": "array",
-            "preview_size": "thumbnail",
-            "library": "all",
-            "min_width": "",
-            "min_height": "",
-            "min_size": "",
-            "max_width": "",
-            "max_height": "",
-            "max_size": "",
-            "mime_types": ""
-        },
-        {
-            "key": "field_635077b324ca4",
-            "label": "Scroll To Links",
-            "name": "scroll_to_links",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_635072dc89b42",
-                        "operator": "==",
-                        "value": "article"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "collapsed": "",
-            "min": 0,
-            "max": 1,
-            "layout": "row",
-            "button_label": "Add Row",
-            "sub_fields": [
-                {
-                    "key": "field_635077eabc6b0",
-                    "label": "Scroll to Link",
-                    "name": "scroll_to_link",
-                    "aria-label": "",
-                    "type": "repeater",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "collapsed": "",
-                    "min": 0,
-                    "max": 0,
-                    "layout": "row",
-                    "button_label": "Add Row",
-                    "sub_fields": [
-                        {
-                            "key": "field_6350781cbbf0f",
-                            "label": "ID",
-                            "name": "id",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "maxlength": "",
-                            "parent_repeater": "field_635077eabc6b0"
-                        },
-                        {
-                            "key": "field_63507825bbf10",
-                            "label": "Title",
-                            "name": "title",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": "",
-                            "maxlength": "",
-                            "parent_repeater": "field_635077eabc6b0"
-                        }
-                    ],
-                    "rows_per_page": 20,
-                    "parent_repeater": "field_635077b324ca4"
-                }
-            ],
-            "rows_per_page": 20
-        },
-        {
-            "key": "field_63507a76bbf11",
-            "label": "Media Contact",
-            "name": "media_contact",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_635072dc89b42",
-                        "operator": "==",
-                        "value": "media"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "collapsed": "",
-            "min": 0,
-            "max": 0,
-            "layout": "row",
-            "button_label": "Add Row",
-            "sub_fields": [
-                {
-                    "key": "field_63507aa9bbf12",
-                    "label": "Contact Text",
-                    "name": "contact_text",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": "",
-                    "parent_repeater": "field_63507a76bbf11"
-                }
-            ],
-            "rows_per_page": 20
-        },
-        {
-            "key": "field_63507ad5bbf14",
-            "label": "Publication",
-            "name": "publication",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_635072dc89b42",
-                        "operator": "==",
-                        "value": "press-release"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "collapsed": "",
-            "min": 0,
-            "max": 0,
-            "layout": "row",
-            "button_label": "Add Row",
-            "sub_fields": [
-                {
-                    "key": "field_63507aefbbf17",
-                    "label": "Publication Logo",
-                    "name": "publication_logo",
-                    "aria-label": "",
-                    "type": "image",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "return_format": "array",
-                    "preview_size": "medium",
-                    "library": "all",
-                    "min_width": "",
-                    "min_height": "",
-                    "min_size": "",
-                    "max_width": "",
-                    "max_height": "",
-                    "max_size": "",
-                    "mime_types": "",
-                    "parent_repeater": "field_63507ad5bbf14"
-                },
-                {
-                    "key": "field_63507b00bbf18",
-                    "label": "Publication Name",
-                    "name": "publication_name",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": "",
-                    "parent_repeater": "field_63507ad5bbf14"
-                },
-                {
-                    "key": "field_63507b09bbf19",
-                    "label": "Publication Short Name",
-                    "name": "publication_short_name",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": "",
-                    "parent_repeater": "field_63507ad5bbf14"
-                },
-                {
-                    "key": "field_63507b17bbf1a",
-                    "label": "Publication Link",
-                    "name": "publication_link",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": "",
-                    "parent_repeater": "field_63507ad5bbf14"
-                },
-                {
-                    "key": "field_63507b1fbbf1b",
-                    "label": "Published Date",
-                    "name": "published_date",
-                    "aria-label": "",
-                    "type": "date_picker",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "display_format": "d/m/Y",
-                    "return_format": "d/m/Y",
-                    "first_day": 1,
-                    "default_to_current_date": 0,
-                    "parent_repeater": "field_63507ad5bbf14"
-                }
-            ],
-            "rows_per_page": 20
-        },
-        {
-            "key": "field_63507b37bbf1c",
-            "label": "Media Introduction Text",
-            "name": "media_introduction_text",
-            "aria-label": "",
-            "type": "wysiwyg",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_635072dc89b42",
-                        "operator": "==",
-                        "value": "media"
+                        "value": "best-practice"
                     }
                 ]
             ],
@@ -724,476 +412,15 @@
                 "id": ""
             },
             "default_value": "",
-            "tabs": "all",
-            "toolbar": "basic",
-            "media_upload": 0,
-            "delay": 0
+            "placeholder": "",
+            "maxlength": "",
+            "rows": "",
+            "new_lines": ""
         },
         {
-            "key": "field_63507ba1bbf1e",
-            "label": "Related Articles",
-            "name": "related_articles",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_635072dc89b42",
-                        "operator": "!=",
-                        "value": "media"
-                    }
-                ],
-                [
-                    {
-                        "field": "field_635072dc89b42",
-                        "operator": "!=",
-                        "value": "press-release"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "collapsed": "",
-            "min": 0,
-            "max": 1,
-            "layout": "row",
-            "button_label": "Add Row",
-            "sub_fields": [
-                {
-                    "key": "field_63507bb6bbf1f",
-                    "label": "Title",
-                    "name": "title",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": "",
-                    "parent_repeater": "field_63507ba1bbf1e"
-                },
-                {
-                    "key": "field_63507bbebbf20",
-                    "label": "Select Articles or by Taxonomy",
-                    "name": "select_articles_or_by_taxonomy",
-                    "aria-label": "",
-                    "type": "select",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "choices": {
-                        "choose-articles": "Choose",
-                        "choose-taxonomy": "Taxonomy"
-                    },
-                    "default_value": false,
-                    "allow_null": 0,
-                    "multiple": 0,
-                    "ui": 0,
-                    "return_format": "value",
-                    "ajax": 0,
-                    "placeholder": "",
-                    "create_options": 0,
-                    "save_options": 0,
-                    "parent_repeater": "field_63507ba1bbf1e"
-                },
-                {
-                    "key": "field_63507bdbbbf21",
-                    "label": "Articles",
-                    "name": "articles",
-                    "aria-label": "",
-                    "type": "repeater",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": [
-                        [
-                            {
-                                "field": "field_63507bbebbf20",
-                                "operator": "==",
-                                "value": "choose-articles"
-                            }
-                        ]
-                    ],
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "collapsed": "",
-                    "min": 3,
-                    "max": 3,
-                    "layout": "",
-                    "button_label": "Add Row",
-                    "sub_fields": [
-                        {
-                            "key": "field_63507be4bbf22",
-                            "label": "Post",
-                            "name": "post",
-                            "aria-label": "",
-                            "type": "post_object",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "post_type": [
-                                "post"
-                            ],
-                            "taxonomy": "",
-                            "allow_null": 0,
-                            "multiple": 0,
-                            "return_format": "",
-                            "ui": 1,
-                            "bidirectional_target": [],
-                            "parent_repeater": "field_63507bdbbbf21"
-                        }
-                    ],
-                    "rows_per_page": 20,
-                    "parent_repeater": "field_63507ba1bbf1e"
-                },
-                {
-                    "key": "field_63507c71bbf24",
-                    "label": "Taxonomy",
-                    "name": "taxonomy",
-                    "aria-label": "",
-                    "type": "select",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": [
-                        [
-                            {
-                                "field": "field_63507bbebbf20",
-                                "operator": "==",
-                                "value": "choose-taxonomy"
-                            }
-                        ]
-                    ],
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "choices": {
-                        "type": "Resource Type",
-                        "topic": "Topic"
-                    },
-                    "default_value": false,
-                    "allow_null": 0,
-                    "multiple": 0,
-                    "ui": 0,
-                    "return_format": "value",
-                    "ajax": 0,
-                    "placeholder": "",
-                    "create_options": 0,
-                    "save_options": 0,
-                    "parent_repeater": "field_63507ba1bbf1e"
-                }
-            ],
-            "rows_per_page": 20
-        },
-        {
-            "key": "field_63507c9abbf25",
-            "label": "Featured News",
-            "name": "featured_news",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": [
-                [
-                    {
-                        "field": "field_635072dc89b42",
-                        "operator": "==",
-                        "value": "media"
-                    }
-                ],
-                [
-                    {
-                        "field": "field_635072dc89b42",
-                        "operator": "==",
-                        "value": "press-release"
-                    }
-                ]
-            ],
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "collapsed": "",
-            "min": 0,
-            "max": 1,
-            "layout": "row",
-            "button_label": "Add Row",
-            "sub_fields": [
-                {
-                    "key": "field_63507c9abbf26",
-                    "label": "Title",
-                    "name": "title",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": "",
-                    "parent_repeater": "field_63507c9abbf25"
-                },
-                {
-                    "key": "field_63507c9abbf27",
-                    "label": "Select Articles or by Taxonomy",
-                    "name": "select_articles_or_by_taxonomy",
-                    "aria-label": "",
-                    "type": "select",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "choices": {
-                        "choose-articles": "Choose",
-                        "choose-taxonomy": "Taxonomy"
-                    },
-                    "default_value": false,
-                    "allow_null": 0,
-                    "multiple": 0,
-                    "ui": 0,
-                    "return_format": "value",
-                    "ajax": 0,
-                    "placeholder": "",
-                    "create_options": 0,
-                    "save_options": 0,
-                    "parent_repeater": "field_63507c9abbf25"
-                },
-                {
-                    "key": "field_63507c9abbf28",
-                    "label": "Articles",
-                    "name": "articles",
-                    "aria-label": "",
-                    "type": "repeater",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": [
-                        [
-                            {
-                                "field": "field_63507c9abbf27",
-                                "operator": "==",
-                                "value": "choose-articles"
-                            }
-                        ]
-                    ],
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "collapsed": "",
-                    "min": 3,
-                    "max": 3,
-                    "layout": "row",
-                    "button_label": "Add Row",
-                    "sub_fields": [
-                        {
-                            "key": "field_63507c9abbf29",
-                            "label": "Post",
-                            "name": "post",
-                            "aria-label": "",
-                            "type": "post_object",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "post_type": [
-                                "post"
-                            ],
-                            "taxonomy": [
-                                "resource-type:media",
-                                "resource-type:in-the-news"
-                            ],
-                            "allow_null": 0,
-                            "multiple": 0,
-                            "return_format": "object",
-                            "ui": 1,
-                            "bidirectional_target": [],
-                            "parent_repeater": "field_63507c9abbf28"
-                        }
-                    ],
-                    "rows_per_page": 20,
-                    "parent_repeater": "field_63507c9abbf25"
-                },
-                {
-                    "key": "field_63507c9abbf2a",
-                    "label": "Taxonomy",
-                    "name": "taxonomy",
-                    "aria-label": "",
-                    "type": "select",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": [
-                        [
-                            {
-                                "field": "field_63507c9abbf27",
-                                "operator": "==",
-                                "value": "choose-taxonomy"
-                            }
-                        ]
-                    ],
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "choices": {
-                        "type": "Resource Type",
-                        "topic": "Topic"
-                    },
-                    "default_value": false,
-                    "allow_null": 0,
-                    "multiple": 0,
-                    "ui": 0,
-                    "return_format": "value",
-                    "ajax": 0,
-                    "placeholder": "",
-                    "create_options": 0,
-                    "save_options": 0,
-                    "parent_repeater": "field_63507c9abbf25"
-                }
-            ],
-            "rows_per_page": 20
-        },
-        {
-            "key": "field_5c5cb9106b7af",
-            "label": "Contributors",
-            "name": "contributors",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "collapsed": "",
-            "min": 0,
-            "max": 0,
-            "layout": "row",
-            "button_label": "Add Row",
-            "sub_fields": [
-                {
-                    "key": "field_5c5cb9496b7b1",
-                    "label": "Contributor Name",
-                    "name": "contributor_name",
-                    "aria-label": "",
-                    "type": "post_object",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "post_type": [
-                        "speaker"
-                    ],
-                    "taxonomy": "",
-                    "allow_null": 0,
-                    "multiple": 0,
-                    "return_format": "object",
-                    "ui": 1,
-                    "bidirectional_target": [],
-                    "parent_repeater": "field_5c5cb9106b7af"
-                },
-                {
-                    "key": "field_5c5cd31fa492c",
-                    "label": "Contributor Label",
-                    "name": "contributor_label",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": "",
-                    "parent_repeater": "field_5c5cb9106b7af"
-                },
-                {
-                    "key": "field_63757ac3cdb81",
-                    "label": "Contributor",
-                    "name": "contributor",
-                    "aria-label": "",
-                    "type": "post_object",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "post_type": [
-                        "post_author"
-                    ],
-                    "taxonomy": "",
-                    "allow_null": 0,
-                    "multiple": 0,
-                    "return_format": "object",
-                    "ui": 1,
-                    "bidirectional_target": [],
-                    "parent_repeater": "field_5c5cb9106b7af"
-                }
-            ],
-            "rows_per_page": 20
-        },
-        {
-            "key": "field_5cf9c81bc6043",
-            "label": "Author Search Names",
-            "name": "author_search_names",
+            "key": "field_6350737189b46",
+            "label": "Download Button Text",
+            "name": "download_button_text",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -1201,8 +428,9 @@
             "conditional_logic": [
                 [
                     {
-                        "field": "field_5c5cb9106b7af",
-                        "operator": "!=empty"
+                        "field": "field_635072dc89b42",
+                        "operator": "==",
+                        "value": "best-practice"
                     }
                 ]
             ],
@@ -1216,6 +444,23 @@
             "prepend": "",
             "append": "",
             "maxlength": ""
+        },
+        {
+            "key": "field_cdebe11ed4ca9",
+            "label": "Content",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
         },
         {
             "key": "field_5c465367f91c7",
@@ -1236,50 +481,6 @@
             "toolbar": "full",
             "media_upload": 1,
             "delay": 0
-        },
-        {
-            "key": "field_6372c394474cd",
-            "label": "Meta Tags",
-            "name": "meta_tags",
-            "aria-label": "",
-            "type": "repeater",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "collapsed": "",
-            "min": 0,
-            "max": 0,
-            "layout": "table",
-            "button_label": "Add Row",
-            "sub_fields": [
-                {
-                    "key": "field_6372c3ab474ce",
-                    "label": "Meta Tag",
-                    "name": "meta_tag",
-                    "aria-label": "",
-                    "type": "text",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": "",
-                    "maxlength": "",
-                    "parent_repeater": "field_6372c394474cd"
-                }
-            ],
-            "rows_per_page": 20
         },
         {
             "key": "field_5c465390f91c8",
@@ -2217,6 +1418,906 @@
             "max": ""
         },
         {
+            "key": "field_635077b324ca4",
+            "label": "Scroll To Links",
+            "name": "scroll_to_links",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "==",
+                        "value": "article"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 1,
+            "layout": "row",
+            "button_label": "Add Row",
+            "sub_fields": [
+                {
+                    "key": "field_635077eabc6b0",
+                    "label": "Scroll to Link",
+                    "name": "scroll_to_link",
+                    "aria-label": "",
+                    "type": "repeater",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "collapsed": "",
+                    "min": 0,
+                    "max": 0,
+                    "layout": "row",
+                    "button_label": "Add Row",
+                    "sub_fields": [
+                        {
+                            "key": "field_6350781cbbf0f",
+                            "label": "ID",
+                            "name": "id",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": "",
+                            "parent_repeater": "field_635077eabc6b0"
+                        },
+                        {
+                            "key": "field_63507825bbf10",
+                            "label": "Title",
+                            "name": "title",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": "",
+                            "maxlength": "",
+                            "parent_repeater": "field_635077eabc6b0"
+                        }
+                    ],
+                    "rows_per_page": 20,
+                    "parent_repeater": "field_635077b324ca4"
+                }
+            ],
+            "rows_per_page": 20
+        },
+        {
+            "key": "field_557489526ca40",
+            "label": "Media & Publication",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_63507a76bbf11",
+            "label": "Media Contact",
+            "name": "media_contact",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "==",
+                        "value": "media"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 0,
+            "layout": "row",
+            "button_label": "Add Row",
+            "sub_fields": [
+                {
+                    "key": "field_63507aa9bbf12",
+                    "label": "Contact Text",
+                    "name": "contact_text",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_63507a76bbf11"
+                }
+            ],
+            "rows_per_page": 20
+        },
+        {
+            "key": "field_63507ad5bbf14",
+            "label": "Publication",
+            "name": "publication",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "==",
+                        "value": "press-release"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 0,
+            "layout": "row",
+            "button_label": "Add Row",
+            "sub_fields": [
+                {
+                    "key": "field_63507aefbbf17",
+                    "label": "Publication Logo",
+                    "name": "publication_logo",
+                    "aria-label": "",
+                    "type": "image",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "array",
+                    "preview_size": "medium",
+                    "library": "all",
+                    "min_width": "",
+                    "min_height": "",
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": "",
+                    "mime_types": "",
+                    "parent_repeater": "field_63507ad5bbf14"
+                },
+                {
+                    "key": "field_63507b00bbf18",
+                    "label": "Publication Name",
+                    "name": "publication_name",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_63507ad5bbf14"
+                },
+                {
+                    "key": "field_63507b09bbf19",
+                    "label": "Publication Short Name",
+                    "name": "publication_short_name",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_63507ad5bbf14"
+                },
+                {
+                    "key": "field_63507b17bbf1a",
+                    "label": "Publication Link",
+                    "name": "publication_link",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_63507ad5bbf14"
+                },
+                {
+                    "key": "field_63507b1fbbf1b",
+                    "label": "Published Date",
+                    "name": "published_date",
+                    "aria-label": "",
+                    "type": "date_picker",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "display_format": "d/m/Y",
+                    "return_format": "d/m/Y",
+                    "first_day": 1,
+                    "default_to_current_date": 0,
+                    "parent_repeater": "field_63507ad5bbf14"
+                }
+            ],
+            "rows_per_page": 20
+        },
+        {
+            "key": "field_63507b37bbf1c",
+            "label": "Media Introduction Text",
+            "name": "media_introduction_text",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "==",
+                        "value": "media"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "delay": 0
+        },
+        {
+            "key": "field_821598a348c7c",
+            "label": "Related & Contributors",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_63507ba1bbf1e",
+            "label": "Related Articles",
+            "name": "related_articles",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "!=",
+                        "value": "media"
+                    }
+                ],
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "!=",
+                        "value": "press-release"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 1,
+            "layout": "row",
+            "button_label": "Add Row",
+            "sub_fields": [
+                {
+                    "key": "field_63507bb6bbf1f",
+                    "label": "Title",
+                    "name": "title",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_63507ba1bbf1e"
+                },
+                {
+                    "key": "field_63507bbebbf20",
+                    "label": "Select Articles or by Taxonomy",
+                    "name": "select_articles_or_by_taxonomy",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "choose-articles": "Choose",
+                        "choose-taxonomy": "Taxonomy"
+                    },
+                    "default_value": false,
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 0,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": "",
+                    "create_options": 0,
+                    "save_options": 0,
+                    "parent_repeater": "field_63507ba1bbf1e"
+                },
+                {
+                    "key": "field_63507bdbbbf21",
+                    "label": "Articles",
+                    "name": "articles",
+                    "aria-label": "",
+                    "type": "repeater",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_63507bbebbf20",
+                                "operator": "==",
+                                "value": "choose-articles"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "collapsed": "",
+                    "min": 3,
+                    "max": 3,
+                    "layout": "",
+                    "button_label": "Add Row",
+                    "sub_fields": [
+                        {
+                            "key": "field_63507be4bbf22",
+                            "label": "Post",
+                            "name": "post",
+                            "aria-label": "",
+                            "type": "post_object",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "post_type": [
+                                "post"
+                            ],
+                            "taxonomy": "",
+                            "allow_null": 0,
+                            "multiple": 0,
+                            "return_format": "",
+                            "ui": 1,
+                            "bidirectional_target": [],
+                            "parent_repeater": "field_63507bdbbbf21"
+                        }
+                    ],
+                    "rows_per_page": 20,
+                    "parent_repeater": "field_63507ba1bbf1e"
+                },
+                {
+                    "key": "field_63507c71bbf24",
+                    "label": "Taxonomy",
+                    "name": "taxonomy",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_63507bbebbf20",
+                                "operator": "==",
+                                "value": "choose-taxonomy"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "type": "Resource Type",
+                        "topic": "Topic"
+                    },
+                    "default_value": false,
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 0,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": "",
+                    "create_options": 0,
+                    "save_options": 0,
+                    "parent_repeater": "field_63507ba1bbf1e"
+                }
+            ],
+            "rows_per_page": 20
+        },
+        {
+            "key": "field_63507c9abbf25",
+            "label": "Featured News",
+            "name": "featured_news",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "==",
+                        "value": "media"
+                    }
+                ],
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "==",
+                        "value": "press-release"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 1,
+            "layout": "row",
+            "button_label": "Add Row",
+            "sub_fields": [
+                {
+                    "key": "field_63507c9abbf26",
+                    "label": "Title",
+                    "name": "title",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_63507c9abbf25"
+                },
+                {
+                    "key": "field_63507c9abbf27",
+                    "label": "Select Articles or by Taxonomy",
+                    "name": "select_articles_or_by_taxonomy",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "choose-articles": "Choose",
+                        "choose-taxonomy": "Taxonomy"
+                    },
+                    "default_value": false,
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 0,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": "",
+                    "create_options": 0,
+                    "save_options": 0,
+                    "parent_repeater": "field_63507c9abbf25"
+                },
+                {
+                    "key": "field_63507c9abbf28",
+                    "label": "Articles",
+                    "name": "articles",
+                    "aria-label": "",
+                    "type": "repeater",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_63507c9abbf27",
+                                "operator": "==",
+                                "value": "choose-articles"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "collapsed": "",
+                    "min": 3,
+                    "max": 3,
+                    "layout": "row",
+                    "button_label": "Add Row",
+                    "sub_fields": [
+                        {
+                            "key": "field_63507c9abbf29",
+                            "label": "Post",
+                            "name": "post",
+                            "aria-label": "",
+                            "type": "post_object",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "post_type": [
+                                "post"
+                            ],
+                            "taxonomy": [
+                                "resource-type:media",
+                                "resource-type:in-the-news"
+                            ],
+                            "allow_null": 0,
+                            "multiple": 0,
+                            "return_format": "object",
+                            "ui": 1,
+                            "bidirectional_target": [],
+                            "parent_repeater": "field_63507c9abbf28"
+                        }
+                    ],
+                    "rows_per_page": 20,
+                    "parent_repeater": "field_63507c9abbf25"
+                },
+                {
+                    "key": "field_63507c9abbf2a",
+                    "label": "Taxonomy",
+                    "name": "taxonomy",
+                    "aria-label": "",
+                    "type": "select",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": [
+                        [
+                            {
+                                "field": "field_63507c9abbf27",
+                                "operator": "==",
+                                "value": "choose-taxonomy"
+                            }
+                        ]
+                    ],
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "choices": {
+                        "type": "Resource Type",
+                        "topic": "Topic"
+                    },
+                    "default_value": false,
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "ui": 0,
+                    "return_format": "value",
+                    "ajax": 0,
+                    "placeholder": "",
+                    "create_options": 0,
+                    "save_options": 0,
+                    "parent_repeater": "field_63507c9abbf25"
+                }
+            ],
+            "rows_per_page": 20
+        },
+        {
+            "key": "field_5c5cb9106b7af",
+            "label": "Contributors",
+            "name": "contributors",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 0,
+            "layout": "row",
+            "button_label": "Add Row",
+            "sub_fields": [
+                {
+                    "key": "field_5c5cb9496b7b1",
+                    "label": "Contributor Name",
+                    "name": "contributor_name",
+                    "aria-label": "",
+                    "type": "post_object",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "post_type": [
+                        "speaker"
+                    ],
+                    "taxonomy": "",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "return_format": "object",
+                    "ui": 1,
+                    "bidirectional_target": [],
+                    "parent_repeater": "field_5c5cb9106b7af"
+                },
+                {
+                    "key": "field_5c5cd31fa492c",
+                    "label": "Contributor Label",
+                    "name": "contributor_label",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_5c5cb9106b7af"
+                },
+                {
+                    "key": "field_63757ac3cdb81",
+                    "label": "Contributor",
+                    "name": "contributor",
+                    "aria-label": "",
+                    "type": "post_object",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "post_type": [
+                        "post_author"
+                    ],
+                    "taxonomy": "",
+                    "allow_null": 0,
+                    "multiple": 0,
+                    "return_format": "object",
+                    "ui": 1,
+                    "bidirectional_target": [],
+                    "parent_repeater": "field_5c5cb9106b7af"
+                }
+            ],
+            "rows_per_page": 20
+        },
+        {
+            "key": "field_5cf9c81bc6043",
+            "label": "Author Search Names",
+            "name": "author_search_names",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_5c5cb9106b7af",
+                        "operator": "!=empty"
+                    }
+                ]
+            ],
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": "",
+            "maxlength": ""
+        },
+        {
+            "key": "field_53623df78ff2a",
+            "label": "SEO / Meta",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_6372c394474cd",
+            "label": "Meta Tags",
+            "name": "meta_tags",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "collapsed": "",
+            "min": 0,
+            "max": 0,
+            "layout": "table",
+            "button_label": "Add Row",
+            "sub_fields": [
+                {
+                    "key": "field_6372c3ab474ce",
+                    "label": "Meta Tag",
+                    "name": "meta_tag",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "maxlength": "",
+                    "parent_repeater": "field_6372c394474cd"
+                }
+            ],
+            "rows_per_page": 20
+        },
+        {
             "key": "field_635072c989b41",
             "label": "Old Fields",
             "name": "",
@@ -2412,5 +2513,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1787551160
+    "modified": 1787552413
 }
