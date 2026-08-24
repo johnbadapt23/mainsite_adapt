@@ -108,11 +108,52 @@
 				observer.disconnect();
 			}
 		});
-		observer.observe(container, { childList: true, subtree: true });
+		// HubSpot's form renderer inserts each field element first and sets
+		// its `name` attribute in a separate pass right after (confirmed via
+		// live MutationObserver inspection), so a childList-only observer
+		// sees the field arrive with no name yet, finds no match, and never
+		// gets another chance once the name is actually set. Watching
+		// attribute changes on `name` too ensures tryFill() re-runs at that
+		// point instead of silently giving up.
+		observer.observe(container, { childList: true, subtree: true, attributes: true, attributeFilter: ['name'] });
 
 		// Give up after 10s so a popup closed before the embed ever renders
 		// doesn't leave an observer running forever.
 		setTimeout(function() { observer.disconnect(); }, 10000);
+	}
+
+	// Binds the HubSpot enquiry popup to every .formPopupHubspot trigger
+	// inside `scope`. Called once at document ready for the initial page
+	// render, and again (scoped to just the new markup) after the speaker/
+	// advisor AJAX filter swaps #speakers-container's HTML -- that swap
+	// injects brand-new .formPopupHubspot anchors that were never bound at
+	// ready time, so without re-running this they silently do nothing when
+	// clicked.
+	function adaptInitFormPopupHubspot(scope) {
+		$('.formPopupHubspot', scope).each(function(){
+			$(this).magnificPopup({
+				type: 'inline',
+				mainClass: 'form-container-preview',
+				callbacks: {
+					open: function() {
+						var $trigger = this.st.el;
+						var templateId = $trigger.data('embed-template');
+						var prefillTitle = $trigger.data('prefill-title');
+
+						// Both are optional -- other .formPopupHubspot triggers
+						// (e.g. august-single-post.php's preview-CTA buttons)
+						// don't use the <template>-deferred embed or the
+						// prefill field, so this is a no-op for them.
+						if (templateId) {
+							adaptActivateEmbeddedTemplate(templateId, $trigger.attr('href') + ' .form');
+						}
+						if (prefillTitle) {
+							adaptPrefillHubspotField(this.content[0], 'which_advisors_are_you_interested_in_meeting', prefillTitle);
+						}
+					}
+				}
+			});
+		});
 	}
 
 	$(document).ready(function (){
@@ -588,30 +629,7 @@
 			mainClass: 'mfp-post-img'
 		});
 
-		$('.formPopupHubspot').each(function(){
-			$(this).magnificPopup({
-				type: 'inline',
-				mainClass: 'form-container-preview',
-				callbacks: {
-					open: function() {
-						var $trigger = this.st.el;
-						var templateId = $trigger.data('embed-template');
-						var prefillTitle = $trigger.data('prefill-title');
-
-						// Both are optional -- other .formPopupHubspot triggers
-						// (e.g. august-single-post.php's preview-CTA buttons)
-						// don't use the <template>-deferred embed or the
-						// prefill field, so this is a no-op for them.
-						if (templateId) {
-							adaptActivateEmbeddedTemplate(templateId, $trigger.attr('href') + ' .form');
-						}
-						if (prefillTitle) {
-							adaptPrefillHubspotField(this.content[0], 'which_advisors_are_you_interested_in_meeting', prefillTitle);
-						}
-					}
-				}
-			});
-		});
+		adaptInitFormPopupHubspot(document);
 
 		$('.formPopupHubspotHome').each(function(){
 			$(this).magnificPopup({
@@ -1343,6 +1361,13 @@
 					// Update speakers container
 					if (jsonResponse.speakers) {
 						$('#speakers-container').html(jsonResponse.speakers);
+						// Newly-injected markup includes its own
+						// .formPopupHubspot enquiry buttons (rendered by
+						// filter_speakers_callback() in functions.php) that
+						// were never bound at document-ready time -- rebind
+						// just the new content so those buttons actually
+						// open the popup.
+						adaptInitFormPopupHubspot(document.getElementById('speakers-container'));
 					} else {
 						$('#speakers-container').html('<p>No speakers found.</p>');
 					}
