@@ -537,11 +537,18 @@ function filter_speakers_callback() {
     //    while still excluding posts with none of those terms.
     if ( ! empty( $expertise_slugs ) ) {
         $args['tax_query'] = array(
+            'relation' => 'AND',
             array(
                 'taxonomy' => 'expertise',
                 'field'    => 'slug',
                 'terms'    => $expertise_slugs,
                 'operator' => $has_selection ? 'AND' : 'IN',
+            ),
+            array(
+                'taxonomy' => 'expertise',
+                'field'    => 'term_id',
+                'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
+                'operator' => 'IN',
             ),
         );
     } else {

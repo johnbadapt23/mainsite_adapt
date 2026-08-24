@@ -67,7 +67,7 @@
                                         'taxonomy' => 'expertise',
                                         'field'    => 'term_id',
                                         'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
-                                        'operator' => 'NOT IN',
+                                        'operator' => 'IN',
                                     ),
                                 ),
                                 'ignore_custom_sort' => true,
