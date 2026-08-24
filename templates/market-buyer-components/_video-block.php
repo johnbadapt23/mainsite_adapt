@@ -6,7 +6,7 @@
                     <div class="video-container">
                         <div class="bg-container">
                             <?php $image = get_sub_field('poster_image'); ?>
-                            <video width="100%" autoplay loop muted playsinline poster="<?php echo $image['url']; ?>">
+                            <video width="100%" autoplay loop muted playsinline poster="<?php echo esc_url( adapt_webp_poster_url( $image['url'] ) ); ?>">
                                 <source type="video/mp4" src="<?php echo get_sub_field( 'auto_play_video' ); ?>" />
                             </video>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>                                

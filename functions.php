@@ -460,6 +460,33 @@ function adapt_maybe_dequeue_block_library_css() {
 }
 add_action( 'wp_enqueue_scripts', 'adapt_maybe_dequeue_block_library_css', 100 );
 
+// Imagify's "Next-Gen format" delivery (Settings > Imagify > Optimization)
+// works by rewriting <img> tags into <picture> elements with a WebP
+// <source> -- it never touches raw attribute values like <video poster="">,
+// even though Imagify still generates the matching sibling .webp file on
+// disk right next to the original (e.g. photo.jpg.webp). The video-poster
+// markup across this theme (introduction block, video blocks, thank-you
+// banner) prints $image['url'] straight into poster="", so those posters
+// were silently stuck serving the full JPG/PNG. This checks for that
+// already-generated .webp sibling on disk and points the poster at it when
+// present, falling back to the original URL untouched for any image
+// Imagify hasn't processed yet (or if Imagify/WebP generation is ever
+// switched off) -- so this can never point at a file that doesn't exist.
+function adapt_webp_poster_url( $url ) {
+    if ( empty( $url ) ) {
+        return $url;
+    }
+    $upload_dir = wp_get_upload_dir();
+    if ( strpos( $url, $upload_dir['baseurl'] ) !== 0 ) {
+        return $url;
+    }
+    $webp_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $url ) . '.webp';
+    if ( file_exists( $webp_path ) ) {
+        return $url . '.webp';
+    }
+    return $url;
+}
+
 // Shared helpers for the 3 AJAX filter callbacks below (speakers,
 // partners, edge partners). Their query-building and HTML render loops
 // differ enough (different taxonomies/post types/ACF fields, and

@@ -14,7 +14,7 @@
                         <div class="image-container">
                             <div class="bgContainer">
                                 <?php $image = get_sub_field( 'image' ); ?>
-                                <video width="100%" muted="muted" autoplay="autoplay" playsinline="playsinline" loop="loop" poster="<?php echo $image['url']; ?>">
+                                <video width="100%" muted="muted" autoplay="autoplay" playsinline="playsinline" loop="loop" poster="<?php echo esc_url( adapt_webp_poster_url( $image['url'] ) ); ?>">
                                     <source type="video/mp4" src="<?php echo get_sub_field( 'video_url' ); ?>" />
                                 </video>
                             </div>
