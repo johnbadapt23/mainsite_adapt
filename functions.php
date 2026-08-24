@@ -558,7 +558,9 @@ function filter_speakers_callback() {
         $args['tax_query'] = array(
             array(
                 'taxonomy' => 'expertise',
-                'operator' => 'EXISTS',
+                'field'    => 'term_id',
+                'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
+                'operator' => 'IN',
             ),
         );
     }

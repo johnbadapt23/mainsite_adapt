@@ -103,10 +103,16 @@
                                 'paged'         => isset($_POST['paged']) ? intval($_POST['paged']) : 1,
                                 'tax_query'      => array(
                                     'relation' => 'AND',
+                                    // array(
+                                    //     'taxonomy' => 'expertise',
+                                    //     'field'    => 'term_id',
+                                    //     'terms'    => $expertise_ids,
+                                    //     'operator' => 'IN',
+                                    // ),
                                     array(
                                         'taxonomy' => 'expertise',
                                         'field'    => 'term_id',
-                                        'terms'    => $expertise_ids,
+                                        'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
                                         'operator' => 'IN',
                                     ),
                                 ),
