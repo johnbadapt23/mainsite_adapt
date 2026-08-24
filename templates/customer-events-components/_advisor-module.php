@@ -140,20 +140,41 @@
                                             </div>
                                             <span class="speaker-button-container">
                                                 <?php
-                                                    // These are hosted HubSpot form URLs (share-ap1.hsforms.com/...),
-                                                    // not embed snippets -- rendered inline via magnificPopup's
-                                                    // 'iframe' type (see .formPopupHubspotIframe init in main.js,
-                                                    // modelled on the existing .popup-vimeo iframe popup). The query
-                                                    // string prefills the HubSpot field with the same internal name
-                                                    // via HubSpot's URL-prefill support.
+                                                    // Switched from the hosted hsforms.com share-link (iframe popup)
+                                                    // to the real HubSpot JS embed, so it renders natively in the page
+                                                    // (no cross-origin iframe) and matches the styling of other
+                                                    // embeds on the site. The <script> loader is centralised once in
+                                                    // functions.php (adapt_page_needs_hubspot_forms_embed()) rather
+                                                    // than repeated per speaker/advisor card.
+                                                    //
+                                                    // The div is wrapped in a <template> so it isn't inserted (and
+                                                    // doesn't get rendered by the embed script) until the popup is
+                                                    // actually opened -- see .formPopupHubspot's callbacks.open in
+                                                    // main.js, which also fills in the hidden "which advisors are you
+                                                    // interested in meeting" field from data-prefill-title once the
+                                                    // embed script finishes rendering the real form fields.
+                                                    $speaker_form_id = 'speakerFormEmbed' . get_the_ID();
                                                 ?>
                                                 <span class="std-button form-popup-button-container red-button" style="padding: 0;">
                                                     <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
-                                                        <a class="formPopupHubspotIframe" href="<?= get_field( 'speaker_form_button', 'options' ); ?>?which_advisors_are_you_interested_in_meeting=<?= urlencode( get_the_title() ); ?>">Submit an Analyst Enquiry</a>
+                                                        <a class="formPopupHubspot" href="#<?= $speaker_form_id; ?>" data-embed-template="<?= $speaker_form_id; ?>Tpl" data-prefill-title="<?= esc_attr( get_the_title() ); ?>">Submit an Analyst Enquiry</a>
                                                     <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
-                                                        <a class="formPopupHubspotIframe" href="<?= get_field( 'speaker_form_button_advisor', 'options' ); ?>?which_advisors_are_you_interested_in_meeting=<?= urlencode( get_the_title() ); ?>">Submit an Advisor Enquiry</a>
+                                                        <a class="formPopupHubspot" href="#<?= $speaker_form_id; ?>" data-embed-template="<?= $speaker_form_id; ?>Tpl" data-prefill-title="<?= esc_attr( get_the_title() ); ?>">Submit an Advisor Enquiry</a>
                                                     <?php endif; ?>
                                                 </span>
+                                                <div style="display:none">
+                                                    <div id="<?= $speaker_form_id; ?>">
+                                                        <span class="form">
+                                                            <template id="<?= $speaker_form_id; ?>Tpl">
+                                                                <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
+                                                                    <?php echo get_field( 'speaker_form_script', 'options' ); ?>
+                                                                <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
+                                                                    <?php echo get_field( 'speaker_form_script_advisor', 'options' ); ?>
+                                                                <?php endif; ?>
+                                                            </template>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </span>
                                         </div>
                                         <div class="click-overlay"></div>

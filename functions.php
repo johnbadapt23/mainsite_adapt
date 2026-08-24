@@ -252,6 +252,36 @@ function adapt_page_needs_gsap() {
     ) );
 }
 
+// The speaker/advisor "Submit an Enquiry" popups (_speaker-module.php,
+// _advisor-module.php, both dispatched from the 'speaker_module' ACF
+// layout) embed HubSpot forms via <div class="hs-form-html"> -- see
+// adapt_page_needs_hubspot_forms_embed() below for the loader script this
+// gates.
+function adapt_page_needs_hubspot_forms_embed() {
+    $field_by_template = array(
+        'templates/template-customer-events.php'    => array( 'content', array( 'speaker_module' ) ),
+        'templates/template-ecosystem-advisors.php'  => array( 'content', array( 'speaker_module' ) ),
+    );
+
+    foreach ( $field_by_template as $template => $config ) {
+        if ( ! is_page_template( $template ) ) {
+            continue;
+        }
+        list( $field_name, $layouts ) = $config;
+        if ( have_rows( $field_name ) ) {
+            while ( have_rows( $field_name ) ) {
+                the_row();
+                if ( in_array( get_row_layout(), $layouts, true ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    return false;
+}
+
 function my_enqueue_scripts() {
     // filemtime() needs a filesystem path, not the public URL. Passing
     // get_template_directory_uri() here silently failed (filemtime() can't
@@ -282,6 +312,15 @@ function my_enqueue_scripts() {
     if ( adapt_page_needs_lottie() ) {
         wp_enqueue_script('lottie-player', 'https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js', array(), '2.0.12', false);
         wp_enqueue_script('lottie-interactivity', 'https://unpkg.com/@lottiefiles/lottie-interactivity@1.6.2/dist/lottie-interactivity.min.js', array(), '1.6.2', false);
+    }
+
+    // Was previously duplicated as a raw <script src="js.hsforms.net/...">
+    // tag inside each speaker/advisor's ACF embed HTML (once per bio card,
+    // so up to 12x per page) -- centralised here so it only loads once.
+    // The script itself finds every .hs-form-html div on the page (including
+    // ones added later, e.g. when a popup opens) and renders a form into it.
+    if ( adapt_page_needs_hubspot_forms_embed() ) {
+        wp_enqueue_script('hubspot-forms-embed', 'https://js.hsforms.net/forms/embed/developer/8336221.js', array(), null, true);
     }
 
     // Prefills hidden UTM fields on embedded HubSpot forms (.hs-form-html)

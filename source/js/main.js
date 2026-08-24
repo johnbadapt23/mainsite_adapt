@@ -65,6 +65,56 @@
 		targetEl.appendChild(fragment);
 	}
 
+	// Prefills a HubSpot embed's hidden field once the shared embed script
+	// (js.hsforms.net, enqueued once site-wide -- see
+	// adapt_page_needs_hubspot_forms_embed() in functions.php) finishes
+	// rendering the real form fields into `container`. That rendering is
+	// async and can take a moment, and HubSpot's form builder prefixes each
+	// field's `name` with its step address (e.g. "0-1/fieldName"), so this
+	// matches on a suffix and watches with a MutationObserver instead of
+	// assuming a fixed delay or an exact name.
+	function adaptPrefillHubspotField(container, fieldName, value) {
+		if (!container || !value) {
+			return;
+		}
+
+		function setField(field) {
+			var proto = Object.getPrototypeOf(field);
+			var descriptor = Object.getOwnPropertyDescriptor(proto, 'value');
+			if (descriptor && descriptor.set) {
+				descriptor.set.call(field, value);
+			} else {
+				field.value = value;
+			}
+			field.dispatchEvent(new Event('input', { bubbles: true }));
+			field.dispatchEvent(new Event('change', { bubbles: true }));
+		}
+
+		function tryFill() {
+			var field = container.querySelector('[name$="/' + fieldName + '"], [name="' + fieldName + '"]');
+			if (!field) {
+				return false;
+			}
+			setField(field);
+			return true;
+		}
+
+		if (tryFill()) {
+			return;
+		}
+
+		var observer = new MutationObserver(function() {
+			if (tryFill()) {
+				observer.disconnect();
+			}
+		});
+		observer.observe(container, { childList: true, subtree: true });
+
+		// Give up after 10s so a popup closed before the embed ever renders
+		// doesn't leave an observer running forever.
+		setTimeout(function() { observer.disconnect(); }, 10000);
+	}
+
 	$(document).ready(function (){
 
 		// STANDARD
@@ -541,7 +591,25 @@
 		$('.formPopupHubspot').each(function(){
 			$(this).magnificPopup({
 				type: 'inline',
-				mainClass: 'form-container-preview'
+				mainClass: 'form-container-preview',
+				callbacks: {
+					open: function() {
+						var $trigger = this.st.el;
+						var templateId = $trigger.data('embed-template');
+						var prefillTitle = $trigger.data('prefill-title');
+
+						// Both are optional -- other .formPopupHubspot triggers
+						// (e.g. august-single-post.php's preview-CTA buttons)
+						// don't use the <template>-deferred embed or the
+						// prefill field, so this is a no-op for them.
+						if (templateId) {
+							adaptActivateEmbeddedTemplate(templateId, $trigger.attr('href') + ' .form');
+						}
+						if (prefillTitle) {
+							adaptPrefillHubspotField(this.content[0], 'which_advisors_are_you_interested_in_meeting', prefillTitle);
+						}
+					}
+				}
 			});
 		});
 
@@ -571,19 +639,6 @@
 		});
 
 		$('.popup-vimeo').magnificPopup({
-			type: 'iframe',
-			mainClass: 'mfp-fade',
-			removalDelay: 160,
-			preloader: false,
-			fixedContentPos: false
-		});
-
-		// Speaker "Submit an Enquiry" buttons -- href is a hosted HubSpot
-		// form URL (share-ap1.hsforms.com/...), not an embed snippet, so
-		// this loads it directly in an iframe popup rather than the
-		// .formPopupHubspot 'inline' pattern used elsewhere. See
-		// _speaker-module.php.
-		$('.formPopupHubspotIframe').magnificPopup({
 			type: 'iframe',
 			mainClass: 'mfp-fade',
 			removalDelay: 160,
