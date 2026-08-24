@@ -578,20 +578,33 @@ function filter_speakers_callback() {
                         </span>                                               
                     </div>
                     <span class="speaker-button-container">
+                        <?php
+                            // Kept in sync with the same HubSpot-embed pattern in
+                            // _speaker-module.php / _advisor-module.php -- this AJAX
+                            // callback renders the paginated/filtered cards for both
+                            // pages (see $post_type above), so it needed the same fix.
+                            $speaker_form_id = 'speakerFormEmbed' . get_the_ID();
+                        ?>
                         <span class="std-button form-popup-button-container red-button" style="padding: 0;">
                             <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
-                                <a href="<?= get_field( 'speaker_form_button', 'options' ); ?>?which_advisors_are_you_interested_in_meeting=<?= get_the_title(); ?>">Submit an Analyst Enquiry</a>
+                                <a class="formPopupHubspot" href="#<?= $speaker_form_id; ?>" data-embed-template="<?= $speaker_form_id; ?>Tpl" data-prefill-title="<?= esc_attr( get_the_title() ); ?>">Submit an Analyst Enquiry</a>
                             <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
-                                <a href="<?= get_field( 'speaker_form_button_advisor', 'options' ); ?>?which_advisors_are_you_interested_in_meeting=<?= get_the_title(); ?>">Submit an Advisor Enquiry</a>
+                                <a class="formPopupHubspot" href="#<?= $speaker_form_id; ?>" data-embed-template="<?= $speaker_form_id; ?>Tpl" data-prefill-title="<?= esc_attr( get_the_title() ); ?>">Submit an Advisor Enquiry</a>
                             <?php endif; ?>
                         </span>
-                        <span style="display:none">
-                            <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
-                                <?php echo get_field( 'speaker_form_script', 'options' ); ?>
-                            <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
-                                <?php echo get_field( 'speaker_form_script_advisor', 'options' ); ?>
-                            <?php endif; ?>
-                        </span>
+                        <div style="display:none">
+                            <div id="<?= $speaker_form_id; ?>">
+                                <span class="form">
+                                    <template id="<?= $speaker_form_id; ?>Tpl">
+                                        <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
+                                            <?php echo get_field( 'speaker_form_script', 'options' ); ?>
+                                        <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
+                                            <?php echo get_field( 'speaker_form_script_advisor', 'options' ); ?>
+                                        <?php endif; ?>
+                                    </template>
+                                </span>
+                            </div>
+                        </div>
                     </span>
                 </div>
                 <div class="click-overlay"></div>
