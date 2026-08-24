@@ -203,6 +203,20 @@ function adapt_page_needs_lottie() {
     // renders a <lottie-player> the same way template-flexible.php does,
     // through its own content_blocks flexible-content field, so it's
     // handled by the same table below instead of a hardcoded special case.
+    // IMPORTANT: this runs on wp_enqueue_scripts, i.e. BEFORE the page
+    // template's own body/loop executes -- and every field below
+    // ('content_blocks' or 'content') is the SAME field each of these
+    // templates' own body loops later iterate via
+    // have_rows($field)/the_row() to actually render the page. This used
+    // to call have_rows()/the_row() here too and return early (`return
+    // true` mid-loop) the instant it found a matching row, without
+    // exhausting or resetting ACF's internal cursor for that field/post --
+    // desyncing it before the real render loop ran, which then started
+    // mid-way and could silently skip rows (see the near-identical bug
+    // this caused in adapt_page_needs_hubspot_forms_embed(), which dropped
+    // an entire flexible-content section from a live page). get_field()
+    // returns the raw row array and never touches that shared loop state,
+    // so it can't have this side effect.
     $field_by_template = array(
         'templates/template-flexible.php'      => array( 'content_blocks', array( 'introduction_with_animation', 'values_full_screen_blocks' ) ),
         'templates/template-home.php'          => array( 'content_blocks', array( 'introduction_with_animation', 'values_full_screen_blocks' ) ),
@@ -217,12 +231,13 @@ function adapt_page_needs_lottie() {
             continue;
         }
         list( $field_name, $layouts ) = $config;
-        if ( have_rows( $field_name ) ) {
-            while ( have_rows( $field_name ) ) {
-                the_row();
-                if ( in_array( get_row_layout(), $layouts, true ) ) {
-                    return true;
-                }
+        $rows = get_field( $field_name );
+        if ( ! is_array( $rows ) ) {
+            return false;
+        }
+        foreach ( $rows as $row ) {
+            if ( isset( $row['acf_fc_layout'] ) && in_array( $row['acf_fc_layout'], $layouts, true ) ) {
+                return true;
             }
         }
         return false;
@@ -257,6 +272,20 @@ function adapt_page_needs_gsap() {
 // layout) embed HubSpot forms via <div class="hs-form-html"> -- see
 // adapt_page_needs_hubspot_forms_embed() below for the loader script this
 // gates.
+//
+// IMPORTANT: this runs on wp_enqueue_scripts, i.e. BEFORE the page
+// template's own body/loop executes. It deliberately uses get_field()
+// (returns the raw array of rows) instead of have_rows()/the_row() --
+// those maintain ACF's internal per-field loop cursor, and this function
+// used to call them and return early (via `return true` mid-loop) the
+// moment it found a matching row, without exhausting or resetting that
+// cursor. Since it checks the SAME 'content' field the page templates
+// below loop over later via their own have_rows('content')/the_row() to
+// actually render the page, that left the cursor desynced by the time the
+// real render loop ran -- causing it to start mid-way and skip the
+// speaker_module row entirely, silently dropping the whole section from
+// the page. get_field() never touches that shared loop state, so it can't
+// have this side effect.
 function adapt_page_needs_hubspot_forms_embed() {
     $field_by_template = array(
         'templates/template-customer-events.php'    => array( 'content', array( 'speaker_module' ) ),
@@ -268,12 +297,13 @@ function adapt_page_needs_hubspot_forms_embed() {
             continue;
         }
         list( $field_name, $layouts ) = $config;
-        if ( have_rows( $field_name ) ) {
-            while ( have_rows( $field_name ) ) {
-                the_row();
-                if ( in_array( get_row_layout(), $layouts, true ) ) {
-                    return true;
-                }
+        $rows = get_field( $field_name );
+        if ( ! is_array( $rows ) ) {
+            return false;
+        }
+        foreach ( $rows as $row ) {
+            if ( isset( $row['acf_fc_layout'] ) && in_array( $row['acf_fc_layout'], $layouts, true ) ) {
+                return true;
             }
         }
         return false;
