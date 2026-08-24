@@ -90,23 +90,30 @@
 			field.dispatchEvent(new Event('change', { bubbles: true }));
 		}
 
+		// Only fills the field while it's empty. HubSpot's form briefly
+		// resets its fields back to their internal (blank) state shortly
+		// after they first render -- confirmed live: a value set right when
+		// the field first appears gets silently wiped a moment later, but
+		// the exact same value set a few seconds later is permanently
+		// stable. Rather than guess that timing, this re-asserts the value
+		// every time the DOM changes for a few seconds, but only while the
+		// field reads empty, so it doesn't fight the visitor if they've
+		// already started typing their own answer in there.
 		function tryFill() {
 			var field = container.querySelector('[name$="/' + fieldName + '"], [name="' + fieldName + '"]');
 			if (!field) {
 				return false;
 			}
-			setField(field);
+			if (field.value === '') {
+				setField(field);
+			}
 			return true;
 		}
 
-		if (tryFill()) {
-			return;
-		}
+		tryFill();
 
 		var observer = new MutationObserver(function() {
-			if (tryFill()) {
-				observer.disconnect();
-			}
+			tryFill();
 		});
 		// HubSpot's form renderer inserts each field element first and sets
 		// its `name` attribute in a separate pass right after (confirmed via
@@ -117,8 +124,12 @@
 		// point instead of silently giving up.
 		observer.observe(container, { childList: true, subtree: true, attributes: true, attributeFilter: ['name'] });
 
-		// Give up after 10s so a popup closed before the embed ever renders
-		// doesn't leave an observer running forever.
+		// Keep watching (and re-filling if the field goes blank again) for a
+		// while after the popup opens, rather than disconnecting on the
+		// first successful fill -- that first fill is exactly what HubSpot's
+		// reset wipes out. 10s comfortably covers the render-then-reset
+		// sequence, and also covers a popup closed before the embed ever
+		// renders (so this doesn't leave an observer running forever).
 		setTimeout(function() { observer.disconnect(); }, 10000);
 	}
 
