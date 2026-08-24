@@ -33,6 +33,23 @@ add_filter('upload_mimes', 'cc_mime_types');
 // ACF Google Maps API key is set once via custom_acf_init() in includes/_customisations.php
 // (this used to be duplicated here as my_acf_init(), registered a second time on acf/init).
 
+// ACF Local JSON: field groups are version-controlled as one file per group
+// in acf-json/ (named by group key), instead of living only in the DB. ACF
+// reads this folder automatically once load_json points at it, and offers
+// a "Sync available" action in Custom Fields whenever a group's DB copy and
+// its JSON file differ -- nothing here overwrites the DB on its own.
+function adapt_acf_json_save_point( $path ) {
+	return get_stylesheet_directory() . '/acf-json';
+}
+add_filter( 'acf/settings/save_json', 'adapt_acf_json_save_point' );
+
+function adapt_acf_json_load_point( $paths ) {
+	unset( $paths[0] );
+	$paths[] = get_stylesheet_directory() . '/acf-json';
+	return $paths;
+}
+add_filter( 'acf/settings/load_json', 'adapt_acf_json_load_point' );
+
 function adapt_admin_style() {
   wp_enqueue_style('admin-styles', get_template_directory_uri(). '/assets/css/admin.css');
 }
