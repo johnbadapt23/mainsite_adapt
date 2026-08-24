@@ -535,7 +535,7 @@ function filter_speakers_callback() {
     //    terms shown on this page (operator IN) -- shows everything
     //    relevant to this module instance's ACF-configured expertise list
     //    while still excluding posts with none of those terms.
-    if ( ! empty( $expertise_slugs ) ) {
+    if ( ! empty( $has_selection ) ) {
         $args['tax_query'] = array(
             'relation' => 'AND',
             array(
