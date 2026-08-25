@@ -18588,3 +18588,161 @@ body.dev-float-refactor {
                 }
         }
 }
+
+// === Generated batch 2: position:absolute/fixed dead floats ===
+// Per CSS2.1 9.7 ("Relationships between display, position, and float"):
+// if an element has position:absolute or position:fixed, its computed
+// float value is forced to none regardless of what float is written as
+// -- this is a hard spec guarantee honored by every browser, not a
+// judgment call, so these are exactly as safe as the display:flex cases
+// from batch 1.
+
+// --- source/scss/global/_forms.scss (1 declarations) ---
+body.dev-float-refactor {
+    // line 323
+        .field-wrap {
+                h2 {
+                        &:after {
+                                float: none;
+                        }
+                }
+        }
+}
+
+// --- source/scss/partials/_header.scss (5 declarations) ---
+body.dev-float-refactor {
+    // line 212
+        header {
+                .container {
+                        .headerRight {
+                                .menu {
+                                        .main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+    // line 1041
+        header {
+                .container {
+                        .headerRight {
+                                span.buttonWrapper {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+    // line 1246
+        header {
+                .resources-sticky-menu {
+                        .container {
+                                span.buttonWrapperResources {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+    // line 1560
+        header {
+                .resources-sticky-menu {
+                        .container {
+                                .resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+    // line 3929
+        .single-post-sticky {
+                .container {
+                        span.buttonWrapperSingleResources {
+                                float: none;
+                        }
+                }
+        }
+}
+
+// --- source/scss/templates/_events.scss (2 declarations) ---
+body.dev-float-refactor {
+    // line 2301
+        section.events-listing-module {
+                .container {
+                        .events-listing-top {
+                                .year-button-container {
+                                        &.sticky {
+                                                .year-button-sticky {
+                                                        @media (max-width: 1023px) {
+                                                                .download-button-container-mobile-sticky {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+    // line 2310
+        section.events-listing-module {
+                .container {
+                        .events-listing-top {
+                                .year-button-container {
+                                        &.sticky {
+                                                .year-button-sticky {
+                                                        @media (max-width: 1023px) {
+                                                                .back-top-mobile-sticky {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+}
+
+// --- source/scss/templates/_home.scss (1 declarations) ---
+body.dev-float-refactor {
+    // line 99
+        #main {
+                section.banner {
+                        ul {
+                                li {
+                                        .container {
+                                                .baseButtons {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+}
+
+// --- source/scss/templates/_post.scss (1 declarations) ---
+body.dev-float-refactor {
+    // line 742
+        section.post-article-container {
+                .container {
+                        .post-content {
+                                .sidebar-content {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+}
