@@ -94,6 +94,53 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 1 (hand-designed, not generated): header top bar ===
+// source/scss/partials/_header.scss -- the logo-container / headerRight
+// split at the very top of every page. This is a REAL float-based
+// two-column row (unlike everything above/below in this file, which was
+// dead-weight float that did nothing): .logo-container is a fixed
+// 110px column (92px under 1250px), .headerRight fills the rest via
+// width:calc(100% - 150px) (132px under 1250px) -- the two numbers are
+// kept in sync by hand in the original (110+40 margin = 150, 92+40 = 132).
+//
+// Conversion strategy: deliberately NOT touching any of the existing
+// width/margin/calc() values -- those already produce the exact right
+// pixel layout under float, and stay exactly as correct under flex. The
+// only changes are: .header-inner gets display:flex (so its two children
+// sit side by side instead of via float) and align-items:flex-start (so
+// they stay top-aligned the way floated boxes always are -- flexbox's own
+// default, align-items:stretch, would make the shorter column stretch to
+// match the taller one's height, which floats never did and would be a
+// real visual change). Both children get flex-shrink:0 so flexbox's
+// default shrink-to-fit-content behavior can't ever override their
+// existing explicit widths, keeping sizing pixel-identical to today at
+// every breakpoint the original media queries already cover.
+//
+// .logo-container .logo isn't part of the row itself (it's
+// .logo-container's only child, no sibling to float past), so its float
+// was already inert -- included here as a one-line cleanup while in the
+// area, not because it does anything.
+body.dev-float-refactor {
+    header .container .header-inner {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    header .container .header-inner .logo-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    header .container .header-inner .logo-container .logo {
+        float: none;
+    }
+
+    header .container .header-inner .headerRight {
+        float: none;
+        flex-shrink: 0;
+    }
+}
+
 // === Generated batch: sitewide float audit (auto-safe subset) ===
 // Each block below was generated from the exact same source nesting as
 // the original (selector text, media queries, & references all preserved
@@ -203,11 +250,7 @@ body.dev-float-refactor {
 
 // --- source/scss/global/_forms.scss (31 declarations) ---
 body.dev-float-refactor {
-    // line 115
-        .nf-field-container {
-                float: none;
-        }
-    // line 163
+        // line 163
         .nf-form-cont {
                 float: none;
         }
@@ -772,17 +815,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 25
-        footer {
-                .container {
-                        .footer-top {
-                                .footer-column-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 60
+        // line 60
         footer {
                 .container {
                         .footer-top {
@@ -890,17 +923,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 374
-        footer {
-                .container {
-                        .footer-top {
-                                .footer-subscribe-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 442
+        // line 442
         footer {
                 .container {
                         .footer-top {
@@ -1254,35 +1277,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 364
-        header {
-                .container {
-                        .headerRight {
-                                .menu {
-                                        .main-nav {
-                                                ul {
-                                                        li {
-                                                                .megaMenu {
-                                                                        &.servicesMenu {
-                                                                                .container {
-                                                                                        .column.content-column {
-                                                                                                .services-content {
-                                                                                                        .links-container {
-                                                                                                                float: none;
-                                                                                                        }
-                                                                                                }
-                                                                                        }
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 378
+        // line 378
         header {
                 .container {
                         .headerRight {
@@ -1444,31 +1439,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 626
-        header {
-                .container {
-                        .headerRight {
-                                .menu {
-                                        .main-nav {
-                                                ul {
-                                                        li {
-                                                                .megaMenu {
-                                                                        .column {
-                                                                                .dropDownSection {
-                                                                                        .columnText {
-                                                                                                float: none;
-                                                                                        }
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 643
+        // line 643
         header {
                 .container {
                         .headerRight {
@@ -1786,33 +1757,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 959
-        header {
-                .container {
-                        .headerRight {
-                                .menu {
-                                        .main-nav {
-                                                ul {
-                                                        li {
-                                                                .megaMenu {
-                                                                        .column {
-                                                                                .featured-posts-container {
-                                                                                        .featured-post {
-                                                                                                .post-title-container {
-                                                                                                        float: none;
-                                                                                                }
-                                                                                        }
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 964
+        // line 964
         header {
                 .container {
                         .headerRight {
@@ -2158,31 +2103,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1928
-        header {
-                .resources-sticky-menu {
-                        .container {
-                                .resources-nav {
-                                        ul {
-                                                li {
-                                                        .megaMenu {
-                                                                .column {
-                                                                        .featured-posts-container {
-                                                                                .featured-post {
-                                                                                        .post-title-container {
-                                                                                                float: none;
-                                                                                        }
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 1933
+        // line 1933
         header {
                 .resources-sticky-menu {
                         .container {
@@ -2596,33 +2517,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 2960
-        .mobileMenuMain {
-                .mobileInner {
-                        > .container {
-                                .main-nav-mobile {
-                                        > ul {
-                                                > li {
-                                                        &.main-dropdown {
-                                                                .mobile-sub-menu {
-                                                                        .full-width {
-                                                                                >.form-container-inner {
-                                                                                        .subscribe-sidebar-form {
-                                                                                                .form-content {
-                                                                                                        float: none;
-                                                                                                }
-                                                                                        }
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 2971
+        // line 2971
         .mobileMenuMain {
                 .mobileInner {
                         > .container {
@@ -3086,35 +2981,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 3420
-        .mobileMenuMain {
-                .mobileInner {
-                        > .container {
-                                .main-nav-mobile {
-                                        > ul {
-                                                .services-inner-mobile {
-                                                        >li {
-                                                                &.main-dropdown {
-                                                                        .mobile-sub-menu {
-                                                                                .full-width {
-                                                                                        >.form-container-inner {
-                                                                                                .subscribe-sidebar-form {
-                                                                                                        .form-content {
-                                                                                                                float: none;
-                                                                                                        }
-                                                                                                }
-                                                                                        }
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 3431
+        // line 3431
         .mobileMenuMain {
                 .mobileInner {
                         > .container {
@@ -3476,15 +3343,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 4342
-        .mobile-menu-bottom {
-                .subscribe-sidebar-form {
-                        .form-content {
-                                float: none;
-                        }
-                }
-        }
-}
+    }
 
 // --- source/scss/templates/_agenda.scss (22 declarations) ---
 body.dev-float-refactor {
@@ -3544,13 +3403,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 247
-        section.agenda-item {
-                .content-container {
-                        float: none;
-                }
-        }
-    // line 267
+        // line 267
         section.agenda-item {
                 .content-container {
                         span.time {
@@ -4288,19 +4141,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1012
-        section.fixed-scroller {
-                .container {
-                        .title-container {
-                                .column-container {
-                                        > h2 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 1055
+        // line 1055
         section.fixed-scroller {
                 .container {
                         .fixed-scroller-container {
@@ -4383,17 +4224,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1828
-        section.speaker-module {
-                .container {
-                        .title-container {
-                                .title-container-inner {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 1835
+        // line 1835
         section.speaker-module {
                 .container {
                         .title-container {
@@ -4481,27 +4312,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 2029
-        section.speaker-module {
-                .container {
-                        .speakers-container-outer {
-                                .speaker-filter-inner {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 2040
-        section.speaker-module {
-                .container {
-                        .speakers-container-outer {
-                                .speakers {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 2457
+            // line 2457
         section.speaker-module {
                 .full-bio {
                         .bio-top {
@@ -4509,17 +4320,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 2498
-        section.speaker-module {
-                .full-bio {
-                        .bio-top {
-                                .text {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 2507
+        // line 2507
         section.speaker-module {
                 .full-bio {
                         .bio-top {
@@ -4628,24 +4429,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 2925
-        section.topic-industry-switcher {
-                .container {
-                        .bottom-container {
-                                .topics-container,
-            .industries-container {
-                                        .accordion-container {
-                                                .accordion-item {
-                                                        .accordion-inner {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 2935
+        // line 2935
         section.topic-industry-switcher {
                 .container {
                         .bottom-container {
@@ -4683,20 +4467,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 2985
-        section.topic-industry-switcher {
-                .container {
-                        .bottom-container {
-                                .topics-container,
-            .industries-container {
-                                        .text-outer-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 2990
+        // line 2990
         section.topic-industry-switcher {
                 .container {
                         .bottom-container {
@@ -6426,19 +6197,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1168
-        section.stories-listing {
-                .container {
-                        .filter-container {
-                                .topic-button-container-outer {
-                                        .title-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 1183
+        // line 1183
         section.stories-listing {
                 .container {
                         .filter-container {
@@ -6450,19 +6209,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1314
-        section.stories-listing {
-                .container {
-                        .filter-container {
-                                .topic-button-container-outer {
-                                        .filter-select-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 1354
+        // line 1354
         section.stories-listing {
                 .container {
                         .filter-container {
@@ -7212,11 +6959,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 855
-        section.events-logos-block {
-                float: none;
-        }
-    // line 865
+        // line 865
         section.events-logos-block {
                 .container {
                         .logo-container {
@@ -7446,17 +7189,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1829
-        section.sneak-peak-module {
-                .container {
-                        .sneak-peak-container {
-                                .sneak-image-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 1838
+        // line 1838
         section.sneak-peak-module {
                 .container {
                         .sneak-peak-container {
@@ -7632,17 +7365,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 2487
-        section.events-listing-module {
-                .events-listing {
-                        .item.event-item {
-                                .content-delegate-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 2497
+        // line 2497
         section.events-listing-module {
                 .events-listing {
                         .item.event-item {
@@ -7654,19 +7377,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 2502
-        section.events-listing-module {
-                .events-listing {
-                        .item.event-item {
-                                .content-delegate-container {
-                                        .item-content {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 2512
+        // line 2512
         section.events-listing-module {
                 .events-listing {
                         .item.event-item {
@@ -7829,17 +7540,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 2712
-        section.events-listing-module {
-                .events-listing {
-                        .item.event-item {
-                                .item-content-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 2724
+        // line 2724
         section.events-listing-module {
                 .events-listing {
                         .item.event-item {
@@ -8515,19 +8216,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 4332
-        section.two-column-icon-text {
-                .container {
-                        .icon-text-column-container {
-                                .column {
-                                        .text-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 4341
+        // line 4341
         section.two-column-icon-text {
                 .container {
                         .icon-text-column-container {
@@ -8981,15 +8670,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 521
-        section.switcher-module {
-                .container {
-                        .switch-content-container {
-                                float: none;
-                        }
-                }
-        }
-    // line 534
+        // line 534
         section.switcher-module {
                 .container {
                         .switch-content-container {
@@ -8999,21 +8680,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 627
-        section.switcher-module {
-                .container {
-                        .switch-content-container {
-                                .icon-text-column-container {
-                                        .column {
-                                                .text-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 636
+        // line 636
         section.switcher-module {
                 .container {
                         .switch-content-container {
@@ -9317,17 +8984,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1691
-        section.team-block {
-                .full-bio {
-                        .bio-top {
-                                .text {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 1700
+        // line 1700
         section.team-block {
                 .full-bio {
                         .bio-top {
@@ -9895,27 +9552,7 @@ section.text-animation-introduction {
                         }
                 }
         }
-    // line 3895
-        // Home Page
-
-section.text-animation-introduction {
-                .container {
-                        .introduction-content-container {
-                                .column {
-                                        &.text-column {
-                                                .animation-text-container {
-                                                        span.animation-text-line {
-                                                                .text-animation-container {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 3926
+        // line 3926
         // Home Page
 
 section.text-animation-introduction {
@@ -10269,21 +9906,7 @@ section.list-card-module {
                         }
                 }
         }
-    // line 5057
-        section.two-column-services {
-                .container {
-                        .services-column-container {
-                                .column {
-                                        &.icon-text-column {
-                                                .text-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 5061
+        // line 5061
         section.two-column-services {
                 .container {
                         .services-column-container {
@@ -11866,23 +11489,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 95
-        section.login-module {
-                .container {
-                        .login-inner {
-                                .column-container {
-                                        .column {
-                                                .content-container {
-                                                        span.text {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 103
+        // line 103
         section.login-module {
                 .container {
                         .login-inner {
@@ -12241,21 +11848,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 407
-        section.market-featured {
-                .container {
-                        .grid-wrapper {
-                                .item {
-                                        @media (max-width: 767px) {
-                                                .item-content-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 427
+        // line 427
         section.market-featured {
                 .container {
                         .button-container {
@@ -12545,25 +12138,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 875
-        section.open-positions {
-                .container {
-                        .title-column {
-                                .curly-arrow-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 894
-        section.open-positions {
-                .container {
-                        .positions-column {
-                                float: none;
-                        }
-                }
-        }
-    // line 908
+            // line 908
         section.open-positions {
                 .container {
                         .positions-column {
@@ -12997,17 +12572,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 648
-        section.post-article-container {
-                .container {
-                        .post-content {
-                                .published-information-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 652
+        // line 652
         section.post-article-container {
                 .container {
                         .post-content {
@@ -13313,21 +12878,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1127
-        section.post-article-container {
-                .container {
-                        .post-content {
-                                .preview-cta-container {
-                                        .preview-cta-inner {
-                                                .preview-cta-content {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 1138
+        // line 1138
         section.post-article-container {
                 .container {
                         .post-content {
@@ -13483,15 +13034,7 @@ body.dev-float-refactor {
                         float: none;
                 }
         }
-    // line 1415
-        div.post-content-inner.counter-title-text {
-                .counter-title-container {
-                        span.counter-title {
-                                float: none;
-                        }
-                }
-        }
-    // line 1428
+        // line 1428
         div.related-articles {
                 float: none;
         }
@@ -14030,15 +13573,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 738
-        section.webinar-faq {
-                .container {
-                        .faq-item {
-                                float: none;
-                        }
-                }
-        }
-    // line 751
+        // line 751
         section.webinar-faq {
                 .container {
                         .faq-item {
@@ -14198,17 +13733,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1066
-        section.register-listing {
-                .container {
-                        .register-listing-container {
-                                .upcoming-listing {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-    // line 1117
+        // line 1117
         section.register-listing {
                 .container {
                         .register-listing-container {
@@ -14509,25 +14034,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1683
-        section.webinar-article {
-                .container {
-                        .column {
-                                .speakers-block {
-                                        .speaker-container {
-                                                .speaker {
-                                                        .speaker-container-inner {
-                                                                .description {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 1688
+        // line 1688
         section.webinar-article {
                 .container {
                         .column {
@@ -15505,13 +15012,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1168
-        .item.press-release-item {
-                .item-content-container {
-                        float: none;
-                }
-        }
-    // line 1176
+        // line 1176
         .item.press-release-item {
                 .item-content-container {
                         .content-inner {
@@ -15547,13 +15048,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1279
-        .item.press-release-item.external-press-release {
-                .item-content-container {
-                        float: none;
-                }
-        }
-    // line 1287
+        // line 1287
         .item.press-release-item.external-press-release {
                 .item-content-container {
                         .content-inner {
@@ -15664,17 +15159,7 @@ section.featured-module {
                         }
                 }
         }
-    // line 1719
-        // Featured modules
-
-section.featured-module {
-                .container {
-                        .grid-wrapper {
-                                float: none;
-                        }
-                }
-        }
-    // line 1726
+        // line 1726
         // Featured modules
 
 section.featured-module {
@@ -16144,21 +15629,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 351
-        section.resources-content {
-                .container {
-                        .column {
-                                &.second-column {
-                                        .speaker {
-                                                .authorText {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 428
+        // line 428
         section.resources-content {
                 .container {
                         .resources-subtitle {
@@ -16432,21 +15903,7 @@ body.dev-float-refactor {
                         }
                 }
         }
-    // line 1071
-        section.resources-cta-block {
-                .container {
-                        .cta-content {
-                                .column.image-column {
-                                        .main-image-container {
-                                                @include responsive(1023) {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-    // line 1077
+        // line 1077
         section.resources-cta-block {
                 .container {
                         .cta-content {
@@ -18339,15 +17796,7 @@ body.dev-float-refactor {
         section.faq-block {
                 float: none;
         }
-    // line 496
-        section.faq-block {
-                .container {
-                        .faq-column {
-                                float: none;
-                        }
-                }
-        }
-    // line 507
+        // line 507
         section.faq-block {
                 .container {
                         .faq-column {
