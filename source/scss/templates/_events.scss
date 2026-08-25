@@ -3819,6 +3819,7 @@ section.flip-card-module {
         .top-container {
             text-align: center;
             width: 100%;
+            float: left;
             margin-bottom: 80px;
 
             @media (max-width: 767px) {
@@ -3830,6 +3831,7 @@ section.flip-card-module {
                 display: inline-block;
                 max-width: 650px;
                 padding: 0;
+                float: none;
                 margin: 0 auto;
 
                 h2 {
@@ -3878,6 +3880,7 @@ section.flip-card-module {
         }
 
         .flip-card-container {
+            float: left;
             width: 100%;
             display: flex;
             flex-wrap: wrap;

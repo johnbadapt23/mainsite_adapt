@@ -1,0 +1,95 @@
+// Gated overrides for the sitewide float->flexbox modernization pass.
+//
+// Everything in this file only applies when body.dev-float-refactor is
+// present, which functions.php's adapt_dev_gate_body_class() only adds when
+// the URL has ?dev=true. Real visitors get the original, untouched
+// float-based rules from templates/*.scss exactly as before -- nothing here
+// changes default behavior.
+//
+// Each block below overrides one selector already confirmed (in the
+// original float:left; width:100%; audit) to be either a) redundant on an
+// element whose own rule already sets display:flex/grid, or b) a
+// width:100% block with no floating siblings, so removing the float has no
+// visual effect. The @import order below (via main.scss's
+// `@import "sections/**/*.scss";`, which loads after `templates/**/*.scss`)
+// combined with the body class both give these enough specificity/order
+// priority to win over the original declarations without !important.
+//
+// Once a batch here is confirmed correct on every page it touches, its
+// rules get folded back into the real template file (removing the original
+// float declaration for good, same as was already done for the
+// list-card-module / flip-card-module / static-cards work below) and
+// deleted from this file.
+
+body.dev-float-refactor {
+    // list-card-module (source/scss/templates/_flexible.scss)
+    section.list-card-module .container .top-container {
+        float: none;
+
+        .inner {
+            // float: none; already set unconditionally on .inner itself --
+            // nothing to override here, kept as a comment so the selector
+            // list below stays easy to diff against _flexible.scss.
+        }
+
+        .inner h2,
+        .inner span.text {
+            float: none;
+        }
+    }
+
+    section.list-card-module .container .list-card-container {
+        float: none;
+    }
+
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front {
+        float: none;
+    }
+
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .title-container {
+        float: none;
+    }
+
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .title-container h3 {
+        float: none;
+    }
+
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container {
+        float: none;
+    }
+
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container .list-container {
+        float: none;
+    }
+
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container .list-container .list-item {
+        float: none;
+    }
+
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container .text-link-container a {
+        float: none;
+    }
+
+    // flip-card-module (source/scss/templates/_events.scss) -- deliberately
+    // NOT touching .slide/.slick-track/.slick-list or anything inside
+    // .flip-card-front/.flip-card-back: the mobile carousel's float-based
+    // slide positioning is load-bearing (Slick), and the 3D flip transform
+    // internals weren't part of the audited/confirmed-safe set.
+    section.flip-card-module .container .top-container {
+        float: none;
+
+        .inner h2,
+        .inner span.text {
+            float: none;
+        }
+    }
+
+    section.flip-card-module .container .flip-card-container {
+        float: none;
+    }
+
+    // cards-module.gtm-cards-module.static-cards (source/scss/templates/_gtm.scss)
+    section.cards-module.gtm-cards-module.static-cards .card-container {
+        float: none;
+    }
+}

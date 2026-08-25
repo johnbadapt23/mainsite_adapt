@@ -487,6 +487,24 @@ function adapt_webp_poster_url( $url ) {
     return $url;
 }
 
+// Gate for in-progress CSS work (currently: the sitewide float->flexbox
+// modernization pass) that hasn't been visually verified on every page yet.
+// Visiting any URL with ?dev=true adds a body class that the gated rules in
+// source/scss/sections/_dev-float-refactor.scss target; without it, the
+// site renders with the original (untouched) float-based CSS exactly as
+// before. This lets that pass be reviewed page-by-page on this exact
+// environment before any of it becomes the default for real visitors --
+// once a batch is confirmed safe, its rules move out of the gated file and
+// the matching original float declarations are removed for real, same as
+// was already done for the list-card/flip-card/static-cards modules.
+function adapt_dev_gate_body_class( $classes ) {
+    if ( isset( $_GET['dev'] ) && $_GET['dev'] === 'true' ) {
+        $classes[] = 'dev-float-refactor';
+    }
+    return $classes;
+}
+add_filter( 'body_class', 'adapt_dev_gate_body_class' );
+
 // Shared helpers for the 3 AJAX filter callbacks below (speakers,
 // partners, edge partners). Their query-building and HTML render loops
 // differ enough (different taxonomies/post types/ACF fields, and
