@@ -15,13 +15,25 @@
 <?php else : ?>
 	<?php // no rows found ?>
 <?php endif; ?>
-<?php if ( isset($publishedDate) && $publishedDate ) {
+<?php
+// Always initialize so downstream checks never hit an undefined variable.
+$date = null;
+
+if ( isset($publishedDate) && $publishedDate ) {
     // Load field value.
     $date_string = $publishedDate;
 
     // Create DateTime object from value (formats must match).
     $date = DateTime::createFromFormat('Ymd', $date_string);
-} ?>
+}
+
+// Fallback: if Published_date wasn't set (e.g. no 'publication' repeater row yet,
+// which is common when previewing an unpublished post) or failed to parse,
+// fall back to the post's creation date.
+if ( ! ($date instanceof DateTime) ) {
+    $date = get_post_datetime(); // uses post_date (creation date) by default
+}
+?>
 <?php if($typePost == 'press-release' || $typePost == 'media'){ ?>
 <?php } else { ?>
     <?php setPostViews(get_the_ID()); ?>
