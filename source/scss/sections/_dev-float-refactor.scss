@@ -141,6 +141,72 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 2 (hand-designed): main header nav row ===
+// source/scss/partials/_header.scss, desktop only (.main-nav is already
+// display:none under 1250px in the original, unchanged here) -- this is
+// the .menu / .menu-buttons split inside .headerRight, and the actual
+// horizontal list of top-level nav items (Our Services, etc.) inside
+// .menu > .main-nav > ul.
+//
+// .headerRight itself becomes a flex container for its own two real
+// children (.menu on the left, .menu-buttons on the right) --
+// justify-content:space-between reproduces float:left/float:right's
+// "push to opposite ends, gap in between" exactly, since there are only
+// two flex-flow participants. .buttonWrapper (the hamburger) is a third
+// DOM child but position:absolute (already neutralized in the generated
+// batch below via the CSS2.1 9.7 rule) -- absolutely positioned elements
+// are removed from a flex container's layout the same way they're
+// removed from float's, so it was never actually part of this row and
+// isn't affected by turning the other two into flex items.
+//
+// align-items:flex-start again to match float's top-alignment default
+// (see Section 1) rather than flex's stretch default.
+//
+// .menu and .main-nav are each their parent's ONLY child (confirmed
+// against templates/partials/_header.php and _mega-main-menu.php) --
+// their own float was already inert, float:none is a no-op cleanup, not
+// a layout change.
+//
+// ul is where the real row lives: it gets display:flex so the li items
+// sit side by side instead of via float. No align-items override here --
+// every li's only content is an <a> with line-height:48px, already
+// exactly matching the ul's own height:48px, so flex's default stretch
+// and float's natural sizing land on the same 48px either way. No
+// flex-wrap override either: flex's default (nowrap) matches what this
+// layout was always relying on in practice -- .main-nav is hidden
+// entirely below 1250px specifically because the float row was never
+// designed to wrap, so nowrap doesn't change any real behavior, it just
+// makes explicit what floats were already doing by not having enough
+// items to need a second line at any width this nav is actually shown.
+body.dev-float-refactor {
+    header .container .header-inner .headerRight {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    header .container .header-inner .headerRight .menu {
+        float: none;
+    }
+
+    header .container .header-inner .headerRight .menu-buttons {
+        float: none;
+    }
+
+    header .container .header-inner .headerRight .menu .main-nav {
+        float: none;
+    }
+
+    header .container .header-inner .headerRight .menu .main-nav ul {
+        float: none;
+        display: flex;
+    }
+
+    header .container .header-inner .headerRight .menu .main-nav ul li {
+        float: none;
+    }
+}
+
 // === Generated batch: sitewide float audit (auto-safe subset) ===
 // Each block below was generated from the exact same source nesting as
 // the original (selector text, media queries, & references all preserved
