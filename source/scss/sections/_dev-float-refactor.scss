@@ -291,6 +291,92 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 4 (hand-designed): search dropdown ===
+// source/scss/partials/_header.scss -- .search-dropdown, the full-width
+// panel that drops down when the search icon is clicked (#searchDropdown,
+// toggled via .active). .search-dropdown .container has exactly 3 direct
+// children in DOM order (confirmed against _header.php 670-736):
+// .column.logo-column (25%), .column.search-link (50%),
+// .close-clear-container (25%) -- all three float:left, none float:right,
+// and 25+50+25 sums to exactly 100%. Unlike Section 3's cluster+push-right
+// shape, this is a plain left-to-right 3-up row, so flex's default
+// justify-content:flex-start already matches float:left's behavior with
+// no extra property needed.
+//
+// Selectors scoped with the leading ".search-dropdown" throughout
+// specifically because ".container" and ".column" are generic classes
+// reused all over the theme -- these rules must never match any other
+// section's containers/columns.
+//
+// Two real nested pairs also get their own flex treatment:
+// .logo-title-container (the small Adapt icon + "Resources" text next to
+// it) and .search-column-container (the 3 link columns under the search
+// box, 33.33% each, summing to 100% same as the outer row). Both
+// selectors already carry float:none from the generated batch below
+// (they're float:left;width:100%, so batch-1's audit already caught
+// them) -- only display:flex is new here, merging with that existing
+// declaration exactly like Section 1-3's shared selectors did.
+//
+// Deliberately NOT touched: .close-clear-container's own children
+// (button.search-close, a.search-clear). Those don't just float
+// left/right statically -- .search-close SWITCHES from float:left to
+// float:right when .close-clear-container gets an .active class (added
+// by JS once there's text in the search box), so the close button
+// visually jumps from the far left to sitting next to the now-revealed
+// Clear link on the right. That's a real state-dependent reordering,
+// not a static float pair, and needs its own dedicated flex `order`-based
+// design rather than a blind float:none -- left for a later pass.
+body.dev-float-refactor {
+    .search-dropdown .container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .search-dropdown .container .column.logo-column {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .search-dropdown .container .column.search-link {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .search-dropdown .container .close-clear-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .search-dropdown .container .column.logo-column .logo-title-container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .search-dropdown .container .column.logo-column .logo-title-container .logo {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .search-dropdown .container .column.logo-column .logo-title-container .logo img {
+        float: none;
+    }
+
+    .search-dropdown .container .column.logo-column .logo-title-container .search-title {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .search-dropdown .container .column.search-link .search-column-container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .search-dropdown .container .column.search-link .search-column-container .column.search-link-column {
+        float: none;
+        flex-shrink: 0;
+    }
+}
+
 // === Generated batch: sitewide float audit (auto-safe subset) ===
 // Each block below was generated from the exact same source nesting as
 // the original (selector text, media queries, & references all preserved
