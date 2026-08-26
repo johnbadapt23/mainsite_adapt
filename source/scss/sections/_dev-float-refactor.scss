@@ -207,6 +207,90 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 3 (hand-designed): resources sticky-menu row ===
+// source/scss/partials/_header.scss -- the sticky bar shown when scrolled
+// (.resources-sticky-menu, shown/hidden by JS/scroll state, unrelated to
+// this change). Same idea as Sections 1-2, applied to this variant's own
+// row: .resources-sticky-inner directly contains 3 real children in DOM
+// order (confirmed against _header.php lines 258-571) --
+// .scroll-image-container, .resources-nav, .sticky-menu-right -- where
+// the first two float:left (sit adjacent to each other on the left) and
+// the third floats:right (pushed to the far right edge).
+//
+// That's NOT a 2-item pattern, so justify-content:space-between (used in
+// Sections 1-2) would be wrong here -- with 3 flex items it would spread
+// all three out evenly instead of clustering the first two together. The
+// correct flex equivalent of "everything float:left except the last
+// thing, which floats:right" is margin-left:auto on just that last item:
+// it consumes all remaining space to its own left, pushing itself to the
+// far right while leaving the earlier items exactly where default
+// flex-start already puts them -- adjacent, in source order, matching
+// float:left's behavior exactly.
+//
+// flex-shrink:0 on all three top-level children again matches float's
+// "never shrink below content width" -- these are width:auto/width:0px
+// (animated) elements, not fixed px like Section 1's logo, so without
+// this flexbox's default shrink-to-fit could squeeze them narrower than
+// float ever would if the row is ever visually tight.
+//
+// Left deliberately untouched: .sticky-menu-right's OWN children
+// (.search-button-container, .subscribe-button-container) keep using
+// float internally exactly as before -- float still works normally
+// inside any element regardless of whether that element is itself a flex
+// item from the outside, and .subscribe-button-container's width:0px
+// hover/JS-driven reveal animation is exactly the kind of narrower-width,
+// needs-individual-design-attention case this whole section-by-section
+// pass is deliberately going slow around. Same for .logo's img +
+// .resources-link-mobile pair (only both visible below 1250px) -- that
+// row gets its own display:flex since it's a genuine second float pair
+// nested inside this one, but nothing about how it animates/toggles is
+// touched.
+body.dev-float-refactor {
+    header .resources-sticky-menu .container .resources-sticky-inner {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    header .resources-sticky-menu .container .resources-sticky-inner .scroll-image-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    header .resources-sticky-menu .container .resources-sticky-inner .resources-nav {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    header .resources-sticky-menu .container .resources-sticky-inner .sticky-menu-right {
+        float: none;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+
+    header .resources-sticky-menu .container .resources-sticky-inner .scroll-image-container .logo {
+        float: none;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    header .resources-sticky-menu .container .resources-sticky-inner .scroll-image-container .logo img {
+        float: none;
+    }
+
+    header .resources-sticky-menu .container .resources-sticky-inner .scroll-image-container .logo .resources-link-mobile {
+        float: none;
+    }
+
+    header .resources-sticky-menu .container .resources-sticky-inner .resources-nav ul {
+        float: none;
+        display: flex;
+    }
+
+    header .resources-sticky-menu .container .resources-sticky-inner .resources-nav ul li {
+        float: none;
+    }
+}
+
 // === Generated batch: sitewide float audit (auto-safe subset) ===
 // Each block below was generated from the exact same source nesting as
 // the original (selector text, media queries, & references all preserved
