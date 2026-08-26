@@ -18431,3 +18431,116 @@ body.dev-float-refactor {
                 }
         }
 }
+
+// === Section 5 (hand-designed): mobile menu -- sub-menu back/close header bar ===
+// source/scss/partials/_header.scss -- the "back to previous level / close
+// menu" header row shown at the top of an open mobile sub-menu panel. This
+// exact 2-item pattern (.back-container floats left, .close-container
+// floats right, inside a plain .container with no float/display rule of
+// its own) is duplicated verbatim across 3 distinct DOM contexts, confirmed
+// against templates/partials/_mega-main-menu-mobile.php and the nested
+// selector chains at _header.scss lines 2680-2751, 3170-3250, and
+// 3540-3600:
+//   1. .mobileMenuMain top-level dropdown items
+//      (.main-nav-mobile > ul > li.main-dropdown .mobile-sub-menu
+//      .sub-menu-top .container)
+//   2. The "Our Services" sub-list nested inside that same
+//      .main-nav-mobile > ul (.services-inner-mobile > li.main-dropdown
+//      .mobile-sub-menu .sub-menu-top .container) -- confirmed via
+//      _mega-main-menu-mobile.php that .services-inner-mobile lives INSIDE
+//      .main-nav-mobile's <ul>, not as a separate top-level menu, so this
+//      selector is written as a more specific variant of #1 rather than an
+//      unrelated one (harmless if both ever matched the same element --
+//      they apply the identical override -- but writing both documents the
+//      real duplication found in the source).
+//   3. The separate .mobileMenuResources panel's own header bar
+//      (.mobileMenuResources .resources-menu-top .container) -- structurally
+//      simpler, not nested inside .main-nav-mobile at all.
+//
+// Same shape as Sections 1-2's logo/nav split: exactly 2 items, one floated
+// each direction, so the flex equivalent is justify-content:space-between
+// (not Section 3's margin-left:auto, which is for 3+-item cluster+push
+// rows). flex-shrink:0 on both .back-container/.close-container matches
+// float's "never shrink below content width" the same way Sections 3-4
+// applied it to width:auto items. .mobile-menu-title/.back/.close-menu
+// (the sole-child contents of each container) are not themselves flex
+// items -- their parent isn't a flex container -- so they just get
+// float:none with no flex properties, same as any inert sole-child float.
+//
+// .container is scoped with its full ancestor chain throughout (exactly
+// like Section 4's .search-dropdown .container) since it's a generic class
+// reused sitewide -- these rules only ever match inside .mobileMenuMain or
+// .mobileMenuResources.
+body.dev-float-refactor {
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .sub-menu-top .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .sub-menu-top .container .back-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .sub-menu-top .container .back-container .mobile-menu-title {
+        float: none;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .sub-menu-top .container .close-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .sub-menu-top .container .close-container .close-menu {
+        float: none;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li.main-dropdown .mobile-sub-menu .sub-menu-top .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li.main-dropdown .mobile-sub-menu .sub-menu-top .container .back-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li.main-dropdown .mobile-sub-menu .sub-menu-top .container .back-container .mobile-menu-title {
+        float: none;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li.main-dropdown .mobile-sub-menu .sub-menu-top .container .close-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li.main-dropdown .mobile-sub-menu .sub-menu-top .container .close-container .close-menu {
+        float: none;
+    }
+
+    .mobileMenuResources .resources-menu-top .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .mobileMenuResources .resources-menu-top .container .back-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobileMenuResources .resources-menu-top .container .back-container .back {
+        float: none;
+    }
+
+    .mobileMenuResources .resources-menu-top .container .close-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobileMenuResources .resources-menu-top .container .close-container .close-menu {
+        float: none;
+    }
+}
