@@ -40,6 +40,17 @@ function custom_excerpt_length( $length ) {
 	return 34;
 }
 
+// custom_show_admin_bar_admins_only
+function custom_show_admin_bar_admins_only( $show ) {
+	if ( ! is_user_logged_in() ) {
+		return false;
+	}
+
+	$user = wp_get_current_user();
+
+	return in_array( 'administrator', (array) $user->roles, true );
+}
+
 // remove_style_type
 function custom_remove_style_type($tag) {
     return preg_replace('~\s+type=["\'][^"\']++["\']~', '', $tag);

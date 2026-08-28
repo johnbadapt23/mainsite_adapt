@@ -30,6 +30,14 @@ header {
         @include transition(all, 300ms, ease);
     }
 
+    body.admin-bar & {
+        top: 32px !important;
+
+        @media (max-width: 782px) {
+            top: 46px !important;
+        }
+    }
+
 
     @media (max-width: 1250px) {
         height: 60px;
