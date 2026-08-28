@@ -152,6 +152,15 @@ function custom_body_classs($classes) {
 		}
     }
 
+	// This filter replaces $classes wholesale (see note above), which also
+	// discards WP core's own 'admin-bar' class before anything else gets a
+	// chance to see it -- re-added here the same way page-id-{ID} is, so
+	// admin-bar-aware CSS (see source/scss/partials/_header.scss) still
+	// works for administrators.
+	if ( is_admin_bar_showing() ) {
+		array_push( $classes, 'admin-bar' );
+	}
+
     return $classes;
 }
 
