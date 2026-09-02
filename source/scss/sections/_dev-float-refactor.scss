@@ -20495,6 +20495,41 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 15 (hand-designed): source/scss/templates/_form-
+// pages.scss -- remaining Category A/C floats not covered by the
+// earlier mechanical batch (3 declarations). Same classification rules
+// as Sections 7-14.
+//
+// .contact-innner is already display:flex in base CSS on desktop
+// (drops to display:block at <=1023px, where floats have no effect
+// anyway since both columns are already width:100%) -- .column.title-
+// details-column (40%) and .column.sub-title-form-column (60%) are
+// Category A at every breakpoint.
+//
+// .fast-track-text's own <=767px override (float:left;text-align:left;
+// margin:0 auto;display:inline-block) is a separate, narrower-scoped
+// declaration from its base float:left;width:100% rule (already
+// covered by the earlier mechanical batch) -- sole/stacked at this
+// breakpoint too (width stays 100%, no adjacent sibling to preserve a
+// row with), Category C. Wrapped in the exact same @media (max-width:
+// 767px) (not the @include responsive(767) mixin -- this file uses a
+// raw media query, confirmed via direct read and via the compiled
+// output's exact "@media (max-width:767px)" text) so the fix doesn't
+// leak outside its real scope. `.fast-track-text` also exists,
+// unrelated, in _events.scss -- no collision since this fix is scoped
+// to the full section.contact-module path.
+body.dev-float-refactor {
+    section.contact-module .container .contact-innner .column.title-details-column,
+    section.contact-module .container .contact-innner .column.sub-title-form-column {
+        float: none;
+    }
+    @media (max-width: 767px) {
+        section.contact-module .container .contact-innner .column.title-details-column .bottom-container .fast-track-text {
+            float: none;
+        }
+    }
+}
+
 // === Section 14 (hand-designed): source/scss/templates/_single-
 // speaker.scss -- remaining Category C/D floats not covered by the
 // earlier mechanical batch (3 declarations). Same classification rules
