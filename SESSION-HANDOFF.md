@@ -128,6 +128,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `ffdb085` | **Section 15**: `_form-pages.scss` -- see §2k below |
 | `91f3cf8` | **Section 16**: `_thank-you.scss` -- see §2l below |
 | `63e4511` | **Section 17**: `_market.scss` (5 of 6; 1 deliberately skipped) -- see §2m below |
+| `0138f76` | **Section 18**: `_app.scss` -- see §2n below |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -195,11 +196,12 @@ exactly why the section-by-section, check-in-first approach mattered.
   below. **`_thank-you.scss` is now done too (Section 16, 2026-09-02,
   `91f3cf8`)** -- see §2l below. **`_market.scss` is now done too
   (Section 17, 2026-09-02, `63e4511`, 5 of 6 -- 1 deliberately left
-  uncovered)** -- see §2m below. `_default.scss` and `_author.scss`
-  were checked and found already fully covered by the earlier
-  mechanical batch (0 uncovered declarations), no fix needed. Still
-  untouched: the rest of the ~17 remaining files in
-  `source/scss/templates/`.
+  uncovered)** -- see §2m below. **`_app.scss` is now done too
+  (Section 18, 2026-09-02, `0138f76`)** -- see §2n below.
+  `_default.scss` and `_author.scss` were checked and found already
+  fully covered by the earlier mechanical batch (0 uncovered
+  declarations), no fix needed. Still untouched: the rest of the ~16
+  remaining files in `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
   sections (`.introduction-content-container`, `.video-module`,
@@ -848,6 +850,20 @@ and here so it isn't mistaken for an oversight later. Same
 build+diff verification as every other section, 0/0/0 ungated on both
 compiled files. Committed as `63e4511`.
 
+### 2n. Section 18 (`_app.scss`), 2026-09-02
+
+2 remaining declarations, and a good example of not trusting a
+pattern-match on sight: `.text-container:nth-child(1) p{float:right}`
+paired with `:nth-child(2) p{float:left}` looks exactly like the
+float-reordering row pattern from Sections 6/10/11 (opposite float
+directions on adjacent siblings), but a direct read showed
+`:nth-child(1)` and `:nth-child(2)` are two separate, independently
+positioned `.text-container` boxes, not two children within one row --
+each `<p>` is the sole content of its own box. Bare float:none for
+both, no `flex-direction: row-reverse` involved. Same build+diff
+verification as every other section, 0/0/0 ungated on both compiled
+files. Committed as `0138f76`.
+
 ### Recommended way to continue
 
 Follow the exact same loop for each new section: identify the DOM/CSS
@@ -1282,12 +1298,12 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    `_resources-types.scss`/`_customer-events.scss`/`_events.scss`/
    `_registrations.scss`/`_post.scss`/`_login.scss`/
    `_single-speaker.scss`/`_form-pages.scss`/`_thank-you.scss`/
-   `_market.scss` (Sections 1-17, done; `_default.scss`/`_author.scss`
-   checked, already fully covered) to the other ~17 flagged SCSS files
-   (see §2). Note `_market.scss` has 1 declaration deliberately left
-   uncovered (§2m) -- worth a dedicated follow-up pass through the
-   shared `.item.one-third` selector family (spans `_events.scss`/
-   `_resources-types.scss`) before closing it out.
+   `_market.scss`/`_app.scss` (Sections 1-18, done; `_default.scss`/
+   `_author.scss` checked, already fully covered) to the other ~16
+   flagged SCSS files (see §2). Note `_market.scss` has 1 declaration
+   deliberately left uncovered (§2m) -- worth a dedicated follow-up
+   pass through the shared `.item.one-third` selector family (spans
+   `_events.scss`/`_resources-types.scss`) before closing it out.
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
