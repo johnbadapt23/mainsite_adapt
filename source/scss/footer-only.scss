@@ -1,5 +1,6 @@
-/* Dev-gated split build (2026-09-02): footer-only stylesheet, deferred via
-   the preload+onload pattern (see functions.php). partials/_footer.scss
+/* Footer CSS split (2026-09-02, promoted to default -- was a ?dev=true-gated
+   test): footer-only stylesheet, deferred via the preload+onload pattern
+   (see functions.php). partials/_footer.scss
    depends only on global/_mixins (the responsive and transition mixins) and
    global/_variables (color and font variables) -- verified via grep before
    splitting it out, it does not use anything from _base/_styles/_forms/

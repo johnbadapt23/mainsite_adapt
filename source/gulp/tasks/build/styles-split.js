@@ -1,12 +1,11 @@
-// Dev-gated footer-CSS-split build (2026-09-02). See main-nofooter.scss /
-// footer-only.scss for the rationale. These two tasks are purely additive:
-// they produce two NEW files (main-nofooter.min.css, footer.min.css)
-// alongside the existing main.min.css from build:styles, which is
-// untouched. Nothing here changes what build:styles produces or how it's
-// enqueued by default -- functions.php only switches to these files when
-// visiting with ?dev=true. Not part of the '_build' parallel task list by
-// default; run explicitly with `gulp build:styles-split` (or wired into a
-// deploy step later once the split is confirmed and promoted).
+// Footer-CSS-split build (2026-09-02, promoted from a ?dev=true-gated test
+// to the default -- see main-nofooter.scss / footer-only.scss for the
+// rationale and functions.php's my_enqueue_scripts() for the enqueue side).
+// Produces the two files actually enqueued (main-nofooter.min.css,
+// footer.min.css). build:styles still runs too and still produces
+// main.min.css, kept around as an unused rollback artifact -- nothing
+// here touches it. Wired into the '_build' parallel task list (gulpfile.js)
+// and into both CI deploy workflows' "Compile CSS and JS" step.
 var gulp = require('gulp');
 var sass = require('gulp-sass')(require('sass'));
 var sassGlob = require('../../sass-glob.js');

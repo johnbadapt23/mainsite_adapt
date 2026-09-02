@@ -30,5 +30,11 @@ gulp.task('_build', gulp.parallel(
     'build:images',
     'build:scripts',
     'build:styles',
+    // Produces the actually-enqueued split CSS (main-nofooter.min.css +
+    // footer.min.css, see source/gulp/tasks/build/styles-split.js and
+    // functions.php's my_enqueue_scripts()). build:styles above still
+    // runs too and produces main.min.css, kept as an unused rollback
+    // artifact.
+    'build:styles-split',
     'build:php'
 ));

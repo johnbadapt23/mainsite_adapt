@@ -15,10 +15,10 @@ Custom WordPress theme ("Adapt 2022") powering the ADAPT Research & Advisory sit
 
 ```bash
 npm install
-npx gulp build:styles build:scripts
+npx gulp build:styles build:styles-split build:scripts
 ```
 
-That compiles `source/scss/main.scss` → `assets/css/main.min.css` and `source/js/main.js` (+ vendor libraries) → `assets/js/main.min.js`. Point a local WordPress install's `wp-content/themes/` at this folder and activate the theme.
+That compiles `source/scss/main.scss` → `assets/css/main.min.css` (kept as an unused rollback artifact -- see the footer CSS split note below), `source/scss/main-nofooter.scss` + `source/scss/footer-only.scss` → `assets/css/main-nofooter.min.css` + `assets/css/footer.min.css` (the two files actually enqueued by `functions.php`), and `source/js/main.js` (+ vendor libraries) → `assets/js/main.min.js`. Point a local WordPress install's `wp-content/themes/` at this folder and activate the theme.
 
 For active development with live rebuild-on-save:
 ```bash
@@ -48,8 +48,10 @@ source/                                 Everything the build pipeline compiles F
   components/                           Third-party JS/CSS libraries, vendored directly (no package
                                          manager -- these are committed as-is)
   gulp/                                 The gulp4 task definitions (see Build system below)
-assets/                                 BUILD OUTPUT (main.min.css, main.min.js, images, fonts,
-                                         icons). Generated -- don't hand-edit.
+assets/                                 BUILD OUTPUT (main-nofooter.min.css + footer.min.css --
+                                         the enqueued split CSS, see Build system below --
+                                         main.min.css, main.min.js, images, fonts, icons).
+                                         Generated -- don't hand-edit.
 _archive/                               Retired/dead files kept for reference, not loaded by anything
                                          (old functions.php snapshots, unused legacy templates, the
                                          old bower.json/gulp-install packages task from before the
@@ -64,13 +66,14 @@ Gulp 4, dart-sass (via `gulp-sass`), all dependencies on actively-maintained, Co
 
 - **`source/gulp/sass-glob.js`** is a small local replacement for the `gulp-sass-glob` npm package, which has a path-joining bug that silently makes glob-style `@import` statements (e.g. `@import "templates/**/*.scss";` in `main.scss`) resolve to nothing. Don't reinstall the npm package in its place.
 - **`gulpfile.js`** eager-loads every file under `source/gulp/tasks/` via `require-dir`, so every task file's top-level `require()`s run on *any* gulp invocation, even one that only asks for a single task. Keep that in mind before adding a new `require()` at the top of a task file — if the package needs a system binary (like `gulp-fontgen` needing `fontforge`) or isn't in `package.json`, it'll break every gulp command, not just its own task.
-- **`gulp-clean-css`** runs with `level: 2` + `restructureRules` enabled in `build:styles` — this merges CSS rules that reopen the same selector in multiple places (common when several people edit the same SCSS file over time) after correctly resolving the cascade, so it only drops declarations that were already being overridden. Don't downgrade this without checking `main.min.css` size/output first.
+- **`gulp-clean-css`** runs with `level: 2` + `restructureRules` enabled in `build:styles` (and `build:styles-split`) — this merges CSS rules that reopen the same selector in multiple places (common when several people edit the same SCSS file over time) after correctly resolving the cascade, so it only drops declarations that were already being overridden. Don't downgrade this without checking output size first.
+- **`build:styles-split`** (`source/gulp/tasks/build/styles-split.js`) compiles `main-nofooter.scss` + `footer-only.scss` — everything except `partials/_footer.scss`, and just that partial, respectively — into the two files `functions.php` actually enqueues (`main-nofooter.min.css` deferred-loading `footer.min.css` via the same preload+onload pattern used for `wp-pagenavi`'s CSS, since the footer is never above-the-fold on any page). `build:styles`/`main.min.css` (the old single-bundle build) is kept building alongside it as an unused rollback artifact, not wired into anything. Not part of the `_build` parallel task list by default — CI invokes it explicitly (see Deployment below).
 
 ## Deployment (CI/CD)
 
 `.github/workflows/deploy.yml` runs on every push to whichever branch is configured in its `on.push.branches` list:
 1. `npm install`
-2. `npx gulp build:styles build:scripts` (compiles fresh CSS/JS from `source/`)
+2. `npx gulp build:styles build:styles-split build:scripts` (compiles fresh CSS/JS from `source/`)
 3. Deploys the built theme over SFTP — everything except `.git`, `.github`, `node_modules`, `source/`, `_archive/`, and the build tooling files (`package.json`, `gulpfile.js`, etc.)
 
 Configuration lives in a GitHub **environment** referenced by the workflow's `environment:` key (Settings → Environments), which supplies:

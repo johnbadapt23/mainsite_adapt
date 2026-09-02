@@ -337,38 +337,30 @@ function my_enqueue_scripts() {
     // meaning CSS/JS changes never busted browser/proxy caches after a
     // deploy. get_template_directory() (filesystem path) fixes that; the
     // enqueued src URL is unchanged.
-    // Dev-gated footer-CSS-split test (2026-09-02, ?dev=true only -- see
-    // SESSION-HANDOFF.md #70). partials/_footer.scss is structurally
-    // guaranteed to never be above-the-fold (the footer is always the last
-    // thing WordPress renders), so its compiled CSS can be deferred with no
-    // visual-risk -- verified rule-for-rule against the production
-    // main.min.css bundle before wiring this up (main-nofooter.min.css +
+    // Footer CSS split (promoted to default 2026-09-02, was ?dev=true-gated
+    // -- see SESSION-HANDOFF.md #70/#9). partials/_footer.scss is
+    // structurally guaranteed to never be above-the-fold (the footer is
+    // always the last thing WordPress renders), so its compiled CSS is
+    // deferred with no visual risk -- verified rule-for-rule against the
+    // old single-bundle main.min.css before this was gated, then confirmed
+    // on staging under the gate before promoting (main-nofooter.min.css +
     // footer.min.css together resolve to the exact same selector/property/
-    // value set as main.min.css; see source/scss/main-nofooter.scss and
-    // source/scss/footer-only.scss for the build side). Left off by default;
-    // production keeps using the single main.min.css bundle unchanged until
-    // this is confirmed on staging and promoted.
-    if ( isset( $_GET['dev'] ) && $_GET['dev'] === 'true' ) {
-        wp_enqueue_style(
-            'main-styles',
-            get_template_directory_uri(). '/assets/css/main-nofooter.min.css',
-            [],
-            filemtime(get_template_directory(). '/assets/css/main-nofooter.min.css')
-        );
-        wp_enqueue_style(
-            'footer-styles',
-            get_template_directory_uri(). '/assets/css/footer.min.css',
-            [ 'main-styles' ],
-            filemtime(get_template_directory(). '/assets/css/footer.min.css')
-        );
-    } else {
-        wp_enqueue_style(
-            'main-styles',
-            get_template_directory_uri(). '/assets/css/main.min.css',
-            [],
-            filemtime(get_template_directory(). '/assets/css/main.min.css')
-        );
-    }
+    // value set the old main.min.css did; see source/scss/main-nofooter.scss
+    // and source/scss/footer-only.scss for the build side). main.min.css
+    // itself is still built by build:styles (kept for a rollback path) but
+    // is no longer enqueued anywhere.
+    wp_enqueue_style(
+        'main-styles',
+        get_template_directory_uri(). '/assets/css/main-nofooter.min.css',
+        [],
+        filemtime(get_template_directory(). '/assets/css/main-nofooter.min.css')
+    );
+    wp_enqueue_style(
+        'footer-styles',
+        get_template_directory_uri(). '/assets/css/footer.min.css',
+        [ 'main-styles' ],
+        filemtime(get_template_directory(). '/assets/css/footer.min.css')
+    );
     // Loading ~2 CDN scripts on the 60+ templates that never touch GSAP was
     // pure waste -- see adapt_page_needs_gsap().
     if ( adapt_page_needs_gsap() ) {
@@ -466,11 +458,9 @@ function adapt_defer_pagenavi_css( $html, $handle ) {
 add_filter( 'style_loader_tag', 'adapt_defer_pagenavi_css', 10, 2 );
 
 // Same preload+onload deferred-load technique as adapt_defer_pagenavi_css()
-// above, applied to the dev-gated 'footer-styles' handle registered in
-// my_enqueue_scripts() (?dev=true only -- see the comment there and
-// SESSION-HANDOFF.md #70). No-op when the handle isn't registered (i.e.
-// the dev gate is off), since style_loader_tag is only fired for handles
-// that were actually enqueued.
+// above, applied to the 'footer-styles' handle registered in
+// my_enqueue_scripts() -- see the comment there and SESSION-HANDOFF.md
+// #70/#9.
 function adapt_defer_footer_css( $html, $handle ) {
     if ( 'footer-styles' !== $handle ) {
         return $html;

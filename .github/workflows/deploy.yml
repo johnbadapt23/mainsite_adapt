@@ -2,7 +2,11 @@ name: Build and Deploy Theme
 
 # Runs on every push to the "dev" branch:
 #   1. Installs Node deps and compiles CSS/JS from source/ via gulp
-#      (build:styles compiles source/scss -> assets/css/main.min.css,
+#      (build:styles compiles source/scss -> assets/css/main.min.css --
+#       kept as an unused rollback artifact, see the footer-split note
+#       below; build:styles-split compiles the same source, minus the
+#       footer partial, into the two files actually enqueued --
+#       assets/css/main-nofooter.min.css and assets/css/footer.min.css;
 #       build:scripts bundles source/js + vendor libs -> assets/js/main.min.js)
 #   2. Uploads the theme to the server over SFTP.
 #
@@ -80,7 +84,7 @@ jobs:
       # so loading the task registry for build:styles/build:scripts no longer
       # transitively requires it. See that file for the full explanation.
       - name: Compile CSS and JS
-        run: npx gulp build:styles build:scripts
+        run: npx gulp build:styles build:styles-split build:scripts
 
       # Two prior deploy approaches were tried and ruled out here:
       #  1. wlixcc/SFTP-Deploy-Action (original) -- always does a full,
@@ -116,17 +120,19 @@ jobs:
       #    as a literal filesystem path by this particular syntax form and
       #    breaks; verified locally against this repo's real git history).
       #
-      #  - assets/css/main.min.css and assets/js/main.min.js are committed
-      #    to git, but only ever *regenerated* by the "Compile CSS and JS"
-      #    step above -- they don't get re-committed by CI. That means a
-      #    plain git-diff-based delta would only pick them up as "changed"
-      #    on commits where someone manually rebuilt and committed them --
-      #    NOT on commits that only touch source/scss or source/js, since
-      #    source/ is excluded from deploy and the compiled output isn't
-      #    re-committed to reflect it. Left alone, that would silently
-      #    deploy stale compiled CSS/JS whenever only the source changed.
-      #    sync-delta-includes forces these two files into every deploy
-      #    regardless of what git diff reports, closing that gap.
+      #  - assets/css/main.min.css, assets/css/main-nofooter.min.css,
+      #    assets/css/footer.min.css, and assets/js/main.min.js are all
+      #    committed to git, but only ever *regenerated* by the
+      #    "Compile CSS and JS" step above -- they don't get re-committed
+      #    by CI. That means a plain git-diff-based delta would only pick
+      #    them up as "changed" on commits where someone manually rebuilt
+      #    and committed them -- NOT on commits that only touch
+      #    source/scss or source/js, since source/ is excluded from
+      #    deploy and the compiled output isn't re-committed to reflect
+      #    it. Left alone, that would silently deploy stale compiled
+      #    CSS/JS whenever only the source changed. sync-delta-includes
+      #    forces these four files into every deploy regardless of what
+      #    git diff reports, closing that gap.
       - name: Deploy over SFTP
         uses: milanmk/actions-file-deployer@master
         with:
@@ -163,4 +169,4 @@ jobs:
             :!/gulpfile.js
             :!/faviconData.json
             :!/README.md
-          sync-delta-includes: 'assets/css/main.min.css,assets/js/main.min.js'
+          sync-delta-includes: 'assets/css/main.min.css,assets/css/main-nofooter.min.css,assets/css/footer.min.css,assets/js/main.min.js'

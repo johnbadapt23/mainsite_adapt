@@ -1,14 +1,14 @@
-/* Dev-gated split build (2026-09-02): identical to main.scss except it
-   excludes partials/_footer.scss, which is compiled separately (see
-   footer-only.scss) and enqueued as a deferred stylesheet. The footer is
-   structurally guaranteed to never be above-the-fold on any page (it's the
-   last thing WordPress renders), so deferring just its CSS is a safe,
-   zero-visual-risk win once the .social-link rule that used to live in that
-   partial -- but is actually used sitewide, not just in the footer -- was
-   moved into global/_styles.scss (see the comment there). Only enqueued
-   behind the ?dev=true gate; production continues to use the single
-   main.min.css bundle from main.scss (which still includes the footer)
-   until this is confirmed and promoted.
+/* Footer CSS split (2026-09-02, promoted to default -- was a ?dev=true-gated
+   test): identical to main.scss except it excludes partials/_footer.scss,
+   which is compiled separately (see footer-only.scss) and enqueued as a
+   deferred stylesheet. The footer is structurally guaranteed to never be
+   above-the-fold on any page (it's the last thing WordPress renders), so
+   deferring just its CSS is a safe, zero-visual-risk win once the
+   .social-link rule that used to live in that partial -- but is actually
+   used sitewide, not just in the footer -- was moved into
+   global/_styles.scss (see the comment there). This is the entry point
+   functions.php actually enqueues (via main-nofooter.min.css); main.scss/
+   main.min.css are kept building as an unused rollback artifact.
    NOTE: block comment (not //) on purpose -- gulp-autoprefixer runs before
    sass compilation in this pipeline and parses entry files with a plain-CSS
    parser first, which chokes on SCSS-only "//" line comments. */

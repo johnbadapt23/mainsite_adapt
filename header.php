@@ -41,15 +41,16 @@
      which bypassed Yoast SEO's title customization (per-page SEO titles and
      templates) since Yoast can't reliably take over a hardcoded title tag. -->
 
-<!-- main.min.css is loaded via wp_enqueue_style() in functions.php (my_enqueue_scripts),
-     output below by wp_head(). It used to also be hardcoded here with a stale manual
+<!-- main-nofooter.min.css (+ deferred footer.min.css) is loaded via
+     wp_enqueue_style() in functions.php (my_enqueue_scripts), output below
+     by wp_head(). It used to also be hardcoded here with a stale manual
      "?ver=1.0.34", which loaded the same stylesheet twice on every page. -->
 <?php $adapt_skelet_icons_css = get_template_directory_uri() . '/assets/fonts/skelet-icons-master/style.css'; ?>
 <!-- This is a hardcoded <link>, not wp_enqueue_style()'d, so it was always a
      plain render-blocking stylesheet on every page (Lighthouse's "render-blocking
      requests" audit) -- icon glyphs are never above-the-fold-critical the way
-     main.min.css is, so the standard preload+onload swap defers it off the
-     blocking path. The <noscript> fallback keeps icons working with JS disabled. -->
+     main-nofooter.min.css is, so the standard preload+onload swap defers it off
+     the blocking path. The <noscript> fallback keeps icons working with JS disabled. -->
 <link rel="preload" as="style" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>"></noscript>
 <link rel="apple-touch-icon" sizes="180x180" href="<?php echo get_template_directory_uri(); ?>/assets/images/apple-touch-icon.png">
