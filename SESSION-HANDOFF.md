@@ -120,6 +120,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `4d66d9c` | **Section 7**: `_flexible.scss` (homepage/content sections) -- see §2c below; also fixes a second, related bug in `fix-float-none-display.js` found while verifying this section |
 | `75a0928` | **Section 8**: `_resources-types.scss` -- see §2d below; corrects an earlier (§2b) "out of scope" call for `.featured-home` |
 | `3b8c1a6` | **Section 9**: `_customer-events.scss` -- see §2e below |
+| `02b544a` | **Section 10**: `_events.scss` -- see §2f below |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -176,8 +177,10 @@ exactly why the section-by-section, check-in-first approach mattered.
   -- see §2c below. **`_resources-types.scss` is now done too (Section 8,
   2026-09-02, `75a0928`)** -- see §2d below. **`_customer-events.scss` is
   now done too (Section 9, 2026-09-02, `3b8c1a6`)** -- see §2e below.
-  Still untouched: `_events.scss`, `_registrations.scss`, `_post.scss`,
-  and the rest of the ~27 remaining files in `source/scss/templates/`.
+  **`_events.scss` is now done too (Section 10, 2026-09-02, `02b544a`)**
+  -- see §2f below. Still untouched: `_registrations.scss`,
+  `_post.scss`, and the rest of the ~26 remaining files in
+  `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
   sections (`.introduction-content-container`, `.video-module`,
@@ -542,6 +545,78 @@ changes there too, expected). All 107 new selectors are gated, matching
 what was authored; spot-checked the 4 hand-designed non-bare-float:none
 rules directly in the compiled CSS output to confirm they came out
 exactly as intended. Committed as `3b8c1a6`.
+
+### 2f. Section 10 (`_events.scss`), 2026-09-02
+
+26 Category C/D declarations across the file, on top of what the
+earlier mechanical batch already covered.
+
+**Cross-file selector collision, worth remembering for future
+sections.** This file's compiled selectors overlap by name with other
+templates that reuse the same top-level section class with completely
+different internal DOM: `section.events-title-block` also exists in
+`_services.scss`, `section.community-block` also exists in
+`_landing.scss`, and `section.quote-slider`/`section.stats` also exist
+in `_benchmarking.scss`/`_gtm.scss` with entirely different children
+under the same class name. The initial compiled-CSS "what's still
+uncovered" scan pulled in 23 false positives from those other files
+(`.benchmarking-quote`, `.gtm-cards-module`, `.three-column-video-gtm`)
+before every remaining candidate was individually cross-checked
+against a direct read of `_events.scss` itself. **Lesson for future
+sections:** never trust a compiled-CSS selector match alone to attribute
+a rule to "this file" -- always confirm by reading the actual source
+file's structure at that selector.
+
+**Four separate Slick carousels in one file.** `.keynote-slider-module
+.keynote-slider`, `.quote-slider-module` (a fourth distinct Slick init
+across the whole codebase now, separate from Section 9's three),
+`.quote-slider-thumbnails` (a second, independently Slick-initialized
+`asNavFor`-synced thumbnail nav for the *same* quote module -- not
+just a plain sibling, confirmed via a second `.slick()` call in
+main.js), and `.flip-card-container.mobile .slick-list .slick-track
+.slide`. All four excluded wholesale, nothing nested touched.
+
+**Deliberately skipped, real width-calc risk:**
+`section.events-listing-module`'s event-item card date/content/image
+row. Two different listing templates (`_events-listing.php` vs
+`_events-listing-partners.php`) render different DOM under the exact
+same compiled selector -- one nests the date box inside an unfloated,
+unwidthed wrapper that's itself a sibling of the floated image column,
+the other has no date box at all. `.item-content-container`'s
+`calc(100% - 516px)` only produces the right pixel width because it's
+calculated two nesting levels deep against the *outer* container's
+width while sitting inside that unfloated wrapper -- correctly
+flexing this would mean recalculating that number against a new,
+narrower flex-item parent (`calc(100% - 116px)`), which is an actual
+size edit, not a mechanical float->flex swap. Left for dedicated
+review with both templates open side by side, not touched.
+
+**Two genuine still-live row pairs needed more than bare
+`float:none`:** `.icon-text-column-container .column` (icon 80px +
+text calc(100% - 80px), needed `display:flex` added to the row);
+`.sneak-peak-container` (text 550px + image calc(100% - 550px)
+float:right, needed `flex-direction:row-reverse` -- DOM order is
+image-then-text but the visual is text-left/image-right, same
+row-reversal technique as Section 6's `.subscribe-sidebar-form`
+icon+content split); `.events-listing-top` (year-button-container 40%
++ button-container 60% float:right, needed `display:flex;
+flex-wrap:wrap` -- the wrap matters because `.button-container`'s own
+mobile override switches it to width:100%, which needs to drop to a
+new line same as the float version did).
+
+Verified: same 3-file semantic diff as every other section, 0/0/0
+outside the gated scope. One extra verification step this time: an
+initial single anchored `grep` appeared to show a new rule's
+`float:none` missing after merging with a pre-existing mechanically-
+generated rule for the same selector -- re-checked with a script that
+walks every occurrence of the selector in the compiled output (not
+just the first literal match) and confirmed both the old and new
+rules are genuinely present and both apply in cascade order; the grep
+had just missed an earlier comma-separated occurrence. No actual bug,
+but worth the extra check given this is exactly the failure class
+documented in `fix-float-none-display.js`'s header comment (clean-css
+merge behavior isn't guaranteed to combine same-selector rules the way
+you'd expect). Committed as `02b544a`.
 
 ### Recommended way to continue
 
@@ -974,9 +1049,9 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    `?dev=true` staging check in item 1 above before it's trustworthy to
    build on further.
 3. Extend the float audit beyond `_header.scss`/`_flexible.scss`/
-   `_resources-types.scss`/`_customer-events.scss` (Sections 1-9, done)
-   to the other ~27 flagged SCSS files (see §2), e.g. `_events.scss`,
-   `_registrations.scss`, `_post.scss`.
+   `_resources-types.scss`/`_customer-events.scss`/`_events.scss`
+   (Sections 1-10, done) to the other ~26 flagged SCSS files (see §2),
+   e.g. `_registrations.scss`, `_post.scss`.
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
