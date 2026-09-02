@@ -127,6 +127,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `8e88d33` | **Section 14**: `_single-speaker.scss` -- see §2j below |
 | `ffdb085` | **Section 15**: `_form-pages.scss` -- see §2k below |
 | `91f3cf8` | **Section 16**: `_thank-you.scss` -- see §2l below |
+| `63e4511` | **Section 17**: `_market.scss` (5 of 6; 1 deliberately skipped) -- see §2m below |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -192,10 +193,12 @@ exactly why the section-by-section, check-in-first approach mattered.
   14, 2026-09-02, `8e88d33`)** -- see §2j below. **`_form-pages.scss`
   is now done too (Section 15, 2026-09-02, `ffdb085`)** -- see §2k
   below. **`_thank-you.scss` is now done too (Section 16, 2026-09-02,
-  `91f3cf8`)** -- see §2l below. `_default.scss` and `_author.scss`
+  `91f3cf8`)** -- see §2l below. **`_market.scss` is now done too
+  (Section 17, 2026-09-02, `63e4511`, 5 of 6 -- 1 deliberately left
+  uncovered)** -- see §2m below. `_default.scss` and `_author.scss`
   were checked and found already fully covered by the earlier
   mechanical batch (0 uncovered declarations), no fix needed. Still
-  untouched: the rest of the ~18 remaining files in
+  untouched: the rest of the ~17 remaining files in
   `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
@@ -825,6 +828,26 @@ fully covered by the earlier mechanical batch, nothing to fix. Same
 build+diff verification as every other section, 0/0/0 ungated on both
 compiled files. Committed as `91f3cf8`.
 
+### 2m. Section 17 (`_market.scss`), 2026-09-02
+
+5 of 6 remaining declarations fixed; 1 deliberately left uncovered.
+`.market-two-column`'s `.column` needed its own new flex parent for a
+genuine `.inner-column` (image + text) pair inside it, confirmed via
+`templates/components/_market-two-column.php`. The interesting call
+this section: `section.market-featured`'s mobile-only `.item
+.item-content-container` row override was traced back to a shared
+`.item.one-third` base selector spanning `_events.scss` and
+`_resources-types.scss` (the section renders with class
+`market-featured filter-listing`, picking up that shared rule family)
+whose desktop `.image-container`/`<a>` float behavior wasn't fully
+mapped in this pass -- rather than guess at a plausible-looking fix,
+left it uncovered for a dedicated future pass through that shared
+selector's full definition. This is the first section with a partial
+(not 100%) completion -- documented explicitly in the commit message
+and here so it isn't mistaken for an oversight later. Same
+build+diff verification as every other section, 0/0/0 ungated on both
+compiled files. Committed as `63e4511`.
+
 ### Recommended way to continue
 
 Follow the exact same loop for each new section: identify the DOM/CSS
@@ -1258,10 +1281,13 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
 3. Extend the float audit beyond `_header.scss`/`_flexible.scss`/
    `_resources-types.scss`/`_customer-events.scss`/`_events.scss`/
    `_registrations.scss`/`_post.scss`/`_login.scss`/
-   `_single-speaker.scss`/`_form-pages.scss`/`_thank-you.scss`
-   (Sections 1-16, done; `_default.scss`/`_author.scss` checked,
-   already fully covered) to the other ~18 flagged SCSS files (see
-   §2).
+   `_single-speaker.scss`/`_form-pages.scss`/`_thank-you.scss`/
+   `_market.scss` (Sections 1-17, done; `_default.scss`/`_author.scss`
+   checked, already fully covered) to the other ~17 flagged SCSS files
+   (see §2). Note `_market.scss` has 1 declaration deliberately left
+   uncovered (§2m) -- worth a dedicated follow-up pass through the
+   shared `.item.one-third` selector family (spans `_events.scss`/
+   `_resources-types.scss`) before closing it out.
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
