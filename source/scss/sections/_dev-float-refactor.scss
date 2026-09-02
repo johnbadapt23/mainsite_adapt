@@ -19623,3 +19623,430 @@ body.dev-float-refactor {
         float: none;
     }
 }
+
+// === Section 9 (hand-designed): source/scss/templates/_customer-events.scss
+// -- remaining Category C/D floats not covered by the earlier mechanical
+// batch (109 declarations). Same classification rules as Sections 7-8.
+//
+// Global note: this file defines a shared, reused `.column-container`
+// class (base rule, top of file) as `float:left; width:100%;
+// display:flex;`. That base rule isn't touched here (it's used
+// site-wide, well beyond this one template, so it's out of scope for a
+// single-file pass) -- but every scoped `.column-container` instance
+// below inherits `display:flex` from it even where the local block
+// doesn't repeat `display:flex`, which is why so many of its direct
+// children are safe as bare float:none (parent already flex).
+//
+// Excluded as live Slick carousels (confirmed in main.js): the whole
+// .company-slide-container subtree (section.company-slider, incl. its
+// nested .bottom-text/span) and the whole .full-suite-slider subtree
+// (section.full-suite-slider-module, incl. its nested .current-viewing-
+// tab/.image-container), same reasoning as .home-content-slider
+// elsewhere in this file -- left floating on purpose, not touched.
+// .quote-slider-module (section.quote-slider) is ALSO independently
+// Slick-managed (separate init from the above two), but unlike them its
+// floats live entirely inside .customer-quote-slider-inner, a plain
+// content block one level below where Slick's own slide/track mechanics
+// operate -- confirmed safe to fix regardless of carousel state, same
+// as .company-slide's .bottom-text would have been if it weren't
+// already covered by the wholesale exclusion above. The same grouped
+// selector also styles the non-Slick `.quote-module` (single-quote
+// variant), so this one write covers both correctly.
+//
+// section.comparison-three-column-text: already float:none end to end
+// in the live, ungated CSS aside from .counter-text (itself already
+// float:none too) -- nothing to gate, not a bug, not listed below.
+body.dev-float-refactor {
+    // section.two-column.two-column-image-slider-events: simple two-
+    // column hero (text column + image-slider column), each side just a
+    // stack of 100%-width blocks under an already-flex .column-container.
+    section.two-column.two-column-image-slider-events .container .column-container {
+        float: none;
+    }
+    section.two-column.two-column-image-slider-events .container .column-container .column.text-column h1,
+    section.two-column.two-column-image-slider-events .container .column-container .column.text-column p,
+    section.two-column.two-column-image-slider-events .container .column-container .column.text-column .list-container,
+    section.two-column.two-column-image-slider-events .container .column-container .column.text-column .list-container .list-item,
+    section.two-column.two-column-image-slider-events .container .column-container .column.text-column .button-container {
+        float: none;
+    }
+    // .customer-events-image-slider is already display:flex itself (its
+    // own float is dead); not Slick -- confirmed via main.js, this
+    // module uses active-class/opacity toggling, not .slick().
+    section.two-column.two-column-image-slider-events .container .column-container .column.slider-column .customer-events-image-slider {
+        float: none;
+    }
+    section.two-column.two-column-image-slider-events .container .column-container .column.slider-column .customer-events-image-slider .slide .bottom-text-container span {
+        float: none;
+    }
+
+    // section.fixed-scroller (the base, non body.template-evr version):
+    // >h2/p.p-medium are Category A siblings under .title-container
+    // .column-container (already flex via the global class);
+    // .fixed-image-container is Category A too (.fixed-scroll-item is
+    // already display:flex; align-items:center).
+    section.fixed-scroller .container .title-container > h2,
+    section.fixed-scroller .container .title-container p.p-medium {
+        float: none;
+    }
+    section.fixed-scroller .container .fixed-scroller-container .fixed-scroller-inner .fixed-scroll-item .fixed-image-container {
+        float: none;
+    }
+
+    // section.speaker-text-carousel: .column-container's children are
+    // Category A (already-flex parent, same global class); the two
+    // speaker-slider-outer wings are a plain 50/50 flex row it already
+    // sets display:flex on itself, so its own float and its two
+    // children's floats are all dead weight, same for the sole-child
+    // inner wrappers underneath each wing.
+    section.speaker-text-carousel .container .container-inner .title-container {
+        float: none;
+    }
+    section.speaker-text-carousel .container .container-inner .title-container .column-container > h2,
+    section.speaker-text-carousel .container .container-inner .title-container .column-container .link-container,
+    section.speaker-text-carousel .container .container-inner .title-container .column-container p.p-medium {
+        float: none;
+    }
+    section.speaker-text-carousel .container .container-inner .speaker-slider-outer {
+        float: none;
+    }
+    section.speaker-text-carousel .container .container-inner .speaker-slider-outer .speaker-slider-image-container {
+        float: none;
+    }
+    section.speaker-text-carousel .container .container-inner .speaker-slider-outer .speaker-slider-image-container .speaker-slider-image-outer {
+        float: none;
+    }
+    section.speaker-text-carousel .container .container-inner .speaker-slider-outer .speaker-slider-image-container .speaker-slider-image-outer .bottom-text-container span {
+        float: none;
+    }
+    section.speaker-text-carousel .container .container-inner .speaker-slider-outer .speaker-slider-text-container {
+        float: none;
+    }
+    section.speaker-text-carousel .container .container-inner .speaker-slider-outer .speaker-slider-text-container .speaker-slider-text-outer {
+        float: none;
+    }
+    section.speaker-text-carousel .container .container-inner .speaker-slider-outer .speaker-slider-text-container .speaker-slider-text-outer .speaker-slide-text {
+        float: none;
+    }
+
+    // section.speaker-module: .label-small/.filter-container-outer/
+    // .speaker-filter-inner are Category A (already-flex row parents).
+    // .speakers is a genuine still-live 3-up floated grid
+    // (nth-child(3n+1){clear:both}) with no flex parent of its own on
+    // desktop (it only sets display:flex in its own ≤767px block).
+    section.speaker-module .container .title-container .label-small {
+        float: none;
+    }
+    section.speaker-module .container .speakers-container-outer .filter-container-outer,
+    section.speaker-module .container .speakers-container-outer .speaker-filter-inner {
+        float: none;
+    }
+    section.speaker-module .container .speakers-container-outer .speakers {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        float: none;
+    }
+    section.speaker-module .container .speakers-container-outer .speakers .column.speaker-item {
+        float: none;
+    }
+    section.speaker-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio {
+        float: none;
+    }
+    section.speaker-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio .text-container.desktop-hide,
+    section.speaker-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio .text-container.desktop-hide span.p-small,
+    section.speaker-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio .text-container.desktop-hide .label-Xsmall,
+    section.speaker-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio .image-container,
+    section.speaker-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio .image-container .text-container h5,
+    section.speaker-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio .image-container .text-container span.label-Xsmall,
+    section.speaker-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio .image-container .text-container .learn-more,
+    section.speaker-module.partner-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio .text-container.desktop-hide,
+    section.speaker-module.partner-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio .text-container.desktop-hide .p-small {
+        float: none;
+    }
+    // .full-bio .bio-content-wrapper: sole child, width:auto (shrink to
+    // content) rather than 100% -- still a simple stacked block.
+    section.speaker-module .container .full-bio .bio-content-wrapper {
+        float: none;
+    }
+    // .bio-top: .image-container (175px, unfloated) sits beside .text
+    // (calc(100% - 226px), floated) -- widths sum to 100%, a genuine
+    // still-live side-by-side pair with no flex parent of its own yet.
+    section.speaker-module .container .full-bio .bio-top {
+        display: flex;
+        align-items: flex-start;
+    }
+    section.speaker-module .container .full-bio .bio-top .text {
+        float: none;
+    }
+    section.speaker-module .container .full-bio .bio-top .text .linkedin {
+        float: none;
+    }
+
+    // section.topic-industry-switcher (.bottom-container): .accordion-
+    // counter/.accordion-inner are Category A (parent .accordion-item is
+    // already display:flex). .text-outer-container (calc(100% - 335px),
+    // float:right) renders below the full-width .accordion-container
+    // (already float:none, no room to tuck beside it) and needs
+    // margin-left:auto to keep its original right-aligned position now
+    // that float:right no longer does that job; .image-outer below it
+    // is already covered (100%-width block, no special handling needed).
+    .bottom-container .topics-container .accordion-container .accordion-item .accordion-counter,
+    .bottom-container .industries-container .accordion-container .accordion-item .accordion-counter,
+    .bottom-container .topics-container .accordion-container .accordion-item .accordion-inner,
+    .bottom-container .industries-container .accordion-container .accordion-item .accordion-inner {
+        float: none;
+    }
+    .bottom-container .topics-container .text-outer-container,
+    .bottom-container .industries-container .text-outer-container {
+        float: none;
+        margin-left: auto;
+    }
+
+    // section.full-image-text: sole/stacked wrapper, width:auto rather
+    // than 100% (shrink to content) -- still a simple stacked block.
+    section.full-image-text .text-container-outer .text-container-inner {
+        float: none;
+    }
+
+    // section.company-slider: .company-progress is a SIBLING of the
+    // confirmed-Slick .company-slide-container (not nested inside it),
+    // so it's in scope -- sole child, simple progress bar.
+    // .company-slide-container itself and everything nested inside it
+    // (incl. .bottom-text/span) are the confirmed Slick carousel --
+    // left floating on purpose, not touched, see header comment.
+    section.company-slider .container .company-progress-container .company-progress {
+        float: none;
+    }
+
+    // section.new-cta: .column-container already has float:none in the
+    // live CSS (global class flex confirmed active/intentional here).
+    // .title-column is a Category A sibling of .cta-column in that same
+    // flex row. The two .text-link-animation variants are sole/stacked,
+    // float:right at desktop and float:left in their own mobile
+    // override -- both just need float:none in their respective context.
+    section.new-cta .cta-outer .container .column-container .column.title-column {
+        float: none;
+    }
+    section.new-cta .cta-outer .container .column-container .cta-column a.text-link-animation,
+    section.new-cta .cta-outer .container .column-container .cta-column span.text-link-animation {
+        float: none;
+    }
+    @media (max-width: 1023px) {
+        section.new-cta .cta-outer .container .column-container .cta-column a.text-link-animation,
+        section.new-cta .cta-outer .container .column-container .cta-column span.text-link-animation {
+            float: none;
+        }
+    }
+
+    // section.map-moving-text: .growing-text-container .column is
+    // Category A (parent .growing-text-container is already display:flex).
+    section.map-moving-text .container .map-fixed-scroller-container .growing-text-container .column {
+        float: none;
+    }
+
+    // section.quote-slider.customer-events-slider: .quote-slider-outer
+    // is a sole/stacked wrapper. Everything under
+    // .customer-quote-slider-inner is plain content one level below
+    // where the confirmed-Slick .quote-slider-module actually operates
+    // (.quote-slide/.slick-track), so it's safe to fix regardless of
+    // carousel state -- the same grouped selector also covers the
+    // non-Slick .quote-module (single-quote variant). .logo-text-
+    // container is already display:flex itself (Category A, dead
+    // float). .quote-name-container/.logo-container (mobile, single-
+    // quote variant) are Category A flex-column children of that same
+    // .logo-text-container.
+    section.quote-slider.customer-events-slider .container .quote-slider-outer {
+        float: none;
+    }
+    section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-slider-module .quote-slide .customer-quote-slider-inner h2,
+    section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-module .quote-slide .customer-quote-slider-inner h2,
+    section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-slider-module .quote-slide .customer-quote-slider-inner .small-quote-text,
+    section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-module .quote-slide .customer-quote-slider-inner .small-quote-text,
+    section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-slider-module .quote-slide .customer-quote-slider-inner .quote-title,
+    section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-module .quote-slide .customer-quote-slider-inner .quote-title,
+    section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-slider-module .quote-slide .customer-quote-slider-inner .quote-business,
+    section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-module .quote-slide .customer-quote-slider-inner .quote-business,
+    section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-slider-module .quote-slide .customer-quote-slider-inner .logo-text-container,
+    section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-module .quote-slide .customer-quote-slider-inner .logo-text-container {
+        float: none;
+    }
+    @media (max-width: 767px) {
+        section.quote-slider.customer-events-slider.single-quote .container .quote-slider-outer .quote-module .quote-slide .customer-quote-slider-inner .logo-text-container .quote-name-container,
+        section.quote-slider.customer-events-slider.single-quote .container .quote-slider-outer .quote-module .quote-slide .customer-quote-slider-inner .logo-text-container .logo-container {
+            float: none;
+        }
+    }
+
+    // section.advisors-carousel: sole section-level block. .speaker-item
+    // is already a flex item (parent .carousel-container is display:flex,
+    // a pure-CSS marquee animation, not Slick -- confirmed via main.js,
+    // no .slick() call targets this module); .image-container/h5/
+    // span.label-Xsmall underneath are simple sole/stacked blocks.
+    section.advisors-carousel {
+        float: none;
+    }
+    section.advisors-carousel .speaker-item .image-container {
+        float: none;
+    }
+    section.advisors-carousel .speaker-item .image-container .text-container h5,
+    section.advisors-carousel .speaker-item .image-container .text-container span.label-Xsmall {
+        float: none;
+    }
+
+    // section.centered-text-links.advisors-centered-text-links: .text is
+    // already float:none at desktop; its own ≤767px override re-adds
+    // float:left (display:inline-block already set, no display fix
+    // needed) -- just needs float:none in that same mobile context.
+    @media (max-width: 767px) {
+        section.centered-text-links.advisors-centered-text-links .container .text-container .text {
+            float: none;
+        }
+    }
+
+    // section.left-text-links.advisors-centered-text-links: .text's own
+    // ≤767px override re-adds float:left -- same pattern as above.
+    // &.left-text-links-image .mobile-image-container is float:left at
+    // both its (display:none) default and its ≤767px (display:block)
+    // override -- only the mobile context is uncovered.
+    @media (max-width: 767px) {
+        section.left-text-links.advisors-centered-text-links .container .text-container .text {
+            float: none;
+        }
+        section.left-text-links.advisors-centered-text-links.left-text-links-image .mobile-image-container {
+            float: none;
+        }
+    }
+
+    // section.two-column-text-image-cards: .title-container h2 is
+    // already float:none at desktop; its own ≤767px override re-adds
+    // float:left. .column-container-outer's own ≤767px override has the
+    // file's one non-standard-spacing float ("float:left;", no space
+    // after the colon) -- same fix either way.
+    @media (max-width: 767px) {
+        section.two-column-text-image-cards .container .title-container h2 {
+            float: none;
+        }
+        section.two-column-text-image-cards .container .column-container-outer {
+            float: none;
+        }
+    }
+
+    // section.three-column-text-image-cards: .title-column h2 is already
+    // float:none at desktop; its own ≤767px override re-adds float:left.
+    @media (max-width: 767px) {
+        section.three-column-text-image-cards .container .column-container-outer .column-container .column.title-column h2 {
+            float: none;
+        }
+    }
+
+    // section.expanding-form-module: .socials-container .text is
+    // Category A (parent .socials-container is already display:flex).
+    section.expanding-form-module .column .socials-container .text {
+        float: none;
+    }
+
+    // section.full-suite-slider-module: .title-container and its
+    // children, and .slide-link-container, are all siblings of the
+    // confirmed-Slick .full-suite-slider (not nested inside it) -- sole/
+    // stacked blocks, safe. .full-suite-slider itself and everything
+    // nested inside it (incl. .current-viewing-tab/.image-container) are
+    // the confirmed Slick carousel -- left floating on purpose, not
+    // touched, see header comment.
+    section.full-suite-slider-module .container .title-container {
+        float: none;
+    }
+    section.full-suite-slider-module .container .title-container h2,
+    section.full-suite-slider-module .container .title-container .text {
+        float: none;
+    }
+    section.full-suite-slider-module .container .slider-outer .slide-link-container {
+        float: none;
+    }
+
+    // section.two-column-logo-carousel: .text-inner/.button-container are
+    // sole/stacked or Category A (own local flex); confirmed NOT Slick
+    // (no .slick() call in main.js targets logo-carousel/moving-logos --
+    // same pure-CSS marquee mechanism as the other .moving-logos-up/down
+    // instance already covered elsewhere in this file).
+    section.two-column-logo-carousel .container .column-container .column.text-column .text-inner {
+        float: none;
+    }
+    section.two-column-logo-carousel .container .column-container .column.text-column .button-container {
+        float: none;
+    }
+    @media (max-width: 1023px) {
+        section.two-column-logo-carousel .container .column-container .column.text-column .button-container a {
+            float: none;
+        }
+    }
+    section.two-column-logo-carousel .container .column-container .column.carousel-column .carousel-column-inner .moving-logos-up .logo-container,
+    section.two-column-logo-carousel .container .column-container .column.carousel-column .carousel-column-inner .moving-logos-down .logo-container {
+        float: none;
+    }
+    section.two-column-logo-carousel .container .column-container .column.carousel-column .carousel-column-inner .moving-logos-up .logo-container .image-container,
+    section.two-column-logo-carousel .container .column-container .column.carousel-column .carousel-column-inner .moving-logos-down .logo-container .image-container {
+        float: none;
+    }
+
+    // .sticky-slider-cards: sole/stacked wrappers throughout.
+    // .column-container/.slider-scrolling-content are Category A (both
+    // already display:flex themselves). .mobile-slide-count's two spans
+    // (.slide-number + count, width:auto) need to stay side by side --
+    // giving the parent display:flex keeps that regardless of whatever
+    // display value the mechanical display:block safety net adds to the
+    // spans themselves (flex items lay out via flex regardless of their
+    // own outer display type). .list-item is already display:flex itself
+    // (Category A; .icon-container/.text-container aren't floated).
+    .sticky-slider-cards {
+        float: none;
+    }
+    .sticky-slider-cards .slider-scrolling-container {
+        float: none;
+    }
+    .sticky-slider-cards .slider-scrolling-container .heading-container {
+        float: none;
+    }
+    .sticky-slider-cards .slider-scrolling-container .heading-container .inner-text-container .labelSmall,
+    .sticky-slider-cards .slider-scrolling-container .heading-container .inner-text-container h2 {
+        float: none;
+    }
+    @media (max-width: 767px) {
+        .sticky-slider-cards .slider-scrolling-container .heading-container .inner-text-container {
+            float: none;
+        }
+        .sticky-slider-cards .slider-scrolling-container .heading-container .inner-text-container span.p-large {
+            float: none;
+        }
+    }
+    .sticky-slider-cards .sticky-slider-container {
+        float: none;
+    }
+    .sticky-slider-cards .sticky-slider-container .slides-container .container .column-container {
+        float: none;
+    }
+    .sticky-slider-cards .sticky-slider-container .slides-container .container .column-container .column.one-half.text-column .slider-scrolling-content {
+        float: none;
+    }
+    .sticky-slider-cards .sticky-slider-container .slides-container .container .column-container .column.one-half.text-column .slider-scrolling-content .slider-scrolling-content-inner .mobile-slide-count {
+        display: flex;
+        align-items: baseline;
+        float: none;
+    }
+    .sticky-slider-cards .sticky-slider-container .slides-container .container .column-container .column.one-half.text-column .slider-scrolling-content .slider-scrolling-content-inner .mobile-slide-count span {
+        float: none;
+    }
+    .sticky-slider-cards .sticky-slider-container .slides-container .container .column-container .column.one-half.text-column .slider-scrolling-content .slider-scrolling-content-inner .mobile-image-container {
+        float: none;
+    }
+    .sticky-slider-cards .sticky-slider-container .slides-container .container .column-container .column.one-half.text-column .slider-scrolling-content .slider-scrolling-content-inner h3,
+    .sticky-slider-cards .sticky-slider-container .slides-container .container .column-container .column.one-half.text-column .slider-scrolling-content .slider-scrolling-content-inner .list-container {
+        float: none;
+    }
+    .sticky-slider-cards .sticky-slider-container .slides-container .container .column-container .column.one-half.text-column .slider-scrolling-content .slider-scrolling-content-inner .list-container .list-item {
+        float: none;
+    }
+    .sticky-slider-cards .sticky-slider-container .slides-container .container .column-container .column.one-half.image-column .image-container {
+        float: none;
+    }
+}
