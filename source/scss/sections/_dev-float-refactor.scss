@@ -20494,3 +20494,175 @@ body.dev-float-refactor {
         float: none;
     }
 }
+
+// === Section 12 (hand-designed): source/scss/templates/_post.scss --
+// remaining Category C/D floats not covered by the earlier mechanical
+// batch (25 declarations). Same classification rules as Sections 7-11.
+//
+// section.post-title-block .container: .introduction-hero-module
+// (calc(100% - 330px)) already has a bare float:none from an earlier
+// pass but its sibling .sidebar-container (330px) never got one -- a
+// genuine still-live row, both floating the same direction (no
+// reversal needed), given a flex parent here.
+//
+// section.post-article-container .container .post-column-container is
+// already display:flex (base CSS) -- .left-column (190px) is Category
+// A (already covered). .sidebar-container (330px, article-level,
+// distinct from post-title-block's) is ALSO a direct child of that
+// same flex .post-column-container (190 + 330 = the 520px subtracted
+// from .post-content's calc(100% - 520px)) -- Category A, bare
+// float:none. Its lone child .subscribe-sidebar-form is sole/stacked.
+//
+// .authors .speaker-container-inner (post body, distinct from the
+// three speaker-container-inner definitions in _registrations.scss):
+// .speaker-image (75px) + .description (calc(100% - 75px)) is a
+// genuine still-live row with no flex-container modifier here (unlike
+// webinar-article's speakers-block) -- needs display:flex added.
+// .speaker-subtitle (100%, already covered) wraps to its own line
+// above the row via flex-wrap.
+//
+// div.post-content-inner.counter-title-text .counter-title-container:
+// .counter-circle-outer (52px) + span.counter-title (calc(100% -
+// 52px)) is a genuine still-live row, no flex parent yet -- given one
+// here. .counter-circle-outer's own child .counter (33px) is sole.
+//
+// div.related-articles .container .post-container .related-item.one-
+// third: genuine 3-up floated grid (nth-child(3n) clearing), no flex
+// parent of its own yet. Scoped to the full div.related-articles
+// .container .post-container path (not bare .post-container) --
+// confirmed via subagent research that source/js/main.js also slick-
+// inits a DIFFERENT `.post-container` under `section.featured-module.
+// best-practices-featured`, an unrelated carousel that must not be
+// touched.
+//
+// .preview-cta-container .preview-cta-inner: already display:flex in
+// base CSS (align-items:center) -- .preview-cta-image-column (150px)
+// and .preview-cta-content (calc(100% - 150px)) are Category A, bare
+// float:none. This is a SEPARATE component from .blurred-image-cta-
+// container .global-preview-cta-container .preview-cta-content (full-
+// width, stacked, no image column) -- confirmed via direct read, not
+// a collision.
+//
+// .back-container .back, .share-container-mobile .share-title/
+// .share-links-container/span.share, .meta-tag-container .tags.meta-
+// tags, both a.stdBtn button-container instances, and the entire
+// div.videoBlock .content span.videoLink cluster (a/.playBtnVideoBlock
+// and their nested spans) are all confirmed <a>/<span>/<button>
+// elements via PHP grep (templates/post-components/_video-block.php,
+// single-post.php, august-single-post.php) -- width:auto or unset,
+// natural inline flow reproduces the original adjacency, bare
+// float:none, no flex parent needed. .published-information-container
+// is sole/stacked.
+body.dev-float-refactor {
+    // --- section.post-title-block: .introduction-hero-module (already
+    // covered) + .sidebar-container, genuine row, same float direction ---
+    section.post-title-block .container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.post-title-block .container .sidebar-container {
+        float: none;
+    }
+    // --- .back-container .back: <a>, Category B ---
+    section.post-title-block .container .back-container .back {
+        float: none;
+    }
+    // --- .share-container-mobile: <span> title + <span> links list, Category B ---
+    section.post-title-block .container .sidebar-container .published-details .share-container-mobile .share-title,
+    section.post-title-block .container .sidebar-container .published-details .share-container-mobile .share-links-container,
+    section.post-title-block .container .sidebar-container .published-details .share-container-mobile .share-links-container span.share {
+        float: none;
+    }
+
+    // --- section.post-article-container .container .post-column-container
+    // (already flex): .left-column + article-level .sidebar-container are
+    // both direct children, Category A ---
+    section.post-article-container .container .left-column.sticky-scroll-to-container,
+    section.post-article-container .container .sidebar-container {
+        float: none;
+    }
+    // --- .sidebar-container's lone child, sole/stacked ---
+    section.post-article-container .container .sidebar-container .subscribe-sidebar-form {
+        float: none;
+    }
+    // --- .post-content .published-information-container: sole/stacked ---
+    section.post-article-container .container .post-content .published-information-container {
+        float: none;
+    }
+
+    // --- .authors .speaker-container-inner: genuine row, no flex parent
+    // of its own yet (distinct from the three _registrations.scss
+    // speaker-container-inner definitions) ---
+    section.post-article-container .container .post-content .authors .speaker-container-inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.post-article-container .container .post-content .authors .speaker-container-inner .speaker-image {
+        float: none;
+    }
+
+    // --- .meta-tag-container .tags.meta-tags: <span>, Category B ---
+    section.post-article-container .container .post-content .meta-tag-container .tags.meta-tags {
+        float: none;
+    }
+
+    // --- .blurred-image-cta-container .global-preview-cta-container
+    // .preview-cta-content: full-width stacked variant, its button-
+    // container a.stdBtn is <a> width:auto, Category B ---
+    section.post-article-container .container .post-content .blurred-image-cta-container .global-preview-cta-container .preview-cta-content .button-container a.stdBtn {
+        float: none;
+    }
+    // --- .preview-cta-container .preview-cta-inner: already display:flex
+    // (base CSS) -- image column + content are Category A ---
+    section.post-article-container .container .post-content .preview-cta-container .preview-cta-inner .preview-cta-image-column,
+    section.post-article-container .container .post-content .preview-cta-container .preview-cta-inner .preview-cta-content {
+        float: none;
+    }
+    // --- that .preview-cta-content's own button-container a.stdBtn: <a>, Category B ---
+    section.post-article-container .container .post-content .preview-cta-container .preview-cta-inner .preview-cta-content .button-container a.stdBtn {
+        float: none;
+    }
+
+    // --- div.post-content-inner.counter-title-text .counter-title-
+    // container: genuine row, no flex parent of its own yet ---
+    div.post-content-inner.counter-title-text .counter-title-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    div.post-content-inner.counter-title-text .counter-title-container .counter-circle-outer,
+    div.post-content-inner.counter-title-text .counter-title-container span.counter-title {
+        float: none;
+    }
+    // --- .counter-circle-outer's own child .counter: sole ---
+    div.post-content-inner.counter-title-text .counter-title-container .counter-circle-outer .counter {
+        float: none;
+    }
+
+    // --- div.related-articles .container .post-container .related-item
+    // .one-third: genuine 3-up floated grid, no flex parent of its own
+    // yet. Full path scoped to avoid the unrelated slick-managed
+    // `.post-container` under section.featured-module.best-practices-
+    // featured -- see header comment ---
+    div.related-articles .container .post-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    div.related-articles .container .post-container .related-item.one-third {
+        float: none;
+    }
+
+    // --- div.videoBlock .content span.videoLink: <a>/<button> (only one
+    // renders, conditional) with nested icon/text <span>s, Category B ---
+    div.videoBlock .content span.videoLink a,
+    div.videoBlock .content span.videoLink .playBtnVideoBlock,
+    div.videoBlock .content span.videoLink a > span,
+    div.videoBlock .content span.videoLink .playBtnVideoBlock > span,
+    div.videoBlock .content span.videoLink a > span:last-child span,
+    div.videoBlock .content span.videoLink .playBtnVideoBlock > span:last-child span {
+        float: none;
+    }
+}
