@@ -20245,3 +20245,252 @@ body.dev-float-refactor {
         float: none;
     }
 }
+
+// === Section 11 (hand-designed): source/scss/templates/_registrations.scss
+// -- remaining Category C/D floats not covered by the earlier mechanical
+// batch (41 declarations). Same classification rules as Sections 7-10.
+//
+// This file opens with a shared grouped selector -- `section.webinar-
+// article, section.webinar-speaker-block, section.webinar-faq, section.
+// webinarBanner, section.webinar-register-form, section.registration-
+// agenda-block { .container .column { &.first-column {...} &.second-
+// column { &.right-column { float:right } } } }` -- defining one common
+// two-part row pattern reused across 6 section roots. Checked each
+// root's real PHP usage individually before deciding whether to add a
+// flex parent, since a shared CSS rule doesn't guarantee a shared real
+// layout:
+// - section.webinar-article (single-registration.php) and section.
+//   registration-agenda-block (same file) both genuinely render BOTH
+//   .first-column and .second-column as sibling divs -- real pairs,
+//   given a flex parent below.
+// - section.webinarBanner and the .first-column-only branch of section.
+//   webinar-speaker-block (same file, $count<=1) only ever render
+//   .first-column ALONE, no .second-column sibling -- no pairing to
+//   preserve, bare float:none is enough.
+// - section.webinar-speaker-block's OTHER branch ($count>1) uses
+//   `.column.one-half` instead (a separate, already-mechanically-
+//   covered 2-up clearing grid) -- this is why its .container is
+//   deliberately NOT given a shared flex-parent fix here: doing so
+//   would turn the clear:left/clear-based .one-half grid into an
+//   unwrapped flex row, breaking it.
+// - section.webinar-faq and section.webinar-register-form never appear
+//   as an actual `<section>` in any template (grepped every .php file)
+//   -- this shared rule is dead CSS for both. Still fixed for
+//   consistency since it's zero-risk either way.
+//
+// webinar-article's pairing needs flex-direction:row-reverse:
+// .second-column.right-column renders BEFORE .first-column in the DOM
+// but floats right while .first-column (after it, float:left via the
+// base .column rule) fills the leftover left space -- classic float
+// reordering. registration-agenda-block's second-column has no
+// .right-column modifier in its real markup, so both columns are
+// plain float:left in DOM order (first-column, then second-column) --
+// no reversal needed there.
+//
+// Separately, `.speaker-container-inner.flex-container` (used inside
+// webinar-article's `.speakers-block`, single-registration.php line
+// ~156) already has a real `&.flex-container { display: flex; }`
+// modifier rule in the base CSS (line ~1708) -- the markup always
+// applies both classes together, so `.speaker-image`/`.description`
+// there are Category A (parent already flex, unrelated to this gate)
+// even though the mechanical batch didn't recognize that. By contrast,
+// webinar-article's OTHER `.speaker-container-inner` (nested under
+// `.second-column`, line ~619) has no such modifier and its
+// `.description` is a plain 100%-width block (not a reduced calc()) --
+// a genuinely stacked layout, not a row, so `.speaker-image` there is
+// safe as a bare fix with no flex parent needed. webinar-speaker-
+// block's own `.speaker-container-inner` (a third, separate
+// definition, line ~864) has neither a flex-container modifier NOR a
+// 100%-width description -- its `.description` is `calc(100% - 125px)`,
+// confirming a genuine still-live row with no flex parent of its own
+// yet, so THIS one gets `display: flex` added here.
+//
+// section.location-block: `.column.text-column`/`.column.image-column`
+// have no explicit width of their own -- both inherit `width: 50%`
+// from the global `.one-half` utility class (source/scss/global/
+// _styles.scss), confirmed via `_location-block.php`'s
+// `column one-half text-column`/`column one-half image-column`
+// markup. That bare global `.one-half { float: left; width: 50% }` is
+// used site-wide and is out of scope for a single-file pass (same
+// reasoning as Section 9's `.column-container`); fixing the two more
+// specific local selectors here is enough since they win on
+// specificity. Same float-reordering situation as webinar-article:
+// .text-column (float:right) renders first in the DOM but visually
+// ends up on the right, .image-column (float:left, after it) fills
+// the left -- flex-direction:row-reverse reproduces it.
+body.dev-float-refactor {
+    // --- shared .column / .second-column.right-column row, 6 section roots ---
+    section.registration-agenda-block .container .column,
+    section.webinar-article .container .column,
+    section.webinar-faq .container .column,
+    section.webinar-speaker-block .container .column,
+    section.webinarBanner .container .column,
+    section.webinar-register-form .container .column {
+        float: none;
+    }
+    section.registration-agenda-block .container .column.second-column.right-column,
+    section.webinar-article .container .column.second-column.right-column,
+    section.webinar-faq .container .column.second-column.right-column,
+    section.webinar-speaker-block .container .column.second-column.right-column,
+    section.webinarBanner .container .column.second-column.right-column,
+    section.webinar-register-form .container .column.second-column.right-column {
+        float: none;
+    }
+    @media only screen and (max-width: 767px) {
+        section.registration-agenda-block .container .column.second-column.right-column,
+        section.webinar-article .container .column.second-column.right-column,
+        section.webinar-faq .container .column.second-column.right-column,
+        section.webinar-speaker-block .container .column.second-column.right-column,
+        section.webinarBanner .container .column.second-column.right-column,
+        section.webinar-register-form .container .column.second-column.right-column {
+            float: none;
+        }
+    }
+    // Confirmed genuine first-column/second-column pairs -- see header
+    // comment for why only these two of the six get a flex parent.
+    section.webinar-article .container {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.registration-agenda-block .container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    // --- section.webinar-article: .second-column's OTHER speaker-
+    // container-inner (genuinely stacked, .description is 100% wide,
+    // not a reduced calc()) ---
+    section.webinar-article .container .column.second-column .speaker-container-inner .speaker-image {
+        float: none;
+    }
+
+    // --- section.webinar-article: .speakers-block (inside .first-
+    // column) -- .speaker is a genuine 2-up grid needing a flex parent;
+    // its own .speaker-image/.description are Category A via the
+    // existing &.flex-container modifier, see header comment.
+    section.webinar-article .container .column .speakers-block .speaker-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.webinar-article .container .column .speakers-block .speaker-container .speaker {
+        float: none;
+    }
+    section.webinar-article .container .column .speakers-block .speaker-container .speaker .speaker-container-inner .speaker-image,
+    section.webinar-article .container .column .speakers-block .speaker-container .speaker .speaker-container-inner .description {
+        float: none;
+    }
+
+    // --- section.webinar-speaker-block: its own speaker-container-
+    // inner is a genuine still-live row (.description is calc(100% -
+    // 125px), no flex-container modifier here) -- needs display:flex
+    // added. Its .container itself deliberately isn't touched, see
+    // header comment (would break the separate .one-half grid).
+    section.webinar-speaker-block .container .speaker-container .column .speaker-container-inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.webinar-speaker-block .container .speaker-container .column .speaker-container-inner .speaker-image {
+        float: none;
+    }
+
+    // --- section.webinar-faq: sole/stacked card wrapper ---
+    section.webinar-faq .container .faq-item {
+        float: none;
+    }
+
+    // --- section.register-listing ---
+    // .past-sessions-button/.upcoming-button/.register-toggle are all
+    // <span> tags (confirmed via template-registration.php) -- natural
+    // inline flow reproduces their adjacency, no flex parent needed.
+    section.register-listing .past-sessions-button,
+    section.register-listing .upcoming-button,
+    section.register-listing .container .register-filter .register-toggle {
+        float: none;
+    }
+    // .upcoming-listing: genuine 3-up floated grid (nth-child(3n+1)
+    // clearing), no flex parent of its own yet.
+    section.register-listing .container .register-listing-container .upcoming-listing {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        float: none;
+    }
+    section.register-listing .container .register-listing-container .upcoming-listing .item.one-third {
+        float: none;
+    }
+
+    // --- .webinar-mobile-sticky-footer: only ever visible ≤767px
+    // (display:none by default, display:block in its own ≤767px
+    // override) -- the flex fix has to live in that same media context,
+    // otherwise it'd override the desktop display:none and make the
+    // sticky footer permanently visible. .title/.registerButton are a
+    // genuine still-live row with no flex parent of their own yet.
+    @media only screen and (max-width: 767px) {
+        .webinar-mobile-sticky-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+    .webinar-mobile-sticky-footer .title,
+    .webinar-mobile-sticky-footer .registerButton {
+        float: none;
+    }
+
+    // --- section.topicBanner.webinarBanner: sole/stacked children ---
+    section.topicBanner.webinarBanner .container .column .roundtable,
+    section.topicBanner.webinarBanner .container .column .banner-icon img {
+        float: none;
+    }
+
+    // --- section.registration-two-column-block ---
+    // .column is Category A (parent .column-container is already
+    // display:flex itself). .logo-container img/.read-more are sole/
+    // standalone, safe.
+    section.registration-two-column-block .container .column {
+        float: none;
+    }
+    section.registration-two-column-block .container .column .logo-container img,
+    section.registration-two-column-block .container .column .text-container .read-more {
+        float: none;
+    }
+
+    // --- section.location-block: .text-column/.image-column, see
+    // header comment for the width-inheritance and float-reordering
+    // reasoning. .directions-link/.portrait-image-container are sole
+    // children within each column, safe.
+    section.location-block .container {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.location-block .container .column.text-column,
+    section.location-block .container .column.image-column {
+        float: none;
+    }
+    section.location-block .container .column.text-column .location-container a.directions-link {
+        float: none;
+    }
+    section.location-block .container .column.image-column .portrait-image-container {
+        float: none;
+    }
+
+    // --- .mfp-wrap.mfp-speakers (speaker popup modal): .column is
+    // Category A (parent .speaker-popup-container is already
+    // display:flex itself). .company-logo/.image-container/.about are
+    // sole/standalone within their own column, safe.
+    .mfp-wrap.mfp-speakers .mfp-content .speaker-popup-container .column {
+        float: none;
+    }
+    .mfp-wrap.mfp-speakers .mfp-content .speaker-popup-container .column.image-column .company-logo,
+    .mfp-wrap.mfp-speakers .mfp-content .speaker-popup-container .column.image-column .image-container,
+    .mfp-wrap.mfp-speakers .mfp-content .speaker-popup-container .column.about-column .about {
+        float: none;
+    }
+}
