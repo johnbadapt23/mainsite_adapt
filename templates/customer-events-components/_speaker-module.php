@@ -243,7 +243,7 @@
                             'next_text' => 'Next',     // Set custom text for "Next" link
                         )); ?>
                         <?php wp_reset_postdata(); ?>
-                        <?php wp_reset_query(); ?>
+                        <?php wp_reset_postdata(); ?>
                     </div>
                 </div>
             </div>

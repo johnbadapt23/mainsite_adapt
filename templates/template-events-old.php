@@ -208,7 +208,7 @@ get_header();
                 	<h3 role="heading" aria-level="2"><?php esc_html_e( 'Sorry, no results found.' ); ?></h3>
                 <?php endif; ?>
 
-                <?php wp_reset_postdata(); wp_reset_query();?>
+                <?php wp_reset_postdata();?>
 
             </div>
 

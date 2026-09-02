@@ -96,7 +96,7 @@
                                 </div>
                             <?php endwhile; ?>
                             <?php wp_reset_postdata(); ?>
-                            <?php wp_reset_query(); ?>
+                            <?php wp_reset_postdata(); ?>
             			<?php endif; ?>
                     <?php } else { ?>
                         <?php if ( have_rows( 'posts' ) ) : ?>

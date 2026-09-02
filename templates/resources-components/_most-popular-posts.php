@@ -1,6 +1,16 @@
 <?php
-    query_posts('meta_key=post_views_count&posts_per_page=4&orderby=meta_value_num&order=DESC');
-    if (have_posts()) : while (have_posts()) : the_post();
+    // query_posts() overwrites the global $wp_query, which can corrupt
+    // pagination/conditional-tag state for anything rendered later on the
+    // page -- WP_Query() is the documented replacement for exactly this
+    // kind of secondary, in-template query.
+    $most_popular_args = array(
+        'meta_key'       => 'post_views_count',
+        'posts_per_page' => 4,
+        'orderby'        => 'meta_value_num',
+        'order'          => 'DESC',
+    );
+    $most_popular_posts = new WP_Query( $most_popular_args );
+    if ( $most_popular_posts->have_posts() ) : while ( $most_popular_posts->have_posts() ) : $most_popular_posts->the_post();
  ?>
      <div class="most-popular-posts">
          <div class="most-popular-inner">
@@ -83,5 +93,5 @@
      </div>
  <?php
  endwhile; endif;
- wp_reset_query();
+ wp_reset_postdata();
  ?>

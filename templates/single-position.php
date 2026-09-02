@@ -227,4 +227,4 @@ if( $posts->have_posts() ): ?>
     </section>
 <?php endif;?>
 <?php wp_reset_postdata(); ?>
-<?php wp_reset_query(); ?>
+<?php wp_reset_postdata(); ?>

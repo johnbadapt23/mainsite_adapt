@@ -276,7 +276,7 @@ if ($q && $q->parent != 0) {
                                         </a>                        
                                     </div>                                    
                                 <?php wp_reset_postdata(); ?>
-                                 <?php wp_reset_query(); ?>
+                                 <?php wp_reset_postdata(); ?>
                             <?php endif; ?>
                              <?php $featuredCounter++;?>
                         <?php endwhile; ?>

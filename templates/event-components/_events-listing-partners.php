@@ -36,7 +36,7 @@ if($years){
 <?php endwhile; ?>
 <?php else : ?>
 <?php endif; ?>
-<?php wp_reset_query();
+<?php wp_reset_postdata();
 ?>
 
 <section class="events-listing-module background-black" <?php if (get_sub_field( 'id' )) { ?>id="<?php echo get_sub_field( 'id' ); ?>"<?php } ?>>

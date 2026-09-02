@@ -77,7 +77,7 @@ if($keyword != '') {
         <div class="container">
             <?php wp_pagenavi( array( 'query' => $posts ) ); ?>
             <?php wp_reset_postdata(); ?>
-            <?php wp_reset_query(); ?>
+            <?php wp_reset_postdata(); ?>
         </div>
     </div>
 </section>

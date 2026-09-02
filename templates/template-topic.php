@@ -66,7 +66,7 @@ if($keyword != '') {
                     <?php endwhile; ?>
                 <?php else : ?>
                 <?php endif; ?>
-                <?php wp_reset_query(); ?>
+                <?php wp_reset_postdata(); ?>
                 <a href="<?php echo get_term_link( $q );?>"class="filter-button<?php if($filterType == '') { ?> selected<?php } ?>">All</a>
                 <?php foreach($terms as $term) { ?>
                     <a href="<?php echo get_term_link( $q );?>?filter-type=<?php echo $term -> slug; ?>"class="filter-button<?php if($filterType == '') { } else { if ($term -> slug == $filterType ) { ?> selected<?php }}?><?php if ($q->slug == 'peer-insights'){ ?> peer-insights<?php } ?>"><?php echo $term -> name; ?></a>
@@ -477,7 +477,7 @@ if($keyword != '') {
         <div class="container">
             <?php wp_pagenavi( array( 'query' => $posts ) ); ?>
                 <?php wp_reset_postdata(); ?>
-            <?php wp_reset_query(); ?>
+            <?php wp_reset_postdata(); ?>
         </div>
     </div>
 </section>

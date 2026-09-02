@@ -383,7 +383,7 @@ $filterBy = array();
                                    <?php endwhile; ?>
                                     <?php else : ?>
                                    <?php endif; ?>
-                                   <?php wp_reset_query();
+                                   <?php wp_reset_postdata();
                                    ?>
                                <?php } else { ?>
                                     <?php
@@ -468,7 +468,7 @@ $filterBy = array();
                                           <?php endwhile; ?>
                                            <?php else : ?>
                                           <?php endif; ?>
-                                          <?php wp_reset_query();
+                                          <?php wp_reset_postdata();
                                           ?>
                                       <?php } else { ?>
                                            <?php
@@ -748,7 +748,7 @@ $filterBy = array();
 
                     <?php else : ?>
                         <?php endif; ?>
-                        <?php wp_reset_query(); ?>
+                        <?php wp_reset_postdata(); ?>
                 <?php } ?>
 
                 <?php $counter = -1; ?>
@@ -1174,7 +1174,7 @@ $filterBy = array();
                     <h3 role="heading" aria-level="2"><?php esc_html_e( 'Sorry, no results found.' ); ?></h3>
                 <?php endif; ?>
                 <?php wp_pagenavi( array( 'query' => $loop ) ); ?>
-                <?php wp_reset_query(); ?>
+                <?php wp_reset_postdata(); ?>
                 </div>
 
             <div class="formTrigger">
