@@ -122,6 +122,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `3b8c1a6` | **Section 9**: `_customer-events.scss` -- see §2e below |
 | `02b544a` | **Section 10**: `_events.scss` -- see §2f below |
 | `0c3c918` | **Section 11**: `_registrations.scss` -- see §2g below |
+| `588e77a` | **Section 12**: `_post.scss` -- see §2h below |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -180,8 +181,9 @@ exactly why the section-by-section, check-in-first approach mattered.
   now done too (Section 9, 2026-09-02, `3b8c1a6`)** -- see §2e below.
   **`_events.scss` is now done too (Section 10, 2026-09-02, `02b544a`)**
   -- see §2f below. **`_registrations.scss` is now done too (Section 11,
-  2026-09-02, `0c3c918`)** -- see §2g below. Still untouched:
-  `_post.scss` and the rest of the ~25 remaining files in
+  2026-09-02, `0c3c918`)** -- see §2g below. **`_post.scss` is now done
+  too (Section 12, 2026-09-02, `588e77a`)** -- see §2h below. Still
+  untouched: the rest of the ~24 remaining files in
   `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
@@ -693,6 +695,59 @@ would have made the sticky footer permanently visible on desktop.
 Confirmed correct directly in the compiled output. Committed as
 `0c3c918`.
 
+### 2h. Section 12 (`_post.scss`), 2026-09-02
+
+25 Category C/D declarations, on top of what the earlier mechanical
+batch already covered. Quieter than Sections 10-11 -- no shared-
+selector collisions inside the file itself, but two things worth
+flagging:
+
+**A stale half-fix from an earlier pass.** `.introduction-hero-module`
+(the post-title-block's main content column, `calc(100% - 330px)`)
+already had a bare `float:none` sitting in the gated file from before
+this session, but its sibling `.sidebar-container` (330px) never got
+one -- meaning the pair was left in a broken intermediate state (one
+side unfloated as a block, the other still floating) until this
+section added the missing flex parent on `.container` and the missing
+`float:none` on `.sidebar-container`. Worth remembering that "already
+covered" in `find_uncovered.js`'s output doesn't always mean "fully
+handled" -- a declaration can be individually gated while its sibling
+pairing is still incomplete.
+
+**Two same-named `.sidebar-container`s, two different stories.**
+`section.post-title-block .container .sidebar-container` (330px,
+published-details/share/contributor info) and `section.post-article-
+container .container .sidebar-container` (also 330px, but containing
+`.subscribe-sidebar-form`) are unrelated DOM subtrees that happen to
+share a class name -- same lesson as Section 11's shared selector, but
+here it's two *different* selectors that only look similar by
+naming convention. Traced both through direct reads before writing
+fixes: the post-title-block one needed a new flex parent (see above),
+the post-article-container one turned out to already be a child of
+`.post-column-container`, which is display:flex in the ordinary
+(non-gated) base CSS -- confirmed by the arithmetic (`.left-column`
+190px + this sidebar's 330px = the 520px subtracted from `.post-
+content`'s `calc(100% - 520px)`) -- so it was Category A, bare
+`float:none` only.
+
+**Carousel-adjacent false positive caught before writing the fix.** A
+subagent search confirmed `.post-container` is also used, completely
+unrelated, as a slick-carousel container under `section.featured-
+module.best-practices-featured` in `source/js/main.js`. The related-
+articles 3-up grid fix was scoped to the full `div.related-articles
+.container .post-container` path rather than a bare `.post-container`
+selector to guarantee no overlap with that carousel.
+
+Verified: same 3-file semantic diff as every other section (0/0/0
+ungated on both `main.min.css` and `main-nofooter.min.css`), plus each
+hand-designed flex-parent/float:none rule walked directly in the
+compiled output -- confirmed clean-css merges rules sharing identical
+`display:flex;flex-wrap:wrap;align-items:flex-start` properties into
+shared comma-separated selector groups during minification (expected,
+not a bug -- same lesson as Section 10's false alarm, still worth
+re-confirming every time since a real drop would look identical to a
+merge at a glance). Committed as `588e77a`.
+
 ### Recommended way to continue
 
 Follow the exact same loop for each new section: identify the DOM/CSS
@@ -1125,8 +1180,8 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    build on further.
 3. Extend the float audit beyond `_header.scss`/`_flexible.scss`/
    `_resources-types.scss`/`_customer-events.scss`/`_events.scss`/
-   `_registrations.scss` (Sections 1-11, done) to the other ~25 flagged
-   SCSS files (see §2), e.g. `_post.scss`.
+   `_registrations.scss`/`_post.scss` (Sections 1-12, done) to the other
+   ~24 flagged SCSS files (see §2).
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
