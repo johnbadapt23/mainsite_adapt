@@ -20495,6 +20495,42 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 14 (hand-designed): source/scss/templates/_single-
+// speaker.scss -- remaining Category C/D floats not covered by the
+// earlier mechanical batch (3 declarations). Same classification rules
+// as Sections 7-13.
+//
+// .speakerLeft (50%) / .speakerRight (50%): the SCSS doesn't nest
+// these under .container, but the real markup (templates/single-
+// speaker.php AND templates/single-executive_advisor.php, both use
+// this shared section) does -- <section class="speakerProfile">
+// <div class="container"><div class="speakerLeft">...</div><div
+// class="speakerRight">...</div></div></section>. Genuine 2-up row,
+// DOM order matches visual order (both float:left, no reversal
+// needed) -- given a flex parent on .container.
+//
+// .speakerRight .logoWrapper .logoContainer (100px): confirmed via
+// both PHP templates that only ONE .logoContainer ever renders per
+// .logoWrapper (conditional on a single ACF logo field, no loop) --
+// sole/stacked, Category C, bare float:none.
+//
+// No Slick involvement, no cross-file collisions (speakerLeft/
+// speakerRight/speakerProfile are unique class names, grepped).
+body.dev-float-refactor {
+    section.speakerProfile .container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.speakerProfile .speakerLeft,
+    section.speakerProfile .speakerRight {
+        float: none;
+    }
+    section.speakerProfile .speakerRight .logoWrapper .logoContainer {
+        float: none;
+    }
+}
+
 // === Section 13 (hand-designed): source/scss/templates/_login.scss --
 // remaining Category A/C floats not covered by the earlier mechanical
 // batch (2 declarations). Same classification rules as Sections 7-12.
