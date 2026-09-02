@@ -615,21 +615,3 @@ body.post {
         }
     }
 }
-
-// Touch-target sizing: the footer social icons (.social-link) render as
-// small as 19-22px, under the 24x24px minimum. Same invisible-hit-area
-// technique as the mobile search controls in _header.scss -- expands only
-// the tappable area via a transparent ::after, the icon itself is untouched.
-.social-link {
-    position: relative;
-
-    &::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 24px;
-        height: 24px;
-    }
-}

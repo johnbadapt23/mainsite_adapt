@@ -4532,3 +4532,26 @@ body.cookies-not-set:after {
 	}
 
 }
+
+// Touch-target sizing: sitewide (used in footer, contact blocks, form
+// modules, and customer-story pages) -- social icons (.social-link) render
+// as small as 19-22px, under the 24x24px minimum. Same invisible-hit-area
+// technique as the mobile search controls in _header.scss -- expands only
+// the tappable area via a transparent ::after, the icon itself is untouched.
+// Moved out of partials/_footer.scss (2026-09-02): that file is used
+// elsewhere than just the footer (_contact-block.php, _form-module.php,
+// single-customer_stories.php, template-contact.php), so it needs to stay
+// in the always-loaded bundle rather than the footer-only deferred one.
+.social-link {
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 24px;
+		height: 24px;
+	}
+}

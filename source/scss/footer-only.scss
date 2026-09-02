@@ -1,0 +1,13 @@
+/* Dev-gated split build (2026-09-02): footer-only stylesheet, deferred via
+   the preload+onload pattern (see functions.php). partials/_footer.scss
+   depends only on global/_mixins (the responsive and transition mixins) and
+   global/_variables (color and font variables) -- verified via grep before
+   splitting it out, it does not use anything from _base/_styles/_forms/
+   _sections/_print, so those are intentionally not imported here.
+   NOTE: block comment (not double-slash) on purpose -- gulp-autoprefixer
+   runs before sass compilation in this pipeline and parses entry files
+   with a plain-CSS parser first, which chokes on SCSS-only line comments. */
+@import 'global/_mixins';
+@import 'global/_variables';
+
+@import "partials/_footer.scss";
