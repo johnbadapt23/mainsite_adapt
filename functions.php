@@ -477,7 +477,7 @@ function adapt_webp_poster_url( $url ) {
         return $url;
     }
     $upload_dir = wp_get_upload_dir();
-    if ( strpos( $url, $upload_dir['baseurl'] ) !== 0 ) {
+    if ( ! str_starts_with( $url, $upload_dir['baseurl'] ) ) {
         return $url;
     }
     $webp_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $url ) . '.webp';
