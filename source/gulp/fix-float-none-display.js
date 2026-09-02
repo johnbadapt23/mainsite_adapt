@@ -36,11 +36,42 @@
 // as, so applying it universally to this "no explicit display" bucket
 // is a no-op for the `<div>`/`<section>`/etc. majority (already
 // block-level) and the correct fix for the `<span>`/`<a>` minority --
-// there's no case in this bucket where it's wrong. The 236 gated rules
-// where the base rule DOES set its own explicit `display` (flex, grid,
-// inline-block, etc.) are deliberately left untouched here -- forcing
-// `display: block` onto those would override a real, intentional
-// layout, not fix a blockification gap.
+// there's no case in this bucket where it's wrong. Gated rules where a
+// display is already known (see single-pass design below) are
+// deliberately left untouched here -- forcing `display: block` onto
+// those would override a real, intentional layout, not fix a
+// blockification gap.
+//
+// 2026-09-02, second fix (same day, found while adding Section 7):
+// the original two-pass design only checked NON-gated rules for an
+// existing `display`, on the assumption that clean-css's own
+// same-selector cascade-resolution merge (see styles.js's
+// restructureRules comment) would already have folded any earlier
+// HAND-DESIGNED gated `display:flex` override (Sections 1-6) together
+// with a later, redundant, mechanically-generated gated `float:none`-
+// only duplicate for the same selector into one merged rule before this
+// script ever runs -- so a hand-designed `display` would already be
+// present in the SAME rule this script inspects, never a separate one.
+// That merge is not guaranteed: it depends on clean-css's internal
+// complexity/size heuristics, and adding ~150 more Section 7 rules was
+// enough to make it skip merging 4 particular header selectors
+// (.logo-title-container, .search-column-container, .header-inner,
+// .resources-sticky-inner) that Sections 1-4 already hand-fixed to
+// display:flex. Left as two separate rules, this script "corrected"
+// the later, mechanical, still-separate float:none-only duplicate by
+// adding display:block to it -- which, being later in the file, then
+// won the cascade over the earlier display:flex and silently broke
+// those 4 already-fixed layouts. Caught by the semantic diff before
+// commit, not live.
+//
+// Fixed by making this a single forward pass instead of two passes:
+// walk every rule in document (cascade) order, GATED OR NOT, and before
+// deciding whether a gated float:none-only rule needs display:block,
+// check whether ANY earlier rule (gated or not) for that exact
+// (media-context, selector) already declared an explicit `display`.
+// This is correct regardless of whatever clean-css did or didn't merge,
+// since it mirrors real per-property cascade resolution directly
+// instead of relying on rules having already been consolidated.
 var postcss = require('postcss');
 var through2 = require('through2');
 
@@ -59,69 +90,67 @@ function mediaContext(node) {
 function fixFloatNoneDisplay(css) {
     var root = postcss.parse(css);
 
-    // Pass 1: record which (media-context, selector) pairs have an
-    // explicit `display` declared in a NON-gated rule.
-    var baseHasDisplay = new Set();
-    root.walkRules(function (rule) {
-        if (rule.selector.indexOf('body.dev-float-refactor') === 0) {
-            return;
-        }
-        var hasDisplay = false;
-        rule.walkDecls('display', function () { hasDisplay = true; });
-        if (!hasDisplay) {
-            return;
-        }
-        var ctx = mediaContext(rule);
-        rule.selector.split(',').forEach(function (sel) {
-            baseHasDisplay.add(ctx + '::' + sel.trim());
-        });
-    });
-
-    // Pass 2: for gated rules whose ONLY declaration is `float: none`,
-    // split their selector list into "needs display:block added" vs
-    // "leave as-is", based on pass 1, and replace the rule with the
-    // (up to two) resulting rules.
+    // Single forward pass in document order. hasDisplay accumulates as
+    // we go, so a rule's own `display` (gated or not) is recorded
+    // *after* it's been used to decide any earlier-in-this-same-rule
+    // fix, but *before* any later rule for the same selector is
+    // evaluated -- matching real cascade order.
+    var hasDisplay = new Set();
     var fixedSelectorCount = 0;
+
     root.walkRules(function (rule) {
-        if (rule.selector.indexOf('body.dev-float-refactor') !== 0) {
+        var ctx = mediaContext(rule);
+        var isGated = rule.selector.indexOf('body.dev-float-refactor') === 0;
+        var decls = rule.nodes ? rule.nodes.filter(function (n) { return n.type === 'decl'; }) : [];
+        var declaresDisplay = decls.some(function (d) { return d.prop === 'display'; });
+        var isPureFloatNone = isGated && decls.length === 1 && decls[0].prop === 'float' && decls[0].value === 'none';
+
+        if (isPureFloatNone) {
+            var selectors = rule.selectors;
+            var needsFix = [];
+            var leaveAlone = [];
+            selectors.forEach(function (sel) {
+                var baseSel = sel.replace(/^body\.dev-float-refactor\s+/, '');
+                if (hasDisplay.has(ctx + '::' + baseSel)) {
+                    leaveAlone.push(sel);
+                } else {
+                    needsFix.push(sel);
+                }
+            });
+
+            if (needsFix.length > 0) {
+                fixedSelectorCount += needsFix.length;
+                var replacements = [];
+                var fixedRule = rule.clone();
+                fixedRule.selectors = needsFix;
+                fixedRule.append({ prop: 'display', value: 'block' });
+                replacements.push(fixedRule);
+                if (leaveAlone.length) {
+                    var unfixedRule = rule.clone();
+                    unfixedRule.selectors = leaveAlone;
+                    replacements.push(unfixedRule);
+                }
+                rule.replaceWith(replacements);
+                // The just-added display:block now counts as "this
+                // selector has a display" for any later rule, same as
+                // any other declareDisplay case below.
+                needsFix.forEach(function (sel) {
+                    hasDisplay.add(ctx + '::' + sel);
+                });
+            }
             return;
         }
-        var decls = rule.nodes ? rule.nodes.filter(function (n) { return n.type === 'decl'; }) : [];
-        if (decls.length !== 1 || decls[0].prop !== 'float' || decls[0].value !== 'none') {
-            return; // not a pure float:none-only override, leave untouched
-        }
 
-        var ctx = mediaContext(rule);
-        var selectors = rule.selectors;
-        var needsFix = [];
-        var leaveAlone = [];
-        selectors.forEach(function (sel) {
-            var baseSel = sel.replace(/^body\.dev-float-refactor\s+/, '');
-            if (baseHasDisplay.has(ctx + '::' + baseSel)) {
-                leaveAlone.push(sel);
-            } else {
-                needsFix.push(sel);
-            }
-        });
-
-        if (needsFix.length === 0) {
-            return; // nothing to change
+        // Any other rule (gated or not) that sets an explicit display
+        // -- record it so later rules for the same selector see it.
+        if (declaresDisplay) {
+            var selList = isGated
+                ? rule.selectors.map(function (sel) { return sel.replace(/^body\.dev-float-refactor\s+/, ''); })
+                : rule.selector.split(',').map(function (s) { return s.trim(); });
+            selList.forEach(function (sel) {
+                hasDisplay.add(ctx + '::' + sel);
+            });
         }
-        fixedSelectorCount += needsFix.length;
-
-        var replacements = [];
-        if (needsFix.length) {
-            var fixedRule = rule.clone();
-            fixedRule.selectors = needsFix;
-            fixedRule.append({ prop: 'display', value: 'block' });
-            replacements.push(fixedRule);
-        }
-        if (leaveAlone.length) {
-            var unfixedRule = rule.clone();
-            unfixedRule.selectors = leaveAlone;
-            replacements.push(unfixedRule);
-        }
-        rule.replaceWith(replacements);
     });
 
     return { css: root.toString(), fixedSelectorCount: fixedSelectorCount };

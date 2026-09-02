@@ -18712,3 +18712,635 @@ body.dev-float-refactor {
         flex-shrink: 0;
     }
 }
+
+// === Section 7 (hand-designed): source/scss/templates/_flexible.scss --
+// remaining Category C/D floats (narrow-width / no-width) not covered by
+// the earlier mechanical "Generated batch" pass, which only ever
+// generated the auto-safe (Category A/B: 100%-width or already-inert)
+// subset for this file (135 of the file's 218 declarations). Confirmed
+// against the live SCSS structure and, where the layout was ambiguous,
+// against the compiled JS (source/js/main.js) to check whether a
+// `.xxx-slider` container is a live Slick carousel.
+//
+// Carousels deliberately excluded (same reasoning as .home-content-slider,
+// already documented above): .staff-slider (staff-slider-module),
+// .lifestyle-slider (lifestyle-slider-block), .home-content-slider
+// (content-slider-module), .form-popup-slider (form-popup-slider-module)
+// are all confirmed live `.slick(...)` targets in main.js -- Slick
+// positions `.slide` elements via float itself, so these are left
+// floating on purpose, not a bug. `.speakers-bottom.mobile-slider` is
+// also Slick, but ONLY initialised when `viewportWidth < 768` (see
+// main.js), so its desktop grid (`.speaker.one-quarter`, not inside
+// `.mobile-slider`) is fixed below scoped to `@media (min-width: 768px)`
+// so it never touches the mobile carousel markup/state.
+//
+// Two declarations use non-standard `float :left` (space before the
+// colon, not after) that the earlier sitewide grep-based audit's pattern
+// didn't match and so never saw at all: .mfp-wrap.mfp-gallery
+// .about-column .about, and .thank-you-message under
+// .mfp-wrap.home-animation-popup. Both are plain sole-content blocks,
+// fixed the same as everything else here.
+//
+// Classification used throughout, per the existing taxonomy:
+// - Sole floated child / stacked 100%-width block, no sibling needs to
+//   sit beside it -> bare `float: none;`.
+// - Parent already `display: flex` in the live CSS -> child's float was
+//   already provably inert -> bare `float: none;`.
+// - Floated `<a>`/`<span>` with `width: auto` and no sibling actually
+//   needing to sit adjacent -> bare `float: none;` (the tag's natural
+//   inline flow reproduces the same visual row once the float is gone;
+//   fix-float-none-display.js's own inline-tag audit still runs on top
+//   of this as a safety net).
+// - Genuine still-live multi-item row/grid -> `display: flex` (+
+//   `flex-wrap: wrap` for 3+-item wrapping grids) added to the parent,
+//   `float: none` on each item, `align-items: flex-start` to replicate
+//   float's default top-alignment.
+body.dev-float-refactor {
+    // --- section.flex-two-column-text (2-col text split; base
+    // .column-container has no display:flex of its own, and mobile has
+    // an explicit display:block override at 767px that must keep
+    // winning there, so the flex conversion is scoped to desktop) ---
+    @media (min-width: 768px) {
+        section.flex-two-column-text .container .column-container {
+            display: flex;
+            align-items: flex-start;
+        }
+    }
+    section.flex-two-column-text .container .column-container .column {
+        float: none;
+    }
+    section.flex-two-column-text .container .column-container .column .body-text {
+        float: none;
+    }
+    section.flex-two-column-text .container .column-container .column .link-container {
+        float: none;
+    }
+
+    // --- section.four-column-stats (4-up stat grid, no existing flex
+    // parent; flex-wrap so it still stacks 1-per-row at mobile where
+    // .column becomes width:100%) ---
+    section.four-column-stats .container .four-column-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.four-column-stats .container .four-column-container .column {
+        float: none;
+    }
+
+    // --- section.switcher-module ---
+    // .module-switcher is already display:inline-block in the live CSS;
+    // switching it to inline-flex (not flex, to keep its shrink-to-fit
+    // sizing) lets its .module-switch-button children sit in a row
+    // without their own float. The mobile-only float:left on
+    // .module-switcher itself (base line 476) becomes dead once this
+    // applies, so it needs no separate fix.
+    section.switcher-module .container .top-block .title-switcher-container .module-switcher {
+        display: inline-flex;
+    }
+    section.switcher-module .container .top-block .title-switcher-container .module-switcher .module-switch-button {
+        float: none;
+    }
+    section.switcher-module .container .switch-content-container {
+        float: none;
+    }
+    // .icon-text-column-container is already display:flex in the live
+    // CSS, so .column's float is already inert -- bare float:none. But
+    // .column itself is NOT flex, and its own .icon-container (80px) +
+    // .text-container (calc(100% - 80px)) children still need a real
+    // flex parent to stay side by side (they sum to exactly 100%, no
+    // wrap needed at any breakpoint).
+    section.switcher-module .container .switch-content-container .icon-text-column-container .column {
+        float: none;
+        display: flex;
+        align-items: flex-start;
+    }
+    section.switcher-module .container .switch-content-container .icon-text-column-container .column .icon-container {
+        float: none;
+    }
+    section.switcher-module .container .switch-content-container .icon-text-column-container .column .text-container {
+        float: none;
+    }
+
+    // --- section.meet-the-team: .team-container-inner is already
+    // display:flex in the live CSS, so .column's float is already inert.
+    section.meet-the-team .container .team-container .team-container-inner .column {
+        float: none;
+    }
+
+    // --- section.two-column-cta: .cta-column-container is already
+    // display:flex in the live CSS, so the top-level .column's float is
+    // already inert; everything nested inside .column is a single
+    // stacked block (or, for the mobile-only `a`, explicitly full-width)
+    // with nothing else needing to sit beside it.
+    section.two-column-cta .container .column {
+        float: none;
+    }
+    section.two-column-cta .container .column.text-column .title {
+        float: none;
+    }
+    section.two-column-cta .container .column.text-column .text-container {
+        float: none;
+    }
+    section.two-column-cta .container .column.text-column .button-container {
+        float: none;
+    }
+    @media (max-width: 767px) {
+        section.two-column-cta .container .column.text-column .button-container a {
+            float: none;
+        }
+    }
+    section.two-column-cta.two-column-cta-home .container .cta-column-container .column.image-column .button-container.mobile {
+        float: none;
+    }
+    @media (max-width: 767px) {
+        section.two-column-cta.two-column-cta-home .container .cta-column-container .column.image-column .button-container.mobile a {
+            float: none;
+        }
+    }
+    section.two-column-cta.two-column-cta-home .container .cta-column-container .column.image-column.image-right .image-inner-container {
+        float: none;
+    }
+    section.two-column-cta.two-column-cta-home .container .cta-column-container .column.image-column.image-right .image-inner-container img {
+        float: none;
+    }
+    section.two-column-cta.two-column-cta-home .container .cta-column-container .column.image-column.image-right .image-inner-container .caption-text {
+        float: none;
+    }
+
+    // --- section.basic-text-introduction-block: sole 100%-width block.
+    section.basic-text-introduction-block .text-container {
+        float: none;
+    }
+
+    // --- section.team-block ---
+    // .column-container already carries dead `justify-content:
+    // space-between` and a mobile `flex-direction: column` (base lines
+    // 1305/1308) with no `display: flex` ever set -- both only make
+    // sense if this was always meant to be a flex parent, so adding
+    // display:flex here is completing the original design, not a new
+    // one; the mobile flex-direction:column already handles the
+    // title-column/team-column mobile stack correctly once flex is on.
+    section.team-block .column-container {
+        display: flex;
+        align-items: flex-start;
+    }
+    section.team-block .column-container .column {
+        float: none;
+    }
+    @media (max-width: 767px) {
+        section.team-block .column-container .column.title-column h2 {
+            float: none;
+        }
+    }
+    // .team-column carries its own more-specific float:right (base line
+    // 1366), so it needs its own override even though the bare .column
+    // rule above already set float:none. It also wraps a real one-third
+    // /one-quarter card grid that has no flex parent of its own yet.
+    section.team-block .column-container .column.team-column {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.team-block .column-container .column.team-column .column {
+        float: none;
+    }
+    section.team-block .column-container .column.team-column .column .text {
+        float: none;
+    }
+    section.team-block .column-container .column.team-column .column .text h2 {
+        float: none;
+    }
+    // .full-bio .bio-top: image-container (fixed px width) + .text
+    // (calc(100% - 226px) desktop, 100% at mobile) need to sit side by
+    // side on desktop and stack on mobile. flex-wrap:wrap handles both
+    // automatically -- .text alone can never fit next to anything else
+    // once it's 100% wide, so it wraps to its own line at mobile with no
+    // extra media query needed.
+    section.team-block .full-bio .bio-top {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.team-block .full-bio .bio-top .text {
+        float: none;
+    }
+    section.team-block .full-bio .bio-top .text .linkedin {
+        float: none;
+    }
+    section.team-block .full-bio .bio-bottom {
+        float: none;
+    }
+
+    // --- section.introduction-block: sole/stacked 100%-width blocks.
+    section.introduction-block .text-container {
+        float: none;
+    }
+    section.introduction-block .text-container h1 {
+        float: none;
+    }
+    section.introduction-block .text-container span.text {
+        float: none;
+    }
+    section.introduction-block .text-container .button-container {
+        float: none;
+    }
+    section.introduction-block .image-video-container {
+        float: none;
+    }
+    section.introduction-block .image-video-container .video-image-inner .image-container,
+    section.introduction-block .image-video-container .video-image-inner .video-container {
+        float: none;
+    }
+
+    // --- section.text-editor-content: sole/stacked 100%-width blocks.
+    section.text-editor-content .container .content-inner .content {
+        float: none;
+    }
+    section.text-editor-content .container .content-inner .content h1,
+    section.text-editor-content .container .content-inner .content h2,
+    section.text-editor-content .container .content-inner .content h3,
+    section.text-editor-content .container .content-inner .content h4,
+    section.text-editor-content .container .content-inner .content h5,
+    section.text-editor-content .container .content-inner .content h6,
+    section.text-editor-content .container .content-inner .content p {
+        float: none;
+    }
+    section.text-editor-content .container .content-inner .content p .content-image-container {
+        float: none;
+    }
+    section.text-editor-content .container .content-inner .content p .content-image-container img {
+        float: none;
+    }
+
+    // --- section.values-full-screen: sole/stacked 100%-width blocks.
+    section.values-full-screen {
+        float: none;
+    }
+    section.values-full-screen .value {
+        float: none;
+    }
+    section.values-full-screen .value h2,
+    section.values-full-screen .value .sub-title {
+        float: none;
+    }
+    section.values-full-screen .value .container .v-wrap .v-box .inner .pre-content-container {
+        float: none;
+    }
+    section.values-full-screen .value .container .v-wrap .v-box .inner .pre-content-container h2 {
+        float: none;
+    }
+    section.values-full-screen .value .container .v-wrap .v-box .inner .animation-container {
+        float: none;
+    }
+    section.values-full-screen .value .container .progress-bar-container .counter {
+        float: none;
+    }
+    section.values-full-screen .value .container .progress-bar-container .total-count {
+        float: none;
+    }
+
+    // --- section.title-background-block: .text-container's sibling
+    // .imageSizeContainer is position:absolute (out of flow), so nothing
+    // needs to sit beside .text-container -- bare float:none is safe
+    // even though it carries an explicit (non-100%) width.
+    section.title-background-block .text-container {
+        float: none;
+    }
+    section.title-background-block .text-container h2 {
+        float: none;
+    }
+    section.title-background-block .text-container span.sub-title {
+        float: none;
+    }
+    section.title-background-block .text-container .button-container {
+        float: none;
+    }
+    section.title-background-block .text-container .button-container .replay-button {
+        float: none;
+    }
+
+    // --- section.speakers-block ---
+    section.speakers-block .container .speakers-top {
+        float: none;
+    }
+    section.speakers-block .container .speakers-top h2 {
+        float: none;
+    }
+    section.speakers-block .container .speakers-top p {
+        float: none;
+    }
+    section.speakers-block .container .speakers-bottom {
+        float: none;
+    }
+    // .speaker.one-quarter's desktop 4-up grid has no flex parent of its
+    // own; scoped to >= 768px only so it never touches
+    // .speakers-bottom.mobile-slider, which Slick only initialises below
+    // 768px (main.js: `if (viewportWidth < 768) { $('.speakers-bottom
+    // .mobile-slider').slick(...) }`) and which keeps floating by design,
+    // same as the other carousels noted above.
+    @media (min-width: 768px) {
+        section.speakers-block .container .speakers-bottom .speaker.one-quarter {
+            float: none;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+    }
+    section.speakers-block .container .speakers-bottom .speaker.one-quarter .image-container {
+        float: none;
+    }
+    section.speakers-block .container .speakers-bottom .speaker.one-quarter .job-title {
+        float: none;
+    }
+    section.speakers-block .container .button-container {
+        float: none;
+    }
+
+    // --- Speaker popup (.mfp-wrap.mfp-gallery): .speaker-popup-container
+    // is already display:flex in the live CSS, so .column's float is
+    // already inert; everything nested inside .column is a single
+    // stacked 100%-width (or sole, non-adjacent) block.
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.image-column .image-container {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.image-column h3.title,
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.image-column h2.title {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.image-column p {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.image-column .company-logo {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.image-column .company-logo img {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.about-column .agenda-content-title,
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.about-column .about-title {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.about-column .agenda-items {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.about-column .agenda-items .agenda-item {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.about-column .agenda-items .agenda-item .time {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.about-column .agenda-items .agenda-item .agenda-title {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.about-column .about {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.about-column .about .about-text {
+        float: none;
+    }
+    .mfp-wrap.mfp-gallery .mfp-content .speaker-popup-container .column.about-column .about .about-text p {
+        float: none;
+    }
+
+    // --- section.text-animation-introduction (homepage hero; also the
+    // base rules inherited by the .text-animation-introduction-v2
+    // variant used on template-home.php, which layers its own inline
+    // <style> overrides on top but doesn't redeclare any of this). Note
+    // this is a DIFFERENT DOM node from section.text-animation-introduction
+    // in the Slick-carousel excluded list above -- there is no carousel
+    // here. .introduction-content-container is already display:flex in
+    // the live CSS, so .column's float is already inert.
+    section.text-animation-introduction .container .introduction-content-container {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container h1 {
+        float: none;
+    }
+    // span.animation-text-line wraps .pre-animation-text (60px) +
+    // .text-animation-container (calc(100% - 60px)), a real still-live
+    // 2-item row with no flex parent of its own.
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container span.animation-text-line {
+        float: none;
+        display: flex;
+        align-items: flex-start;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container span.animation-text-line .pre-animation-text {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container span.animation-text-line .text-animation-container {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container span.animation-text-line .text-animation-container span.rotating-outer {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container .text {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container .form-container-outer {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container .form-container-outer .pre-form-text {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container .form-container-outer .form-container-inner {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container .button-container {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container .button-container a {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.image-column {
+        float: none;
+    }
+    section.text-animation-introduction .container .introduction-content-container .column.image-column .image-container {
+        float: none;
+    }
+    // .thank-you-message under the animation-popup form (base
+    // `float :left`, non-standard spacing -- see header comment).
+    .mfp-wrap.home-animation-popup .mfp-content .form-container {
+        float: none;
+    }
+    .mfp-wrap.home-animation-popup .mfp-content .form-container .form-intro {
+        float: none;
+    }
+
+    // --- section.logo-ticker-tape: sole/stacked blocks; .band-container-
+    // backwards/-forwards are themselves already display:flex.
+    section.logo-ticker-tape .container .title-container {
+        float: none;
+    }
+    section.logo-ticker-tape .container .title-container span.ticker-title {
+        float: none;
+    }
+    section.logo-ticker-tape .band-container-backwards {
+        float: none;
+    }
+    section.logo-ticker-tape .band-container-forwards {
+        float: none;
+    }
+
+    // --- section.list-card-module: .list-card-container is already
+    // display:flex in the live CSS, so everything below it is either a
+    // sole stacked 100%-width block inside one card, or (the
+    // text-link-container a) a naturally-inline <a> row.
+    section.list-card-module .container .top-container {
+        float: none;
+    }
+    section.list-card-module .container .top-container .inner h2 {
+        float: none;
+    }
+    section.list-card-module .container .top-container .inner span.text {
+        float: none;
+    }
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front {
+        float: none;
+    }
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .title-container {
+        float: none;
+    }
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .title-container h3 {
+        float: none;
+    }
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container {
+        float: none;
+    }
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container .list-container {
+        float: none;
+    }
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container .list-container .list-item {
+        float: none;
+    }
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container .text-link-container a {
+        float: none;
+    }
+
+    // --- section.two-column-services: .services-column-container is
+    // already display:flex in the live CSS, so the top-level .column's
+    // float is already inert (matches switcher-module exactly).
+    section.two-column-services .container .title-container {
+        float: none;
+    }
+    section.two-column-services .container .title-container h2 {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .column {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .column.icon-text-column .service {
+        float: none;
+    }
+    // .icon-container (80px) + .text-container (calc(100% - 80px)),
+    // same still-live 2-item row pattern as switcher-module above.
+    section.two-column-services .container .services-column-container .column.icon-text-column {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.two-column-services .container .services-column-container .column.icon-text-column .icon-container {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .column.icon-text-column .text-container {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .column.icon-text-column .text-container span {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .column.text-column .text-content-inner {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .column.text-column .text-content-inner .pre-title {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .column.text-column .text-content-inner h2 {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .column.text-column .text-content-inner .text {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container a {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .links-container.mobile {
+        float: none;
+    }
+    section.two-column-services .container .services-column-container .links-container.mobile a {
+        float: none;
+    }
+
+    // --- section.centered-text-links: reported live by the user as
+    // still floating/overlapping under ?dev=true. .text-container is
+    // display:inline-block in the live CSS but span.text (and h2,
+    // .links-container) have no explicit display of their own, so once
+    // gated to float:none here, fix-float-none-display.js's own pass
+    // adds display:block automatically -- same fix class as the
+    // .text-animation-introduction-v2 .text bug fixed in 3823069.
+    section.centered-text-links .text-container h2 {
+        float: none;
+    }
+    section.centered-text-links .text-container span.text {
+        float: none;
+    }
+    section.centered-text-links .text-container .links-container {
+        float: none;
+    }
+
+    // --- section.content-slider-module: .top-content is the non-
+    // carousel content above .home-content-slider (excluded, see header
+    // comment) -- sole/stacked 100%-width blocks.
+    section.content-slider-module .container .top-content {
+        float: none;
+    }
+    section.content-slider-module .container .top-content h2 {
+        float: none;
+    }
+    section.content-slider-module .container .top-content .text {
+        float: none;
+    }
+    section.content-slider-module .container .top-content .link-container {
+        float: none;
+    }
+
+    // --- Misc remaining sole/stacked 100%-width blocks.
+    .home-component-progress {
+        float: none;
+    }
+    section.featured-types .article-container-three-post {
+        float: none;
+    }
+    // .item-content-container already carries its own explicit
+    // display:block in the live CSS here (the .all-container variant
+    // only -- the non-.all-container .item-content-container is already
+    // display:flex and out of scope).
+    section.featured-types .article-container-three-post .container .grid-wrapper .item.all-container .item-content-container {
+        float: none;
+    }
+    section.parallax-image-module {
+        float: none;
+    }
+    section.parallax-image-module .parallax-image-container {
+        float: none;
+    }
+    section.parallax-image-module .parallax-image-container img {
+        float: none;
+    }
+}
