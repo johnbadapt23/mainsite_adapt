@@ -20495,6 +20495,63 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 19 (hand-designed, ad hoc user-requested tweaks): 5
+// targeted display:flex additions, gated behind ?dev=true like
+// everything else in this file. These are direct user-specified
+// selector/property requests (not part of the systematic
+// file-by-file audit), applied here instead of to the live templates
+// so they can be checked on staging with ?dev=true before folding
+// into the real files.
+//
+// - section.filter-title-block .container .title-container
+//   (source/scss/templates/_resources-types.scss)
+// - section.roundtable-card-slider-module .roundtable-card-slider
+//   .slide .slide-inner .slide-image-container
+//   (source/scss/templates/_roundtable.scss)
+// - section.two-column-services .container .services-column-container
+//   .column.icon-text-column .service
+//   (source/scss/templates/_flexible.scss) -- .icon-container (80px)
+//   and .text-container (calc(100% - 80px)) are real DOM children of
+//   .service (confirmed via templates/components/_two-column-services.php),
+//   so this makes the icon+text row a real flex row.
+// All three keep their own base float:left (that governs how each
+// sits among ITS siblings) -- display:flex only changes how each
+// lays out ITS OWN children.
+//
+// - section.two-column-services .container .services-column-container
+//   .column.text-column .text-content-inner .links-container
+//   (source/scss/templates/_flexible.scss): display:flex !important;
+//   align-items:center. Its child a.text-link's base margin-top:18px
+//   is neutralized here (margin-top:0) since align-items:center now
+//   handles vertical alignment and the old margin-top would just add
+//   an unwanted offset from center.
+//
+// - section.quote-slider .container .progress-container
+//   (source/scss/templates/_events.scss): padding-top:1px; clear:both.
+//   Confirmed as the correct .progress-container among 5 repo-wide
+//   candidates -- this is the one wrapping the quote slider's floated
+//   .progress-bar/.progress-inner (the others are a fixed/absolute
+//   sticky-nav bar in _header.scss and a non-floated page-scoped
+//   override in _market-buyer.scss).
+body.dev-float-refactor {
+    section.filter-title-block .container .title-container,
+    section.roundtable-card-slider-module .roundtable-card-slider .slide .slide-inner .slide-image-container,
+    section.two-column-services .container .services-column-container .column.icon-text-column .service {
+        display: flex;
+    }
+    section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container {
+        display: flex !important;
+        align-items: center;
+    }
+    section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container a.text-link {
+        margin-top: 0;
+    }
+    section.quote-slider .container .progress-container {
+        padding-top: 1px;
+        clear: both;
+    }
+}
+
 // === Section 18 (hand-designed): source/scss/templates/_app.scss --
 // remaining Category C floats not covered by the earlier mechanical
 // batch (2 declarations). Same classification rules as Sections 7-17.
