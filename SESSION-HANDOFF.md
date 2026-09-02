@@ -126,6 +126,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `e66769a` | **Section 13**: `_login.scss` -- see §2i below |
 | `8e88d33` | **Section 14**: `_single-speaker.scss` -- see §2j below |
 | `ffdb085` | **Section 15**: `_form-pages.scss` -- see §2k below |
+| `91f3cf8` | **Section 16**: `_thank-you.scss` -- see §2l below |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -190,7 +191,11 @@ exactly why the section-by-section, check-in-first approach mattered.
   -- see §2i below. **`_single-speaker.scss` is now done too (Section
   14, 2026-09-02, `8e88d33`)** -- see §2j below. **`_form-pages.scss`
   is now done too (Section 15, 2026-09-02, `ffdb085`)** -- see §2k
-  below. Still untouched: the rest of the ~21 remaining files in
+  below. **`_thank-you.scss` is now done too (Section 16, 2026-09-02,
+  `91f3cf8`)** -- see §2l below. `_default.scss` and `_author.scss`
+  were checked and found already fully covered by the earlier
+  mechanical batch (0 uncovered declarations), no fix needed. Still
+  untouched: the rest of the ~18 remaining files in
   `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
@@ -800,6 +805,26 @@ here with a more rigorous brace-depth walk). Same build+diff
 verification as every other section, 0/0/0 ungated on both compiled
 files. Committed as `ffdb085`.
 
+### 2l. Section 16 (`_thank-you.scss`), 2026-09-02
+
+5 remaining declarations. Good reminder that identical class names
+don't imply identical structure: `.counter-circle-outer`/`.counter`
+reuse the exact same class names as `_post.scss`'s counter-title-text
+pattern (Section 12), but here `.counter-title-container` has only one
+child -- no sibling `span.counter-title` -- so this instance is
+sole/stacked (Category C, no flex parent) rather than the genuine-row
+case that needed `display:flex` in Section 12. Checked directly by
+reading the SCSS, not assumed from the shared naming.
+`.list-container .button-container a` loops an ACF repeater field
+(confirmed via `templates/thank-you-components/_two-column.php`), so
+more than one button can render -- Category B still applies since
+they're inline-level anchors with no explicit adjacency requirement
+beyond natural flow. Also checked `_default.scss` and `_author.scss`
+in passing (smallest/next-smallest untouched files) -- both already
+fully covered by the earlier mechanical batch, nothing to fix. Same
+build+diff verification as every other section, 0/0/0 ungated on both
+compiled files. Committed as `91f3cf8`.
+
 ### Recommended way to continue
 
 Follow the exact same loop for each new section: identify the DOM/CSS
@@ -1233,8 +1258,10 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
 3. Extend the float audit beyond `_header.scss`/`_flexible.scss`/
    `_resources-types.scss`/`_customer-events.scss`/`_events.scss`/
    `_registrations.scss`/`_post.scss`/`_login.scss`/
-   `_single-speaker.scss`/`_form-pages.scss` (Sections 1-15, done) to
-   the other ~21 flagged SCSS files (see §2).
+   `_single-speaker.scss`/`_form-pages.scss`/`_thank-you.scss`
+   (Sections 1-16, done; `_default.scss`/`_author.scss` checked,
+   already fully covered) to the other ~18 flagged SCSS files (see
+   §2).
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
