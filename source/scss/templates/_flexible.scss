@@ -5036,7 +5036,6 @@ section.two-column-services {
                     .service {
                         float: left;
                         width: 100%;
-                        display: flex;
                         margin-bottom: 50px;
 
                         &:last-child {
@@ -5176,8 +5175,6 @@ section.two-column-services {
                         .links-container {
                             float: left;
                             width: 100%;
-                            display: flex !important;
-                            align-items: center;
 
                             @media (max-width: 767px) {
                                 text-align: center;
@@ -5198,6 +5195,7 @@ section.two-column-services {
                                 }
 
                                 &.text-link {
+                                    margin-top: 18px;
 
                                     @media (max-width: 767px) {
                                         float: none;
