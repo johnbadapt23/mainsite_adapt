@@ -233,7 +233,6 @@ if ($author_terms && !is_wp_error($author_terms)) {
 
     $path_segments = explode('/', trim($parsed_path, '/')); // Split path into segments
     $event_slug = end($path_segments); // Get the last segment
-    print_r($event_slug); // Debugging output
 
     // Check if the event_slug matches exactly with any author_slug
     foreach ($author_term_slugs as $author_slug) {

@@ -1,45 +1,5 @@
 <?php global $displayed_posts;
 $displayed_posts = array ();
-
-?>
-
-<?php
-
-$q = get_queried_object();
-$resourceType = get_field( 'type', $q );
-$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
-$filterTopic = sanitize_text_field( $_GET['filter-topic'] ?? '' );
-
-if($keyword != '') {
-    $args = array(
-        'post_type' => 'post',
-        'posts_per_page' => -1,
-        's' => $keyword,
-        'paged'=> $paged,
-        'tax_query' => array(
-            'relation' => 'AND',
-            array (
-                'taxonomy' => 'resource-type',
-                'field' => 'slug',
-                'terms'    => $q->slug
-            )
-        )
-    );
-} else {
-    $args = array(
-        'post_type' => 'post',
-        'posts_per_page' => -1,
-        'paged'=> $paged,
-        'tax_query' => array(
-            'relation' => 'AND',
-            array (
-                'taxonomy' => 'resource-type',
-                'field' => 'slug',
-                'terms'    => $q->slug
-            )
-        )
-    );
-}
 ?>
 <section class="filter-listing in-the-news-listing background-black">
     <div class="container">
