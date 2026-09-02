@@ -8,8 +8,8 @@ get_header();
 ?>
 <?php global $displayed_posts;
 $displayed_posts = array ();
-$keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : '';
-$filterType = isset( $_GET['filter-type'] ) ? sanitize_text_field( $_GET['filter-type'] ) : '';
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
+$filterType = sanitize_text_field( $_GET['filter-type'] ?? '' );
 
 if($keyword != '') {
     $args = array(

@@ -1,4 +1,4 @@
-<?php $postType = isset( $_GET['post_type'] ) ? sanitize_text_field( $_GET['post_type'] ) : ''; ?>
+<?php $postType = sanitize_text_field( $_GET['post_type'] ?? '' ); ?>
 
     <section class="postHeader">
         <div class="container">

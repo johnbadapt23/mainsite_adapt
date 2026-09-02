@@ -3,8 +3,8 @@ $displayed_posts = array (); ?>
 
 <?php
 $q = get_queried_object();
-$keyword = isset($_GET['searchWords']) ? sanitize_text_field($_GET['searchWords']) : '';
-$filterType  = isset($_GET['filter-type']) ? sanitize_text_field($_GET['filter-type']) : '';
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
+$filterType  = sanitize_text_field( $_GET['filter-type'] ?? '' );
 
 if($keyword != '') {
     $args = array(

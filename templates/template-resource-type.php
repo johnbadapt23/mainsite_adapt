@@ -6,8 +6,8 @@ $displayed_posts = array ();
 
 $q = get_queried_object();
 $resourceType = get_field( 'type', $q );
-$keyword = isset($_GET['searchWords']) ? sanitize_text_field($_GET['searchWords']) : '';
-$filterTopic = isset($_GET['filter-topic']) ? sanitize_text_field($_GET['filter-topic']) : '';
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
+$filterTopic = sanitize_text_field( $_GET['filter-topic'] ?? '' );
 
 // Tracks whether a high-priority (LCP) image has already been output on this page,
 // so we never mark more than one image fetchpriority="high" per request.

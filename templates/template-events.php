@@ -7,7 +7,7 @@ get_header();
 ?>
 
 <main id="main" role="main" class="events">
-<?php $keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : ''; ?>
+<?php $keyword = sanitize_text_field( $_GET['searchWords'] ?? '' ); ?>
     <section class="postHeader post-events">
         <div class="container">
             <div class="headerWrapper">

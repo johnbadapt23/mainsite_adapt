@@ -6,8 +6,8 @@ echo 'podcast template loaded';
 
 $q = get_queried_object();
 $resourceType = get_field( 'type', $q );
-$keyword = isset($_GET['searchWords']) ? sanitize_text_field($_GET['searchWords']) : '';
-$filterTopic = isset($_GET['filter-topic']) ? sanitize_text_field($_GET['filter-topic']) : '';
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
+$filterTopic = sanitize_text_field( $_GET['filter-topic'] ?? '' );
 
 if($keyword != '') {
     $args = array(

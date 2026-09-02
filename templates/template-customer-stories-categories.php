@@ -7,8 +7,8 @@ $displayed_posts = array ();
 
 $q = get_queried_object();
 $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
-$filterType = isset($_GET['sub-category']) ? sanitize_text_field($_GET['sub-category']) : '';
-$keyword = isset($_GET['searchWords']) ? sanitize_text_field($_GET['searchWords']) : '';
+$filterType = sanitize_text_field( $_GET['sub-category'] ?? '' );
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
 
 if ($q && $q->parent != 0) {
     // Redirect child category to its parent archive
@@ -590,7 +590,7 @@ if ($q && $q->parent != 0) {
             </div>
             <div class="search-container" <?php if($keyword != '') { ?> style="display:block;"<?php } ?>>
                 <form method="get">
-					<input class="searchInputStories" type="text" name="searchWords" id="search" placeholder="Search for company or topics..." value="<?php echo isset($_GET['searchWords']) ? esc_attr($_GET['searchWords']) : ''; ?>" />
+					<input class="searchInputStories" type="text" name="searchWords" id="search" placeholder="Search for company or topics..." value="<?php echo esc_attr( $_GET['searchWords'] ?? '' ); ?>" />
 					<input type="hidden" value="1" name="sentence" />
 				</form>
             </div>            

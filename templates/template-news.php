@@ -4,7 +4,7 @@ $displayed_posts = array ();
 ?>
 <?php
 
-$keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : '';
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
 
 if($keyword != '') {
     $args = array(

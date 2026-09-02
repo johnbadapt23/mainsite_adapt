@@ -519,8 +519,8 @@ add_filter( 'body_class', 'adapt_dev_gate_body_class' );
  * the 3 AJAX filter callbacks reads off $_POST the same way.
  */
 function adapt_get_ajax_filter_request_params() {
-    $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
-    $expertise_slugs = isset($_POST['expertise']) ? array_map('sanitize_text_field', $_POST['expertise']) : array();
+    $paged = intval( $_POST['paged'] ?? 1 );
+    $expertise_slugs = array_map( 'sanitize_text_field', $_POST['expertise'] ?? array() );
     $posts_per_page = 12; // Number of posts per page
     $offset = ($paged - 1) * $posts_per_page;
 

@@ -9,11 +9,11 @@ get_header();
 <main id="main" role="main" class="events">
 <?php
 $filterTopics = isset( $_GET['topics'] ) ? array_map( 'sanitize_text_field', (array) $_GET['topics'] ) : '';
-$filterType = isset( $_GET['filterType'] ) ? sanitize_text_field( $_GET['filterType'] ) : '';
-$keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : '';
-$sortBy = isset( $_GET['orderby'] ) ? sanitize_text_field( $_GET['orderby'] ) : '';
-$sort = isset( $_GET['order'] ) ? sanitize_text_field( $_GET['order'] ) : '';
-$sortPosts = isset( $_GET['sortPost'] ) ? sanitize_text_field( $_GET['sortPost'] ) : '';
+$filterType = sanitize_text_field( $_GET['filterType'] ?? '' );
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
+$sortBy = sanitize_text_field( $_GET['orderby'] ?? '' );
+$sort = sanitize_text_field( $_GET['order'] ?? '' );
+$sortPosts = sanitize_text_field( $_GET['sortPost'] ?? '' );
 
 $filterBy = array();
 ?>
