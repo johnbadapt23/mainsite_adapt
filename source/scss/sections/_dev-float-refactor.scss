@@ -20495,6 +20495,50 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 16 (hand-designed): source/scss/templates/_thank-
+// you.scss -- remaining Category A/B/C floats not covered by the
+// earlier mechanical batch (5 declarations). Same classification rules
+// as Sections 7-15.
+//
+// .thank-you-featured .introduction-column h3: h3 is the sole
+// in-flow child of .introduction-column (its sibling .arrow-container
+// is position:absolute, out of flow) -- Category C.
+//
+// .next-steps-block.partners-cards-module .counter-circle-outer /
+// .counter: same class names as _post.scss's counter-title-text
+// pattern (Section 12), but a DIFFERENT structure here -- no sibling
+// span.counter-title next to .counter-circle-outer in this file
+// (checked: .counter-title-container has only ONE child,
+// .counter-circle-outer). Sole/stacked, Category C, no flex parent
+// needed (unlike the _post.scss version). Scoped to the full
+// section.next-steps-block.partners-cards-module path, no collision.
+//
+// .two-column-thank-you-module .column-container .column: parent is
+// already display:flex in base CSS at every breakpoint -- Category A.
+//
+// .list-container .button-container a: <a class="std-button">, width
+// auto. The PHP (templates/thank-you-components/_two-column.php) loops
+// an ACF repeater field for this button, so more than one <a> can
+// render side by side -- Category B, natural inline flow reproduces
+// the row exactly as the float did.
+//
+// No Slick involvement (grepped source/js/main.js).
+body.dev-float-refactor {
+    section.thank-you-featured .container .thank-you-post-introduction-container .introduction-column h3 {
+        float: none;
+    }
+    section.next-steps-block.partners-cards-module .card-container .card .content-container .counter-title-container .counter-circle-outer,
+    section.next-steps-block.partners-cards-module .card-container .card .content-container .counter-title-container .counter-circle-outer .counter {
+        float: none;
+    }
+    section.two-column-thank-you-module .container .column-container .column {
+        float: none;
+    }
+    section.two-column-thank-you-module .container .column-container .column .list-container .button-container a {
+        float: none;
+    }
+}
+
 // === Section 15 (hand-designed): source/scss/templates/_form-
 // pages.scss -- remaining Category A/C floats not covered by the
 // earlier mechanical batch (3 declarations). Same classification rules
