@@ -5,6 +5,7 @@ $args = array(
     'post_type' => 'event',
     'meta_key'  => 'date',
     'posts_per_page' => -1,
+    'no_found_rows' => true,
     'orderby'   => 'meta_value_num',
     'order'     => 'ASC',
     'meta_query' => array(
@@ -126,6 +127,7 @@ if($years){
             'post_type' => 'event',
             'meta_key'  => 'date',
             'posts_per_page' => -1,
+            'no_found_rows' => true,
             'orderby'   => 'meta_value_num',
             'order'     => 'ASC',
             'meta_query' => array(

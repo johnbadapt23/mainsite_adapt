@@ -15,6 +15,7 @@
                         $args = array(
                             'post_type'      => $post_type,
                             'posts_per_page' => -1,
+                            'no_found_rows'  => true,
                             'tax_query'      => array(
                                 array(
                                     'taxonomy' => $taxonomy,
@@ -277,6 +278,7 @@
                     $args = array(
                         'post_type'      => $post_type,
                         'posts_per_page' => -1,
+                        'no_found_rows'  => true,
                         'tax_query'      => array(
                             array(
                                 'taxonomy' => $taxonomy,
@@ -538,6 +540,7 @@
                         $args = array(
                             'post_type'      => $post_type,
                             'posts_per_page' => -1,
+                            'no_found_rows'  => true,
                             'tax_query'      => array(
                                 array(
                                     'taxonomy' => $taxonomy,

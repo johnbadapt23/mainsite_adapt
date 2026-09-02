@@ -9,6 +9,7 @@
         $args = array(
             'post_type'      => 'speaker',
             'posts_per_page' => -1,
+            'no_found_rows' => true,
             'tax_query'      => array(
                 'relation' => 'AND',
                 array(
