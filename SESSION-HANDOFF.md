@@ -378,12 +378,25 @@ rationale is in the `972acdc` commit message):
   on source order; everything else found is either already
   footer-scoped or nested under a more specific ancestor that wins on
   specificity regardless of load order.
-- **Not done, and can't be done from this sandbox:** a real visual check
-  on staging with `?dev=true` (no deploy access here). The CSS-rule-level
-  diff above is strong evidence nothing changes, but it isn't the same as
-  seeing the rendered footer. Please check `staging.adapt.com.au/?dev=true`
-  on a few different templates (footer renders identically, no flash/
-  layout shift) before this gets promoted to the default path.
+- **Confirmed on staging, 2026-09-02 (after user deploy):** `?dev=true`
+  correctly enqueues `main-nofooter.min.css` (handle `main-styles`) +
+  `footer.min.css` (handle `footer-styles`, `rel="preload"` +
+  `onload` swap, `<noscript>` fallback present) instead of `main.min.css`;
+  both files return 200. Verified with `getComputedStyle()` directly on
+  the live DOM (not just a screenshot) that `footer`'s
+  `background-color`/`padding` match the SCSS source exactly, and that
+  `.social-link`'s relocated rule (`global/_styles.scss`, loaded via
+  `main-nofooter.min.css`) still correctly applies its `::after`
+  touch-target expansion to the footer's social icons even though it now
+  ships in a different file than the footer content itself. No
+  footer/CSS-related console errors. Note: the in-app browser's
+  screenshot tool renders blank white for ANY scrolled-down position on
+  this page (reproduces identically with `?dev=true` off, so it's a
+  pre-existing tool quirk, not a regression -- confirmed real content is
+  there via `elementFromPoint()` + computed styles, just couldn't get a
+  usable screenshot of it). Not yet promoted to the default path --
+  that's still a judgment call for you once you've eyeballed it yourself
+  outside this sandbox's screenshot limitation.
 
 ## 4. Quick reference: how to rebuild and verify CSS changes
 
@@ -564,14 +577,14 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    solid for the categories it checked, but isn't a substitute for the
    real tool. Also consider PHP-CS-Fixer for the bulk `array()` → `[]`
    conversion (~350 files) mentioned in §7.
-9. Check `staging.adapt.com.au/?dev=true` (after deploying `972acdc`) on
-   a few templates -- footer should render identically to the
-   non-`?dev=true` version, no flash/layout shift, no console errors from
-   the new `footer-styles` handle. If it looks right, promote by making
-   `?dev=true`'s enqueue branch in `my_enqueue_scripts()` the default and
-   deleting the old branch + `main.min.css`'s footer content (or just
-   leave both paths as-is if the win isn't worth the added build
-   complexity -- your call once you've seen it).
+9. ~~Check `staging.adapt.com.au/?dev=true` ... footer should render
+   identically~~ **spot-checked, 2026-09-02** -- correct files enqueued,
+   correct computed styles, no console errors (see §9 above). Still
+   worth an actual eyeball check on your end (this sandbox's screenshot
+   tool couldn't render a usable image of the scrolled page -- see the
+   note in §9) before deciding whether to promote `?dev=true`'s enqueue
+   branch in `my_enqueue_scripts()` to the default, or leave both paths
+   as-is if the win isn't worth the added build complexity.
 8. ~~`template-insights.php` / `template-search-results.php` -- a
    careful, dedicated pass to add `no_found_rows` where safe~~ **done,
    2026-09-02** (`23567b1`) -- traced each file's reassigned `$args`
