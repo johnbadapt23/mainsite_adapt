@@ -18,6 +18,15 @@ var cssmin = require('gulp-clean-css');
 var csso = require('gulp-csso');
 var browserSync = require("browser-sync");
 var reload = browserSync.reload;
+// See source/gulp/split-oversized-rules.js for why this exists: clean-css's
+// merging below can combine well over a thousand selectors sharing one
+// declaration (the gated float-refactor CSS is the file that actually hits
+// this) into a single rule, and browsers have been confirmed (via live
+// bisection on staging) to silently stop applying such a rule somewhere
+// past ~1,000-1,200 selectors. This runs after cssmin and only splits the
+// (rare) oversized rule back into several smaller ones with identical
+// declarations -- it never changes which selector gets which value.
+var splitOversizedRules = require('../../split-oversized-rules.js');
 
 var path = require('../../paths.js');
 var error = require('../../error.js');
@@ -47,6 +56,7 @@ gulp.task('build:styles', function () {
         // shipping the dead declaration. This is clean-css's own documented
         // "safe for production" optimization tier, not an experimental flag.
         .pipe(cssmin({ level: { 1: { all: true }, 2: { all: true, restructureRules: true } } }))
+        .pipe(splitOversizedRules())
         //.pipe(csso())
         .pipe(concat('main.min.css'))
         //.pipe(rename({suffix: '.min'}))

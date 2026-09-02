@@ -161,7 +161,9 @@ exactly why the section-by-section, check-in-first approach mattered.
   postcss script from the footer-CSS-split verification) confirmed
   0 changed / 0 removed against the previous build, 17 added -- all 17
   are the new `body.dev-float-refactor`-gated rules and nothing else.
-  Not committed/verified live yet -- see the open item below.
+  Committed as `482216b`. **See §2a below -- testing this surfaced a
+  serious, unrelated bug in how the entire gated float-refactor CSS gets
+  minified, now fixed (`<pending commit>`).**
 - Beyond `_header.scss`: the original audit flagged **260 "narrow width" +
   167 "no width" + 296 "carousel-adjacent" = 723 declarations** needing
   individual review. Sections 1–5 covered a meaningful chunk of
@@ -169,9 +171,89 @@ exactly why the section-by-section, check-in-first approach mattered.
   events.scss`, `_events.scss`, `_flexible.scss`, `_registrations.scss`,
   `_resources-types.scss`, `_post.scss`, etc.) has been touched yet in the
   hand-designed phase.
-- **Not yet confirmed by the user:** no in-thread confirmation has been
-  received that Sections 1–5 actually render correctly live with
-  `?dev=true`. Test before continuing further, or accept the risk knowingly.
+- **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
+  found floats/overlap persisting on completely unrelated homepage
+  sections (`.introduction-content-container`, `.video-module`,
+  `.infinite-images`, etc. -- none of which are part of Sections 1–6,
+  all still on their original float layout by design). Investigating
+  *why* those still floated led to §2a's discovery: it wasn't those
+  sections being out of scope (expected) -- the override rules for
+  things that *were* supposed to be fixed were also silently failing to
+  apply, sitewide, for an entirely different reason. Sections 1–5's own
+  correctness is still unconfirmed pending a fresh `?dev=true` check now
+  that §2a's fix is in.
+
+### 2a. Critical bug found + fixed, 2026-09-02: oversized merged CSS rule silently ignored by the browser
+
+**Symptom:** with `?dev=true` on staging, many `body.dev-float-refactor`
+override rules had zero effect -- elements kept their original `float`
+even though the compiled CSS clearly contained a correctly-scoped,
+higher-specificity `{float:none}` rule for them, and `Element.matches()`
+confirmed the selector matched.
+
+**Root cause, found by live bisection in the browser (not guessed):**
+clean-css's level-2 `mergeNonAdjacentRules`/`restructureRules`
+optimization (`source/gulp/tasks/build/styles.js`, `styles-split.js`) --
+already relied on elsewhere in this codebase and confirmed safe for
+*that* usage -- merges every rule sharing identical declarations across
+the **whole file** into one rule with a combined selector list. The
+gated float-refactor CSS adds 1,000+ small `{float:none}` declarations
+sitewide (the mechanical Category A/B batch plus Sections 1–6), and
+clean-css dutifully merged all of them (plus anything else in the site
+sharing that exact declaration) into **one single rule with 1,535
+comma-separated selectors / 166,644 characters**. Confirmed via
+`document.styleSheets` introspection in a live browser session that this
+rule *is* parsed and *is* present with the correct declaration -- but
+via directly injecting truncated copies of the exact live selector list
+through a fresh `<style>` tag and bisecting, selector lists up to
+~1,000 apply correctly, and somewhere between 1,000–1,200 the browser
+silently stops applying the rule at all. No console error, no warning --
+it just doesn't take effect. This is a genuine browser-engine limit,
+not a WordPress/RUCSS/caching/deployment issue (all of those were ruled
+out first: confirmed the fully-current, un-cached CSS was what the
+browser had loaded, confirmed RUCSS is disabled on the front page via
+the existing `pre_get_rocket_option_remove_unused_css` filter, confirmed
+no `@layer`/inline-style/specificity issue).
+
+**Fix rejected:** disabling clean-css's merge behavior outright
+(`mergeNonAdjacentRules: false`) does stop the oversized-rule problem,
+but a full semantic diff against the previous build showed it also
+**changes real, already-correct cascade outcomes** in 8 unrelated
+places sitewide -- e.g. two `section...background-black h4` rules'
+text color flipping from white to black, a `.value h2` margin changing,
+a mobile `@media` visibility toggle flipping from `display:none` to
+`display:block`. Several parts of the codebase depend on clean-css
+resolving same-selector conflicts across non-adjacent rules in true
+source order, so this option can't just be turned off sitewide.
+
+**Fix applied:** new `source/gulp/split-oversized-rules.js`, wired into
+both `styles.js` and `styles-split.js` immediately after `cssmin`. Runs
+*after* clean-css has already done all of its (verified-safe) merging
+and cascade resolution, then walks the AST for any single rule whose
+selector list is longer than 400 (comfortably under the ~1,000–1,200
+break point found above) and splits it into several consecutive rules
+with identical declarations, each under the limit -- selector order and
+declaration text are untouched, so this cannot change what applies to
+what, only how many selectors share one `{...}` block. A full
+selector-by-selector semantic diff against the last committed build
+(same postcss-based script used throughout this session) came back
+**0 changed / 0 removed / 0 added** -- confirming this is a pure,
+lossless mechanical split. `main-nofooter.min.css` grew by ~2.9 KB;
+`footer.min.css` is untouched (never has oversized rules). Verified
+reproducible from a completely fresh `npm ci` + `npx gulp build:styles
+build:styles-split` in an isolated scratch dir.
+
+An earlier version of this splitter spliced the raw CSS text by
+character offset instead of editing the postcss AST, and silently
+corrupted a few selectors at chunk boundaries (e.g. `body...` became
+`bbody...`) -- caught by the same before/after semantic diff, which is
+why that diff is run on every change in this file, not just spot
+checks. Rewritten to clone/replace AST nodes instead, which fixed it (0
+changed on the same diff).
+
+**Still needs:** a fresh `?dev=true` check on staging once this is
+deployed, to confirm Sections 1–6 (and the mechanical batch) now
+actually render correctly with the oversized-rule bug out of the way.
 
 ### Recommended way to continue
 

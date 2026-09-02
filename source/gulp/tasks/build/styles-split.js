@@ -14,6 +14,15 @@ var cssmin = require('gulp-clean-css');
 var concat = require('gulp-concat');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
+// See source/gulp/split-oversized-rules.js -- clean-css's merging below can
+// combine well over a thousand selectors sharing one declaration (this file
+// is the actual source of the gated float-refactor CSS that hits this) into
+// a single rule, which browsers have been confirmed (live bisection on
+// staging) to silently stop applying somewhere past ~1,000-1,200 selectors.
+// Runs after cssmin, only splitting the rare oversized rule into several
+// smaller ones with identical declarations -- never changes which selector
+// gets which value.
+var splitOversizedRules = require('../../split-oversized-rules.js');
 
 var error = require('../../error.js');
 
@@ -45,6 +54,7 @@ gulp.task('build:styles-main-nofooter', function () {
         }))
         .on('error', error.handler)
         .pipe(cssmin({ level: { 1: { all: true }, 2: { all: true, restructureRules: true } } }))
+        .pipe(splitOversizedRules())
         .pipe(concat('main-nofooter.min.css'))
         .pipe(gulp.dest('assets/css/'))
         .pipe(reload({ stream: true }));
@@ -61,6 +71,7 @@ gulp.task('build:styles-footer', function () {
         }))
         .on('error', error.handler)
         .pipe(cssmin({ level: { 1: { all: true }, 2: { all: true, restructureRules: true } } }))
+        .pipe(splitOversizedRules())
         .pipe(concat('footer.min.css'))
         .pipe(gulp.dest('assets/css/'))
         .pipe(reload({ stream: true }));
