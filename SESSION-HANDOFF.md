@@ -518,7 +518,13 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    solid for the categories it checked, but isn't a substitute for the
    real tool. Also consider PHP-CS-Fixer for the bulk `array()` → `[]`
    conversion (~350 files) mentioned in §7.
-8. `template-insights.php` / `template-search-results.php` -- a careful,
-   dedicated pass to add `no_found_rows` where safe (see §8) -- these
-   share `$args` across multiple `WP_Query()` calls in some branches, so
-   the quick per-file sweep deliberately skipped them.
+8. ~~`template-insights.php` / `template-search-results.php` -- a
+   careful, dedicated pass to add `no_found_rows` where safe~~ **done,
+   2026-09-02** (`23567b1`) -- traced each file's reassigned `$args`
+   through every `WP_Query()` call site individually; added
+   `no_found_rows` to the 6 term-collection/count-only queries in
+   `template-insights.php` and the 2 in `template-search-results.php`;
+   left the real paginated-listing queries (tied to `wp_pagenavi()`)
+   untouched in both. `template-search.php` was checked too -- it only
+   uses the main query + `paginate_links()`, no custom `WP_Query`, so
+   there was nothing to change there.
