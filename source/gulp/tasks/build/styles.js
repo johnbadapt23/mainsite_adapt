@@ -27,6 +27,14 @@ var reload = browserSync.reload;
 // (rare) oversized rule back into several smaller ones with identical
 // declarations -- it never changes which selector gets which value.
 var splitOversizedRules = require('../../split-oversized-rules.js');
+// See source/gulp/fix-float-none-display.js: many gated float:none
+// overrides target <span>/<a>/other inline-by-default tags that relied on
+// the float itself to blockify them -- neutralising the float without
+// also setting display:block silently breaks their layout. Runs BEFORE
+// splitOversizedRules since it can fragment a previously-uniform merged
+// rule into two (needs display:block / doesn't), which may then need
+// splitting again.
+var fixFloatNoneDisplay = require('../../fix-float-none-display.js');
 
 var path = require('../../paths.js');
 var error = require('../../error.js');
@@ -56,6 +64,7 @@ gulp.task('build:styles', function () {
         // shipping the dead declaration. This is clean-css's own documented
         // "safe for production" optimization tier, not an experimental flag.
         .pipe(cssmin({ level: { 1: { all: true }, 2: { all: true, restructureRules: true } } }))
+        .pipe(fixFloatNoneDisplay())
         .pipe(splitOversizedRules())
         //.pipe(csso())
         .pipe(concat('main.min.css'))

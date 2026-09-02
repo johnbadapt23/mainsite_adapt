@@ -23,6 +23,14 @@ var reload = browserSync.reload;
 // smaller ones with identical declarations -- never changes which selector
 // gets which value.
 var splitOversizedRules = require('../../split-oversized-rules.js');
+// See source/gulp/fix-float-none-display.js: many gated float:none
+// overrides target <span>/<a>/other inline-by-default tags that relied on
+// the float itself to blockify them -- neutralising the float without
+// also setting display:block silently breaks their layout. Runs BEFORE
+// splitOversizedRules since it can fragment a previously-uniform merged
+// rule into two (needs display:block / doesn't), which may then need
+// splitting again.
+var fixFloatNoneDisplay = require('../../fix-float-none-display.js');
 
 var error = require('../../error.js');
 
@@ -54,6 +62,7 @@ gulp.task('build:styles-main-nofooter', function () {
         }))
         .on('error', error.handler)
         .pipe(cssmin({ level: { 1: { all: true }, 2: { all: true, restructureRules: true } } }))
+        .pipe(fixFloatNoneDisplay())
         .pipe(splitOversizedRules())
         .pipe(concat('main-nofooter.min.css'))
         .pipe(gulp.dest('assets/css/'))
@@ -71,6 +80,7 @@ gulp.task('build:styles-footer', function () {
         }))
         .on('error', error.handler)
         .pipe(cssmin({ level: { 1: { all: true }, 2: { all: true, restructureRules: true } } }))
+        .pipe(fixFloatNoneDisplay())
         .pipe(splitOversizedRules())
         .pipe(concat('footer.min.css'))
         .pipe(gulp.dest('assets/css/'))

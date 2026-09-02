@@ -255,6 +255,80 @@ changed on the same diff).
 deployed, to confirm Sections 1–6 (and the mechanical batch) now
 actually render correctly with the oversized-rule bug out of the way.
 
+### 2b. Second bug found + fixed, 2026-09-02 (same testing round): `float:none` on `<span>`/`<a>` tags silently un-blockified them
+
+**Symptom:** user reported, after deploying §2a's fix, that specific
+text elements (e.g. `.text-animation-introduction-v2
+span.animation-text-container .text`, `section.centered-text-links
+.text-container span.text`) still rendered wrong with `?dev=true` --
+not floating exactly, but collapsed/inline instead of the expected
+full-width block.
+
+**Root cause:** `float` isn't purely a positioning property -- per the
+CSS Display spec, a non-`none` float value *blockifies* the element's
+computed `display` (an inline element like `<span>` with `float: left`
+computes to a block box). The mechanical Category A/B batch that
+generated most of `_dev-float-refactor.scss` only ever set
+`float: none` to neutralise floats -- correct for the (large) majority
+of targets that are `<div>`/`<section>`/other already-block-level tags,
+but for the subset that are `<span>`/`<a>`/other inline-by-default tags
+relying on that blockification, removing the float without also fixing
+`display` silently broke their layout instead of fixing it.
+
+**How this was found to be systemic, not a one-off:** a postcss-based
+audit (comparing every gated `float: none`-only rule's base selector
+against its un-gated counterpart in the same compiled file) found
+**1,423 of 1,659** such gated rules have no explicit `display` in the
+base (production) rule at all -- meaning the vast majority were only
+ever verified safe against the "already block-level" assumption, never
+checked against real DOM tag names. A first attempt at narrowing this
+down by cross-referencing class names against `<span class="...">`/`<a
+class="...">` usage site-wide produced ~880 "risky" hits, but was
+abandoned as unreliable -- the same class name is often reused on a
+`<div>` in one template and a `<span>` in another, so a class-name match
+alone can't tell which specific selector instance needs the fix.
+
+**Fix applied:** new `source/gulp/fix-float-none-display.js`, wired in
+right before `split-oversized-rules.js` in both `styles.js` and
+`styles-split.js`. For every gated rule whose only declaration is
+`float: none`, it checks whether the corresponding un-gated (production)
+rule for that same selector already has an explicit `display` of its
+own. If it does (236 cases -- already `flex`/`grid`/`inline-block`/etc,
+correctly untouched, forcing `display:block` onto those would be
+wrong), it's left alone. If it doesn't (1,423 cases), `display: block`
+is added to the override. `display: block` is exactly what a blockified
+inline element already renders as, so this is a no-op for the
+`<div>`/`<section>`-majority (already block by default) and the correct
+fix for the `<span>`/`<a>`-minority -- there's no case in the
+"no explicit display in base" bucket where it's the wrong value.
+`main-nofooter.min.css` fixed 1,447 selectors this way (slightly more
+than main.min.css's 1,423 since the two files' selector pools differ
+slightly); a semantic diff against the previous build confirmed
+**0 removed, 0 added, only the 1,423/1,447 gated selectors changed** --
+every non-gated (real, live) selector is untouched.
+
+Verified directly against both user-reported selectors: both now
+compile to `float:none;display:block` and both were confirmed at
+`float:left` (real, load-bearing) in their base/production rule --
+i.e. this genuinely was live-breaking for those two, not a false
+positive.
+
+**Also clarified, same round -- NOT bugs, just out of scope:** the user
+also flagged `.home-content-slider` (Slick carousel track) and
+`resources-featured-slide`/`.featured-module`/`.featured-home` as
+"still floating" with `?dev=true`. Checked: **none of these have any
+gated override at all** -- they were never touched by any part of this
+refactor (Slick carousel floats are explicitly excluded per §2's
+Category B note -- Slick's own JS positions `.slide`s using float, so
+blindly neutralising it would break the carousel, not fix it; the
+`featured-*` classes are simply in files/sections nobody has audited
+yet). These render identically with or without `?dev=true` right now,
+by design -- not a regression, just unfinished scope. Worth being
+explicit about this distinction going forward: "still floats with
+`?dev=true`" only indicates a real bug for elements that actually have
+a gated override; for anything else it just means that element hasn't
+been reached yet.
+
 ### Recommended way to continue
 
 Follow the exact same loop for each new section: identify the DOM/CSS
