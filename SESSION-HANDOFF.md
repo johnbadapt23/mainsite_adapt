@@ -114,6 +114,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `96d25ee` | **Section 3**: resources sticky-menu row (cluster + push-right pattern, `margin-left:auto`) |
 | `5d6ddf0` | **Section 4**: search dropdown (3-column 25/50/25 row + 2 nested sub-pairs) |
 | `4eeef4f` | **Section 5**: mobile menu back/close header bar (3 duplicated DOM contexts, `justify-content:space-between`) |
+| _(pending)_ | **Section 6**: remaining mobile-menu floats -- `.logo-tile`/`.column` (already-inert, parent already flex), `.subscribe-sidebar-form` icon/content split (`row-reverse` needed -- DOM order is icon-then-content but icon floats right), `.services-inner-mobile li a` icon+label row (`inline-block`→`inline-flex`), `.overview-image` (already-inert), `.all-link`, and the `.mobileMenuResources` logo/adapt-link split |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -137,12 +138,30 @@ exactly why the section-by-section, check-in-first approach mattered.
 
 ### What's left in this refactor
 
-- **Section 6 (not started):** remaining mobile-menu floats that aren't
-  part of the back/close header pattern — icon-containers, `.logo-tile`,
-  `.overview-image`, `.all-link`, `.subscribe-sidebar-form .icon-container`,
-  and the `.mobileMenuResources .main-links-container` logo/adapt-link
-  split (source/scss/partials/_header.scss lines ~2863, 2891, 2901, 2955,
-  3066, 3129, 3180, 3387, 3415, 3622-3647).
+- **Section 6 (done, not yet deployed):** remaining mobile-menu floats
+  that aren't part of the back/close header pattern -- icon-containers,
+  `.logo-tile`, `.overview-image`, `.all-link`, `.subscribe-sidebar-form
+  .icon-container`, and the `.mobileMenuResources .main-links-container`
+  logo/adapt-link split. Two of the six (`.logo-tile`'s `.column` parent,
+  and the mobile `.overview-image`) turned out to already be inert --
+  their immediate parent (`.logo-link-column-container` /
+  `.overview-container-inner`) is *already* unconditionally
+  `display:flex` in the live, ungated CSS, so float never did anything
+  there; just `float:none`, zero risk. The `.subscribe-sidebar-form`
+  icon+content split needed `flex-direction:row-reverse` (not just plain
+  `justify-content:space-between`) -- confirmed via
+  `_mega-main-menu-mobile.php:438-443` that the DOM order is
+  icon-container-then-form-content, but icon-container floats *right*
+  and form-content floats *left*, so a plain flex row would visually
+  swap them; row-reverse restores the original left-to-right visual
+  order. `.services-inner-mobile li a` (icon+label row) needed
+  `display:inline-block` → `inline-flex` (not `flex`, which would have
+  switched it from shrink-to-fit sizing to block-filling sizing -- a
+  real behavior change). Full selector-by-selector semantic diff (same
+  postcss script from the footer-CSS-split verification) confirmed
+  0 changed / 0 removed against the previous build, 17 added -- all 17
+  are the new `body.dev-float-refactor`-gated rules and nothing else.
+  Not committed/verified live yet -- see the open item below.
 - Beyond `_header.scss`: the original audit flagged **260 "narrow width" +
   167 "no width" + 296 "carousel-adjacent" = 723 declarations** needing
   individual review. Sections 1–5 covered a meaningful chunk of
@@ -574,9 +593,16 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
 
 ## 6. Open items for the next session
 
-1. Get user confirmation that Sections 1–5 of the float refactor render
-   correctly with `?dev=true` before starting Section 6.
-2. Section 6: remaining `_header.scss` mobile-menu floats (see §2).
+1. Get user confirmation that Sections 1–5 **and now 6** of the float
+   refactor render correctly with `?dev=true` -- still no in-thread
+   confirmation for any of it. Test the mobile nav (main menu dropdowns,
+   the "Our Services" sub-list, the subscribe form inside it, and the
+   separate Resources panel's logo/ADAPT header row) with `?dev=true` on
+   staging before extending further.
+2. ~~Section 6: remaining `_header.scss` mobile-menu floats (see §2).~~
+   **done, 2026-09-02** -- see §2's Section 6 writeup. Awaiting the
+   `?dev=true` staging check in item 1 above before it's trustworthy to
+   build on further.
 3. Extend the float audit beyond `_header.scss` to the other 30+ flagged
    SCSS files (see §2).
 4. `#70` — likely already resolved by RUCSS being active (see §3's

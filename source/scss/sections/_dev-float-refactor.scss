@@ -18544,3 +18544,171 @@ body.dev-float-refactor {
         float: none;
     }
 }
+
+// === Section 6 (hand-designed): remaining mobile-menu floats ===
+// source/scss/partials/_header.scss -- the leftover mobile-menu floats not
+// covered by Sections 1-5 or the mechanical Batch 1/2 pass, confirmed
+// against templates/partials/_header.php and
+// templates/partials/_mega-main-menu-mobile.php.
+//
+// P1 = .mobileMenuMain .mobileInner .container .main-nav-mobile ul
+//      li.main-dropdown .mobile-sub-menu  (top-level dropdown items)
+// P2 = same, but nested under .services-inner-mobile li.main-dropdown
+//      (the "Our Services" sub-list -- see Section 5's comment for why
+//      .services-inner-mobile lives inside the same .main-nav-mobile ul)
+//
+// 1. .logo-link-column-container .column / .logo-tile (P1 only --
+//    .logo-link-column-container doesn't appear in the P2 dropDownSection).
+//    .logo-link-column-container itself is *already* unconditionally
+//    `display:flex` in the live, ungated CSS (source/scss/partials/
+//    _header.scss), so .column's float:left is already provably inert --
+//    same as any other Category A case, just float:none, no flex
+//    properties needed. .logo-tile is the sole child of
+//    .column.link-logo-column (no sibling to float past), so it's the
+//    same sole-child float:none treatment used throughout this file.
+//    Selector written against both .groupSection and .dropDownSection
+//    (source multi-selector, same as the existing Batch fixes) even
+//    though .groupSection is confirmed unused in every template --
+//    matches the established pattern, costs nothing.
+//
+// 2. .subscribe-sidebar-form .icon-container / .form-content (P1 and P2 --
+//    this markup block appears once in
+//    _mega-main-menu-mobile.php:438-443 but the SCSS declares the same
+//    icon+content split twice, once per dropdown tier, so both are fixed
+//    identically). Source DOM order is icon-container THEN form-content,
+//    but icon-container floats right and form-content floats left, so a
+//    plain justify-content:space-between (Section 5's usual 2-item
+//    pattern) would visually reverse them. flex-direction:row-reverse
+//    fixes that: with row-reverse the first DOM child lands at the
+//    main-start edge (the right, in a reversed row), so icon-container
+//    still ends up on the right and form-content on the left, matching
+//    the float result exactly. The two widths (60px + calc(100% - 60px))
+//    already sum to exactly 100%, so justify-content has no actual space
+//    left to redistribute -- it's a documented no-op safety net, not
+//    load-bearing. flex-shrink:0 on icon-container matches its explicit
+//    float width, same as Sections 3-4.
+//
+// 3. .services-inner-mobile li a .icon-container (the icon+label row
+//    inside each service link, NOT the sub-menu -- a plain sibling of
+//    .icon-container's img fix already in Batch 1/2). The floated
+//    icon-container sits inside `>a`, which is display:inline-block, not
+//    a flex/BFC-established container the float is inert in -- this is a
+//    real, live 2-item icon+text row. Converting `>a` to display:
+//    inline-flex (not flex) preserves the shrink-to-fit sizing
+//    inline-block already gave it (a block-level flex container would
+//    default to filling its parent's width instead -- a real behavior
+//    change); .main-dropdown's `>a { width:100% }` variant still
+//    overrides sizing explicitly either way, so it's unaffected.
+//    align-items:flex-start replicates float's top-alignment.
+//
+// 4. .overview-container .overview-container-inner .overview-image
+//    (mobile "Our Services" card image -- a different DOM node from the
+//    desktop .servicesMenu...overview-image already handled in Batch
+//    1/2, so it needed its own fix). .overview-container-inner is
+//    already unconditionally `display:flex` in the live CSS, so this is
+//    the same already-inert Category A case as #1 -- just float:none.
+//
+// 5. .all-link (P2 only, NOT .all-link-container -- that's already
+//    float:none from Batch 1/2). Currently redundant with
+//    .all-link-container a's own float:left (same value) but adds its
+//    own margin-left/margin-top on top -- kept unchanged, only the float
+//    itself is dropped. No sibling floats past it in this box, so plain
+//    float:none, no flex properties.
+//
+// 6. .mobileMenuResources .mobileInner .main-links-container .container
+//    .logo / .adapt-link-container (confirmed via templates/partials/
+//    _header.php:120-139: .logo then .adapt-link-container, in that DOM
+//    order, floated left then right respectively -- the standard order,
+//    no row-reverse needed here unlike #2). Classic Section-5-style
+//    2-item split: justify-content:space-between, flex-shrink:0 on both
+//    (they're width:auto, matching the "explicit float width" rule from
+//    Sections 3-4). The floats *inside* .logo (the logo image and the
+//    "Resources" link) and inside .adapt-link-container (.adapt-link)
+//    are untouched -- they're a separate, still-live nested float layout
+//    that .container becoming a flex parent doesn't affect.
+//
+// .container is scoped with its full ancestor chain (Section 4/5
+// convention) since it's reused sitewide.
+body.dev-float-refactor {
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .groupSection .logo-link-column-container .column {
+        float: none;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .dropDownSection .logo-link-column-container .column {
+        float: none;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .groupSection .logo-link-column-container .column.link-logo-column .logo-tile {
+        float: none;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .dropDownSection .logo-link-column-container .column.link-logo-column .logo-tile {
+        float: none;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .full-width .form-container-inner .subscribe-sidebar-form {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .full-width .form-container-inner .subscribe-sidebar-form .icon-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .full-width .form-container-inner .subscribe-sidebar-form .form-content {
+        float: none;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li.main-dropdown .mobile-sub-menu .full-width .form-container-inner .subscribe-sidebar-form {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li.main-dropdown .mobile-sub-menu .full-width .form-container-inner .subscribe-sidebar-form .icon-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li.main-dropdown .mobile-sub-menu .full-width .form-container-inner .subscribe-sidebar-form .form-content {
+        float: none;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li a {
+        display: inline-flex;
+        align-items: flex-start;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li a .icon-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .overview-container .overview-container-inner .overview-image {
+        float: none;
+    }
+
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li.main-dropdown .mobile-sub-menu .all-link {
+        float: none;
+    }
+
+    .mobileMenuResources .mobileInner .main-links-container .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .mobileMenuResources .mobileInner .main-links-container .container .logo {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobileMenuResources .mobileInner .main-links-container .container .adapt-link-container {
+        float: none;
+        flex-shrink: 0;
+    }
+}
