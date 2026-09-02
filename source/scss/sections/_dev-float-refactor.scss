@@ -20495,6 +20495,28 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 13 (hand-designed): source/scss/templates/_login.scss --
+// remaining Category A/C floats not covered by the earlier mechanical
+// batch (2 declarations). Same classification rules as Sections 7-12.
+//
+// .column-container is already display:flex in base CSS -- .column is
+// a direct flex child, Category A. .content-container span.text is a
+// sole/stacked width:100% child (alongside h4, already covered) --
+// Category C. Confirmed no Slick carousel involvement (grepped
+// source/js/main.js) and no cross-file collision (the shared
+// `.column-container .column` substring also appears in
+// _customer-events.scss/_gtm.scss, but this fix is scoped to the full
+// section.login-module .container .login-inner path, not bare
+// .column-container .column).
+body.dev-float-refactor {
+    section.login-module .container .login-inner .column-container .column {
+        float: none;
+    }
+    section.login-module .container .login-inner .column-container .column .content-container span.text {
+        float: none;
+    }
+}
+
 // === Section 12 (hand-designed): source/scss/templates/_post.scss --
 // remaining Category C/D floats not covered by the earlier mechanical
 // batch (25 declarations). Same classification rules as Sections 7-11.
