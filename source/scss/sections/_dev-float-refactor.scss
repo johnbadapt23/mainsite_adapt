@@ -20495,6 +20495,64 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 17 (hand-designed): source/scss/templates/_market.scss --
+// 5 of 6 remaining floats not covered by the earlier mechanical batch.
+// Same classification rules as Sections 7-16.
+//
+// .market-form .market-column-container is already display:flex in
+// base CSS (desktop; drops to display:block at <=1023px, where
+// .content-column is width:100% and .form-column is display:none
+// anyway) -- .column.content-column / .column.form-column are
+// Category A.
+//
+// .points-container .points img: confirmed via
+// templates/components/_market-form.php that markup is
+// <span class="points"><img class="arrow-right-circle" .../>{text}
+// </span> -- icon directly followed by inline text, no wrapping tag.
+// Category B (width:auto icon, natural inline flow keeps it before
+// the text exactly as float did).
+//
+// .market-two-column .two-column-container is already
+// display:flex;flex-wrap:wrap in base CSS -- .column is Category A.
+// .column .inner-column (50%) is NOT covered by that parent flex --
+// confirmed via templates/components/_market-two-column.php that each
+// .column renders exactly two .inner-column siblings (.image-column
+// then .text-column, both classed "one-half" too, DOM order matches
+// visual order, no reversal needed) -- given its own flex parent here.
+//
+// Deliberately NOT fixing: section.market-featured .container
+// .grid-wrapper .item .item-content-container's @media (max-width:
+// 767px) mobile-row override. templates/components/_market-featured.php
+// renders <section class="market-featured filter-listing"> -- its
+// .item.one-third card picks up a shared base selector spanning
+// _events.scss/_resources-types.scss (the same family fixed/skipped in
+// Sections 10/12) whose .image-container/<a> float behavior at the
+// base (non-mobile) breakpoint wasn't fully traced. Needs a dedicated
+// pass through that shared selector's full definition before it's safe
+// to touch -- left uncovered for a future section rather than guessed.
+//
+// No Slick involvement (grepped source/js/main.js), no collisions
+// (.market-column-container/.two-column-container are unique to this
+// file).
+body.dev-float-refactor {
+    section.market-form .container .market-column-container .column.content-column,
+    section.market-form .container .market-column-container .column.form-column {
+        float: none;
+    }
+    section.market-form .container .market-column-container .column.content-column .points-container .points img {
+        float: none;
+    }
+    section.market-two-column .container .two-column-container .column {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.market-two-column .container .two-column-container .column .inner-column {
+        float: none;
+    }
+}
+
 // === Section 16 (hand-designed): source/scss/templates/_thank-
 // you.scss -- remaining Category A/B/C floats not covered by the
 // earlier mechanical batch (5 declarations). Same classification rules
