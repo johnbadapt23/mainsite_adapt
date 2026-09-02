@@ -20050,3 +20050,198 @@ body.dev-float-refactor {
         float: none;
     }
 }
+
+// === Section 10 (hand-designed): source/scss/templates/_events.scss
+// -- remaining Category C/D floats not covered by the earlier mechanical
+// batch (49 declarations, in scope for this file). Same classification
+// rules as Sections 7-9.
+//
+// This file's compiled selectors overlap by name with several other
+// templates (`section.events-title-block` is also in _services.scss,
+// `section.community-block` also in _landing.scss, `section.quote-
+// slider`/`section.stats` also in _benchmarking.scss/_gtm.scss with
+// entirely different DOM under the same top-level class) -- every
+// selector below was individually cross-checked against a direct read
+// of _events.scss itself, not just matched by name against the
+// compiled CSS, to avoid mis-attributing another template's rules to
+// this file. `section.cards-module.gtm-cards-module`/`.benchmarking-
+// quote`/`.three-column-video-gtm` variants found during that same
+// compiled-CSS scan belong to `_gtm.scss`/`_benchmarking.scss` and are
+// left for those files' own future pass.
+//
+// Excluded as live Slick carousels (confirmed in main.js): the whole
+// `.keynote-slider-module .keynote-slider` subtree, the whole
+// `.quote-slider-module` subtree (a fourth separate Slick init from
+// this file, distinct from Sections 9's three), the whole `.quote-
+// slider-thumbnails` subtree (a second, synced `asNavFor` Slick
+// instance for the same module -- thumbnails are not just a styled
+// sibling here, they're independently Slick-initialized), and
+// `.flip-card-container.mobile .slick-list .slick-track .slide`.
+// Nothing nested inside any of these four was touched.
+//
+// Deliberately SKIPPED this pass (real ambiguity, not mechanically
+// safe): the events-listing-module event-item card's date/content/image
+// row (`.press-date-container`, `.content-delegate-container` incl. its
+// nested `.item-content`/`.delegate-tags`, `.item-content-container`,
+// `.event-image-container`). Two different DOM shapes share this same
+// compiled selector depending on which listing template rendered the
+// item (`_events-listing.php` nests `.press-date-container` inside an
+// unfloated, unwidthed `.date-content-container`, itself a sibling of
+// the floated `.event-image-container`; `_events-listing-partners.php`
+// has no date box at all -- `.content-delegate-container` sits as a
+// direct sibling of `.event-image-container` instead). The `calc(100% -
+// 516px)` on `.item-content-container` only resolves correctly because
+// it's calculated against the OUTER `.container`'s width while the
+// element itself is nested two levels down inside an unfloated,
+// full-width `.date-content-container` -- converting that to a real
+// flex layout would need the containing block's width recalculated at
+// each level (turning `calc(100% - 516px)` into `calc(100% - 116px)`
+// relative to a new, narrower flex-item parent), which changes an
+// actual size value, not just float/display. That's a real edit, not a
+// mechanical float->flex swap, so it's left for dedicated individual
+// review with the two real templates open side by side.
+body.dev-float-refactor {
+    // section.community-block: .column is a Category A child (parent
+    // .column-container is already display:flex itself).
+    section.community-block .container .column-container .column {
+        float: none;
+    }
+
+    // section.events-listing-module: .mobile-link-container is
+    // display:none by default (shown only ≤767px, where the whole card
+    // stacks regardless); its .text-link is a sole child, safe
+    // regardless of the skipped row group above -- it's not part of
+    // that nesting chain.
+    section.events-listing-module .events-listing .item.event-item .mobile-link-container .text-link {
+        float: none;
+    }
+    // .year-button-container (40%) and .button-container (60%,
+    // float:right) are a genuine still-live side-by-side pair with no
+    // flex parent of their own yet; flex-wrap is needed because
+    // .button-container's own ≤1023px override (already mechanically
+    // covered) switches it to width:100%, which needs to wrap to a new
+    // line exactly like the float version did.
+    section.events-listing-module .container .events-listing-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.events-listing-module .container .events-listing-top .year-button-container,
+    section.events-listing-module .container .events-listing-top .button-container {
+        float: none;
+    }
+    // a.year-button: width:auto pill buttons with margin-right gutters
+    // -- natural inline flow (anchors are inline by default) reproduces
+    // the wrapping row, no flex parent needed.
+    section.events-listing-module .container .events-listing-top .year-button-container .year-container a.year-button {
+        float: none;
+    }
+
+    // section.events-title-block: .text-link is a sole child, safe.
+    // .button-container a: width:auto anchor buttons with margin-right
+    // gutters -- same natural-inline-flow reasoning as a.year-button.
+    section.events-title-block.events-title-block-left.roundtable-title-block .container .content-container .bottom-text .text-link-container .text-link {
+        float: none;
+    }
+    section.events-title-block .container .content-container .button-container a {
+        float: none;
+    }
+
+    // section.events-logos-block: sole section-level block.
+    section.events-logos-block {
+        float: none;
+    }
+
+    // section.events-logos-text-block: .icon-container img is a sole
+    // child, only floated in its own ≤767px override.
+    @media (max-width: 767px) {
+        section.events-logos-text-block .events-logos-text-block-outer .container .text-content-container .text-inner .icon-container img {
+            float: none;
+        }
+    }
+
+    // section.keynote-slider-module: .top-content/.title are sole/
+    // stacked siblings of the confirmed-Slick .keynote-slider (not
+    // nested inside it).
+    section.keynote-slider-module .container .top-content,
+    section.keynote-slider-module .container .top-content .title {
+        float: none;
+    }
+
+    // section.sneak-peak-module: .column.one-half is the sole child of
+    // .sneak-title-container despite the "one-half" name (confirmed via
+    // _sneak-peak.php -- only one is ever rendered).
+    section.sneak-peak-module .container .sneak-title-container .column.one-half {
+        float: none;
+    }
+    // .sneak-text-container (550px) and .sneak-image-container
+    // (calc(100% - 550px), float:right) are a genuine still-live pair
+    // with no flex parent of their own yet. DOM order is image-then-
+    // text (confirmed via _sneak-peak.php) but the visual is text-left/
+    // image-right (float:right pulls it there regardless of source
+    // order) -- flex-direction:row-reverse on the parent reproduces
+    // that without touching DOM order or widths, same technique as
+    // Section 6's .subscribe-sidebar-form icon+content split.
+    section.sneak-peak-module .container .sneak-peak-container {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: flex-start;
+    }
+    section.sneak-peak-module .container .sneak-peak-container .sneak-text-container,
+    section.sneak-peak-module .container .sneak-peak-container .sneak-image-container {
+        float: none;
+    }
+
+    // section.quote-slider (this file's own, distinct from customer-
+    // events' quote slider): .quote-slider-title and the .progress-
+    // container timer bar are siblings of the confirmed-Slick .quote-
+    // slider-module and .quote-slider-thumbnails (not nested inside
+    // either).
+    section.quote-slider .container .quote-slider-title {
+        float: none;
+    }
+    section.quote-slider .container .progress-container {
+        float: none;
+    }
+    section.quote-slider .container .progress-container .progress-bar {
+        float: none;
+    }
+    section.quote-slider .container .progress-container .progress-bar .progress-inner {
+        float: none;
+    }
+
+    // section.stats: .stat is a Category A child (parent .stats-
+    // container is already display:flex itself).
+    section.stats .container .stats-inner .stats-container .stat {
+        float: none;
+    }
+
+    // section.flip-card-module: .link-card-inner is a sole child of the
+    // .one-quarter.link-card variant, declared separately from the
+    // confirmed-Slick .mobile block -- plain content layout, safe
+    // regardless of which container (desktop grid or mobile carousel)
+    // renders this specific card variant.
+    section.flip-card-module .container .flip-card-container .one-quarter.link-card .link-card-inner {
+        float: none;
+    }
+
+    // section.customise-cards: .card is a Category A child (parent
+    // .cards-container is already display:flex itself).
+    section.customise-cards .container .cards-container .card {
+        float: none;
+    }
+
+    // section.two-column-icon-text: .icon-container (80px) and
+    // .text-container (calc(100% - 80px)) are a genuine still-live pair
+    // with no flex parent of their own yet -- .column itself needs
+    // display:flex added (currently just float:left;width:50%, a plain
+    // grid item of the already-flex .icon-text-column-container).
+    section.two-column-icon-text .container .icon-text-column-container .column {
+        display: flex;
+        float: none;
+    }
+    section.two-column-icon-text .container .icon-text-column-container .column .icon-container,
+    section.two-column-icon-text .container .icon-text-column-container .column .text-container {
+        float: none;
+    }
+}
