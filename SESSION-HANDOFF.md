@@ -123,6 +123,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `02b544a` | **Section 10**: `_events.scss` -- see §2f below |
 | `0c3c918` | **Section 11**: `_registrations.scss` -- see §2g below |
 | `588e77a` | **Section 12**: `_post.scss` -- see §2h below |
+| `e66769a` | **Section 13**: `_login.scss` -- see §2i below |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -182,9 +183,10 @@ exactly why the section-by-section, check-in-first approach mattered.
   **`_events.scss` is now done too (Section 10, 2026-09-02, `02b544a`)**
   -- see §2f below. **`_registrations.scss` is now done too (Section 11,
   2026-09-02, `0c3c918`)** -- see §2g below. **`_post.scss` is now done
-  too (Section 12, 2026-09-02, `588e77a`)** -- see §2h below. Still
-  untouched: the rest of the ~24 remaining files in
-  `source/scss/templates/`.
+  too (Section 12, 2026-09-02, `588e77a`)** -- see §2h below.
+  **`_login.scss` is now done too (Section 13, 2026-09-02, `e66769a`)**
+  -- see §2i below. Still untouched: the rest of the ~23 remaining
+  files in `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
   sections (`.introduction-content-container`, `.video-module`,
@@ -748,6 +750,19 @@ not a bug -- same lesson as Section 10's false alarm, still worth
 re-confirming every time since a real drop would look identical to a
 merge at a glance). Committed as `588e77a`.
 
+### 2i. Section 13 (`_login.scss`), 2026-09-02
+
+Smallest section so far -- 2 remaining declarations, no cross-file or
+cross-section collisions, both straightforward: `.column-container`
+(already `display:flex` in base CSS) makes `.column` Category A, and
+`.content-container span.text` is a sole/stacked width:100% child
+next to an already-covered `h4`. Confirmed no Slick involvement and no
+collision risk from the `.column-container .column` substring also
+appearing in `_customer-events.scss`/`_gtm.scss` (this fix is scoped
+to the full `section.login-module .container .login-inner` path).
+Same build+diff+spot-check verification as every other section, 0/0/0
+ungated on both compiled files. Committed as `e66769a`.
+
 ### Recommended way to continue
 
 Follow the exact same loop for each new section: identify the DOM/CSS
@@ -1180,8 +1195,8 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    build on further.
 3. Extend the float audit beyond `_header.scss`/`_flexible.scss`/
    `_resources-types.scss`/`_customer-events.scss`/`_events.scss`/
-   `_registrations.scss`/`_post.scss` (Sections 1-12, done) to the other
-   ~24 flagged SCSS files (see §2).
+   `_registrations.scss`/`_post.scss`/`_login.scss` (Sections 1-13,
+   done) to the other ~23 flagged SCSS files (see §2).
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
