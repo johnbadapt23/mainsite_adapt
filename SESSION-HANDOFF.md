@@ -124,6 +124,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `0c3c918` | **Section 11**: `_registrations.scss` -- see §2g below |
 | `588e77a` | **Section 12**: `_post.scss` -- see §2h below |
 | `e66769a` | **Section 13**: `_login.scss` -- see §2i below |
+| `8e88d33` | **Section 14**: `_single-speaker.scss` -- see §2j below |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -185,8 +186,9 @@ exactly why the section-by-section, check-in-first approach mattered.
   2026-09-02, `0c3c918`)** -- see §2g below. **`_post.scss` is now done
   too (Section 12, 2026-09-02, `588e77a`)** -- see §2h below.
   **`_login.scss` is now done too (Section 13, 2026-09-02, `e66769a`)**
-  -- see §2i below. Still untouched: the rest of the ~23 remaining
-  files in `source/scss/templates/`.
+  -- see §2i below. **`_single-speaker.scss` is now done too (Section
+  14, 2026-09-02, `8e88d33`)** -- see §2j below. Still untouched: the
+  rest of the ~22 remaining files in `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
   sections (`.introduction-content-container`, `.video-module`,
@@ -763,6 +765,20 @@ to the full `section.login-module .container .login-inner` path).
 Same build+diff+spot-check verification as every other section, 0/0/0
 ungated on both compiled files. Committed as `e66769a`.
 
+### 2j. Section 14 (`_single-speaker.scss`), 2026-09-02
+
+3 remaining declarations. Worth noting: the SCSS doesn't nest
+`.speakerLeft`/`.speakerRight` under `.container` even though the real
+markup does -- confirmed via both PHP templates that share this
+section (`single-speaker.php` and `single-executive_advisor.php`).
+The gated flex parent was added to the selector matching the real DOM
+parent (`section.speakerProfile .container`), not the SCSS-authored
+(shallower) selector, since specificity/behavior needs to match actual
+nesting, not how the source file happened to write it. `.logoContainer`
+confirmed sole (only one ever renders per `.logoWrapper`, no loop) via
+both templates -- Category C. Same build+diff+spot-check verification,
+0/0/0 ungated on both compiled files. Committed as `8e88d33`.
+
 ### Recommended way to continue
 
 Follow the exact same loop for each new section: identify the DOM/CSS
@@ -1195,8 +1211,9 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    build on further.
 3. Extend the float audit beyond `_header.scss`/`_flexible.scss`/
    `_resources-types.scss`/`_customer-events.scss`/`_events.scss`/
-   `_registrations.scss`/`_post.scss`/`_login.scss` (Sections 1-13,
-   done) to the other ~23 flagged SCSS files (see §2).
+   `_registrations.scss`/`_post.scss`/`_login.scss`/
+   `_single-speaker.scss` (Sections 1-14, done) to the other ~22
+   flagged SCSS files (see §2).
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
