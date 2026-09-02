@@ -20495,6 +20495,32 @@ body.dev-float-refactor {
     }
 }
 
+// === Section 18 (hand-designed): source/scss/templates/_app.scss --
+// remaining Category C floats not covered by the earlier mechanical
+// batch (2 declarations). Same classification rules as Sections 7-17.
+//
+// .bottom-container .text-container:nth-child(1) p (float:right) and
+// :nth-child(2) p (float:left): despite the opposite float directions
+// looking like a row-reordering pair (Section 6/10/11's
+// row-reverse pattern), these are NOT siblings in the same row --
+// :nth-child(1) and :nth-child(2) are two separate .text-container
+// boxes (each positioned independently via padding/margin, staggered
+// like a timeline), and each <p> is the sole child of its own box
+// (confirmed via direct read -- no other floated element inside
+// either .text-container). text-align:center is already set
+// explicitly and no width is set at this breakpoint, so float served
+// no layout purpose here beyond being copy-pasted from a shared
+// pattern -- sole/stacked, Category C, bare float:none for both.
+//
+// No Slick involvement, no cross-file collisions (grepped
+// source/js/main.js and source/scss/templates/*.scss).
+body.dev-float-refactor {
+    section.app-block .container .main-image-column-container .bottom-container .text-container:nth-child(1) p,
+    section.app-block .container .main-image-column-container .bottom-container .text-container:nth-child(2) p {
+        float: none;
+    }
+}
+
 // === Section 17 (hand-designed): source/scss/templates/_market.scss --
 // 5 of 6 remaining floats not covered by the earlier mechanical batch.
 // Same classification rules as Sections 7-16.
