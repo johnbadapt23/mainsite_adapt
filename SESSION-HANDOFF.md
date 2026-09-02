@@ -125,6 +125,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `588e77a` | **Section 12**: `_post.scss` -- see §2h below |
 | `e66769a` | **Section 13**: `_login.scss` -- see §2i below |
 | `8e88d33` | **Section 14**: `_single-speaker.scss` -- see §2j below |
+| `ffdb085` | **Section 15**: `_form-pages.scss` -- see §2k below |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -187,8 +188,10 @@ exactly why the section-by-section, check-in-first approach mattered.
   too (Section 12, 2026-09-02, `588e77a`)** -- see §2h below.
   **`_login.scss` is now done too (Section 13, 2026-09-02, `e66769a`)**
   -- see §2i below. **`_single-speaker.scss` is now done too (Section
-  14, 2026-09-02, `8e88d33`)** -- see §2j below. Still untouched: the
-  rest of the ~22 remaining files in `source/scss/templates/`.
+  14, 2026-09-02, `8e88d33`)** -- see §2j below. **`_form-pages.scss`
+  is now done too (Section 15, 2026-09-02, `ffdb085`)** -- see §2k
+  below. Still untouched: the rest of the ~21 remaining files in
+  `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
   sections (`.introduction-content-container`, `.video-module`,
@@ -779,6 +782,24 @@ confirmed sole (only one ever renders per `.logoWrapper`, no loop) via
 both templates -- Category C. Same build+diff+spot-check verification,
 0/0/0 ungated on both compiled files. Committed as `8e88d33`.
 
+### 2k. Section 15 (`_form-pages.scss`), 2026-09-02
+
+3 remaining declarations. `.contact-innner`'s two columns (40%/60%)
+are Category A -- the parent is already display:flex on desktop and
+drops to display:block at <=1023px, where it doesn't matter anyway
+since both columns become width:100% at that breakpoint. The one
+tricky piece: `.fast-track-text` has a second, narrower declaration
+inside its own `@media (max-width: 767px)` override (this file uses a
+raw media query, not the `@include responsive()` mixin used
+elsewhere) -- confirmed the fix landed inside that exact media block,
+not at the top level, by walking the compiled output's actual brace
+nesting rather than trusting the nearest preceding `@media` text
+(nearest-preceding-text can point at an unrelated, already-closed
+block -- same lesson as Section 11's sticky-footer scoping, reapplied
+here with a more rigorous brace-depth walk). Same build+diff
+verification as every other section, 0/0/0 ungated on both compiled
+files. Committed as `ffdb085`.
+
 ### Recommended way to continue
 
 Follow the exact same loop for each new section: identify the DOM/CSS
@@ -1212,8 +1233,8 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
 3. Extend the float audit beyond `_header.scss`/`_flexible.scss`/
    `_resources-types.scss`/`_customer-events.scss`/`_events.scss`/
    `_registrations.scss`/`_post.scss`/`_login.scss`/
-   `_single-speaker.scss` (Sections 1-14, done) to the other ~22
-   flagged SCSS files (see §2).
+   `_single-speaker.scss`/`_form-pages.scss` (Sections 1-15, done) to
+   the other ~21 flagged SCSS files (see §2).
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
