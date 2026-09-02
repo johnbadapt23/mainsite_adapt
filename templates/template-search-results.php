@@ -16,6 +16,7 @@ if($keyword != '') {
         'ep_integrate'   => true,
         'post_type' => 'post',
         'posts_per_page' => -1,
+        'no_found_rows' => true,
         's' => $keyword,
         'paged'=> $paged
     );
@@ -24,6 +25,7 @@ if($keyword != '') {
         'ep_integrate'   => true,
         'post_type' => 'post',
         'posts_per_page' => -1,
+        'no_found_rows' => true,
         'paged'=> $paged
     );
 }
@@ -104,6 +106,7 @@ if($keyword != '') {
                 $counterargs = array(
                     'post_type' => 'post',
                     'posts_per_page' => -1,
+                    'no_found_rows' => true,
                     's' => $keyword,
                     'paged'=> $paged,
                     'tax_query' => array(
