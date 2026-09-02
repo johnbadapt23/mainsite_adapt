@@ -332,12 +332,58 @@ the browser (not a static tool) against both desktop (1440×900) and mobile
   make a hand-built critical-CSS pipeline unnecessary. **Confirm RUCSS is
   actually serving a trimmed stylesheet to real visitors (see network
   trace note below) before investing in a separate critical-CSS build.**
-- One clean, zero-risk, always-true optimization identified but not yet
-  implemented: `partials/_footer.scss` (20KB source) is structurally
-  guaranteed to never be above-the-fold on any page (WordPress footer,
-  always rendered last) — could be split into a deferred/lazy-loaded
-  stylesheet with no viewport-matching risk at all, unlike everything else
-  discussed above. Small win, but a genuinely safe one if picked up later.
+- ~~One clean, zero-risk, always-true optimization identified but not yet
+  implemented: `partials/_footer.scss`~~ **implemented, dev-gated,
+  2026-09-02** (`972acdc`) — see §9 below for the full writeup. One
+  wrinkle found along the way: `_footer.scss` also held a sitewide
+  `.social-link` touch-target rule used outside the footer, which had to
+  be relocated first — the "zero-risk" framing above undersold that this
+  needed a careful look, not a blind file move.
+
+## 9. 2026-09-02 continued: footer CSS split (dev-gated, `?dev=true`, #70)
+
+Implemented the footer-defer idea from the note above. Summary (full
+rationale is in the `972acdc` commit message):
+
+- `partials/_footer.scss`'s `.social-link` rule (touch-target sizing) was
+  moved to `global/_styles.scss` first — grep showed it's also used by
+  `_contact-block.php`, `_form-module.php`, `single-customer_stories.php`,
+  and `template-contact.php`, some of which render above the fold, so it
+  couldn't travel with the rest of the footer partial into a deferred
+  bundle. Confirmed via grep it's declared exactly once anywhere in the
+  SCSS source, so relocating it can't flip a cascade conflict (there
+  isn't one).
+- New entry points `source/scss/main-nofooter.scss` (everything except
+  the footer partial) and `source/scss/footer-only.scss` (just the footer
+  partial + the two global partials it actually depends on — verified via
+  grep), compiled by a new, additive `build:styles-split` gulp task
+  (`source/gulp/tasks/build/styles-split.js`) into
+  `assets/css/main-nofooter.min.css` and `assets/css/footer.min.css`.
+  Not wired into the default `_build` task list, so `build:styles` /
+  `main.min.css` are unaffected unless this task is run explicitly.
+- `functions.php`'s `my_enqueue_scripts()` only switches to the split
+  bundle (+ deferring `footer.min.css` via the same preload+onload
+  pattern already used for `wp-pagenavi`'s CSS, in a new
+  `adapt_defer_footer_css()` filter) when `?dev=true` is present.
+  Default/production behavior is untouched — still the single
+  `main.min.css`, rebuilt after the `.social-link` move.
+- Verification done in-sandbox (see `972acdc` for full detail): a
+  postcss-based script compared every (media-context, selector, property)
+  → value triple between the old and new builds. Zero effective
+  differences after the `.social-link` move, and zero effective
+  differences between `main-nofooter.min.css` + `footer.min.css` combined
+  and the original `main.min.css` (44,386/44,386 pairs match). Also
+  checked for any other bare `footer` element selector anywhere in the
+  SCSS source that could compete with `_footer.scss`'s own top-level rule
+  on source order; everything else found is either already
+  footer-scoped or nested under a more specific ancestor that wins on
+  specificity regardless of load order.
+- **Not done, and can't be done from this sandbox:** a real visual check
+  on staging with `?dev=true` (no deploy access here). The CSS-rule-level
+  diff above is strong evidence nothing changes, but it isn't the same as
+  seeing the rendered footer. Please check `staging.adapt.com.au/?dev=true`
+  on a few different templates (footer renders identically, no flash/
+  layout shift) before this gets promoted to the default path.
 
 ## 4. Quick reference: how to rebuild and verify CSS changes
 
@@ -518,6 +564,14 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    solid for the categories it checked, but isn't a substitute for the
    real tool. Also consider PHP-CS-Fixer for the bulk `array()` → `[]`
    conversion (~350 files) mentioned in §7.
+9. Check `staging.adapt.com.au/?dev=true` (after deploying `972acdc`) on
+   a few templates -- footer should render identically to the
+   non-`?dev=true` version, no flash/layout shift, no console errors from
+   the new `footer-styles` handle. If it looks right, promote by making
+   `?dev=true`'s enqueue branch in `my_enqueue_scripts()` the default and
+   deleting the old branch + `main.min.css`'s footer content (or just
+   leave both paths as-is if the win isn't worth the added build
+   complexity -- your call once you've seen it).
 8. ~~`template-insights.php` / `template-search-results.php` -- a
    careful, dedicated pass to add `no_found_rows` where safe~~ **done,
    2026-09-02** (`23567b1`) -- traced each file's reassigned `$args`
