@@ -19344,3 +19344,282 @@ body.dev-float-refactor {
         float: none;
     }
 }
+
+// === Section 8 (hand-designed): source/scss/templates/_resources-types.scss
+// -- remaining Category C/D floats not covered by the earlier mechanical
+// batch (85 declarations). Same classification rules as Section 7.
+//
+// Excluded as live Slick carousels (confirmed in main.js): the
+// .resources-featured-slider fade-carousel (used by the non-featured-home
+// "resources-featured" component, _resources-featured-block.php) and
+// .peer-featured-slider / .expert-featured-slider. Left floating on
+// purpose, same reasoning as .home-content-slider elsewhere in this file.
+//
+// Deliberately SKIPPED this pass (real ambiguity, not mechanically safe):
+// - .sidebar-container (in-the-news-listing, 370px) and the
+//   &.market-trends-featured/search-listing .grid-wrapper
+//   (width: calc(100% - 301px)) both size themselves as "100% minus a
+//   fixed-width floated sidebar" -- i.e. content that's meant to visually
+//   wrap around a still-floated aside, not a simple percentage 2-column
+//   split. Converting the aside to flex would pull it out of that wrap
+//   relationship. Needs dedicated individual review with the real
+//   rendered page, not a blind conversion.
+// - &.market-trends-featured .container .sidebar (float:right, no width
+//   or sibling context confirmed in this pass) -- same caution.
+// - .two-thirds / .one-third generic utility classes at the top of the
+//   shared section.featured-module .container block -- couldn't confirm
+//   which template(s) actually pair them together as siblings in this
+//   pass, so left alone rather than guess.
+// section.filter-listing.background-black.in-the-news-listing
+// .wp-pagenavi span/a's `float:none` and the un-suffixed .wp-pagenavi's
+// own span/a are already float:none in the live, ungated CSS -- nothing
+// to gate, not a bug, not listed below.
+body.dev-float-refactor {
+    // .subscribe-sidebar-form's base rule (used standalone as a sidebar
+    // widget in several contexts) -- the two float:right contexts below
+    // (peer-insights .sidebar, market-trend-reports-sidebar) are each
+    // confirmed via the PHP loop to render this widget exactly once, as
+    // the sole child of its wrapper, not interleaved per-item -- so both
+    // are safe as bare float:none once their own wrapper is handled.
+    .subscribe-sidebar-form {
+        float: none;
+    }
+
+    // section.filter-title-block: .topic-button-container is already
+    // display:flex in the live CSS, so a.filter-button's float is
+    // already inert.
+    section.filter-title-block .container .topic-button-container-outer .topic-button-container a.filter-button {
+        float: none;
+    }
+
+    // section.filter-listing .grid-wrapper: direct children are
+    // .peer-insights-container-side-bar, .peer-insights-full-container,
+    // .market-trend-reports-container-side-bar, .market-trend-reports-
+    // sidebar, .market-trend-reports-container-full-width (each either
+    // 100% or summing to 100% with market-trend-reports-sidebar), plus
+    // occasional direct .item.market-trend-reports.filtered nodes --
+    // flex-wrap handles all of them regardless of which are present.
+    section.filter-listing .container .grid-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.filter-listing .container .grid-wrapper .peer-insights-container-side-bar {
+        float: none;
+        // Confirmed via template-resource-type.php: this wraps 2 real
+        // .item.one-third.peer-insights-item cards + a .sidebar ad
+        // widget as its only children, rendered once (not repeated),
+        // so it's also its own flex parent for that small row.
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.filter-listing .container .grid-wrapper .peer-insights-container-side-bar .item.one-third {
+        float: none;
+    }
+    section.filter-listing .container .grid-wrapper .peer-insights-container-side-bar .sidebar .subscribe-sidebar-form {
+        float: none;
+    }
+    section.filter-listing .container .grid-wrapper .peer-insights-full-container {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.filter-listing .container .grid-wrapper .peer-insights-full-container .item.one-third {
+        float: none;
+    }
+    // Confirmed via template-resource-type.php: opens exactly once
+    // (postCounter == 1), holds every market-trend-reports item in a
+    // real 2-up grid (nth-child(2n+1){clear:left}), then closes once --
+    // not a per-item interleave, so safe to treat as a normal flex-wrap
+    // grid the same as any other N-up section.
+    section.filter-listing .container .grid-wrapper .market-trend-reports-container-side-bar {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.filter-listing .container .grid-wrapper .market-trend-reports-container-side-bar .item.market-trend-reports {
+        float: none;
+    }
+    section.filter-listing .container .grid-wrapper .market-trend-reports-sidebar {
+        float: none;
+    }
+    section.filter-listing .container .grid-wrapper .market-trend-reports-sidebar .subscribe-sidebar-form {
+        float: none;
+    }
+    section.filter-listing .container .grid-wrapper .market-trend-reports-container-full-width {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.filter-listing .container .grid-wrapper .market-trend-reports-container-full-width .item.market-trend-reports {
+        float: none;
+    }
+    section.filter-listing .container .grid-wrapper .item.market-trend-reports.filtered {
+        float: none;
+    }
+
+    // .item.press-release-item: .container is display:inline-block in
+    // the live CSS; overriding to flex lays out the real 3-column row
+    // (date | content | read-more) confirmed via the .column class
+    // already present on each of these in every template that uses
+    // this component (e.g. _press-related.php, _media-related.php).
+    .item.press-release-item .container {
+        display: flex;
+        align-items: flex-start;
+    }
+    .item.press-release-item .press-date-container {
+        float: none;
+    }
+    .item.press-release-item .item-content-container {
+        float: none;
+    }
+    .item.press-release-item .read-more-container {
+        float: none;
+    }
+    // .external-press-release variant: same .container, but only 2
+    // columns (no .press-date-container in this variant's markup).
+    .item.press-release-item.external-press-release .container {
+        display: flex;
+        align-items: flex-start;
+    }
+    .item.press-release-item.external-press-release .item-content-container {
+        float: none;
+    }
+    .item.press-release-item.external-press-release .item-content-container .content-inner .tag-container .tag {
+        float: none;
+    }
+    .item.press-release-item.external-press-release .read-more-container {
+        float: none;
+    }
+
+    // section.featured-module .container .title-container: 66.66%
+    // .introduction-column + 33.34% .link-container, no flex parent of
+    // its own yet.
+    section.featured-module .container .title-container {
+        display: flex;
+        align-items: flex-start;
+    }
+    section.featured-module .container .title-container .introduction-column {
+        float: none;
+    }
+    section.featured-module .container .title-container .link-container {
+        float: none;
+    }
+
+    // section.featured-module.resources-featured .container: confirmed
+    // via _resources-featured-block.php this element's ONLY children are
+    // .slider-column.one-half and .side-bar-column.one-half -- safe to
+    // make it a flex parent directly (unlike the shared generic
+    // .container used elsewhere in this file, which also holds
+    // .title-container/.grid-wrapper and is NOT touched here).
+    section.featured-module.resources-featured .container {
+        display: flex;
+        align-items: flex-start;
+    }
+    section.featured-module.resources-featured .container .one-half {
+        float: none;
+    }
+    section.featured-module.resources-featured .container .one-half.side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner {
+        display: flex;
+        align-items: flex-start;
+    }
+    section.featured-module.resources-featured .container .one-half.side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner .post-content-container {
+        float: none;
+    }
+
+    // section.featured-module.featured-home: the homepage variant
+    // (_featured-posts.php) -- a real static 2-column layout (NOT a
+    // carousel: no Slick classes/init anywhere in this template, unlike
+    // the plain "resources-featured" component above). This is what the
+    // user was looking at when reporting "resources-featured
+    // featured-module featured-home -- most elements are float here".
+    // .post-list-container is already gated float:none from an earlier
+    // session; adding display:flex here for its .first-post-column
+    // (57%) + .side-bar-column (43%) pair.
+    section.featured-module.featured-home .post-list-container {
+        display: flex;
+        align-items: flex-start;
+    }
+    section.featured-module.featured-home .post-list-container .first-post-column .resources-featured-slide {
+        float: none;
+    }
+    section.featured-module.featured-home .post-list-container .first-post-column .resources-featured-slide .resources-slide-inner {
+        float: none;
+    }
+    section.featured-module.featured-home .post-list-container .first-post-column .resources-featured-slide .resources-slide-inner .post-content-container {
+        float: none;
+    }
+    section.featured-module.featured-home .post-list-container .first-post-column .resources-featured-slide .resources-slide-inner .post-content-container .title {
+        float: none;
+    }
+    // Same image+content row pattern as the non-featured-home sidebar
+    // widget above -- .image-container/.video-container here aren't
+    // floated themselves, only .post-content-container is, so making the
+    // wrapper flex handles both regardless.
+    section.featured-module.featured-home .post-list-container .side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner {
+        display: flex;
+        align-items: flex-start;
+    }
+    section.featured-module.featured-home .post-list-container .side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner .post-content-container {
+        float: none;
+    }
+
+    // section.featured-module.type-two-column: plain 2-up grid
+    // (nth-child(2n+1){margin-left:0}), no flex parent of its own yet.
+    section.featured-module.type-two-column .container .grid-wrapper .item {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    section.featured-module.type-two-column .container .grid-wrapper .item {
+        float: none;
+    }
+    section.featured-module.type-two-column .container .grid-wrapper .item.market-trend-reports {
+        float: none;
+    }
+
+    // section.resources-featured (top-level, filter/search-listing
+    // usage, distinct from the .featured-module.resources-featured
+    // component above): .item-column.one-half pairs (image + content),
+    // no flex parent of their own yet.
+    section.resources-featured .container .item.market-trend-reports,
+    section.resources-featured .container .item.full-width {
+        display: flex;
+        align-items: flex-start;
+    }
+    section.resources-featured .container .item.market-trend-reports .item-column.one-half,
+    section.resources-featured .container .item.full-width .item-column.one-half {
+        float: none;
+    }
+
+    // section.articles-featured.featured-module: same .item-column.one-half
+    // pattern.
+    section.articles-featured.featured-module .container .grid-wrapper .item.full-width {
+        display: flex;
+        align-items: flex-start;
+    }
+    section.articles-featured.featured-module .container .grid-wrapper .item.full-width .item-column.one-half {
+        float: none;
+    }
+
+    // .market-trend-reports-container-three-post / .article-container-
+    // three-post: plain 3-up grid (nth-child(3n+1){clear:left}), no flex
+    // parent of its own yet.
+    .market-trend-reports-container-three-post .container .grid-wrapper,
+    .article-container-three-post .container .grid-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+    .market-trend-reports-container-three-post .container .grid-wrapper .item,
+    .article-container-three-post .container .grid-wrapper .item {
+        float: none;
+    }
+    .market-trend-reports-container-three-post .container .grid-wrapper .item .item-content-container,
+    .article-container-three-post .container .grid-wrapper .item .item-content-container {
+        float: none;
+    }
+}
