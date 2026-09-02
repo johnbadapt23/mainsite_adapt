@@ -121,6 +121,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `75a0928` | **Section 8**: `_resources-types.scss` -- see §2d below; corrects an earlier (§2b) "out of scope" call for `.featured-home` |
 | `3b8c1a6` | **Section 9**: `_customer-events.scss` -- see §2e below |
 | `02b544a` | **Section 10**: `_events.scss` -- see §2f below |
+| `0c3c918` | **Section 11**: `_registrations.scss` -- see §2g below |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -178,8 +179,9 @@ exactly why the section-by-section, check-in-first approach mattered.
   2026-09-02, `75a0928`)** -- see §2d below. **`_customer-events.scss` is
   now done too (Section 9, 2026-09-02, `3b8c1a6`)** -- see §2e below.
   **`_events.scss` is now done too (Section 10, 2026-09-02, `02b544a`)**
-  -- see §2f below. Still untouched: `_registrations.scss`,
-  `_post.scss`, and the rest of the ~26 remaining files in
+  -- see §2f below. **`_registrations.scss` is now done too (Section 11,
+  2026-09-02, `0c3c918`)** -- see §2g below. Still untouched:
+  `_post.scss` and the rest of the ~25 remaining files in
   `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
@@ -618,6 +620,79 @@ documented in `fix-float-none-display.js`'s header comment (clean-css
 merge behavior isn't guaranteed to combine same-selector rules the way
 you'd expect). Committed as `02b544a`.
 
+### 2g. Section 11 (`_registrations.scss`), 2026-09-02
+
+41 Category C/D declarations, on top of what the earlier mechanical
+batch already covered.
+
+**Shared-selector risk, one level deeper than Section 10's.** This
+file opens with one grouped SCSS rule covering 6 section roots
+(`section.webinar-article, .webinar-speaker-block, .webinar-faq,
+.webinarBanner, .webinar-register-form, .registration-agenda-block`)
+defining a common `.column`/`.first-column`/`.second-column.right-
+column` two-part row. Unlike Section 10's cross-*file* collision, this
+is a cross-*section* collision within the same rule -- a shared CSS
+definition that different real templates use differently. Traced each
+of the 6 roots through the actual PHP (`single-registration.php`,
+`template-registration.php`) before deciding whether to add a flex
+parent:
+- `webinar-article` and `registration-agenda-block` genuinely render
+  both columns as siblings -- got a flex parent.
+- `webinarBanner`, and one branch of `webinar-speaker-block`
+  ($count<=1 speakers), only ever render `.first-column` alone -- no
+  pairing to preserve, bare `float:none` only.
+- `webinar-speaker-block`'s other branch ($count>1) uses
+  `.column.one-half` instead -- a separate, already-covered clear-based
+  2-up grid. Deliberately did **not** add a flex parent to this
+  section's `.container`, since that would turn the clear:left grid
+  into an unwrapped flex row and break it.
+- `webinar-faq` and `webinar-register-form` never render as an actual
+  `<section>` in any template at all (grepped every `.php` file) --
+  dead CSS for both. Fixed anyway since it's zero-risk either way, but
+  worth knowing a chunk of this rule affects nothing live.
+
+**Float-reordering pattern reused twice more** (same technique as
+Section 10's `.sneak-peak-container`/`.events-listing-top`):
+`webinar-article`'s `.second-column.right-column` renders before
+`.first-column` in the DOM but floats right while `.first-column`
+fills the space to its left -- `flex-direction: row-reverse` on the
+parent. `registration-agenda-block`'s second-column has no
+`.right-column` modifier in its real markup, so both float left in DOM
+order with no reversal needed. `location-block`'s `.text-column`
+(float:right, renders first) / `.image-column` (float:left, renders
+second) needed the same row-reverse treatment -- confirmed via
+`_location-block.php` plus the **global** `.one-half` utility class
+(`source/scss/global/_styles.scss`, used site-wide) that both columns
+are 50% width even though neither declares its own width locally; the
+bare global class wasn't touched (out of scope for a one-file pass,
+same reasoning as Section 9's `.column-container`), only the two more
+specific local selectors, which win on specificity.
+
+**Best find of this section:** a `.speaker-container-inner.flex-
+container { display: flex; ... }` modifier already exists in the base
+CSS (used inside `webinar-article`'s `.speakers-block`) and the real
+markup always applies both classes together -- meaning its
+`.speaker-image`/`.description` floats were **already** dead
+(Category A, parent already flex via ordinary non-gated CSS) even
+though the mechanical batch never recognized that. Three near-identical-
+looking `.speaker-container-inner` definitions exist across this one
+file and each needed a different call: this one (Category A, do
+nothing extra), a second inside `webinar-article`'s `.second-column`
+(genuinely stacked -- `.description` is a plain 100%-wide block, not a
+reduced `calc()`, so no flex parent needed), and a third belonging to
+`webinar-speaker-block` itself (`.description` is `calc(100% - 125px)`,
+confirming a real still-live row with no flex parent of its own yet --
+this is the one that got `display: flex` added).
+
+Verified: same 3-file semantic diff as every other section, 0/0/0
+outside the gated scope. Extra care taken with
+`.webinar-mobile-sticky-footer` (display:none by default, display:block
+only in its own ≤767px override) to nest the new display:flex inside
+that same media query rather than adding it unconditionally, which
+would have made the sticky footer permanently visible on desktop.
+Confirmed correct directly in the compiled output. Committed as
+`0c3c918`.
+
 ### Recommended way to continue
 
 Follow the exact same loop for each new section: identify the DOM/CSS
@@ -1049,9 +1124,9 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    `?dev=true` staging check in item 1 above before it's trustworthy to
    build on further.
 3. Extend the float audit beyond `_header.scss`/`_flexible.scss`/
-   `_resources-types.scss`/`_customer-events.scss`/`_events.scss`
-   (Sections 1-10, done) to the other ~26 flagged SCSS files (see §2),
-   e.g. `_registrations.scss`, `_post.scss`.
+   `_resources-types.scss`/`_customer-events.scss`/`_events.scss`/
+   `_registrations.scss` (Sections 1-11, done) to the other ~25 flagged
+   SCSS files (see §2), e.g. `_post.scss`.
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
