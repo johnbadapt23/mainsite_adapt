@@ -333,14 +333,15 @@ the browser (not a static tool) against both desktop (1440×900) and mobile
   actually serving a trimmed stylesheet to real visitors (see network
   trace note below) before investing in a separate critical-CSS build.**
 - ~~One clean, zero-risk, always-true optimization identified but not yet
-  implemented: `partials/_footer.scss`~~ **implemented, dev-gated,
-  2026-09-02** (`972acdc`) — see §9 below for the full writeup. One
-  wrinkle found along the way: `_footer.scss` also held a sitewide
-  `.social-link` touch-target rule used outside the footer, which had to
-  be relocated first — the "zero-risk" framing above undersold that this
-  needed a careful look, not a blind file move.
+  implemented: `partials/_footer.scss`~~ **implemented and promoted to
+  default, 2026-09-02** (`972acdc`, tested behind `?dev=true` in
+  `f38ef19`→`972acdc`, promoted in `ed4e777`) — see §9 below for the full
+  writeup. One wrinkle found along the way: `_footer.scss` also held a
+  sitewide `.social-link` touch-target rule used outside the footer,
+  which had to be relocated first — the "zero-risk" framing above
+  undersold that this needed a careful look, not a blind file move.
 
-## 9. 2026-09-02 continued: footer CSS split (dev-gated, `?dev=true`, #70)
+## 9. 2026-09-02 continued: footer CSS split, promoted to default (#70)
 
 Implemented the footer-defer idea from the note above. Summary (full
 rationale is in the `972acdc` commit message):
@@ -359,14 +360,16 @@ rationale is in the `972acdc` commit message):
   grep), compiled by a new, additive `build:styles-split` gulp task
   (`source/gulp/tasks/build/styles-split.js`) into
   `assets/css/main-nofooter.min.css` and `assets/css/footer.min.css`.
-  Not wired into the default `_build` task list, so `build:styles` /
-  `main.min.css` are unaffected unless this task is run explicitly.
-- `functions.php`'s `my_enqueue_scripts()` only switches to the split
-  bundle (+ deferring `footer.min.css` via the same preload+onload
-  pattern already used for `wp-pagenavi`'s CSS, in a new
-  `adapt_defer_footer_css()` filter) when `?dev=true` is present.
-  Default/production behavior is untouched — still the single
-  `main.min.css`, rebuilt after the `.social-link` move.
+  Now wired into the `_build` task list (`gulpfile.js`) and both CI
+  deploy workflows' "Compile CSS and JS" step, alongside `build:styles`
+  (which still runs too — `main.min.css` is kept as an unused rollback
+  artifact, not deleted).
+- `functions.php`'s `my_enqueue_scripts()` enqueues the split bundle
+  (+ defers `footer.min.css` via the same preload+onload pattern already
+  used for `wp-pagenavi`'s CSS, in a new `adapt_defer_footer_css()`
+  filter) unconditionally — this is now the only path, the original
+  `?dev=true` gate was removed once staging confirmed it worked (see
+  below).
 - Verification done in-sandbox (see `972acdc` for full detail): a
   postcss-based script compared every (media-context, selector, property)
   → value triple between the old and new builds. Zero effective
@@ -394,9 +397,24 @@ rationale is in the `972acdc` commit message):
   this page (reproduces identically with `?dev=true` off, so it's a
   pre-existing tool quirk, not a regression -- confirmed real content is
   there via `elementFromPoint()` + computed styles, just couldn't get a
-  usable screenshot of it). Not yet promoted to the default path --
-  that's still a judgment call for you once you've eyeballed it yourself
-  outside this sandbox's screenshot limitation.
+  usable screenshot of it).
+- **Promoted to default, 2026-09-02** (`ed4e777`, after you confirmed the
+  staging check above and said to go ahead): removed the `?dev=true`
+  conditional from `my_enqueue_scripts()` — every page now always gets
+  the split bundle. Also closed a gap this would otherwise have hit on
+  the next deploy: both CI workflows only ran `build:styles build:scripts`
+  and only force-included `main.min.css`/`main.min.js` in their SFTP
+  delta-sync (`sync-delta-includes` — everything else is decided by
+  `git diff`, and compiled CSS/JS is never re-committed by CI, so a file
+  that isn't force-included silently goes stale on deploys that only
+  touch `source/`). Added `build:styles-split` to both workflows' compile
+  step and both new files to both workflows' `sync-delta-includes`, and
+  added `build:styles-split` to the local `_build` task list too. Updated
+  every comment/doc that still described the old dev-gated state (see
+  the commit for the full file list). Rebuilt locally and diffed all
+  three CSS outputs against what was already committed — byte-for-byte
+  identical, confirming the comment-only SCSS edits didn't touch compiled
+  output.
 
 ## 4. Quick reference: how to rebuild and verify CSS changes
 
@@ -578,13 +596,12 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    real tool. Also consider PHP-CS-Fixer for the bulk `array()` → `[]`
    conversion (~350 files) mentioned in §7.
 9. ~~Check `staging.adapt.com.au/?dev=true` ... footer should render
-   identically~~ **spot-checked, 2026-09-02** -- correct files enqueued,
-   correct computed styles, no console errors (see §9 above). Still
-   worth an actual eyeball check on your end (this sandbox's screenshot
-   tool couldn't render a usable image of the scrolled page -- see the
-   note in §9) before deciding whether to promote `?dev=true`'s enqueue
-   branch in `my_enqueue_scripts()` to the default, or leave both paths
-   as-is if the win isn't worth the added build complexity.
+   identically~~ **done, 2026-09-02** -- spot-checked (correct files
+   enqueued, correct computed styles, no console errors), then promoted
+   to the default path once confirmed (see §9 above). Still worth an
+   actual eyeball check on your end at some point (this sandbox's
+   screenshot tool couldn't render a usable image of the scrolled page --
+   see the note in §9), but nothing is blocking on it now.
 8. ~~`template-insights.php` / `template-search-results.php` -- a
    careful, dedicated pass to add `no_found_rows` where safe~~ **done,
    2026-09-02** (`23567b1`) -- traced each file's reassigned `$args`
