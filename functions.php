@@ -247,7 +247,7 @@ function adapt_page_needs_lottie() {
         if ( ! is_page_template( $template ) ) {
             continue;
         }
-        list( $field_name, $layouts ) = $config;
+        [ $field_name, $layouts ] = $config;
         $rows = get_field( $field_name );
         if ( ! is_array( $rows ) ) {
             return false;
@@ -313,7 +313,7 @@ function adapt_page_needs_hubspot_forms_embed() {
         if ( ! is_page_template( $template ) ) {
             continue;
         }
-        list( $field_name, $layouts ) = $config;
+        [ $field_name, $layouts ] = $config;
         $rows = get_field( $field_name );
         if ( ! is_array( $rows ) ) {
             return false;
@@ -561,7 +561,7 @@ function filter_speakers_callback() {
     // matches the nonce main.js sends via ajaxobject.nonce.
     check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
 
-    list( $paged, $expertise_slugs, $posts_per_page, $offset ) = adapt_get_ajax_filter_request_params();
+    [ $paged, $expertise_slugs, $posts_per_page, $offset ] = adapt_get_ajax_filter_request_params();
     // Set by main.js: true when the user actually checked at least one
     // expertise box; false when nothing's checked and $expertise_slugs is
     // instead every checkbox shown on the page (these are ACF-configured
@@ -733,7 +733,7 @@ add_action('wp_ajax_nopriv_filter_partners', 'filter_partners_callback');
 function filter_partners_callback() {
     check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
 
-    list( $paged, $expertise_slugs, $posts_per_page, $offset ) = adapt_get_ajax_filter_request_params();
+    [ $paged, $expertise_slugs, $posts_per_page, $offset ] = adapt_get_ajax_filter_request_params();
 
     $args = array(
         'post_type' => 'partners',
@@ -828,7 +828,7 @@ add_action('wp_ajax_nopriv_edge_filter_partners', 'edge_filter_partners_callback
 function edge_filter_partners_callback() {
     check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
 
-    list( $paged, $expertise_slugs, $posts_per_page, $offset ) = adapt_get_ajax_filter_request_params();
+    [ $paged, $expertise_slugs, $posts_per_page, $offset ] = adapt_get_ajax_filter_request_params();
 
     $args = array(
         'post_type' => 'edge_partners',
@@ -1057,7 +1057,7 @@ function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
         return $new_orderby;
     }
 
-    list( $post_type, $taxonomy ) = $post_type_taxonomy;
+    [ $post_type, $taxonomy ] = $post_type_taxonomy;
 
     if ( 'resource-type' !== $taxonomy ) {
         return $new_orderby;
