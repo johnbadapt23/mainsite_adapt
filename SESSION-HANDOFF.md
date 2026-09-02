@@ -118,6 +118,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `a7b2f83` | Fix: split oversized clean-css-merged rules (see §2a) |
 | `3823069` | Fix: add `display:block` to gated `float:none` overrides on inline tags (see §2b) |
 | `4d66d9c` | **Section 7**: `_flexible.scss` (homepage/content sections) -- see §2c below; also fixes a second, related bug in `fix-float-none-display.js` found while verifying this section |
+| `75a0928` | **Section 8**: `_resources-types.scss` -- see §2d below; corrects an earlier (§2b) "out of scope" call for `.featured-home` |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -171,11 +172,10 @@ exactly why the section-by-section, check-in-first approach mattered.
   167 "no width" + 296 "carousel-adjacent" = 723 declarations** needing
   individual review. Sections 1–6 covered `_header.scss`'s share of that.
   **`_flexible.scss` is now done too (Section 7, 2026-09-02, `4d66d9c`)**
-  -- see §2c below. Still untouched: `_customer-events.scss`,
-  `_events.scss`, `_registrations.scss`, `_resources-types.scss`
-  (partially covered by the earlier mechanical batch's 85 declarations,
-  but not hand-reviewed for narrow/no-width cases the way `_flexible.scss`
-  just was), `_post.scss`, and the rest of the 30-ish files in
+  -- see §2c below. **`_resources-types.scss` is now done too (Section 8,
+  2026-09-02, `75a0928`)** -- see §2d below. Still untouched:
+  `_customer-events.scss`, `_events.scss`, `_registrations.scss`,
+  `_post.scss`, and the rest of the ~28 remaining files in
   `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
@@ -412,6 +412,65 @@ longer depends on clean-css's merge behaviour at all. Still worth
 running the full 3-file semantic diff (`main.min.css`,
 `main-nofooter.min.css`, `footer.min.css`) after every future section,
 same as this one, rather than assuming the fix alone is enough.
+
+### 2d. Section 8 (`_resources-types.scss`), 2026-09-02
+
+~40 Category C/D declarations across `_resources-types.scss`, on top of
+the 85 the earlier mechanical batch already covered. Same methodology:
+real DOM confirmed via the PHP templates, `main.js` checked for Slick.
+
+**Corrects an earlier call.** §2b (above) said `.featured-home` had "no
+gated override at all... simply out of scope" alongside
+`.home-content-slider`/`.resources-featured-slide`, grouping them all as
+Slick-carousel exclusions. That was wrong for `.featured-home`
+specifically -- re-checked `templates/components/_featured-posts.php`
+directly this time (the component that actually renders
+`section.resources-featured.featured-module.featured-home` on the
+homepage) and confirmed there's no Slick class or `.slick()` init
+anywhere in it, unlike the plain `.resources-featured` component
+(`_resources-featured-block.php`, which genuinely is a Slick fade
+carousel via `.resources-featured-slider` and stays excluded).
+`.featured-home` is a real static 2-column layout
+(`.first-post-column` 57% + `.side-bar-column` 43%) that had simply
+never been reached by any part of the refactor -- now fixed. This is
+the exact thing the user reported live ("resources-featured
+featured-module featured-home -- most elements are float here").
+
+**New pattern used here, worth reusing:** several components in this
+file use a `.column` class on elements that don't yet have any flex
+parent wired up (`.item-content-container.column` +
+`.read-more-container.column` inside `.item.press-release-item
+.container`, confirmed in every template that renders it) -- treat
+`.column` the same as the `justify-content`/`flex-direction` "dead CSS"
+signal from Section 7's `team-block`: it's a strong hint the layout was
+designed as flex and just never got `display:flex` added, safe to
+complete rather than guess at from scratch.
+
+**Deliberately skipped, not mechanically safe:** `.sidebar-container`
+(in-the-news-listing, 370px) and the `&.market-trends-featured`/
+search-listing `.grid-wrapper` (`width: calc(100% - 301px)`) both size
+themselves as "100% minus a fixed-width floated sidebar" -- i.e.
+content meant to visually wrap around a still-floated aside, not a
+simple percentage split. Confirmed via the PHP loop that the
+*other* "side-bar" variants in this file (`.market-trend-reports-
+container-side-bar`, `.peer-insights-container-side-bar`) open their
+wrapping div exactly once and are safe uniform grids, not per-item
+interleaves -- but these two calc(100%-301px) ones weren't traced
+through their PHP loop with the same rigor this pass, and blindly
+flexing a floated aside risks pulling it out of the wrap relationship
+it depends on. Left for dedicated individual review. Also skipped:
+`&.market-trends-featured .container .sidebar` (no width/sibling
+context confirmed) and the generic `.two-thirds`/`.one-third` utility
+classes (couldn't confirm which template pairs them as siblings in the
+time available this pass).
+
+Verified: same 3-file semantic diff as every other section. 0/0/0
+outside the gated scope in `main.min.css`, `main-nofooter.min.css`,
+`footer.min.css`. The only gated changes were 9 existing mechanically-
+gated selectors correctly upgraded from the auto-added `display:block`
+to this section's explicit `display:flex` -- confirming the §2c
+single-forward-pass fix holds up under a second section's worth of new
+rules. Committed as `75a0928`.
 
 ### Recommended way to continue
 
@@ -843,8 +902,9 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    **done, 2026-09-02** -- see §2's Section 6 writeup. Awaiting the
    `?dev=true` staging check in item 1 above before it's trustworthy to
    build on further.
-3. Extend the float audit beyond `_header.scss`/`_flexible.scss`
-   (Sections 1-7, done) to the other ~29 flagged SCSS files (see §2).
+3. Extend the float audit beyond `_header.scss`/`_flexible.scss`/
+   `_resources-types.scss` (Sections 1-8, done) to the other ~28 flagged
+   SCSS files (see §2).
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
