@@ -114,7 +114,10 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `96d25ee` | **Section 3**: resources sticky-menu row (cluster + push-right pattern, `margin-left:auto`) |
 | `5d6ddf0` | **Section 4**: search dropdown (3-column 25/50/25 row + 2 nested sub-pairs) |
 | `4eeef4f` | **Section 5**: mobile menu back/close header bar (3 duplicated DOM contexts, `justify-content:space-between`) |
-| _(pending)_ | **Section 6**: remaining mobile-menu floats -- `.logo-tile`/`.column` (already-inert, parent already flex), `.subscribe-sidebar-form` icon/content split (`row-reverse` needed -- DOM order is icon-then-content but icon floats right), `.services-inner-mobile li a` icon+label row (`inline-block`→`inline-flex`), `.overview-image` (already-inert), `.all-link`, and the `.mobileMenuResources` logo/adapt-link split |
+| `482216b` | **Section 6**: remaining mobile-menu floats -- `.logo-tile`/`.column` (already-inert, parent already flex), `.subscribe-sidebar-form` icon/content split (`row-reverse` needed -- DOM order is icon-then-content but icon floats right), `.services-inner-mobile li a` icon+label row (`inline-block`→`inline-flex`), `.overview-image` (already-inert), `.all-link`, and the `.mobileMenuResources` logo/adapt-link split |
+| `a7b2f83` | Fix: split oversized clean-css-merged rules (see §2a) |
+| `3823069` | Fix: add `display:block` to gated `float:none` overrides on inline tags (see §2b) |
+| `4d66d9c` | **Section 7**: `_flexible.scss` (homepage/content sections) -- see §2c below; also fixes a second, related bug in `fix-float-none-display.js` found while verifying this section |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -166,11 +169,14 @@ exactly why the section-by-section, check-in-first approach mattered.
   minified, now fixed (`<pending commit>`).**
 - Beyond `_header.scss`: the original audit flagged **260 "narrow width" +
   167 "no width" + 296 "carousel-adjacent" = 723 declarations** needing
-  individual review. Sections 1–5 covered a meaningful chunk of
-  `_header.scss`'s share of that, but **no other file** (`_customer-
-  events.scss`, `_events.scss`, `_flexible.scss`, `_registrations.scss`,
-  `_resources-types.scss`, `_post.scss`, etc.) has been touched yet in the
-  hand-designed phase.
+  individual review. Sections 1–6 covered `_header.scss`'s share of that.
+  **`_flexible.scss` is now done too (Section 7, 2026-09-02, `4d66d9c`)**
+  -- see §2c below. Still untouched: `_customer-events.scss`,
+  `_events.scss`, `_registrations.scss`, `_resources-types.scss`
+  (partially covered by the earlier mechanical batch's 85 declarations,
+  but not hand-reviewed for narrow/no-width cases the way `_flexible.scss`
+  just was), `_post.scss`, and the rest of the 30-ish files in
+  `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
   sections (`.introduction-content-container`, `.video-module`,
@@ -328,6 +334,84 @@ explicit about this distinction going forward: "still floats with
 `?dev=true`" only indicates a real bug for elements that actually have
 a gated override; for anything else it just means that element hasn't
 been reached yet.
+
+### 2c. Section 7 (`_flexible.scss`) + a third bug found + fixed, 2026-09-02
+
+**Section 7 itself:** ~88 Category C/D declarations across every
+`_flexible.scss` section (the homepage content blocks -- switcher-
+module, team-block, text-animation-introduction, two-column-services,
+centered-text-links, list-card-module, speakers-block, the speaker
+popup, etc.). Same methodology as Sections 1–6: real DOM structure
+confirmed via the PHP templates, `main.js` checked to identify which
+`.xxx-slider` containers are live Slick carousels (`.staff-slider`,
+`.lifestyle-slider`, `.home-content-slider`, `.form-popup-slider`,
+`.speakers-bottom.mobile-slider`) and deliberately left floating, same
+reasoning as the already-documented `.home-content-slider` exclusion.
+`.speakers-bottom .speaker.one-quarter`'s desktop 4-up grid fix is
+scoped to `@media (min-width: 768px)` specifically so it can't touch
+`.speakers-bottom.mobile-slider`, which `main.js` only initialises
+Slick on below 768px. Full writeup and selector list in commit `4d66d9c`.
+
+This directly fixes two of the user's live-reported items:
+`.text-animation-introduction` (the base section class underneath the
+`-v2` homepage variant, which layers its own inline `<style>` overrides
+in `_text-animation-introduction-v2.php` on top but doesn't redeclare
+any of this) and `section.centered-text-links .text-container
+span.text` (now gated to `float:none`, which `fix-float-none-display.js`
+automatically turns into `float:none;display:block` since `span.text`
+has no explicit `display` of its own in the base rule -- same fix class
+as the `.text-animation-introduction-v2 .text` bug fixed in `3823069`).
+
+**Third bug, found while verifying this section:**
+`fix-float-none-display.js` (added earlier today, `3823069`) only
+checked **non-gated** rules to decide whether a gated `float:none`-only
+override needed `display:block` added. That was safe under an
+unstated assumption: that clean-css's own same-selector cascade-
+resolution merge (the `restructureRules` behaviour already relied on
+elsewhere, see §2a) would already have folded any earlier
+**hand-designed** gated `display:flex` override (Sections 1–6) together
+with a later, redundant, **mechanically-generated** `float:none`-only
+duplicate of the same selector into one merged rule, before this script
+ever ran -- so a hand-designed `display` would always already be
+present in the very rule being inspected, never sitting in a separate
+one. That merge turned out not to be guaranteed: adding Section 7's
+~150 new rules was enough to change clean-css's merge decisions
+elsewhere in the file, and it stopped merging 4 particular header
+selectors that Sections 1–4 had already fixed --
+`.logo-title-container`, `.search-column-container`, `.header-inner`,
+`.resources-sticky-inner`. Left as two separate rules, the old two-pass
+logic "corrected" the still-separate mechanical duplicate by adding
+`display:block` to it, which -- being later in the file -- then won the
+cascade over the earlier `display:flex` and would have silently broken
+those 4 already-working layouts on the next deploy.
+
+**Caught by the semantic diff before commit, not live** -- the diff
+against the previous build showed exactly these 4 selectors flipping
+from `display:flex` to `display:block`, which is what triggered the
+investigation.
+
+**Fix applied:** rewrote `fix-float-none-display.js` as a single
+forward pass over every rule in document/cascade order (gated or not,
+not two separate passes), tracking a running "this selector already has
+an explicit `display`" set that gets updated as each rule is visited --
+mirroring real per-property CSS cascade resolution directly instead of
+depending on clean-css having already consolidated same-selector rules.
+This is correct regardless of what clean-css does or doesn't merge.
+Verified: all 4 previously-broken selectors confirmed back to
+`display:flex` in the rebuilt output; full semantic diff re-run
+afterward came back clean (0/0/0 outside the gated scope, and the only
+gated changes left were Section 7's own selectors being upgraded from
+the auto-added `display:block` default to Section 7's explicit
+`display:flex`/`flex-wrap`, which is correct/intended).
+
+**Implication for future sections:** this class of bug can recur any
+time a new hand-designed section is added on top of existing sections
+that share a selector with a mechanical-batch duplicate -- but the
+fix above makes it structurally impossible going forward, since it no
+longer depends on clean-css's merge behaviour at all. Still worth
+running the full 3-file semantic diff (`main.min.css`,
+`main-nofooter.min.css`, `footer.min.css`) after every future section,
+same as this one, rather than assuming the fix alone is enough.
 
 ### Recommended way to continue
 
@@ -759,8 +843,8 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    **done, 2026-09-02** -- see §2's Section 6 writeup. Awaiting the
    `?dev=true` staging check in item 1 above before it's trustworthy to
    build on further.
-3. Extend the float audit beyond `_header.scss` to the other 30+ flagged
-   SCSS files (see §2).
+3. Extend the float audit beyond `_header.scss`/`_flexible.scss`
+   (Sections 1-7, done) to the other ~29 flagged SCSS files (see §2).
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
