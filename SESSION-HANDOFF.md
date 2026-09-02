@@ -119,6 +119,7 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `3823069` | Fix: add `display:block` to gated `float:none` overrides on inline tags (see §2b) |
 | `4d66d9c` | **Section 7**: `_flexible.scss` (homepage/content sections) -- see §2c below; also fixes a second, related bug in `fix-float-none-display.js` found while verifying this section |
 | `75a0928` | **Section 8**: `_resources-types.scss` -- see §2d below; corrects an earlier (§2b) "out of scope" call for `.featured-home` |
+| `3b8c1a6` | **Section 9**: `_customer-events.scss` -- see §2e below |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -173,10 +174,10 @@ exactly why the section-by-section, check-in-first approach mattered.
   individual review. Sections 1–6 covered `_header.scss`'s share of that.
   **`_flexible.scss` is now done too (Section 7, 2026-09-02, `4d66d9c`)**
   -- see §2c below. **`_resources-types.scss` is now done too (Section 8,
-  2026-09-02, `75a0928`)** -- see §2d below. Still untouched:
-  `_customer-events.scss`, `_events.scss`, `_registrations.scss`,
-  `_post.scss`, and the rest of the ~28 remaining files in
-  `source/scss/templates/`.
+  2026-09-02, `75a0928`)** -- see §2d below. **`_customer-events.scss` is
+  now done too (Section 9, 2026-09-02, `3b8c1a6`)** -- see §2e below.
+  Still untouched: `_events.scss`, `_registrations.scss`, `_post.scss`,
+  and the rest of the ~27 remaining files in `source/scss/templates/`.
 - **User tested `?dev=true` on staging, 2026-09-02 (after `482216b`):**
   found floats/overlap persisting on completely unrelated homepage
   sections (`.introduction-content-container`, `.video-module`,
@@ -471,6 +472,76 @@ gated selectors correctly upgraded from the auto-added `display:block`
 to this section's explicit `display:flex` -- confirming the §2c
 single-forward-pass fix holds up under a second section's worth of new
 rules. Committed as `75a0928`.
+
+### 2e. Section 9 (`_customer-events.scss`), 2026-09-02
+
+109 Category C/D declarations across the file (7,759 lines, the largest
+template touched so far), on top of what the earlier mechanical batch
+already covered. Same methodology: real DOM/JS confirmed via `main.js`
+Slick calls and direct reads of the SCSS structure; a research subagent
+did the first read-through of several unread chunks (fixed-scroller,
+speaker-module, topic-industry-switcher, full-image-text, new-cta,
+map-moving-text, quote-slider, two/three-column-text-image-cards,
+expanding-form-module, full-suite-slider-module, two-column-logo-
+carousel, comparison-three-column-text), cross-checked and refined by
+hand for the ambiguous/risky cases before writing anything.
+
+**Global `.column-container` utility class.** This file (only this
+file) defines a bare, unscoped `.column-container { float:left;
+width:100%; display:flex; }` at the very top, reused as a row wrapper
+throughout. Its own float wasn't touched here -- it's shared site-wide,
+out of scope for a single-file pass -- but every scoped instance
+below still inherits `display:flex` from it, which is why so many
+`.column-container` children are safe as bare `float:none` even where
+the local block never repeats `display:flex` itself.
+
+**Slick boundary resolution (the trickiest part of this section).**
+Three modules needed individual main.js cross-referencing:
+- `.company-slide-container` (section.company-slider) and
+  `.full-suite-slider` (section.full-suite-slider-module) are both
+  confirmed `.slick()` targets -- left floating on purpose, wholesale,
+  same as `.home-content-slider` elsewhere. Nothing nested inside
+  either was touched.
+- `.quote-slider-module` (section.quote-slider) is a **third, separate**
+  Slick init (`main.js` ~L2650, distinct from `.large-quote-slide-
+  container`) -- but its floats live in `.customer-quote-slider-inner`,
+  a plain content block one level below where Slick's own slide/track
+  mechanics operate, so it was fixed anyway. The same grouped SCSS
+  selector also styles the non-Slick `.quote-module` (single-quote
+  variant), so one write covers both correctly.
+
+**Two cases needed something other than bare `float:none`:**
+- `.full-bio .bio-top` (speaker bio): `.image-container` (175px, not
+  itself floated) sits beside `.text` (`calc(100% - 226px)`, floated)
+  -- widths sum to 100%, confirming a genuine still-live side-by-side
+  pair. Given the parent `display:flex; align-items:flex-start`.
+- `.bottom-container .text-outer-container` (topic-industry-switcher
+  accordion): floats right below a full-width accordion with zero room
+  to tuck beside it, so it already renders on its own row below.
+  `margin-left:auto` instead of a flex parent keeps the same
+  right-aligned position now that `float:right` no longer does that job.
+- `.sticky-slider-cards .mobile-slide-count`: two `width:auto` spans
+  (`.slide-number` + a count) that must stay side by side -- given the
+  parent `display:flex` so they lay out correctly regardless of what
+  `display` value the mechanical safety net (`fix-float-none-display.js`,
+  see §2b) ends up adding to the spans themselves; flex items ignore
+  their own outer display type for layout purposes, so this is robust
+  either way.
+
+**Turned out to need nothing:** `section.comparison-three-column-text`
+is already `float:none` end to end in the live CSS -- confirmed by
+checking the actual uncovered-declarations list rather than trusting
+a first-pass read of the section (an earlier read of this specific
+section suggested several lines still needed fixing; the ground-truth
+uncovered-line list said otherwise and was trusted over that read).
+
+Verified: same 3-file semantic diff as every other section. 0/0/0
+outside the gated scope in `main.min.css`, `main-nofooter.min.css`,
+`footer.min.css` (gate isn't imported into the footer bundle -- 0
+changes there too, expected). All 107 new selectors are gated, matching
+what was authored; spot-checked the 4 hand-designed non-bare-float:none
+rules directly in the compiled CSS output to confirm they came out
+exactly as intended. Committed as `3b8c1a6`.
 
 ### Recommended way to continue
 
@@ -903,8 +974,9 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    `?dev=true` staging check in item 1 above before it's trustworthy to
    build on further.
 3. Extend the float audit beyond `_header.scss`/`_flexible.scss`/
-   `_resources-types.scss` (Sections 1-8, done) to the other ~28 flagged
-   SCSS files (see §2).
+   `_resources-types.scss`/`_customer-events.scss` (Sections 1-9, done)
+   to the other ~27 flagged SCSS files (see §2), e.g. `_events.scss`,
+   `_registrations.scss`, `_post.scss`.
 4. `#70` — likely already resolved by RUCSS being active (see §3's
    2026-09-02 follow-up); would benefit from a real network trace as a
    logged-out visitor to fully close it out (needs either browser dev tools
