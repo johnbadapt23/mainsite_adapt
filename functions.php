@@ -805,10 +805,17 @@ function filter_speakers_callback() {
     // order issue is confirmed fixed or the deploy is confirmed to have
     // landed.
     $response['_debug'] = array(
-        'orderby'  => isset( $args['orderby'] ) ? $args['orderby'] : null,
-        'order'    => isset( $args['order'] ) ? $args['order'] : null,
-        'sort_id'  => isset( $args['sort_id'] ) ? $args['sort_id'] : null,
-        'post_ids' => wp_list_pluck( $speakers_query->posts, 'ID' ),
+        'orderby'         => isset( $args['orderby'] ) ? $args['orderby'] : null,
+        'order'           => isset( $args['order'] ) ? $args['order'] : null,
+        'sort_id'         => isset( $args['sort_id'] ) ? $args['sort_id'] : null,
+        'post_ids'        => wp_list_pluck( $speakers_query->posts, 'ID' ),
+        // Raw SQL WP_Query actually ran -- shows whether APTO touched
+        // ORDER BY at all, without needing Debug Marks (which doesn't
+        // render on admin-ajax.php responses).
+        'sql_request'     => $speakers_query->request,
+        'apto_order_list' => function_exists( 'apto_get_order_list' )
+            ? apto_get_order_list( $post_type, 15788, 'expertise', $speakers_query )
+            : 'apto_get_order_list() not available',
     );
 
     wp_reset_postdata();
