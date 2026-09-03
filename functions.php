@@ -1227,4 +1227,60 @@ function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query )
     return $new_orderby;
 }
 
+// 2026-09-03: force the speaker/executive_advisor manual order per expertise
+// term by re-sorting the already-fetched posts in PHP, instead of trying to
+// influence APTO's SQL ORDER BY through apto/get_orderby above. Three
+// attempts to add even a read-only diagnostic to that filter crashed
+// /analyst-presentations live, for reasons that turned out to be unrelated
+// to the diagnostic code itself (see the ROLLBACK comment above) -- so
+// rather than keep fighting that hook, this sidesteps it: `the_posts` fires
+// after the query has already run, so this only ever touches a plain PHP
+// array, never SQL, never the response body directly.
+add_filter( 'the_posts', 'my_theme_reorder_speakers_by_manual_order', 10, 2 );
+function my_theme_reorder_speakers_by_manual_order( $posts, $query ) {
+    if ( empty( $posts ) || is_admin() || ! function_exists( 'apto_get_order_list' ) ) {
+        return $posts;
+    }
+
+    $post_type = $query->get( 'post_type' );
+    if ( ! in_array( $post_type, array( 'speaker', 'executive_advisor' ), true ) ) {
+        return $posts;
+    }
+
+    $term_id = 0;
+    foreach ( (array) $query->get( 'tax_query' ) as $clause ) {
+        if ( is_array( $clause ) && isset( $clause['taxonomy'] ) && 'expertise' === $clause['taxonomy'] ) {
+            $term = get_term_by( $clause['field'], reset( (array) $clause['terms'] ), 'expertise' );
+            if ( $term ) {
+                $term_id = $term->term_id;
+            }
+            break;
+        }
+    }
+
+    if ( ! $term_id ) {
+        return $posts;
+    }
+
+    $order_list = apto_get_order_list( $post_type, $term_id, 'expertise', $query );
+    if ( ! is_array( $order_list ) || empty( $order_list ) ) {
+        return $posts;
+    }
+
+    $position = array_flip( array_map( 'absint', $order_list ) );
+
+    usort(
+        $posts,
+        function ( $a, $b ) use ( $position ) {
+            $id_a  = is_object( $a ) && isset( $a->ID ) ? (int) $a->ID : (int) $a;
+            $id_b  = is_object( $b ) && isset( $b->ID ) ? (int) $b->ID : (int) $b;
+            $pos_a = isset( $position[ $id_a ] ) ? $position[ $id_a ] : PHP_INT_MAX;
+            $pos_b = isset( $position[ $id_b ] ) ? $position[ $id_b ] : PHP_INT_MAX;
+            return $pos_a <=> $pos_b;
+        }
+    );
+
+    return $posts;
+}
+
 ?>
