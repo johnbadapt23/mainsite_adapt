@@ -70,7 +70,6 @@
                                         'operator' => 'IN',
                                     ),
                                 ),
-                                'ignore_custom_sort' => true,
                                 // Replaced by the expertise tax_query exclusion above.
                                 // 'meta_query'     => array(
                                 //     'relation' => 'OR',
@@ -84,12 +83,16 @@
                                 //     ),
                                 //
                                 // ),
-                                // BUGFIX 2026-09-03: dropped the stray 'meta_value' => 'DESC'
-                                // left behind by the meta_query removal above -- no meta_key
-                                // was ever set for it. Ordering is Advanced Post Types Order
-                                // (NSP Code), which uses WordPress's native menu_order column;
-                                // this post type is configured for its manual drag-and-drop
-                                // mode, so 'menu_order' alone is correct here.
+                                // BUGFIX 2026-09-03 (round 2): removed 'ignore_custom_sort' =>
+                                // true, matching the same fix in _speaker-module.php and
+                                // filter_speakers_callback() (functions.php). That flag tells
+                                // Advanced Post Types Order's (NSP Code) Auto Apply Sort
+                                // feature to skip this query -- but the plugin's "Show/Hide
+                                // re-order interface" settings list Executive Advisors as
+                                // enabled, matching the 'speaker' sort config (Auto Apply
+                                // Sort / Admin Sort both Yes) that's confirmed for the
+                                // sibling speaker query. Kept 'orderby' => 'menu_order' as a
+                                // harmless fallback.
                                 'orderby'     => array( 'menu_order' => 'ASC' ),
                             );
 

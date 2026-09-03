@@ -622,19 +622,27 @@ function filter_speakers_callback() {
         'posts_per_page' => $posts_per_page,
         'paged' => $paged,
         'offset' => $offset,
-        'ignore_custom_sort' => true,
-        // BUGFIX 2026-09-03: dropped the stray 'meta_value' => 'DESC' --
-        // it's a leftover from the meta_query (adapt_analyst EXISTS/
-        // NOT EXISTS) this file used before that was replaced with the
-        // expertise tax_query exclusion above; no meta_key was ever set
-        // for it, so it wasn't doing anything reliable. Ordering here is
-        // handled by the Advanced Post Types Order (NSP Code) plugin,
-        // which stores its custom sequence in WordPress's native
-        // menu_order post column -- confirmed against NSP Code's own
-        // docs, and the 'speaker'/'executive_advisor' post types are
-        // configured for its manual drag-and-drop mode (not its
-        // alternate "Custom Field" sort mode), so 'menu_order' alone is
-        // the correct and complete orderby for these.
+        // BUGFIX 2026-09-03 (round 2): removed 'ignore_custom_sort' => true.
+        // That flag is a real, plugin-recognized WP_Query arg for Advanced
+        // Post Types Order (NSP Code) -- when true, it tells the plugin's
+        // own Auto Apply Sort feature to SKIP this query entirely, per
+        // NSP Code's own docs ("Ignore sort apply for certain query on
+        // Post Types Order"). Checked the plugin's settings screen
+        // (Sort #66399, post type "Speakers (speaker)"): Auto Apply Sort
+        // is Yes and Admin Sort is Yes -- the plugin is configured to
+        // inject its own order automatically into matching front-end
+        // queries, which is exactly what dragging-and-dropping in its
+        // admin screen is supposed to control. This theme's query was
+        // explicitly opting OUT of that via ignore_custom_sort, so the
+        // drag-and-drop order the user set in wp-admin was never applied
+        // here at all -- the query fell through to raw wp_posts.menu_order
+        // instead (previous fix), which doesn't reliably reflect what
+        // this plugin's Auto Apply Sort actually resolves for this post
+        // type once its own settings (offset, status filters, etc.) are
+        // factored in. Left 'orderby' => 'menu_order' in place below as a
+        // harmless fallback (matches what the plugin's own posts_orderby
+        // filter should produce here anyway, and degrades gracefully if
+        // the plugin is ever deactivated) rather than removing it.
         'orderby'     => array( 'menu_order' => 'ASC' ),
     );
 
