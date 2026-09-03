@@ -19570,6 +19570,24 @@ body.dev-float-refactor {
     section.featured-module.resources-featured .container .one-half.side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner .post-content-container {
         float: none;
     }
+    // BUGFIX 2026-09-03: video posts wrap .video-container in an <a>
+    // (image-only posts have .image-container as the direct sibling of
+    // .post-content-container instead -- only the video case adds this
+    // extra level). .video-container's real width:32.7% is a percentage
+    // of its containing block; once .resources-side-posts-inner is
+    // display:flex, that containing block becomes the unstyled <a>
+    // itself, which as a flex item with no width of its own sizes to
+    // near-zero (shrink-to-fit with no content-based minimum), collapsing
+    // the thumbnail to a few px. Give the <a> the real 32.7%+margin
+    // directly and let .video-container fill it at 100% so the two
+    // percentages don't compound.
+    section.featured-module.resources-featured .container .one-half.side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner > a {
+        flex: 0 0 32.7%;
+        margin-right: 18px;
+    }
+    section.featured-module.resources-featured .container .one-half.side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner > a .video-container {
+        width: 100%;
+    }
 
     // section.featured-module.featured-home: the homepage variant
     // (_featured-posts.php) -- a real static 2-column layout (NOT a
@@ -19606,6 +19624,17 @@ body.dev-float-refactor {
     }
     section.featured-module.featured-home .post-list-container .side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner .post-content-container {
         float: none;
+    }
+    // BUGFIX 2026-09-03: same <a>-wraps-.video-container percentage-
+    // collapse as the plain resources-featured sidebar above -- see
+    // that block's comment for the full explanation. Confirmed live
+    // (this exact featured-home sidebar, homepage) collapsed to ~7x7px.
+    section.featured-module.featured-home .post-list-container .side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner > a {
+        flex: 0 0 32.7%;
+        margin-right: 18px;
+    }
+    section.featured-module.featured-home .post-list-container .side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner > a .video-container {
+        width: 100%;
     }
 
     // section.featured-module.type-two-column: plain 2-up grid
