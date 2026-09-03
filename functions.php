@@ -622,29 +622,17 @@ function filter_speakers_callback() {
         'posts_per_page' => $posts_per_page,
         'paged' => $paged,
         'offset' => $offset,
+        // BUGFIX 2026-09-03 (round 9): a previous round (3) deliberately
+        // left 'orderby' unset here on the theory that setting it
+        // ourselves would pre-empt Advanced Post Types Order's own
+        // reordering. That was backwards -- APTO's own documentation
+        // (nsp-code.com "Sample Usage") shows every working example
+        // explicitly setting 'orderby' => 'menu_order' so the plugin
+        // knows this is a query it should inject its saved order into.
+        // Confirmed via APTO's own docs, not just theme-side guessing.
+        'orderby' => 'menu_order',
+        'order'   => 'ASC',
     );
-    // BUGFIX 2026-09-03 (round 3): removing 'ignore_custom_sort' => true
-    // (round 2) got the plugin's Auto Apply Sort running again, but the
-    // live front-end order still didn't match wp-admin's drag-and-drop
-    // list -- close in places (some adjacent pairs matched) but not the
-    // full sequence, which pointed at a real order actually being
-    // applied, just not the plugin's. Advanced Post Types Order's
-    // "Advanced" tier can store its manually-dragged order somewhere
-    // other than a simple wp_posts.menu_order write (see
-    // apto_get_order_list() used below for the resource-type case,
-    // which returns an explicit ID list from the plugin's own storage,
-    // not a menu_order read) -- so keeping our own explicit
-    // 'orderby' => 'menu_order' here may have been read as "the caller
-    // already wants a specific order, don't override it" and pre-empted
-    // the plugin's own posts_orderby/pre_get_posts injection, the same
-    // way explicitly setting suppress_filters => true would. Only set
-    // orderby ourselves when the plugin's API isn't available (matches
-    // the graceful-degradation guard in
-    // my_theme_apto_resource_type_orderby() below) so that when it IS
-    // active, its own hook has an unclaimed orderby to fill in.
-    if ( ! function_exists( 'apto_get_order_list' ) ) {
-        $args['orderby'] = array( 'menu_order' => 'ASC' );
-    }
 
     // $expertise_slugs is always non-empty in normal operation (either the
     // user's real selection, or every checkbox shown on the page when
@@ -684,6 +672,28 @@ function filter_speakers_callback() {
                 'operator' => 'IN',
             ),
         );
+    }
+
+    // 2026-09-03 (round 9): APTO's own docs note that when more than one
+    // configured Sort matches a query's shape, the first one created wins
+    // unless you disambiguate with an explicit 'sort_id' -- this is almost
+    // certainly why the site's broad "Speakers (Archive)" sort (#66399,
+    // created first, no taxonomy Query Rule so it matches every speaker
+    // query) kept winning over the dedicated per-term Advanced Sort
+    // (#66404, expertise = ADAPT Analysts) we configured for this exact
+    // case. Map each expertise term with its own configured Sort here as
+    // more get added; terms without an entry just fall through to
+    // whatever Sort would otherwise match.
+    if ( $has_selection ) {
+        $expertise_sort_ids = array(
+            'adapt-analysts' => 66404, // "Speakers - Expertise: ADAPT Analysts" Advanced Sort
+        );
+        foreach ( $expertise_slugs as $slug ) {
+            if ( isset( $expertise_sort_ids[ $slug ] ) ) {
+                $args['sort_id'] = $expertise_sort_ids[ $slug ];
+                break;
+            }
+        }
     }
 
     $speakers_query = new WP_Query($args);
@@ -1225,62 +1235,6 @@ function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query )
     }
 
     return $new_orderby;
-}
-
-// 2026-09-03: force the speaker/executive_advisor manual order per expertise
-// term by re-sorting the already-fetched posts in PHP, instead of trying to
-// influence APTO's SQL ORDER BY through apto/get_orderby above. Three
-// attempts to add even a read-only diagnostic to that filter crashed
-// /analyst-presentations live, for reasons that turned out to be unrelated
-// to the diagnostic code itself (see the ROLLBACK comment above) -- so
-// rather than keep fighting that hook, this sidesteps it: `the_posts` fires
-// after the query has already run, so this only ever touches a plain PHP
-// array, never SQL, never the response body directly.
-add_filter( 'the_posts', 'my_theme_reorder_speakers_by_manual_order', 10, 2 );
-function my_theme_reorder_speakers_by_manual_order( $posts, $query ) {
-    if ( empty( $posts ) || is_admin() || ! function_exists( 'apto_get_order_list' ) ) {
-        return $posts;
-    }
-
-    $post_type = $query->get( 'post_type' );
-    if ( ! in_array( $post_type, array( 'speaker', 'executive_advisor' ), true ) ) {
-        return $posts;
-    }
-
-    $term_id = 0;
-    foreach ( (array) $query->get( 'tax_query' ) as $clause ) {
-        if ( is_array( $clause ) && isset( $clause['taxonomy'] ) && 'expertise' === $clause['taxonomy'] ) {
-            $term = get_term_by( $clause['field'], reset( (array) $clause['terms'] ), 'expertise' );
-            if ( $term ) {
-                $term_id = $term->term_id;
-            }
-            break;
-        }
-    }
-
-    if ( ! $term_id ) {
-        return $posts;
-    }
-
-    $order_list = apto_get_order_list( $post_type, $term_id, 'expertise', $query );
-    if ( ! is_array( $order_list ) || empty( $order_list ) ) {
-        return $posts;
-    }
-
-    $position = array_flip( array_map( 'absint', $order_list ) );
-
-    usort(
-        $posts,
-        function ( $a, $b ) use ( $position ) {
-            $id_a  = is_object( $a ) && isset( $a->ID ) ? (int) $a->ID : (int) $a;
-            $id_b  = is_object( $b ) && isset( $b->ID ) ? (int) $b->ID : (int) $b;
-            $pos_a = isset( $position[ $id_a ] ) ? $position[ $id_a ] : PHP_INT_MAX;
-            $pos_b = isset( $position[ $id_b ] ) ? $position[ $id_b ] : PHP_INT_MAX;
-            return $pos_a <=> $pos_b;
-        }
-    );
-
-    return $posts;
 }
 
 ?>
