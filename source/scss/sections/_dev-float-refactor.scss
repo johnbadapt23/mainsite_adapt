@@ -19692,6 +19692,37 @@ body.dev-float-refactor {
     .article-container-three-post .container .grid-wrapper .item .item-content-container {
         float: none;
     }
+
+    // BUGFIX 2026-09-03: .article-container-three-post is ALSO reused,
+    // unscoped, as the wrapper for the homepage's section.featured-types
+    // block (templates/components/_featured-types.php) -- but THAT
+    // instance has its own, completely different real (ungated) CSS in
+    // _flexible.scss: .item/.item-content-container are already
+    // `display:flex` there, not float:left, so the generic float:none
+    // fix above (intended for the real float-based 3-up grid used on
+    // market-trend-reports/resource-type/topic/podcast/thank-you pages)
+    // unintentionally also matches it. Tried scoping the rules above
+    // with `:not(section.featured-types .article-container-three-post)`
+    // instead of this override, but clean-css's level 2 minifier
+    // collapses the descendant-combinator space inside :not() into a
+    // compound selector (`section.featured-types.article-container-
+    // three-post`, which never matches anything, since those two
+    // classes are never on the same element) -- silently turning the
+    // :not() into a no-op. Verified directly: `new
+    // CleanCSS({level:2}).minify(...)` on that exact selector reproduces
+    // the space-stripping. Using a higher-specificity override instead
+    // (extra `section.featured-types` ancestor in the selector beats the
+    // generic rule regardless of cascade order or minifier selector
+    // rewrites) re-asserts the correct flex layout for this instance
+    // only, leaving every other .article-container-three-post usage
+    // fixed as before.
+    section.featured-types .article-container-three-post .container .grid-wrapper .item {
+        display: flex;
+    }
+    section.featured-types .article-container-three-post .container .grid-wrapper .item .item-content-container {
+        display: flex;
+        align-items: center;
+    }
 }
 
 // === Section 9 (hand-designed): source/scss/templates/_customer-events.scss
