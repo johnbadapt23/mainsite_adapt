@@ -15,7 +15,20 @@
         </div>
         <div class="speakers-container-outer">
             <div class="filter-container-outer">
-                <?php $expertise_ids = get_sub_field( 'expertise' ); ?>
+                <?php
+                    $expertise_ids = get_sub_field( 'expertise' );
+                    // BUGFIX 2026-09-03: kept alongside $expertise_ids so the
+                    // #speakers-container query below (which used to gate on
+                    // $expertise_ids) can check "did this module have any
+                    // expertise configured at all" using the value as
+                    // originally set by ACF -- not the value further down
+                    // the page, after the .expertise-group checkbox block
+                    // has already destructively stripped 15788/15789
+                    // (adapt-analysts/adapt-advisors) out of it via
+                    // array_diff(). See the query below for why that
+                    // mattered.
+                    $expertise_ids_original = $expertise_ids;
+                ?>
                 <div class="position-sticky filter-container sticky-filter-container">
                     
                     <div>
@@ -93,8 +106,34 @@
                     <?php
                         $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
                         $posts_per_page = 12; // Number of posts per page
-                        $offset = ($paged - 1) * $posts_per_page; 
-                        if ( $expertise_ids ) {
+                        $offset = ($paged - 1) * $posts_per_page;
+                        // BUGFIX 2026-09-03: this used to be `if ( $expertise_ids )`,
+                        // gating the entire query (and the #speakers-container
+                        // markup) on whether this module had any expertise
+                        // configured. Two problems: (1) by this point in the
+                        // page, $expertise_ids had already been mutated by the
+                        // .expertise-group checkbox block above (array_diff()
+                        // strips out 15788/15789), so a module configured with
+                        // ONLY adapt-analysts/adapt-advisors and no other
+                        // expertise term saw $expertise_ids become an empty
+                        // array here and rendered zero speakers on initial
+                        // load -- even though speakers existed. (2) even where
+                        // it didn't trip, gating the query at all didn't match
+                        // filter_speakers_callback() in functions.php, whose
+                        // own "safety net" branch is explicitly designed to
+                        // never skip the query, just fall back to filtering on
+                        // adapt-analysts/adapt-advisors alone -- see its
+                        // comment ("no slugs at all ... still exclude untagged
+                        // posts rather than skipping tax_query entirely").
+                        // Gating on $expertise_ids_original instead (the
+                        // value as ACF originally set it, just confirming
+                        // this module has *some* expertise configured at
+                        // all) fixes case (1) -- a module can no longer lose
+                        // its speakers just because its only configured
+                        // expertise happened to be 15788/15789 -- while
+                        // leaving case (2)'s "not configured at all" instances
+                        // rendering nothing, same as before.
+                        if ( $expertise_ids_original ) {
                             // Set up the query arguments
                             $args = array(
                                 'post_type'      => 'speaker',
