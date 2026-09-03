@@ -688,8 +688,19 @@ function adapt_apto_refresh_order_cache( $post_type, $taxonomy, $term_slug ) {
     }
 }
 
-add_action( 'admin_init', function () {
-    if ( wp_doing_ajax() || ! function_exists( 'apto_get_order_list' ) ) {
+// round 17 finding: 'admin_init' fires too early -- apto_get_order_list()
+// is still undefined at that point, even on APTO's own Re-Order screen
+// (confirmed via a debug option that recorded this closure returning
+// before ever calling adapt_apto_refresh_order_cache(), because its own
+// function_exists() guard failed). APTO evidently defines its advanced-tier
+// functions later, likely inside its own admin page render callback rather
+// than during plugin bootstrap. 'shutdown' fires at the very end of PHP
+// execution for any request -- after all admin page rendering, including
+// any lazily-`require`'d classes -- so it's used here instead to maximise
+// the chance the function is defined by the time this runs, regardless of
+// exactly when/how APTO loads it.
+add_action( 'shutdown', function () {
+    if ( ! is_admin() || wp_doing_ajax() || ! function_exists( 'apto_get_order_list' ) ) {
         return;
     }
     foreach ( ADAPT_APTO_ORDER_TERMS as $post_type => $taxonomies ) {
