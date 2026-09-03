@@ -129,6 +129,9 @@ exactly why the section-by-section, check-in-first approach mattered.
 | `91f3cf8` | **Section 16**: `_thank-you.scss` -- see §2l below |
 | `63e4511` | **Section 17**: `_market.scss` (5 of 6; 1 deliberately skipped) -- see §2m below |
 | `0138f76` | **Section 18**: `_app.scss` -- see §2n below |
+| `701f73e` (reverted `c360699`) | 5 ad hoc `display:flex` tweaks applied directly to live templates -- wrong, see §2o |
+| `b53d868` | Section 19: same 5 tweaks, properly gated -- see §2o |
+| `5a273bf` | Section 19 cascade-order bugfix: `!important` on 3 of the 5 -- see §2o |
 
 ### Flex-equivalent patterns established (reuse these)
 
@@ -863,6 +866,54 @@ each `<p>` is the sole content of its own box. Bare float:none for
 both, no `flex-direction: row-reverse` involved. Same build+diff
 verification as every other section, 0/0/0 ungated on both compiled
 files. Committed as `0138f76`.
+
+### 2o. Section 19 (ad hoc `display:flex` tweaks) + cascade-order bugfix, 2026-09-02/03
+
+Added `body.dev-float-refactor` overrides for 5 directly user-specified
+selectors (not from the systematic per-file audit): `display:flex` on
+`section.filter-title-block .container .title-container`,
+`section.roundtable-card-slider-module ... .slide-image-container`,
+and `section.two-column-services ... .column.icon-text-column
+.service`; `display:flex !important; align-items:center` plus a
+`margin-top:0` neutralizer on `.links-container`/`.text-link` in the
+same `two-column-services` component; and `padding-top:1px; clear:both`
+on `section.quote-slider .container .progress-container`. First
+committed the wrong way (`701f73e`) -- directly in the live templates,
+not gated -- caught and reverted (`c360699`), then redone properly
+gated (`b53d868`).
+
+**Real bug found afterward:** three of the five (`.title-container`,
+`.slide-image-container`, `.service`) each already had a pre-existing
+gated `float:none` rule from the original mechanical batch. This
+file's own `fix-float-none-display.js` build step adds `display:block`
+to every gated `float:none` selector as a separate declaration, and in
+the compiled output that `display:block` rule landed AFTER this
+section's plain `display:flex` -- so `display:block` silently won the
+cascade and the flex fix never took visual effect, despite being
+correctly present in the SCSS source and even correctly present in the
+compiled CSS (it just lost the cascade to a rule the user could see in
+devtools). Fixed by adding `!important` to those three declarations
+(commit `5a273bf`), matching what `.links-container` already had for
+the same reason. Confirmed in the freshly compiled CSS that all three
+are now isolated into their own rule ending in
+`display:flex!important` (previously merged into a large group of
+*unrelated* selectors sharing plain `display:flex` -- footer
+`.group-column`, `.featured-types .item`, `.filter-title-block
+.container.podcast-container` -- confirmed those three still have
+`display:flex` intact elsewhere, unaffected by the split).
+
+**Lesson for future sections:** any selector that already has a
+mechanical-batch `float:none` gated rule needs `!important` on a new
+`display:` override in this file, not just plain `display:flex` --
+the postprocessor's `display:block` addition isn't guaranteed to
+compile before your own rule in file order, even though it looks like
+it should from the SCSS source order alone.
+
+**Environment note:** node_modules wasn't present/cached for this
+verification pass -- had to `npm install --no-audit --no-fund
+--ignore-scripts` in the isolated worktree (plain `npm install` fails
+on `gifsicle`'s native build, which isn't available in this sandbox
+and isn't needed for `build:styles`).
 
 ### Recommended way to continue
 
