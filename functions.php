@@ -1092,15 +1092,34 @@ add_filter(
 // live fatal error on /analyst-presentations -- the page embeds an internal
 // loopback request for its initial speakers list, and that inner request
 // came back as WordPress's own critical-error page. Reverted immediately,
-// without a confirmed root cause. Do not re-add a diagnostic here without
-// testing it against a non-production request path first (this endpoint is
-// hit both by normal frontend loads and by an internal loopback call during
-// initial render, and round 6's and round 7's diagnostics both broke on one
-// of those paths despite looking safe against the direct-request path
-// alone).
+// without a confirmed root cause.
+//
+// DIAGNOSTIC 2026-09-03 (round 8): rounds 6 and 7 both crashed this filter
+// by writing into the HTTP response (string concatenation, then an
+// esc_html()/wp_json_encode() wp_footer echo) -- something about the
+// internal loopback request this page makes for its initial speaker list
+// doesn't tolerate that, even when the individual pieces looked type-safe.
+// This version writes nothing to the response at all: it appends to a
+// plain log file, and the whole thing is wrapped in try/catch( \Throwable )
+// so nothing it does -- however it fails -- can propagate and break the
+// page. Remove this block once we've read the log and know whether/how
+// apto/get_orderby fires for the speaker safety-net query.
 add_filter( 'apto/get_orderby', 'my_theme_apto_taxonomy_scoped_orderby', 10, 3 );
 function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query ) {
     global $wpdb;
+
+    if ( 'speaker' === $query->get( 'post_type' ) ) {
+        try {
+            $log_line = '[' . gmdate( 'c' ) . '] '
+                . 'new_orderby=' . print_r( $new_orderby, true )
+                . ' orderby=' . print_r( $orderby, true )
+                . ' tax_query=' . print_r( $query->get( 'tax_query' ), true )
+                . "\n---\n";
+            @file_put_contents( trailingslashit( WP_CONTENT_DIR ) . 'uploads/apto-debug.log', $log_line, FILE_APPEND | LOCK_EX );
+        } catch ( \Throwable $e ) {
+            // Never let a diagnostic take down the page.
+        }
+    }
 
     if ( is_admin() ) {
         return $new_orderby;
