@@ -19540,7 +19540,23 @@ body.dev-float-refactor {
     // make it a flex parent directly (unlike the shared generic
     // .container used elsewhere in this file, which also holds
     // .title-container/.grid-wrapper and is NOT touched here).
-    section.featured-module.resources-featured .container {
+    //
+    // BUGFIX 2026-09-03: the homepage's featured-posts block
+    // (_featured-posts.php) renders with BOTH "resources-featured" AND
+    // "featured-home" classes on the same <section> (confirmed live:
+    // section.resources-featured.featured-module.featured-home), so
+    // this selector was also matching ITS .container -- whose real
+    // children are .title-container + .post-list-container, not
+    // .slider-column.one-half/.side-bar-column.one-half. Turning that
+    // .container into a flex row put .title-container and
+    // .post-list-container side by side as two ~50% flex items,
+    // collapsing .post-list-container (and everything under it --
+    // .first-post-column, .side-bar-column, the sidebar thumbnail
+    // images) to roughly half width. Found via structural gated-vs-
+    // ungated rect diff + live DOM inspection on the homepage. Scoping
+    // this rule to :not(.featured-home) restores it to only the
+    // intended standalone resources-featured component.
+    section.featured-module.resources-featured:not(.featured-home) .container {
         display: flex;
         align-items: flex-start;
     }
