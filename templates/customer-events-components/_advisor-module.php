@@ -83,18 +83,26 @@
                                 //     ),
                                 //
                                 // ),
-                                // BUGFIX 2026-09-03 (round 2): removed 'ignore_custom_sort' =>
-                                // true, matching the same fix in _speaker-module.php and
-                                // filter_speakers_callback() (functions.php). That flag tells
-                                // Advanced Post Types Order's (NSP Code) Auto Apply Sort
-                                // feature to skip this query -- but the plugin's "Show/Hide
-                                // re-order interface" settings list Executive Advisors as
-                                // enabled, matching the 'speaker' sort config (Auto Apply
-                                // Sort / Admin Sort both Yes) that's confirmed for the
-                                // sibling speaker query. Kept 'orderby' => 'menu_order' as a
-                                // harmless fallback.
-                                'orderby'     => array( 'menu_order' => 'ASC' ),
                             );
+                            // BUGFIX 2026-09-03 (round 3): round 2 removed
+                            // 'ignore_custom_sort' => true so Advanced Post Types
+                            // Order's Auto Apply Sort would actually run again, but
+                            // (confirmed on the sibling 'speaker' query) the live
+                            // order still didn't match wp-admin's drag-and-drop list.
+                            // Its "Advanced" tier can store the manually-dragged
+                            // order somewhere other than a plain wp_posts.menu_order
+                            // write (see apto_get_order_list() used in functions.php
+                            // for the resource-type case, which returns an explicit
+                            // ID list from the plugin's own storage), so keeping an
+                            // explicit 'orderby' => 'menu_order' here may have read
+                            // as "the caller already wants a specific order" and
+                            // pre-empted the plugin's own posts_orderby/pre_get_posts
+                            // injection. Only set it ourselves when the plugin's API
+                            // isn't available, so its own hook has an unclaimed
+                            // orderby to fill in when it is.
+                            if ( ! function_exists( 'apto_get_order_list' ) ) {
+                                $args['orderby'] = array( 'menu_order' => 'ASC' );
+                            }
 
                             // Run the query
                             $speakers_query = new WP_Query( $args );

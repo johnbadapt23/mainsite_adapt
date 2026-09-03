@@ -168,22 +168,27 @@
                                 //     ),
                                 //
                                 // ),
-                                // BUGFIX 2026-09-03 (round 2): removed 'ignore_custom_sort' =>
-                                // true. That flag tells Advanced Post Types Order's (NSP Code)
-                                // Auto Apply Sort feature to skip this query entirely -- but
-                                // the plugin's own settings for the 'speaker' post type have
-                                // Auto Apply Sort and Admin Sort both set to Yes, meaning it's
-                                // configured to automatically inject the admin drag-and-drop
-                                // order into exactly this kind of front-end query. This query
-                                // was opting out of that on purpose (or by copy-paste from
-                                // elsewhere), so reordering in wp-admin never reached the
-                                // front end -- it fell back to raw wp_posts.menu_order
-                                // instead (previous fix), which doesn't reliably match what
-                                // the plugin's Auto Apply Sort actually resolves once its own
-                                // settings (status filters, offset, etc.) are factored in.
-                                // Kept 'orderby' => 'menu_order' as a harmless fallback.
-                                'orderby'     => array( 'menu_order' => 'ASC' ),
                             );
+                            // BUGFIX 2026-09-03 (round 3): round 2 removed
+                            // 'ignore_custom_sort' => true so Advanced Post Types
+                            // Order's Auto Apply Sort would actually run again, but
+                            // the live order still didn't match wp-admin's
+                            // drag-and-drop list -- some pairs matched, the full
+                            // sequence didn't, which pointed at *a* real order being
+                            // applied, just not the plugin's. Its "Advanced" tier can
+                            // store the manually-dragged order somewhere other than a
+                            // plain wp_posts.menu_order write (see apto_get_order_list()
+                            // used in functions.php for the resource-type case, which
+                            // returns an explicit ID list from the plugin's own
+                            // storage), so keeping an explicit 'orderby' => 'menu_order'
+                            // here may have read as "the caller already wants a
+                            // specific order" and pre-empted the plugin's own
+                            // posts_orderby/pre_get_posts injection. Only set it
+                            // ourselves when the plugin's API isn't available, so its
+                            // own hook has an unclaimed orderby to fill in when it is.
+                            if ( ! function_exists( 'apto_get_order_list' ) ) {
+                                $args['orderby'] = array( 'menu_order' => 'ASC' );
+                            }
 
                             // Run the query
                             $speakers_query = new WP_Query( $args );

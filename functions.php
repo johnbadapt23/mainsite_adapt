@@ -622,29 +622,29 @@ function filter_speakers_callback() {
         'posts_per_page' => $posts_per_page,
         'paged' => $paged,
         'offset' => $offset,
-        // BUGFIX 2026-09-03 (round 2): removed 'ignore_custom_sort' => true.
-        // That flag is a real, plugin-recognized WP_Query arg for Advanced
-        // Post Types Order (NSP Code) -- when true, it tells the plugin's
-        // own Auto Apply Sort feature to SKIP this query entirely, per
-        // NSP Code's own docs ("Ignore sort apply for certain query on
-        // Post Types Order"). Checked the plugin's settings screen
-        // (Sort #66399, post type "Speakers (speaker)"): Auto Apply Sort
-        // is Yes and Admin Sort is Yes -- the plugin is configured to
-        // inject its own order automatically into matching front-end
-        // queries, which is exactly what dragging-and-dropping in its
-        // admin screen is supposed to control. This theme's query was
-        // explicitly opting OUT of that via ignore_custom_sort, so the
-        // drag-and-drop order the user set in wp-admin was never applied
-        // here at all -- the query fell through to raw wp_posts.menu_order
-        // instead (previous fix), which doesn't reliably reflect what
-        // this plugin's Auto Apply Sort actually resolves for this post
-        // type once its own settings (offset, status filters, etc.) are
-        // factored in. Left 'orderby' => 'menu_order' in place below as a
-        // harmless fallback (matches what the plugin's own posts_orderby
-        // filter should produce here anyway, and degrades gracefully if
-        // the plugin is ever deactivated) rather than removing it.
-        'orderby'     => array( 'menu_order' => 'ASC' ),
     );
+    // BUGFIX 2026-09-03 (round 3): removing 'ignore_custom_sort' => true
+    // (round 2) got the plugin's Auto Apply Sort running again, but the
+    // live front-end order still didn't match wp-admin's drag-and-drop
+    // list -- close in places (some adjacent pairs matched) but not the
+    // full sequence, which pointed at a real order actually being
+    // applied, just not the plugin's. Advanced Post Types Order's
+    // "Advanced" tier can store its manually-dragged order somewhere
+    // other than a simple wp_posts.menu_order write (see
+    // apto_get_order_list() used below for the resource-type case,
+    // which returns an explicit ID list from the plugin's own storage,
+    // not a menu_order read) -- so keeping our own explicit
+    // 'orderby' => 'menu_order' here may have been read as "the caller
+    // already wants a specific order, don't override it" and pre-empted
+    // the plugin's own posts_orderby/pre_get_posts injection, the same
+    // way explicitly setting suppress_filters => true would. Only set
+    // orderby ourselves when the plugin's API isn't available (matches
+    // the graceful-degradation guard in
+    // my_theme_apto_resource_type_orderby() below) so that when it IS
+    // active, its own hook has an unclaimed orderby to fill in.
+    if ( ! function_exists( 'apto_get_order_list' ) ) {
+        $args['orderby'] = array( 'menu_order' => 'ASC' );
+    }
 
     // $expertise_slugs is always non-empty in normal operation (either the
     // user's real selection, or every checkbox shown on the page when
