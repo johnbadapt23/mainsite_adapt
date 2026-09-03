@@ -1087,38 +1087,20 @@ add_filter(
     3
 );
 
-// TEMP DIAGNOSTIC 2026-09-03 (round 7): round 6 tried to answer "does
-// apto/get_orderby even fire for the speaker safety-net query" by
-// concatenating a marker onto $new_orderby -- that crashed the site
-// ($new_orderby isn't always a string). This version never touches
-// $new_orderby at all: it only records whether/how this filter fired
-// into a global, then dumps that via wp_footer (safe regardless of
-// $new_orderby's type, since wp_json_encode()/is_string() handle any
-// value without throwing). Remove both this and the wp_footer hook
-// below once answered.
-add_action( 'wp_footer', function () {
-    if ( empty( $GLOBALS['apto_orderby_debug'] ) ) {
-        echo "<!-- apto_orderby_debug: filter never fired -->\n";
-        return;
-    }
-    foreach ( $GLOBALS['apto_orderby_debug'] as $entry ) {
-        echo '<!-- apto_orderby_debug: ' . esc_html( wp_json_encode( $entry ) ) . " -->\n";
-    }
-} );
-
+// ROLLBACK 2026-09-03 (round 7): the round-7 diagnostic above this comment
+// (a wp_footer hook dumping a $GLOBALS array via wp_json_encode) caused a
+// live fatal error on /analyst-presentations -- the page embeds an internal
+// loopback request for its initial speakers list, and that inner request
+// came back as WordPress's own critical-error page. Reverted immediately,
+// without a confirmed root cause. Do not re-add a diagnostic here without
+// testing it against a non-production request path first (this endpoint is
+// hit both by normal frontend loads and by an internal loopback call during
+// initial render, and round 6's and round 7's diagnostics both broke on one
+// of those paths despite looking safe against the direct-request path
+// alone).
 add_filter( 'apto/get_orderby', 'my_theme_apto_taxonomy_scoped_orderby', 10, 3 );
 function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query ) {
     global $wpdb;
-
-    if ( 'speaker' === $query->get( 'post_type' ) ) {
-        $GLOBALS['apto_orderby_debug'][] = array(
-            'new_orderby_type' => gettype( $new_orderby ),
-            'new_orderby'      => $new_orderby,
-            'orderby_type'     => gettype( $orderby ),
-            'orderby'          => $orderby,
-            'tax_query'        => $query->get( 'tax_query' ),
-        );
-    }
 
     if ( is_admin() ) {
         return $new_orderby;
