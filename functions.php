@@ -636,12 +636,33 @@ function adapt_apto_order_cache_key( $post_type, $taxonomy, $term_slug ) {
 }
 
 function adapt_apto_refresh_order_cache( $post_type, $taxonomy, $term_slug ) {
+    // TEMP DIAGNOSTIC 2026-09-03 (round 17): round 15's cache never
+    // populated (confirmed OPTION_NOT_SET via AJAX debug, even right after
+    // visiting the actual Re-Order screen). This records exactly what
+    // happens on each attempt into an option we can inspect, instead of
+    // silently returning false. Read-only from the outside, no output,
+    // wrapped in try/catch same as before. Remove once answered.
+    $debug = array(
+        'when'                 => gmdate( 'c' ),
+        'fn_exists_at_start'   => function_exists( 'apto_get_order_list' ),
+        'is_admin'             => is_admin(),
+        'doing_ajax'           => wp_doing_ajax(),
+        'current_page_param'   => isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : null,
+        'term_found'           => null,
+        'order_list_type'      => null,
+        'order_list_count'     => null,
+        'threw'                => null,
+    );
+
     if ( ! function_exists( 'apto_get_order_list' ) ) {
+        update_option( 'adapt_apto_debug_last_attempt', $debug, false );
         return false;
     }
     try {
         $term = get_term_by( 'slug', $term_slug, $taxonomy );
+        $debug['term_found'] = $term ? $term->term_id : false;
         if ( ! $term ) {
+            update_option( 'adapt_apto_debug_last_attempt', $debug, false );
             return false;
         }
         // An empty WP_Query satisfies apto_get_order_list()'s expected
@@ -649,14 +670,20 @@ function adapt_apto_refresh_order_cache( $post_type, $taxonomy, $term_slug ) {
         // apto_get_order_list() only needs it to resolve context, and we
         // already know exactly which post_type/term we mean.
         $order_list = apto_get_order_list( $post_type, $term->term_id, $taxonomy, new WP_Query() );
+        $debug['order_list_type']  = gettype( $order_list );
+        $debug['order_list_count'] = is_array( $order_list ) ? count( $order_list ) : null;
         if ( ! is_array( $order_list ) || empty( $order_list ) ) {
+            update_option( 'adapt_apto_debug_last_attempt', $debug, false );
             return false;
         }
         update_option( adapt_apto_order_cache_key( $post_type, $taxonomy, $term_slug ), array_map( 'absint', $order_list ), false );
+        update_option( 'adapt_apto_debug_last_attempt', $debug, false );
         return true;
     } catch ( \Throwable $e ) {
         // This runs from admin_init, which fires on every wp-admin page --
         // never let a plugin API surprise take down the whole admin.
+        $debug['threw'] = $e->getMessage();
+        update_option( 'adapt_apto_debug_last_attempt', $debug, false );
         return false;
     }
 }
@@ -933,6 +960,7 @@ function filter_speakers_callback() {
             : 'helper not available',
         'cached_value'     => get_option( 'adapt_apto_order_speaker_expertise_adapt-analysts', 'OPTION_NOT_SET' ),
         'fn_exists_in_ajax' => function_exists( 'apto_get_order_list' ),
+        'last_attempt'     => get_option( 'adapt_apto_debug_last_attempt', 'NO_ATTEMPT_RECORDED' ),
     );
 
     wp_reset_postdata();
