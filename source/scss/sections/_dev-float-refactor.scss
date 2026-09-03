@@ -20526,13 +20526,16 @@ body.dev-float-refactor {
 //   handles vertical alignment and the old margin-top would just add
 //   an unwanted offset from center.
 //
-// - section.quote-slider .container .progress-container
-//   (source/scss/templates/_events.scss): padding-top:1px; clear:both.
-//   Confirmed as the correct .progress-container among 5 repo-wide
-//   candidates -- this is the one wrapping the quote slider's floated
-//   .progress-bar/.progress-inner (the others are a fixed/absolute
-//   sticky-nav bar in _header.scss and a non-floated page-scoped
-//   override in _market-buyer.scss).
+// - section.content-slider-module .container .content-slider-container
+//   .progress-container (templates/components/_content-slider.php,
+//   unstyled in SCSS): padding-top:1px; clear:both. CORRECTED
+//   2026-09-03 -- originally misattributed to section.quote-slider's
+//   own .progress-container (source/scss/templates/_events.scss),
+//   which already has float:left of its own and didn't need this.
+//   The real target is content-slider-module's .progress-container,
+//   which has no SCSS rule at all and sits after the floated
+//   .home-content-slider (float:left;width:100%) with nothing to
+//   clear it.
 body.dev-float-refactor {
     section.filter-title-block .container .title-container,
     section.roundtable-card-slider-module .roundtable-card-slider .slide .slide-inner .slide-image-container,
@@ -20546,7 +20549,7 @@ body.dev-float-refactor {
     section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container a.text-link {
         margin-top: 0;
     }
-    section.quote-slider .container .progress-container {
+    section.content-slider-module .container .content-slider-container .progress-container {
         padding-top: 1px;
         clear: both;
     }
