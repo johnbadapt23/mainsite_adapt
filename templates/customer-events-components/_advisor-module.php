@@ -84,7 +84,13 @@
                                 //     ),
                                 //
                                 // ),
-                                'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),
+                                // BUGFIX 2026-09-03: dropped the stray 'meta_value' => 'DESC'
+                                // left behind by the meta_query removal above -- no meta_key
+                                // was ever set for it. Ordering is Advanced Post Types Order
+                                // (NSP Code), which uses WordPress's native menu_order column;
+                                // this post type is configured for its manual drag-and-drop
+                                // mode, so 'menu_order' alone is correct here.
+                                'orderby'     => array( 'menu_order' => 'ASC' ),
                             );
 
                             // Run the query

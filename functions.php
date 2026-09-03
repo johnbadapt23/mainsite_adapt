@@ -623,7 +623,19 @@ function filter_speakers_callback() {
         'paged' => $paged,
         'offset' => $offset,
         'ignore_custom_sort' => true,
-        'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),
+        // BUGFIX 2026-09-03: dropped the stray 'meta_value' => 'DESC' --
+        // it's a leftover from the meta_query (adapt_analyst EXISTS/
+        // NOT EXISTS) this file used before that was replaced with the
+        // expertise tax_query exclusion above; no meta_key was ever set
+        // for it, so it wasn't doing anything reliable. Ordering here is
+        // handled by the Advanced Post Types Order (NSP Code) plugin,
+        // which stores its custom sequence in WordPress's native
+        // menu_order post column -- confirmed against NSP Code's own
+        // docs, and the 'speaker'/'executive_advisor' post types are
+        // configured for its manual drag-and-drop mode (not its
+        // alternate "Custom Field" sort mode), so 'menu_order' alone is
+        // the correct and complete orderby for these.
+        'orderby'     => array( 'menu_order' => 'ASC' ),
     );
 
     // $expertise_slugs is always non-empty in normal operation (either the
