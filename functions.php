@@ -794,6 +794,23 @@ function filter_speakers_callback() {
 
     $response['pagination'] = adapt_render_ajax_filter_pagination( $speakers_query, $paged );
 
+    // TEMP DIAGNOSTIC 2026-09-03 (round 11): the last two fixes to this
+    // function (rounds 9-10, changing 'orderby'/'sort_id' in $args) made no
+    // observable difference to the returned order, which is suspicious
+    // enough to warrant confirming this code is actually what's running,
+    // rather than guessing again. This only ever adds a key to our own JSON
+    // response, built entirely from data already in hand (no new function
+    // calls, no touching APTO's internals) -- main.js ignores unknown
+    // response keys, so this is inert on the front end. Remove once the
+    // order issue is confirmed fixed or the deploy is confirmed to have
+    // landed.
+    $response['_debug'] = array(
+        'orderby'  => isset( $args['orderby'] ) ? $args['orderby'] : null,
+        'order'    => isset( $args['order'] ) ? $args['order'] : null,
+        'sort_id'  => isset( $args['sort_id'] ) ? $args['sort_id'] : null,
+        'post_ids' => wp_list_pluck( $speakers_query->posts, 'ID' ),
+    );
+
     wp_reset_postdata();
 
     echo json_encode($response);
