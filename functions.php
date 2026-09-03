@@ -923,6 +923,18 @@ function filter_speakers_callback() {
 
     $response['pagination'] = adapt_render_ajax_filter_pagination( $speakers_query, $paged );
 
+    // TEMP DIAGNOSTIC 2026-09-03 (round 16): checking why round 15's cache
+    // read back empty. Read-only, no side effects. Remove once answered.
+    $response['_debug'] = array(
+        'has_selection'    => $has_selection,
+        'expertise_slugs'  => $expertise_slugs,
+        'cache_key'        => function_exists( 'adapt_apto_order_cache_key' )
+            ? adapt_apto_order_cache_key( $post_type, 'expertise', 'adapt-analysts' )
+            : 'helper not available',
+        'cached_value'     => get_option( 'adapt_apto_order_speaker_expertise_adapt-analysts', 'OPTION_NOT_SET' ),
+        'fn_exists_in_ajax' => function_exists( 'apto_get_order_list' ),
+    );
+
     wp_reset_postdata();
 
     echo json_encode($response);
