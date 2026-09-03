@@ -1087,17 +1087,39 @@ add_filter(
     3
 );
 
+// TEMP DIAGNOSTIC 2026-09-03 (round 7): round 6 tried to answer "does
+// apto/get_orderby even fire for the speaker safety-net query" by
+// concatenating a marker onto $new_orderby -- that crashed the site
+// ($new_orderby isn't always a string). This version never touches
+// $new_orderby at all: it only records whether/how this filter fired
+// into a global, then dumps that via wp_footer (safe regardless of
+// $new_orderby's type, since wp_json_encode()/is_string() handle any
+// value without throwing). Remove both this and the wp_footer hook
+// below once answered.
+add_action( 'wp_footer', function () {
+    if ( empty( $GLOBALS['apto_orderby_debug'] ) ) {
+        echo "<!-- apto_orderby_debug: filter never fired -->\n";
+        return;
+    }
+    foreach ( $GLOBALS['apto_orderby_debug'] as $entry ) {
+        echo '<!-- apto_orderby_debug: ' . esc_html( wp_json_encode( $entry ) ) . " -->\n";
+    }
+} );
+
 add_filter( 'apto/get_orderby', 'my_theme_apto_taxonomy_scoped_orderby', 10, 3 );
 function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query ) {
     global $wpdb;
 
-    // ROLLBACK 2026-09-03: round 6's diagnostic marker
-    // ('/* apto_get_orderby_fired */ ' . $new_orderby) caused a fatal
-    // error site-wide -- $new_orderby isn't always a string here (APTO
-    // can pass an array, e.g. when $orderby itself came in as one), and
-    // string concatenation against a non-string throws a TypeError on
-    // PHP 8. Reverted immediately. Any future diagnostic here must check
-    // is_string( $new_orderby ) before concatenating.
+    if ( 'speaker' === $query->get( 'post_type' ) ) {
+        $GLOBALS['apto_orderby_debug'][] = array(
+            'new_orderby_type' => gettype( $new_orderby ),
+            'new_orderby'      => $new_orderby,
+            'orderby_type'     => gettype( $orderby ),
+            'orderby'          => $orderby,
+            'tax_query'        => $query->get( 'tax_query' ),
+        );
+    }
+
     if ( is_admin() ) {
         return $new_orderby;
     }
