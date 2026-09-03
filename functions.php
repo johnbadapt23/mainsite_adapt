@@ -1091,20 +1091,13 @@ add_filter( 'apto/get_orderby', 'my_theme_apto_taxonomy_scoped_orderby', 10, 3 )
 function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query ) {
     global $wpdb;
 
-    // TEMP DIAGNOSTIC 2026-09-03 (round 6): three fixes in a row (round 3,
-    // 4, 5) produced byte-identical unchanged SQL on the speaker safety-net
-    // query, despite round 5 resolving the term straight off the query's
-    // own tax_query without touching apto_get_query_post_type_taxonomy() /
-    // apto_get_order_type() at all. That points at this filter callback
-    // simply never firing for this query, rather than firing and taking
-    // the wrong branch. Marking $new_orderby unconditionally, before any
-    // guard/return, so it's visible in Debug Marks' raw SQL regardless of
-    // which branch below runs afterward -- confirms whether apto/get_orderby
-    // is even invoked for this query. Remove once confirmed either way.
-    if ( 'speaker' === $query->get( 'post_type' ) ) {
-        $new_orderby = '/* apto_get_orderby_fired */ ' . $new_orderby;
-    }
-
+    // ROLLBACK 2026-09-03: round 6's diagnostic marker
+    // ('/* apto_get_orderby_fired */ ' . $new_orderby) caused a fatal
+    // error site-wide -- $new_orderby isn't always a string here (APTO
+    // can pass an array, e.g. when $orderby itself came in as one), and
+    // string concatenation against a non-string throws a TypeError on
+    // PHP 8. Reverted immediately. Any future diagnostic here must check
+    // is_string( $new_orderby ) before concatenating.
     if ( is_admin() ) {
         return $new_orderby;
     }
