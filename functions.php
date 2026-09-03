@@ -591,6 +591,111 @@ function adapt_render_ajax_filter_pagination( $query, $paged ) {
     return ob_get_clean();
 }
 
+// 2026-09-03 (round 15): rounds 13-14 hardcoded the ADAPT Analysts speaker
+// order directly into this file (first by post ID, then by slug). Both were
+// wrong for the same underlying reason: they freeze whatever staging's
+// lineup happened to be at commit time. If production has a different
+// analyst who should be first, or a speaker that doesn't exist on staging
+// at all, a hardcoded list can never reflect that -- it silently falls
+// through to the default order with no error, and the whole point of using
+// Advanced Post Types Order (letting non-technical staff manage this from
+// wp-admin, no code deploy needed) is defeated.
+//
+// Real fix: cache whatever apto_get_order_list() actually returns, computed
+// at a time when that function is available. Confirmed (rounds 11-13, via a
+// temporary debug key on the AJAX response, since removed) that
+// apto_get_order_list() does not exist during admin-ajax.php requests --
+// function_exists() returned false there even while logged in as admin --
+// so it can never be called directly from filter_speakers_callback() below.
+// It's read here instead, during a normal (non-AJAX) wp-admin page load,
+// where the plugin's full API is loaded, and stored as a WordPress option.
+// The cache:
+//  - populates itself the first time admin_init runs after being empty --
+//    no manual step needed after this deploys to any environment,
+//    including production, where it will compute PRODUCTION's own order
+//    from PRODUCTION's own database, not anything from this file.
+//  - refreshes immediately whenever APTO's own reorder-interface save
+//    action fires, so a wp-admin drag-and-drop change shows up on the very
+//    next admin_init, not stale indefinitely.
+//  - stores real post IDs. That's safe here (unlike rounds 13-14's baked-in
+//    array) because the cache is computed live, separately, on whichever
+//    environment it runs on -- nothing environment-specific ships in this
+//    file.
+// Add more taxonomy terms here as more per-term Advanced Sorts get
+// configured in wp-admin; terms not listed here just fall through to
+// APTO's own (currently archive-wide) automatic ordering, same as before
+// any of this existed.
+const ADAPT_APTO_ORDER_TERMS = array(
+    'speaker' => array(
+        'expertise' => array( 'adapt-analysts' ),
+    ),
+);
+
+function adapt_apto_order_cache_key( $post_type, $taxonomy, $term_slug ) {
+    return "adapt_apto_order_{$post_type}_{$taxonomy}_{$term_slug}";
+}
+
+function adapt_apto_refresh_order_cache( $post_type, $taxonomy, $term_slug ) {
+    if ( ! function_exists( 'apto_get_order_list' ) ) {
+        return false;
+    }
+    try {
+        $term = get_term_by( 'slug', $term_slug, $taxonomy );
+        if ( ! $term ) {
+            return false;
+        }
+        // An empty WP_Query satisfies apto_get_order_list()'s expected
+        // 4th argument without running any DB query of its own --
+        // apto_get_order_list() only needs it to resolve context, and we
+        // already know exactly which post_type/term we mean.
+        $order_list = apto_get_order_list( $post_type, $term->term_id, $taxonomy, new WP_Query() );
+        if ( ! is_array( $order_list ) || empty( $order_list ) ) {
+            return false;
+        }
+        update_option( adapt_apto_order_cache_key( $post_type, $taxonomy, $term_slug ), array_map( 'absint', $order_list ), false );
+        return true;
+    } catch ( \Throwable $e ) {
+        // This runs from admin_init, which fires on every wp-admin page --
+        // never let a plugin API surprise take down the whole admin.
+        return false;
+    }
+}
+
+add_action( 'admin_init', function () {
+    if ( wp_doing_ajax() || ! function_exists( 'apto_get_order_list' ) ) {
+        return;
+    }
+    foreach ( ADAPT_APTO_ORDER_TERMS as $post_type => $taxonomies ) {
+        foreach ( $taxonomies as $taxonomy => $term_slugs ) {
+            foreach ( $term_slugs as $term_slug ) {
+                $cache_key = adapt_apto_order_cache_key( $post_type, $taxonomy, $term_slug );
+                if ( false === get_option( $cache_key, false ) ) {
+                    adapt_apto_refresh_order_cache( $post_type, $taxonomy, $term_slug );
+                }
+            }
+        }
+    }
+} );
+
+// APTO's own hook, fired when a wp-admin drag-and-drop reorder is saved
+// (its own admin-ajax.php save action, where the plugin's full API is
+// definitely loaded -- it's the plugin's own code). Refresh immediately
+// rather than waiting for the next admin_init.
+add_action( 'apto/reorder-interface/order_update_complete', function () {
+    foreach ( ADAPT_APTO_ORDER_TERMS as $post_type => $taxonomies ) {
+        foreach ( $taxonomies as $taxonomy => $term_slugs ) {
+            foreach ( $term_slugs as $term_slug ) {
+                adapt_apto_refresh_order_cache( $post_type, $taxonomy, $term_slug );
+            }
+        }
+    }
+} );
+
+function adapt_get_cached_apto_order( $post_type, $taxonomy, $term_slug ) {
+    $cached = get_option( adapt_apto_order_cache_key( $post_type, $taxonomy, $term_slug ), array() );
+    return is_array( $cached ) ? $cached : array();
+}
+
 // Speaker Ajax filtering
 add_action('wp_ajax_filter_speakers', 'filter_speakers_callback');
 add_action('wp_ajax_nopriv_filter_speakers', 'filter_speakers_callback');
@@ -703,60 +808,28 @@ function filter_speakers_callback() {
 
     $speakers_query = new WP_Query($args);
 
-    // 2026-09-03 (round 13-14): confirmed via a temporary debug key on this
-    // response (rounds 11-12, since removed) that apto_get_order_list()
-    // does not exist during admin-ajax.php requests -- function_exists()
-    // returns false here, even though is_admin() is (confusingly) also
-    // true for admin-ajax.php. Only APTO's basic, taxonomy-unaware archive
-    // order runs during AJAX, which is why every previous attempt to steer
-    // its ORDER BY via query args (orderby, sort_id) kept producing the
-    // same whole-post-type FIELD() list regardless -- the plugin code that
-    // reads a per-taxonomy manual order simply isn't loaded in this
-    // request. Rather than keep fighting that, this hardcodes the known
-    // order for terms with a configured Advanced Sort (currently just
-    // ADAPT Analysts, wp-admin > Speakers > Re-Order > Sort #66399 >
-    // Expertise > ADAPT Analysts) and re-sorts the already-fetched posts
-    // in plain PHP.
-    //
-    // round 14: keyed by post SLUG (post_name), not numeric post ID.
-    // Staging and production have different post IDs for the same
-    // content, but the same URL slugs (permalinks have to match across
-    // environments), so matching on slug is what actually makes this
-    // portable -- deploying this file as-is to production works as long
-    // as these speakers keep the same slugs there. No extra DB lookups
-    // needed either, since $speakers_query->posts are already full
-    // WP_Post objects with ->post_name available.
-    //
-    // If this list gets re-dragged in wp-admin, this array needs updating
-    // to match by hand -- ask if this should instead read from a cache
-    // populated via APTO's apto/reorder-interface/order_update_complete
-    // action (fires in a normal wp-admin context, where the plugin's
-    // advanced API is available) so it stays in sync automatically.
-    $expertise_manual_order = array(
-        'adapt-analysts' => array(
-            'jim-berry',
-            'anthony-saba',
-            'lisa-drum',
-            'joey-meynink',
-            'harshit-goel',
-            'honey-mari-gay',
-            'byron-connolly',
-            'matt-boon',
-            'gabby-fredkin',
-            'peter-hind',
-        ),
-    );
-
-    if ( $has_selection && 1 === count( $expertise_slugs ) && isset( $expertise_manual_order[ $expertise_slugs[0] ] ) ) {
-        $position = array_flip( $expertise_manual_order[ $expertise_slugs[0] ] );
-        usort(
-            $speakers_query->posts,
-            function ( $a, $b ) use ( $position ) {
-                $pos_a = isset( $position[ $a->post_name ] ) ? $position[ $a->post_name ] : PHP_INT_MAX;
-                $pos_b = isset( $position[ $b->post_name ] ) ? $position[ $b->post_name ] : PHP_INT_MAX;
-                return $pos_a <=> $pos_b;
-            }
-        );
+    // 2026-09-03 (round 15): apto_get_order_list() is confirmed unavailable
+    // during admin-ajax.php requests (rounds 11-13), so it can't be called
+    // directly here. Read the cached order instead (populated elsewhere in
+    // this file, from a normal wp-admin page load, entirely from whatever
+    // is actually configured in wp-admin on THIS environment -- see
+    // ADAPT_APTO_ORDER_TERMS above) and re-sort the already-fetched posts
+    // in plain PHP. Terms without a cached order (nothing configured, or
+    // cache not yet populated) fall through to APTO's own automatic
+    // ordering unchanged.
+    if ( $has_selection && 1 === count( $expertise_slugs ) ) {
+        $order_list = adapt_get_cached_apto_order( $post_type, 'expertise', $expertise_slugs[0] );
+        if ( ! empty( $order_list ) ) {
+            $position = array_flip( $order_list );
+            usort(
+                $speakers_query->posts,
+                function ( $a, $b ) use ( $position ) {
+                    $pos_a = isset( $position[ $a->ID ] ) ? $position[ $a->ID ] : PHP_INT_MAX;
+                    $pos_b = isset( $position[ $b->ID ] ) ? $position[ $b->ID ] : PHP_INT_MAX;
+                    return $pos_a <=> $pos_b;
+                }
+            );
+        }
     }
 
     ob_start();
