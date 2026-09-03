@@ -1087,39 +1087,22 @@ add_filter(
     3
 );
 
-// ROLLBACK 2026-09-03 (round 7): the round-7 diagnostic above this comment
-// (a wp_footer hook dumping a $GLOBALS array via wp_json_encode) caused a
-// live fatal error on /analyst-presentations -- the page embeds an internal
-// loopback request for its initial speakers list, and that inner request
-// came back as WordPress's own critical-error page. Reverted immediately,
-// without a confirmed root cause.
-//
-// DIAGNOSTIC 2026-09-03 (round 8): rounds 6 and 7 both crashed this filter
-// by writing into the HTTP response (string concatenation, then an
-// esc_html()/wp_json_encode() wp_footer echo) -- something about the
-// internal loopback request this page makes for its initial speaker list
-// doesn't tolerate that, even when the individual pieces looked type-safe.
-// This version writes nothing to the response at all: it appends to a
-// plain log file, and the whole thing is wrapped in try/catch( \Throwable )
-// so nothing it does -- however it fails -- can propagate and break the
-// page. Remove this block once we've read the log and know whether/how
-// apto/get_orderby fires for the speaker safety-net query.
+// ROLLBACK 2026-09-03 (round 8): rounds 6, 7, and 8 have now ALL crashed
+// /analyst-presentations, despite three completely different diagnostic
+// implementations (unsafe string concat; wp_footer + esc_html/wp_json_encode;
+// and, this last time, a file_put_contents-based logger wrapped in
+// try/catch(Throwable), which by construction should not have been able to
+// throw past its own try block). The fact that all three failed identically
+// (same 500, same response length) strongly suggests the crash is NOT caused
+// by anything specific to each diagnostic's code, but by something else --
+// possibly in how this page's internal loopback request for its initial
+// speaker list behaves under CI/deploy conditions, or a deploy-sync issue
+// separate from this function's logic entirely. Do not add another
+// diagnostic directly inside apto/get_orderby until that's understood;
+// investigate the loopback request and deploy pipeline first.
 add_filter( 'apto/get_orderby', 'my_theme_apto_taxonomy_scoped_orderby', 10, 3 );
 function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query ) {
     global $wpdb;
-
-    if ( 'speaker' === $query->get( 'post_type' ) ) {
-        try {
-            $log_line = '[' . gmdate( 'c' ) . '] '
-                . 'new_orderby=' . print_r( $new_orderby, true )
-                . ' orderby=' . print_r( $orderby, true )
-                . ' tax_query=' . print_r( $query->get( 'tax_query' ), true )
-                . "\n---\n";
-            @file_put_contents( trailingslashit( WP_CONTENT_DIR ) . 'uploads/apto-debug.log', $log_line, FILE_APPEND | LOCK_EX );
-        } catch ( \Throwable $e ) {
-            // Never let a diagnostic take down the page.
-        }
-    }
 
     if ( is_admin() ) {
         return $new_orderby;
