@@ -1087,8 +1087,8 @@ add_filter(
     3
 );
 
-add_filter( 'apto/get_orderby', 'my_theme_apto_resource_type_orderby', 10, 3 );
-function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
+add_filter( 'apto/get_orderby', 'my_theme_apto_taxonomy_scoped_orderby', 10, 3 );
+function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query ) {
     global $wpdb;
 
     if ( is_admin() ) {
@@ -1099,7 +1099,7 @@ function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
     // this theme. Guarding against them missing (plugin deactivated, or a
     // future update renames one) so this degrades to the default order
     // instead of a fatal "Call to undefined function" on every front-end
-    // page that runs a resource-type query.
+    // page that runs one of these queries.
     if ( ! function_exists( 'apto_get_query_post_type_taxonomy' )
         || ! function_exists( 'apto_get_order_type' )
         || ! function_exists( 'apto_get_order_list' )
@@ -1118,7 +1118,21 @@ function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
 
     [ $post_type, $taxonomy ] = $post_type_taxonomy;
 
-    if ( 'resource-type' !== $taxonomy ) {
+    // Taxonomies this theme explicitly resolves an Advanced Post Types
+    // Order term-scoped list for, rather than trusting Auto Apply Sort's
+    // own query-matching to find it:
+    //  - resource-type: original case this hook was built for.
+    //  - expertise: the speaker/advisor AJAX filter (filter_speakers_callback())
+    //    and the initial-load safety-net query in _speaker-module.php /
+    //    _advisor-module.php build a *compound* tax_query -- the selected
+    //    term's clause AND a second "must be analyst-or-advisor" clause on
+    //    the same taxonomy, combined with relation=>AND. Confirmed via
+    //    Debug Marks that Auto Apply Sort doesn't pick up a per-term sort
+    //    (e.g. the "ADAPT Analysts" Advanced Sort, ID 66404) for that
+    //    compound shape -- it keeps falling back to the whole-post-type
+    //    Archive order. Resolving it explicitly here, the same way
+    //    resource-type already does, sidesteps that entirely.
+    if ( ! in_array( $taxonomy, array( 'resource-type', 'expertise' ), true ) ) {
         return $new_orderby;
     }
 
@@ -1127,11 +1141,14 @@ function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
         return $new_orderby;
     }
 
-    // Resolve the resource-type term_id from this query's own tax_query
+    // Resolve the term_id from this query's own tax_query -- the first
+    // clause on the matching taxonomy wins, which for the expertise
+    // compound tax_query above is the real "selected term" clause (it's
+    // added before the analyst-or-advisor safety clause).
     $term_id = 0;
     foreach ( (array) $query->get( 'tax_query' ) as $clause ) {
-        if ( is_array( $clause ) && isset( $clause['taxonomy'] ) && 'resource-type' === $clause['taxonomy'] ) {
-            $term = get_term_by( $clause['field'], reset( (array) $clause['terms'] ), 'resource-type' );
+        if ( is_array( $clause ) && isset( $clause['taxonomy'] ) && $taxonomy === $clause['taxonomy'] ) {
+            $term = get_term_by( $clause['field'], reset( (array) $clause['terms'] ), $taxonomy );
             if ( $term ) {
                 $term_id = $term->term_id;
             }
