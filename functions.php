@@ -703,6 +703,40 @@ function filter_speakers_callback() {
 
     $speakers_query = new WP_Query($args);
 
+    // 2026-09-03 (round 13): confirmed via a temporary debug key on this
+    // response (rounds 11-12, removed below) that apto_get_order_list()
+    // does not exist during admin-ajax.php requests -- function_exists()
+    // returns false here, even though is_admin() is (confusingly) also
+    // true for admin-ajax.php. Only APTO's basic, taxonomy-unaware archive
+    // order runs during AJAX, which is why every previous attempt to steer
+    // its ORDER BY via query args (orderby, sort_id) kept producing the
+    // same whole-post-type FIELD() list regardless -- the plugin code that
+    // reads a per-taxonomy manual order simply isn't loaded in this
+    // request. Rather than keep fighting that, this hardcodes the known
+    // order for terms with a configured Advanced Sort (currently just
+    // ADAPT Analysts, wp-admin > Speakers > Re-Order > Sort #66399 >
+    // Expertise > ADAPT Analysts) and re-sorts the already-fetched posts
+    // in plain PHP. If that list gets re-dragged in wp-admin, this array
+    // needs updating to match -- ask if this should instead read from a
+    // cache populated via APTO's apto/reorder-interface/order_update_complete
+    // action (which fires in a normal wp-admin context, where the plugin's
+    // advanced API is available) so it stays in sync automatically.
+    $expertise_manual_order = array(
+        'adapt-analysts' => array( 410, 1230, 66371, 58755, 56500, 53071, 47720, 1295, 1281, 411 ),
+    );
+
+    if ( $has_selection && 1 === count( $expertise_slugs ) && isset( $expertise_manual_order[ $expertise_slugs[0] ] ) ) {
+        $position = array_flip( $expertise_manual_order[ $expertise_slugs[0] ] );
+        usort(
+            $speakers_query->posts,
+            function ( $a, $b ) use ( $position ) {
+                $pos_a = isset( $position[ $a->ID ] ) ? $position[ $a->ID ] : PHP_INT_MAX;
+                $pos_b = isset( $position[ $b->ID ] ) ? $position[ $b->ID ] : PHP_INT_MAX;
+                return $pos_a <=> $pos_b;
+            }
+        );
+    }
+
     ob_start();
 
     if ($speakers_query->have_posts()) {
@@ -794,28 +828,11 @@ function filter_speakers_callback() {
 
     $response['pagination'] = adapt_render_ajax_filter_pagination( $speakers_query, $paged );
 
-    // TEMP DIAGNOSTIC 2026-09-03 (round 11): the last two fixes to this
-    // function (rounds 9-10, changing 'orderby'/'sort_id' in $args) made no
-    // observable difference to the returned order, which is suspicious
-    // enough to warrant confirming this code is actually what's running,
-    // rather than guessing again. This only ever adds a key to our own JSON
-    // response, built entirely from data already in hand (no new function
-    // calls, no touching APTO's internals) -- main.js ignores unknown
-    // response keys, so this is inert on the front end. Remove once the
-    // order issue is confirmed fixed or the deploy is confirmed to have
-    // landed.
+    // TEMP DIAGNOSTIC 2026-09-03 (round 11-13): confirms the hardcoded
+    // reorder above actually produced the right order. Remove once
+    // verified live.
     $response['_debug'] = array(
-        'orderby'         => isset( $args['orderby'] ) ? $args['orderby'] : null,
-        'order'           => isset( $args['order'] ) ? $args['order'] : null,
-        'sort_id'         => isset( $args['sort_id'] ) ? $args['sort_id'] : null,
-        'post_ids'        => wp_list_pluck( $speakers_query->posts, 'ID' ),
-        // Raw SQL WP_Query actually ran -- shows whether APTO touched
-        // ORDER BY at all, without needing Debug Marks (which doesn't
-        // render on admin-ajax.php responses).
-        'sql_request'     => $speakers_query->request,
-        'apto_order_list' => function_exists( 'apto_get_order_list' )
-            ? apto_get_order_list( $post_type, 15788, 'expertise', $speakers_query )
-            : 'apto_get_order_list() not available',
+        'post_ids' => wp_list_pluck( $speakers_query->posts, 'ID' ),
     );
 
     wp_reset_postdata();
