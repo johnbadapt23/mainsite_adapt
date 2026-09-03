@@ -703,8 +703,8 @@ function filter_speakers_callback() {
 
     $speakers_query = new WP_Query($args);
 
-    // 2026-09-03 (round 13): confirmed via a temporary debug key on this
-    // response (rounds 11-12, removed below) that apto_get_order_list()
+    // 2026-09-03 (round 13-14): confirmed via a temporary debug key on this
+    // response (rounds 11-12, since removed) that apto_get_order_list()
     // does not exist during admin-ajax.php requests -- function_exists()
     // returns false here, even though is_admin() is (confusingly) also
     // true for admin-ajax.php. Only APTO's basic, taxonomy-unaware archive
@@ -716,13 +716,35 @@ function filter_speakers_callback() {
     // order for terms with a configured Advanced Sort (currently just
     // ADAPT Analysts, wp-admin > Speakers > Re-Order > Sort #66399 >
     // Expertise > ADAPT Analysts) and re-sorts the already-fetched posts
-    // in plain PHP. If that list gets re-dragged in wp-admin, this array
-    // needs updating to match -- ask if this should instead read from a
-    // cache populated via APTO's apto/reorder-interface/order_update_complete
-    // action (which fires in a normal wp-admin context, where the plugin's
+    // in plain PHP.
+    //
+    // round 14: keyed by post SLUG (post_name), not numeric post ID.
+    // Staging and production have different post IDs for the same
+    // content, but the same URL slugs (permalinks have to match across
+    // environments), so matching on slug is what actually makes this
+    // portable -- deploying this file as-is to production works as long
+    // as these speakers keep the same slugs there. No extra DB lookups
+    // needed either, since $speakers_query->posts are already full
+    // WP_Post objects with ->post_name available.
+    //
+    // If this list gets re-dragged in wp-admin, this array needs updating
+    // to match by hand -- ask if this should instead read from a cache
+    // populated via APTO's apto/reorder-interface/order_update_complete
+    // action (fires in a normal wp-admin context, where the plugin's
     // advanced API is available) so it stays in sync automatically.
     $expertise_manual_order = array(
-        'adapt-analysts' => array( 410, 1230, 66371, 58755, 56500, 53071, 47720, 1295, 1281, 411 ),
+        'adapt-analysts' => array(
+            'jim-berry',
+            'anthony-saba',
+            'lisa-drum',
+            'joey-meynink',
+            'harshit-goel',
+            'honey-mari-gay',
+            'byron-connolly',
+            'matt-boon',
+            'gabby-fredkin',
+            'peter-hind',
+        ),
     );
 
     if ( $has_selection && 1 === count( $expertise_slugs ) && isset( $expertise_manual_order[ $expertise_slugs[0] ] ) ) {
@@ -730,8 +752,8 @@ function filter_speakers_callback() {
         usort(
             $speakers_query->posts,
             function ( $a, $b ) use ( $position ) {
-                $pos_a = isset( $position[ $a->ID ] ) ? $position[ $a->ID ] : PHP_INT_MAX;
-                $pos_b = isset( $position[ $b->ID ] ) ? $position[ $b->ID ] : PHP_INT_MAX;
+                $pos_a = isset( $position[ $a->post_name ] ) ? $position[ $a->post_name ] : PHP_INT_MAX;
+                $pos_b = isset( $position[ $b->post_name ] ) ? $position[ $b->post_name ] : PHP_INT_MAX;
                 return $pos_a <=> $pos_b;
             }
         );
