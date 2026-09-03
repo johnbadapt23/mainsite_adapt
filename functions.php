@@ -674,19 +674,24 @@ function filter_speakers_callback() {
         );
     }
 
-    // 2026-09-03 (round 9): APTO's own docs note that when more than one
-    // configured Sort matches a query's shape, the first one created wins
-    // unless you disambiguate with an explicit 'sort_id' -- this is almost
-    // certainly why the site's broad "Speakers (Archive)" sort (#66399,
-    // created first, no taxonomy Query Rule so it matches every speaker
-    // query) kept winning over the dedicated per-term Advanced Sort
-    // (#66404, expertise = ADAPT Analysts) we configured for this exact
-    // case. Map each expertise term with its own configured Sort here as
-    // more get added; terms without an entry just fall through to
-    // whatever Sort would otherwise match.
+    // 2026-09-03 (round 10): round 9 pointed this at Sort #66404, which
+    // doesn't actually exist -- checked directly in wp-admin's Re-Order
+    // screen (edit.php?post_type=speaker&page=apto_edit-phppost_typespeaker)
+    // and there is exactly one Sort for the speaker post type, #66399
+    // ("ADAPT Analysts Order"), with no Query Rule (so it matches every
+    // speaker query) and its "Select area" already pointed at the
+    // Expertise > ADAPT Analysts term, showing the correct manually-dragged
+    // order (Jim Berry, Anthony Saba, Lisa Drum, ...). #66404 was a stale
+    // reference from an earlier, abandoned attempt to create a second,
+    // separately-scoped Sort; that Sort no longer exists, so passing its ID
+    // was a silent no-op -- APTO ignores an unrecognised sort_id and falls
+    // through to normal matching. Since #66399 is the only Sort here,
+    // there's no real ambiguity to resolve, but passing sort_id explicitly
+    // still documents intent and protects against a future second Sort
+    // reintroducing the ambiguity.
     if ( $has_selection ) {
         $expertise_sort_ids = array(
-            'adapt-analysts' => 66404, // "Speakers - Expertise: ADAPT Analysts" Advanced Sort
+            'adapt-analysts' => 66399, // "ADAPT Analysts Order" Sort, Expertise > ADAPT Analysts sub-view
         );
         foreach ( $expertise_slugs as $slug ) {
             if ( isset( $expertise_sort_ids[ $slug ] ) ) {
