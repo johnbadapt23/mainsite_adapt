@@ -817,6 +817,17 @@ function filter_speakers_callback() {
 
     $response['pagination'] = adapt_render_ajax_filter_pagination( $speakers_query, $paged );
 
+    // TEMP DIAGNOSTIC 2026-09-03 (round 20): round 19's sort_id fix
+    // (correct Sort #66404) and tax_query simplification made no
+    // observable difference, so before guessing further, read the actual
+    // SQL WP_Query ran -- read-only, no APTO function calls, just a plain
+    // WP_Query property. Remove once analysed.
+    $response['_debug'] = array(
+        'args_sort_id' => isset( $args['sort_id'] ) ? $args['sort_id'] : null,
+        'args_tax_query' => isset( $args['tax_query'] ) ? $args['tax_query'] : null,
+        'sql_request'  => $speakers_query->request,
+    );
+
     wp_reset_postdata();
 
     echo json_encode($response);
