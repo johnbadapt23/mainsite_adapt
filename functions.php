@@ -828,13 +828,6 @@ function filter_speakers_callback() {
 
     $response['pagination'] = adapt_render_ajax_filter_pagination( $speakers_query, $paged );
 
-    // TEMP DIAGNOSTIC 2026-09-03 (round 11-13): confirms the hardcoded
-    // reorder above actually produced the right order. Remove once
-    // verified live.
-    $response['_debug'] = array(
-        'post_ids' => wp_list_pluck( $speakers_query->posts, 'ID' ),
-    );
-
     wp_reset_postdata();
 
     echo json_encode($response);
