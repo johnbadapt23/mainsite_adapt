@@ -20947,3 +20947,34 @@ body.dev-float-refactor {
         float: none;
     }
 }
+
+// === Section 20 (hand-designed, ad hoc user-requested tweaks): remove
+// 2 declarations, gated behind ?dev=true like everything else in this
+// file.
+//
+// - .article-container-three-post, .market-trend-reports-container-
+//   three-post (source/scss/templates/_resources-types.scss:3285-3295):
+//   base rule has margin:62px 0 (mobile: 62px 0 22px). Higher-
+//   specificity gated selector (extra body.dev-float-refactor class)
+//   wins over both the desktop and mobile declarations regardless of
+//   viewport, no !important needed.
+//
+// - section.events-logos-text-block (source/scss/templates/_events.scss:3109),
+//   section.featured-types .article-container-three-post
+//   (source/scss/templates/_flexible.scss:5754), section.values-full-screen
+//   (source/scss/templates/_flexible.scss:2498): each has its own
+//   padding:0/0px. Removed here for parity with the request; note the
+//   base `section` rules in global/_base.scss and global/_styles.scss
+//   declare no padding of their own, so this has no visible effect --
+//   it just removes the explicit override.
+body.dev-float-refactor {
+    .article-container-three-post,
+    .market-trend-reports-container-three-post {
+        margin: unset;
+    }
+    section.events-logos-text-block,
+    section.featured-types .article-container-three-post,
+    section.values-full-screen {
+        padding: unset;
+    }
+}
