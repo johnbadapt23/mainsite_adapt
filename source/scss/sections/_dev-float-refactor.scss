@@ -1081,6 +1081,31 @@ body.dev-float-refactor {
                         }
                 }
         }
+    // BUGFIX 2026-09-03: .footer-column-title-wrapper's real (ungated)
+    // CSS is itself float:left, which establishes its own block
+    // formatting context -- that's the only reason it doesn't collapse
+    // around its floated child .footer-column-title (float:left;
+    // margin-bottom:18px). Converting the wrapper to float:none above
+    // removed that BFC, so the wrapper collapsed to 0 height and the
+    // title text visually overlapped the link list below it (found via
+    // live gated-vs-ungated desktop screenshot comparison on the
+    // homepage footer). Fix: float:none the child too so it stacks
+    // normally instead of relying on the parent's float to contain it.
+        footer {
+                .container {
+                        .footer-top {
+                                .footer-column-container {
+                                        .column {
+                                                .footer-column-title-wrapper {
+                                                        .footer-column-title {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
     // line 194
         footer {
                 .container {
