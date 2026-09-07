@@ -44,8 +44,9 @@
                                         <?php $video_link = get_field( 'vimeo_code' ); ?>
                                     <?php } ?>
                                     <?php if ($video_link){ ?>
+                                        <span class="video-container">
                                         <a href="<?php the_permalink(); ?>">
-                                            <span class="video-container">
+                                            
                                                 <span class="bg-container">
                                                     <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                     <?php if ( $video_poster_image ) { ?>
@@ -63,8 +64,9 @@
                                                         </span>
                                                     <?php } ?>
                                                 </span>
-                                            </span>
+                                            
                                         </a>
+                                        </span>
                                     <?php } else { ?>
                                         <span class="image-container">
                                             <a href="<?php the_permalink(); ?>">
@@ -155,8 +157,9 @@
                                         <?php $video_link = get_field( 'vimeo_code' ); ?>
                                     <?php } ?>
                                     <?php if ($video_link){ ?>
+                                        <span class="video-container">
                                         <a href="<?php the_permalink(); ?>">
-                                            <span class="video-container">
+                                            
                                                 <span class="bg-container">
                                                     <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                     <?php if ( $video_poster_image ) { ?>
@@ -174,8 +177,9 @@
                                                         </span>
                                                     <?php } ?>
                                                 </span>
-                                            </span>
+                                            
                                         </a>
+                                        </span>
                                     <?php } else { ?>
                                         <span class="image-container">
                                             <a href="<?php the_permalink(); ?>">
@@ -245,8 +249,9 @@
                                     <?php $video_link = get_field( 'vimeo_code' ); ?>
                                 <?php } ?>
                                 <?php if ($video_link){ ?>
+                                <span class="video-container">
                                     <a href="<?php the_permalink(); ?>">
-                                        <span class="video-container">
+                                        
                                             <span class="bg-container">
                                                 <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                 <?php if ( $video_poster_image ) { ?>
@@ -264,8 +269,9 @@
                                                     </span>
                                                 <?php } ?>
                                             </span>
-                                        </span>
+                                        
                                     </a>
+                                    </span>
                                 <?php } else { ?>
                                     <span class="image-container">
                                         <a href="<?php the_permalink(); ?>">
@@ -335,27 +341,27 @@
                                             <?php $video_link = get_field( 'vimeo_code' ); ?>
                                         <?php } ?>
                                         <?php if ($video_link){ ?>
+                                        <span class="video-container">
                                             <a href="<?php the_permalink(); ?>">
-                                                <span class="video-container">
-                                                    <span class="bg-container">
-                                                        <?php $video_poster_image = get_field( 'video_poster' ); ?>
-                                                        <?php if ( $video_poster_image ) { ?>
-                                                            <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
-                                                                'alt'     => $video_poster_image['alt'],
-                                                                'loading' => 'lazy',
-                                                            ) ); ?>
-                                                        <?php } ?>
-                                                        <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
-                                                            <span class="opacity-overlay"></span>
-                                                        <?php } ?>
-                                                        <span class="video-play-time"><?php echo get_field( 'video_time' ); ?></span>
-                                                        <?php if ($video_link){ ?>
-                                                            <span class="video-button">
-                                                            </span>
-                                                        <?php } ?>
-                                                    </span>
+                                                <span class="bg-container">
+                                                    <?php $video_poster_image = get_field( 'video_poster' ); ?>
+                                                    <?php if ( $video_poster_image ) { ?>
+                                                        <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
+                                                            'alt'     => $video_poster_image['alt'],
+                                                            'loading' => 'lazy',
+                                                        ) ); ?>
+                                                    <?php } ?>
+                                                    <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
+                                                        <span class="opacity-overlay"></span>
+                                                    <?php } ?>
+                                                    <span class="video-play-time"><?php echo get_field( 'video_time' ); ?></span>
+                                                    <?php if ($video_link){ ?>
+                                                        <span class="video-button">
+                                                        </span>
+                                                    <?php } ?>
                                                 </span>
                                             </a>
+                                        </span>
                                         <?php } else { ?>
                                             <span class="image-container">
                                                 <a href="<?php the_permalink(); ?>">
