@@ -1340,7 +1340,12 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    confirmation for any of it. Test the mobile nav (main menu dropdowns,
    the "Our Services" sub-list, the subscribe form inside it, and the
    separate Resources panel's logo/ADAPT header row) with `?dev=true` on
-   staging before extending further.
+   staging before extending further. **See §10 (2026-09-07) first --**
+   a real bug was found and fixed in the mechanical fix script that
+   generates most of these overrides' `display` values; 66 selectors
+   across the already-completed Sections 1-19 are now known to need a
+   hand-written, media-scoped `display` override before this check can
+   be considered trustworthy end-to-end.
 2. ~~Section 6: remaining `_header.scss` mobile-menu floats (see §2).~~
    **done, 2026-09-02** -- see §2's Section 6 writeup. Awaiting the
    `?dev=true` staging check in item 1 above before it's trustworthy to
@@ -1388,3 +1393,189 @@ elsewhere. Would need a slower, dedicated pass if this is wanted later.
    untouched in both. `template-search.php` was checked too -- it only
    uses the main query + `paginate_links()`, no custom `WP_Query`, so
    there was nothing to change there.
+
+---
+
+## 10. 2026-09-07: theme optimization phase begins — visual regression
+    gate, dead-code sweep, and a real bug found/fixed in the float-
+    refactor's mechanical display-fix script
+
+### Context
+
+User asked to move from feature work to theme-wide optimization (PHP 8+/
+WP standards, dead code, "modern HTML/CSS/JS ... without affecting much
+how the frontend looks"), explicitly requiring a pixel-diff gate
+("Pixel by pixel. no excuses.") and zero tolerance for visual
+regressions, with an explicit standing instruction that `main`
+(production) must never be touched/pushed without separate confirmation
+-- all work stays on `dev`.
+
+### Visual regression gate (`tools/visual-regression/`)
+
+A sitemap-wide, zero-tolerance Playwright screenshot+pixel-diff CLI
+(`capture-and-diff.mjs`) plus a `workflow_dispatch`-only GitHub Actions
+workflow (`.github/workflows/visual-regression.yml`), deliberately NOT
+`workflow_run`-triggered to avoid any risk of touching `main` (a
+`workflow_run` trigger requires the workflow file to exist on the repo's
+*default* branch, which is `main` here). Modes: `capture-baseline`
+(cached, versioned via `.baseline-version` since `actions/cache` can't
+overwrite an existing key) and `check` (compares against the cached
+baseline, uploads diff artifacts). 3 viewports (375/768/1440px). Not yet
+run for real -- needs a `workflow_dispatch` trigger from the user (or a
+push + manual Actions-tab trigger) to capture the first baseline.
+
+### Dead code
+
+Removed 6 confirmed-zero-call-site functions from `includes/_functions.php`
+(`get_id_by_slug`, `get_excerpt_by_id`, `is_paginated`, `slugify`,
+`updateQueryString`, `redirectPage`) -- verified via whole-repo,
+whole-file-type grep before removal. `34beeb6`.
+
+### A real bug found and fixed in `fix-float-none-display.js`
+
+This is the gulp postcss script (see §2) that mechanically adds
+`display: block` to gated `float:none`-only overrides so blockified
+inline elements (span/a/etc. that relied on `float` to become block
+boxes) don't collapse back to inline when the float is removed. Live
+`?dev=true` testing at 375px on staging found the desktop mega-menu
+visible behind the mobile menu -- traced via `getComputedStyle()` to
+`.main-nav` computing `display: block` when production has it `display:
+none` below 1250px.
+
+**Root cause:** the script's existing safety check (added earlier the
+same day, for a related but different bug -- see the script's own
+header comment, "third fix") compared a gated rule's selector against
+every other selector in the file by *exact string match* to detect
+"this selector's display is context-sensitive elsewhere, don't
+mechanically fix it." Section 2's hand-written `.main-nav` override
+pads its ancestor chain with an extra `.header-inner` (added for
+cascade specificity) that production's `display:none` rule doesn't have
+-- same real DOM element, different selector *string* -- so the exact
+match silently missed it, and the script mechanically injected an
+unconditional `display: block` that won the cascade at every width,
+including the 1250px breakpoint it should never have applied at.
+
+**Fix (`32c34cf`):** added a second, more conservative check alongside
+the exact-selector one -- compare by the selector's trailing **two**
+segments (leaf + immediate parent, e.g. `.menu .main-nav`) instead of
+requiring the full string to match. A single trailing segment was tried
+first and rejected: this codebase reuses very generic leaf classes
+(`.text`, `.column-container`, `p`, `a`, `h2`, `.image-container`, ...)
+across dozens of unrelated components, so a 1-segment match flagged 343
+of ~1700 gated rules against the real, full stylesheet -- mostly
+coincidental collisions between unrelated DOM subtrees that would have
+buried the real signal. The 2-segment match is specific enough to avoid
+that (down to 66 flagged) while still catching `.main-nav` itself (the
+inserted `.header-inner` sits earlier in the chain, not adjacent to
+`.menu`/`.main-nav`). Full reasoning and the exact tradeoff (an ancestor
+inserted directly next to the leaf could still theoretically slip past)
+is documented in the script's own header comment ("fourth fix").
+
+**Verification:** rebuilt the full compiled stylesheet in an isolated
+scratch copy (`rsync` → `npm ci --ignore-scripts` → `npx gulp
+build:styles build:styles-split`, per §1's methodology) and diffed every
+`body.dev-float-refactor`-prefixed rule against the pre-fix compiled
+output selector-by-selector. Result: exactly 65 selectors changed in
+`main-nofooter.min.css`, every one losing exactly the erroneous
+`;display:block` (confirmed `.main-nav` is among them, now
+`float:none` only); `footer.min.css` byte-identical (no gated rules
+affected there); everything outside `body.dev-float-refactor` rules in
+both files byte-for-byte identical to the pre-fix build. Committed the
+script fix and the rebuilt `assets/css/main-nofooter.min.css` together
+(`32c34cf`) -- `footer.min.css` needed no commit (byte-identical).
+
+**Not yet done:** live re-verification on staging (requires this commit
+to be pushed and deployed first -- not done in this session, per the
+"never push/deploy without the user" rule).
+
+### The 66-selector follow-up list (needs hand-written overrides)
+
+These are left as bare `float:none` in the compiled CSS -- safe by
+default (a no-op for the block-default majority of elements; visually
+incomplete only for the inline-default minority that actually needs an
+explicit, *media-scoped* `display` to match production's responsive
+behavior). Each needs a human to look at the referenced production rule
+and write a properly-scoped override in
+`source/scss/sections/_dev-float-refactor.scss`, the same way Section
+2's `.main-nav` handling already does it by hand. Re-run
+`npx gulp build:styles build:styles-split` after editing and check the
+console output -- the count should drop by exactly the number resolved,
+with no new selectors appearing.
+
+```
+.item.press-release-item .press-date-container  [at (no media query)]  -- has display at: media (max-width:767px)
+.sideArticles  [at (no media query)]  -- has display at: media only screen and (max-width:767px)
+.single-post-sticky .container span.buttonWrapperSingleResources  [at (no media query)]  -- has display at: media (max-width:1250px)
+header .container .header-inner .headerRight .menu .main-nav  [at (no media query)]  -- has display at: media (max-width:1250px)
+header .container .header-inner .headerRight .menu-buttons  [at (no media query)]  -- has display at: media (max-width:1250px)
+header .container .headerRight .menu .main-nav ul li .megaMenu .column .menu-link .text  [at (no media query)]  -- has display at: media (max-width:1200px)
+header .resources-sticky-menu .container .resources-nav ul li .megaMenu .column .menu-link .text  [at (no media query)]  -- has display at: media (max-width:1200px)
+header .resources-sticky-menu .container .resources-sticky-inner .scroll-image-container .logo .resources-link-mobile  [at (no media query)]  -- has display at: (no media query), media (max-width:1250px)
+section.animation-introduction .container .introduction-content-container .text-link-container  [at (no media query)]  -- has display at: media (max-width:767px)
+section.comparison-three-column-text .container .column-container  [at (no media query)]  -- has display at: (no media query), media (max-width:767px), media only screen and (max-width:767px), media (min-width:768px)
+section.comparison-three-column-text .container .column-container .column .column-inner  [at (no media query)]  -- has display at: media (max-width:767px)
+section.comparison-three-column-text .container .column-container .column p  [at (no media query)]  -- has display at: media only screen and (max-width:767px)
+section.contact-module .container .contact-innner .column.sub-title-form-column .form-container  [at (no media query)]  -- has display at: media (max-width:767px)
+section.contact-module .container .contact-innner .column.title-details-column .bottom-container .fast-track-text  [at (no media query)]  -- has display at: media (max-width:767px)
+section.content-slider-module .container .top-content .link-container  [at (no media query)]  -- has display at: media (max-width:1023px)
+section.download-block.resources-block .container .resources-container  [at (no media query)]  -- has display at: (no media query), media (max-width:1023px)
+section.events-listing-module .container .events-listing-top .year-button-container .year-button-sticky  [at (no media query)]  -- has display at: media (max-width:1023px)
+section.flex-two-column-text .container .column-container  [at (no media query)]  -- has display at: media (max-width:767px), media (min-width:768px)
+section.information-blocks .container .column-container  [at (no media query)]  -- has display at: (no media query), media (max-width:767px), media only screen and (max-width:767px), media (min-width:768px)
+section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container .text-link-container a  [at (no media query)]  -- has display at: (no media query), media (max-width:767px)
+section.market-form .container .market-column-container .column.form-column  [at (no media query)]  -- has display at: media (max-width:1023px)
+section.navigation  [at (no media query)]  -- has display at: media only screen and (max-width:767px)
+section.partner-form .container .form-text-container .column.text-content-column .bottom-container .fast-track-text  [at (no media query)]  -- has display at: media (max-width:767px)
+section.post-article-container .container .left-column.sticky-scroll-to-container  [at (no media query)]  -- has display at: media (max-width:1023px)
+section.post-article-container .container .post-content .sidebar-content  [at (no media query)]  -- has display at: media (max-width:767px)
+section.post-article-container .container .sidebar-container  [at (no media query)]  -- has display at: (no media query), media only screen and (max-width:767px)
+section.post-title-block .container .sidebar-container  [at (no media query)]  -- has display at: (no media query), media only screen and (max-width:767px)
+section.register-listing .container .register-listing-container .upcoming-listing .item.one-third .item-container .item-top span.item-excerpt  [at (no media query)]  -- has display at: media only screen and (max-width:767px)
+section.researchArticleTextHeader.replayArticleHeader .container .item .textContainer .replay-button-container  [at (no media query)]  -- has display at: media only screen and (max-width:1023px)
+section.services-two-column-image-text .container .column-container  [at (no media query)]  -- has display at: media (max-width:767px)
+section.sneak-peak-module .container .sneak-peak-container .sneak-image-container  [at (no media query)]  -- has display at: media (max-width:767px)
+section.speaker-module .container .speakers-container-outer .filter-container-outer .filter-container form  [at (no media query)]  -- has display at: media (max-width:767px)
+section.speaker-module.partner-module .container .speakers-container-outer .speakers .column.speaker-item a.slide-out-bio .text-container.desktop-hide  [at (no media query)]  -- has display at: (no media query), media (max-width:1023px)
+section.speaker-profile.author-section .container .column-container .details-column h1  [at (no media query)]  -- has display at: media only screen and (max-width:767px)
+section.speaker-profile.author-section .container .column-container .details-column h3  [at (no media query)]  -- has display at: media only screen and (max-width:767px)
+section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container  [at (no media query)]  -- has display at: media (max-width:767px), (no media query)
+section.two-column-switch-module .container .title-switch-container .switcher-container  [at (no media query)]  -- has display at: media (max-width:1100px)
+section.two-column.two-column-image-slider-events .container .column-container  [at (no media query)]  -- has display at: (no media query), media (max-width:767px), media only screen and (max-width:767px), media (min-width:768px)
+section.filter-listing .container .grid-wrapper .market-trend-reports-container-side-bar  [at media only screen and (max-width:1023px)]  -- has display at: (no media query)
+section.contact-module .container .contact-innner .column.title-details-column .bottom-container .form-popup-button-container a  [at media (max-width:1023px)]  -- has display at: (no media query)
+section.partners-cards-module .container .card-container .card  [at media (max-width:1023px)]  -- has display at: (no media query)
+section.two-column-logo-carousel .container .column-container .column.text-column .button-container a  [at media (max-width:1023px)]  -- has display at: (no media query)
+section.featured-module .container .grid-wrapper  [at media only screen and (max-width:767px)]  -- has display at: (no media query)
+section.filter-listing .container .grid-wrapper .market-trend-reports-container-side-bar  [at media only screen and (max-width:767px)]  -- has display at: (no media query)
+.sticky-slider-cards .slider-scrolling-container .heading-container .inner-text-container  [at media (max-width:767px)]  -- has display at: (no media query)
+.sticky-slider-cards .slider-scrolling-container .heading-container .inner-text-container span.p-large  [at media (max-width:767px)]  -- has display at: (no media query)
+section.animation-introduction .container .introduction-content-container .button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+section.centered-text-links.advisors-centered-text-links .container .text-container .text  [at media (max-width:767px)]  -- has display at: (no media query)
+section.events-logos-text-block .events-logos-text-block-outer .container .text-content-container .text-inner .icon-container img  [at media (max-width:767px)]  -- has display at: (no media query)
+section.events-title-block .container .content-container .button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+section.events-title-block.events-title-block-background .container .content-container .button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+section.filter-listing.in-the-news-listing .container .sidebar-container  [at media (max-width:767px)]  -- has display at: media only screen and (max-width:767px)
+section.left-text-links.advisors-centered-text-links .container .text-container .text  [at media (max-width:767px)]  -- has display at: (no media query)
+section.partner-form .container .form-text-container .column.text-content-column .bottom-container .form-popup-button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+section.partners-cards-module .container .button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+section.services-cards-module .container .card-container .card  [at media (max-width:767px)]  -- has display at: (no media query)
+section.sponsor-block .container .bottom-block .button-container .std-button  [at media (max-width:767px)]  -- has display at: (no media query)
+section.subscribe-introduction .container .content-container .content-inner .button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+section.three-column-icon-text .container .icon-text-column-container .column  [at media (max-width:767px)]  -- has display at: (no media query)
+section.two-column-cta .container .column.text-column .button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+section.two-column-image-text-customer-events .container .column-container .column .button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+section.two-column-image-text-events .container .two-column-image-text-outer .text-column .button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+section.two-column-switch-module .container .module-container .switch-module .column-container .column .list-container .button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+section.two-column-text-image-cards .container .column-container-outer  [at media (max-width:767px)]  -- has display at: (no media query)
+section.two-column-text-image-cards .container .title-container h2  [at media (max-width:767px)]  -- has display at: (no media query)
+section.two-column-thank-you-module .container .column-container .column .list-container .button-container a  [at media (max-width:767px)]  -- has display at: (no media query)
+```
+
+### Unrelated observation
+
+`templates/customer-events-components/_left-text-links.php` has an
+uncommitted local modification (adds a `hubspot-form` branch to a
+`link_type` check) that predates this session's work and wasn't made by
+this session -- left untouched and unstaged; not part of any change
+described above. Worth asking the user about directly rather than
+assuming it's stale/intentional.
