@@ -21182,21 +21182,38 @@ body.dev-float-refactor {
 //   viewport, no !important needed.
 //
 // - section.events-logos-text-block (source/scss/templates/_events.scss:3109),
-//   section.featured-types .article-container-three-post
-//   (source/scss/templates/_flexible.scss:5754), section.values-full-screen
-//   (source/scss/templates/_flexible.scss:2498): each has its own
-//   padding:0/0px. Removed here for parity with the request; note the
-//   base `section` rules in global/_base.scss and global/_styles.scss
-//   declare no padding of their own, so this has no visible effect --
-//   it just removes the explicit override.
+//   section.values-full-screen (source/scss/templates/_flexible.scss:2498):
+//   each has its own padding:0/0px. Removed here for parity with the
+//   request; note the base `section` rules in global/_base.scss and
+//   global/_styles.scss declare no padding of their own, so this has no
+//   visible effect -- it just removes the explicit override.
+//
+// - section.featured-types .article-container-three-post
+//   (source/scss/templates/_flexible.scss:5754): originally grouped
+//   with the two above (padding:unset), removed for the same "no
+//   visible effect" reasoning at the time. 2026-09-07: reported live --
+//   with margin also unset (this element's real spacing came entirely
+//   from the generic .article-container-three-post's margin:62px 0
+//   above, since this instance's own padding was already 0px in
+//   production), zeroing both left it with no vertical spacing at all
+//   under ?dev=true. Per the user: since this element is no longer
+//   float-based here, use padding instead of margin to restore the
+//   spacing -- margin can interact with adjacent elements' margins
+//   (collapsing) in a way padding on the element itself doesn't, so
+//   padding is the more predictable choice once float's block
+//   formatting context isn't the thing establishing layout anymore.
+//   Moved out of the shared padding:unset group below into its own
+//   rule with the real value instead.
 body.dev-float-refactor {
     .article-container-three-post,
     .market-trend-reports-container-three-post {
         margin: unset;
     }
     section.events-logos-text-block,
-    section.featured-types .article-container-three-post,
     section.values-full-screen {
         padding: unset;
+    }
+    section.featured-types .article-container-three-post {
+        padding: 62px 0;
     }
 }
