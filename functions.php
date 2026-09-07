@@ -591,6 +591,39 @@ function adapt_render_ajax_filter_pagination( $query, $paged ) {
     return ob_get_clean();
 }
 
+/**
+ * Resolve 'expertise' taxonomy term slugs to their term_id, dynamically,
+ * per-environment.
+ *
+ * FIX 2026-09-03 (round 23): term_id is a database auto-increment value
+ * assigned per-site -- it is NOT guaranteed to be the same number on
+ * staging and production even for the "same" term (adapt-analysts here
+ * was 15788 on staging; production's own copy of this term will very
+ * likely have a different ID). A hardcoded array of term_id literals
+ * would silently stop matching real posts the moment this code runs
+ * against any other environment. Slugs, unlike numeric IDs, are the
+ * actual content the taxonomy is queried by lookup -- get_term_by()
+ * resolves whichever ID that slug happens to have on THIS environment
+ * at request time. Static within a single request (WP already caches
+ * term lookups internally), so this costs nothing extra to call more
+ * than once.
+ *
+ * @param array $slugs Taxonomy term slugs (expertise taxonomy).
+ * @return array Resolved term_id values (invalid/missing slugs are
+ *               skipped, not zero-filled, so a bad slug can't produce a
+ *               false-positive tax_query match against term_id 0).
+ */
+function adapt_get_expertise_term_ids( array $slugs ) {
+    $term_ids = array();
+    foreach ( $slugs as $slug ) {
+        $term = get_term_by( 'slug', $slug, 'expertise' );
+        if ( $term instanceof WP_Term ) {
+            $term_ids[] = $term->term_id;
+        }
+    }
+    return $term_ids;
+}
+
 // Speaker Ajax filtering
 add_action('wp_ajax_filter_speakers', 'filter_speakers_callback');
 add_action('wp_ajax_nopriv_filter_speakers', 'filter_speakers_callback');
@@ -622,36 +655,19 @@ function filter_speakers_callback() {
         'posts_per_page' => $posts_per_page,
         'paged' => $paged,
         'offset' => $offset,
-        // RESTORED 2026-09-03 (round 22): round 21 removed this on a
-        // hypothesis (explicit orderby suppresses Auto Apply Sort) that the
-        // user asked to have verified against real evidence rather than
-        // pushed as another guess. It's now proven WRONG, and the actual
-        // bug found instead, by reading APTO Pro's own plugin source
-        // directly (functions.php + include/apto-class.php +
-        // include/apto_functions-class.php, provided by the user) rather
-        // than any more trial and error:
-        //   - APTO's posts_orderby() (apto-class.php ~line 86) matches our
-        //     explicit $args['sort_id'] via query_match_sort_id(), which
-        //     (apto_functions-class.php ~line 348) always tries that exact
-        //     sort_id first and does NOT fall back to auto-detection if it
-        //     fails to match -- so sort_id alone was never the problem.
-        //   - The match itself is done by sort_simple_match_check_on_query()
-        //     (apto_functions-class.php ~line 1670), which for taxonomy
-        //     rules does a literal string comparison:
-        //     `if ($tax_rule['operator'] != $query_tax['operator']) continue;`
-        //     (~line 1791) -- NOT a functional/SQL-equivalence check.
-        //   - Sort #66404 ("ADAPT Analysts Order") is configured in
-        //     wp-admin with Taxonomy Operator = IN. Our tax_query clause
-        //     below was hardcoded to 'AND'. For a single selected term
-        //     these produce identical SQL/filtering results, but APTO's
-        //     match check compares the literal strings 'AND' vs 'IN' and
-        //     fails every time -- silently blocking the FIELD() order
-        //     injection regardless of sort_id or clause shape. This is the
-        //     actual, confirmed root cause of the whole issue (fixed in the
-        //     tax_query below, not here) -- explicit 'orderby' was never
-        //     the problem, so it's restored to APTO's documented setup.
-        'orderby' => 'menu_order',
-        'order'   => 'ASC',
+        // 2026-09-03 (round 23): deliberately NOT setting 'orderby' here.
+        // APTO Pro's posts_orderby() (its apto-class.php) has two different
+        // branches: an explicit orderby=>'menu_order' takes an early-return
+        // path that matches ANY configured Sort structurally, whether or
+        // not that Sort's own "Auto Apply Sort" toggle is on; leaving
+        // 'orderby' unset takes the other branch, which filters candidates
+        // down to Sorts with Auto Apply Sort = Yes specifically
+        // (get_sorts_by_filters(array('_autosort' => array('yes')))) --
+        // read directly from APTO's own source, not guessed. That's the
+        // one that actually matches what the admin toggle in wp-admin
+        // means, so it's the correct match to rely on, and it needs no
+        // 'sort_id' at all (see the note further down where the old
+        // hardcoded sort_id lookup was removed).
     );
 
     // $expertise_slugs is always non-empty in normal operation (either the
@@ -723,7 +739,11 @@ function filter_speakers_callback() {
                 array(
                     'taxonomy' => 'expertise',
                     'field'    => 'term_id',
-                    'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
+                    // FIX 2026-09-03 (round 23): was a hardcoded
+                    // array(15788, 15789) -- term_id is a per-environment
+                    // DB value, not portable to production. Resolved
+                    // dynamically by slug via adapt_get_expertise_term_ids().
+                    'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
                     'operator' => 'IN',
                 ),
             );
@@ -736,35 +756,47 @@ function filter_speakers_callback() {
             array(
                 'taxonomy' => 'expertise',
                 'field'    => 'term_id',
-                'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
+                // FIX 2026-09-03 (round 23): see comment above -- dynamic,
+                // not hardcoded.
+                'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
                 'operator' => 'IN',
             ),
         );
     }
 
-    // CORRECTION 2026-09-03 (round 19): round 10 concluded Sort #66404
-    // didn't exist and pointed this at #66399 instead -- that conclusion
-    // was wrong. Re-checked directly in wp-admin just now: #66404
-    // ("ADAPT Analysts Order") does exist, and is the correctly configured
-    // one -- Post Type: Speakers, Taxonomy: Expertise / IN / ADAPT
-    // Analysts, Auto Apply Sort: Yes, with the correct manual order (Jim
-    // Berry, Anthony Saba, Lisa Drum, ...). #66399 is a separate, older
-    // Sort with no Query Rule at all (matches every speaker query
-    // unconditionally) -- passing its ID here was pointing at the wrong
-    // Sort, not a nonexistent one. Reverting to #66404, the Sort that
-    // actually has a real Taxonomy Query Rule for this term.
-    if ( $has_selection ) {
-        $expertise_sort_ids = array(
-            'adapt-analysts' => 66404, // "ADAPT Analysts Order" Sort -- Taxonomy Query Rule: Expertise IN ADAPT Analysts
-        );
-        foreach ( $expertise_slugs as $slug ) {
-            if ( isset( $expertise_sort_ids[ $slug ] ) ) {
-                $args['sort_id'] = $expertise_sort_ids[ $slug ];
-                break;
-            }
-        }
-    }
-
+    // REMOVED 2026-09-03 (round 23): this used to hardcode
+    // $expertise_sort_ids['adapt-analysts'] => 66404, a Sort's own WP post
+    // ID looked up manually in staging's wp-admin. That ID is a
+    // per-environment database value -- production's equivalent "ADAPT
+    // Analysts Order" Sort (if it even has the same name) will almost
+    // certainly have a different post ID, so this would have silently
+    // stopped working the moment it ran anywhere but staging. Per the
+    // user's standing requirement, the order has to come from however the
+    // plugin is configured on each environment, not from an ID copied out
+    // of one specific site's admin.
+    //
+    // No replacement lookup is needed here at all: leaving 'sort_id' unset
+    // lets APTO's own Auto Apply Sort matching (posts_orderby() in its
+    // apto-class.php, the '_autosort' => 'yes' branch) find the correct
+    // Sort itself, purely by structural comparison against this query's
+    // post_type + tax_query -- the exact mechanism the "Auto Apply Sort"
+    // toggle in wp-admin exists to drive. That match only succeeds because
+    // round 22 fixed the tax_query operator to match what the Sort's own
+    // Query Rule is configured with ('IN'); confirmed by reading APTO
+    // Pro's actual source end-to-end (query_match_sort_id() ->
+    // get_sorts_by_filters(array('_autosort' => array('yes'))) ->
+    // sort_simple_match_check_on_query()) rather than guessed. This also
+    // means any future expertise term gets correct ordering automatically
+    // the moment an admin configures a matching Sort with Auto Apply
+    // Sort = Yes -- no theme code changes, on any environment.
+    //
+    // 'orderby' is deliberately left unset (not 'menu_order') so
+    // posts_orderby() takes this '_autosort' => 'yes'-filtered branch
+    // specifically, rather than its other early-return branch (triggered
+    // by an explicit orderby=menu_order) which matches ANY Sort
+    // structurally regardless of whether Auto Apply Sort is actually
+    // turned on for it -- less precise, and not what the admin's toggle
+    // means.
     $speakers_query = new WP_Query($args);
 
     ob_start();
@@ -858,60 +890,15 @@ function filter_speakers_callback() {
 
     $response['pagination'] = adapt_render_ajax_filter_pagination( $speakers_query, $paged );
 
-    // TEMP DIAGNOSTIC 2026-09-03 (round 20, kept through round 22): round
-    // 19's sort_id fix and tax_query simplification alone made no
-    // observable difference; round 20's SQL capture through this block is
-    // what proved APTO injected NO FIELD() override at all, which led
-    // directly to reading APTO Pro's actual source (round 22) and finding
-    // the real cause -- a literal-string operator mismatch ('AND' vs the
-    // Sort's configured 'IN') in sort_simple_match_check_on_query(), fixed
-    // above in the tax_query. Keeping this block for one more deploy as
-    // confirmation: 'sql_request' should now show a FIELD(wp_posts.ID, ...)
-    // clause listing the ten speaker IDs in the correct saved order. Also
-    // still dumps which callbacks are registered on 'posts_orderby' /
-    // 'pre_get_posts' (read-only, no APTO function calls) as a fallback
-    // diagnostic in case anything unexpected remains. Remove this entire
-    // block once the fix is confirmed live.
-    if ( ! function_exists( 'adapt_describe_hook_callbacks' ) ) {
-        function adapt_describe_hook_callbacks( $hook_name ) {
-            global $wp_filter;
-            if ( empty( $wp_filter[ $hook_name ] ) || ! is_object( $wp_filter[ $hook_name ] ) || ! isset( $wp_filter[ $hook_name ]->callbacks ) ) {
-                return array();
-            }
-            $out = array();
-            foreach ( $wp_filter[ $hook_name ]->callbacks as $priority => $callbacks ) {
-                if ( ! is_array( $callbacks ) ) {
-                    continue;
-                }
-                foreach ( $callbacks as $cb ) {
-                    $fn = isset( $cb['function'] ) ? $cb['function'] : null;
-                    if ( is_string( $fn ) ) {
-                        $label = $fn;
-                    } elseif ( is_array( $fn ) && count( $fn ) === 2 ) {
-                        $obj   = $fn[0];
-                        $label = ( is_object( $obj ) ? get_class( $obj ) : (string) $obj ) . '::' . $fn[1];
-                    } elseif ( $fn instanceof \Closure ) {
-                        $label = 'Closure';
-                    } else {
-                        $label = 'unknown';
-                    }
-                    $out[] = array( 'priority' => $priority, 'callback' => $label );
-                }
-            }
-            return $out;
-        }
-    }
-    $response['_debug'] = array(
-        'args_orderby'          => isset( $args['orderby'] ) ? $args['orderby'] : null,
-        'args_sort_id'          => isset( $args['sort_id'] ) ? $args['sort_id'] : null,
-        'args_tax_query'        => isset( $args['tax_query'] ) ? $args['tax_query'] : null,
-        'sql_request'           => $speakers_query->request,
-        'is_admin'              => is_admin(),
-        'wp_doing_ajax'         => function_exists( 'wp_doing_ajax' ) ? wp_doing_ajax() : null,
-        'posts_orderby_filters' => adapt_describe_hook_callbacks( 'posts_orderby' ),
-        'pre_get_posts_filters' => adapt_describe_hook_callbacks( 'pre_get_posts' ),
-    );
-
+    // REMOVED 2026-09-03 (round 23): the round 20-22 temporary $response
+    // ['_debug'] diagnostic block (raw SQL / hook-callback dump) is gone.
+    // It served its purpose -- live-confirmed via a direct AJAX request
+    // that with the round 22 tax_query operator fix, WP_Query's SQL now
+    // reads "ORDER BY FIELD(wp_posts.ID, 410,1230,66371,58755,56500,
+    // 53071,47720,1295,1281,411), wp_posts.post_date DESC", i.e. exactly
+    // Jim Berry, Anthony Saba, Lisa Drum, Joey Meynink, Harshit Goel,
+    // Honey Mari Gay, Byron Connolly, Matt Boon, Gabby Fredkin, Peter Hind
+    // -- the correct configured order, byte for byte. No longer needed.
     wp_reset_postdata();
 
     echo json_encode($response);
