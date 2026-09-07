@@ -1044,10 +1044,88 @@ body.dev-float-refactor {
                 float: none;
         }
     // line 16
+    // BUGFIX 2026-09-07: found live via ?dev=true on staging (desktop) --
+    // .footer-top's real (ungated) CSS is float:left, which along with
+    // its two floated row children (.footer-column-container and
+    // .footer-subscribe-container -- see the next two blocks) forms a
+    // classic side-by-side float layout: no explicit width on
+    // .footer-top itself, but its children's widths sum to 100%
+    // (calc(100% - 380px) + 380px), so they sit adjacent via float.
+    // Neutralizing .footer-top's float to float:none (as below) removes
+    // the block formatting context that layout depended on, and on its
+    // own does nothing to lay the two children out side-by-side -- they
+    // just fall back to each being a plain block box, stacking full-
+    // width one under the other AND, because .footer-top no longer
+    // clears them (floats never contributed to a float:none parent's
+    // height even before this change), overflowing below .footer-top's
+    // own box uncontained. That's what actually produced the "cramped/
+    // overlapping" footer reported live (confirmed via
+    // getComputedStyle(): .footer-top's own height collapsed to just its
+    // padding while its child's height was ~980px, entirely outside its
+    // parent's box). Fix: make .footer-top a real flex row instead of a
+    // float row -- same visual result (two children side by side,
+    // widths already sum to 100%), but properly contains and sizes its
+    // children. flex-wrap is needed because at <=767px both children
+    // become width:100% (see partials/_footer.scss's own responsive
+    // rules) -- a float layout naturally wraps two full-width floats to
+    // separate lines, but a nowrap flex row would instead shrink them to
+    // ~50% each side by side, which is not equivalent.
         footer {
                 .container {
                         .footer-top {
                                 float: none;
+                                display: flex;
+                                flex-wrap: wrap;
+                        }
+                }
+        }
+    // line 24 -- MISSED by the mechanical pass that generated this file
+    // (only .footer-column-container's *nested* declarations, like
+    // .footer-column-group below, were ever covered -- the container's
+    // own float:left at partials/_footer.scss line 24 was never
+    // neutralized). Found alongside the .footer-top bugfix above -- this
+    // is the other half of the same live regression: with .footer-top
+    // now float:none, this child's leftover float:left had nothing
+    // clearing/containing it. Explicitly setting display:flex here too
+    // (not just float:none) rather than leaving it to the mechanical
+    // fixer: this element always carries the compound class .group-column
+    // in real markup (templates/partials/_footer.php), whose
+    // display:flex (needed to lay out its own .column children side by
+    // side) lives in a SEPARATE compiled stylesheet -- footer.min.css is
+    // built as its own gulp task/file, entirely separate from this
+    // file's main-nofooter.min.css, and this script's own cross-context
+    // safety check (see gulp/fix-float-none-display.js) only scans
+    // selectors within the single file it's currently processing, so it
+    // has no visibility into footer.min.css's rules at all. Left as a
+    // bare float:none, the mechanical fixer would have (and initially
+    // did, caught in isolated-build verification before this comment was
+    // written) auto-added display:block here instead -- which, at this
+    // selector's much higher gated specificity, would have silently
+    // overridden the production display:flex and broken the three
+    // .column children's side-by-side layout. Declaring display:flex
+    // explicitly avoids relying on the mechanical fixer at all for this
+    // one.
+        footer {
+                .container {
+                        .footer-top {
+                                .footer-column-container {
+                                        float: none;
+                                        display: flex;
+                                }
+                        }
+                }
+        }
+    // line 373 -- MISSED by the same mechanical pass, same live
+    // regression as the two blocks above (.footer-subscribe-container is
+    // .footer-top's other float:left row child). <div>, block-default,
+    // no display change needed -- it's a single block flex item once its
+    // parent .footer-top is flex.
+        footer {
+                .container {
+                        .footer-top {
+                                .footer-subscribe-container {
+                                        float: none;
+                                }
                         }
                 }
         }
@@ -1171,6 +1249,30 @@ body.dev-float-refactor {
                 }
         }
     // line 338
+    // BUGFIX 2026-09-07: found live alongside the .footer-top regression
+    // above -- .social-links sits right after the floated (in real CSS)
+    // .footer-column-title/.footer-column-title-wrapper chain within the
+    // same .column. Even with those siblings already float:none'd
+    // earlier in this file, .social-links still needs clear:both here:
+    // its own real/ungated CSS relies on being a fresh float:left itself
+    // to guarantee it starts on its own line below the links list above
+    // it (a `.footer-link-container-wrapper` with a variable number of
+    // links) -- float:none alone doesn't carry that same "start on a new
+    // line" guarantee the way an unrelated float+clear pairing can, and
+    // without it .social-links was rendering pulled up out of position.
+    // display:block is also declared explicitly here now, not left to
+    // the mechanical fixer: .social-links is a <span> (inline by
+    // default) with an explicit width:100% in its real/ungated CSS
+    // (partials/_footer.scss), which only has any effect on a blockified
+    // box. Before this comment, this rule was just `float: none;` alone,
+    // which the mechanical fixer correctly recognised as pure-float:none
+    // and auto-blockified. Adding clear:both turned it into a
+    // multi-declaration rule, which the fixer deliberately leaves alone
+    // (see gulp/fix-float-none-display.js -- it only ever touches
+    // genuinely float:none-only rules), silently dropping the
+    // display:block this element still needs. Caught by re-diffing the
+    // isolated verification build against the previous compiled output
+    // before committing.
         footer {
                 .container {
                         .footer-top {
@@ -1178,6 +1280,8 @@ body.dev-float-refactor {
                                         .column {
                                                 .social-links {
                                                         float: none;
+                                                        clear: both;
+                                                        display: block;
                                                 }
                                         }
                                 }
@@ -1253,6 +1357,23 @@ body.dev-float-refactor {
                                                 @media (max-width: 1100px) {
                                                         float: none;
                                                 }
+                                        }
+                                }
+                        }
+                }
+        }
+    // ADDITION 2026-09-07: not a float fix -- a position tweak requested
+    // live alongside the .footer-top regression fixes above, once the
+    // footer's real layout was visible again under ?dev=true. Real/
+    // ungated .back-to-top is `position: absolute; bottom: 70px;`
+    // (relative to .footer-bottom, its nearest positioned ancestor);
+    // moves it closer to the bottom edge.
+        footer {
+                .container {
+                        .footer-bottom {
+                                .logo-container {
+                                        .back-to-top {
+                                                bottom: 20px;
                                         }
                                 }
                         }
