@@ -622,14 +622,34 @@ function filter_speakers_callback() {
         'posts_per_page' => $posts_per_page,
         'paged' => $paged,
         'offset' => $offset,
-        // BUGFIX 2026-09-03 (round 9): a previous round (3) deliberately
-        // left 'orderby' unset here on the theory that setting it
-        // ourselves would pre-empt Advanced Post Types Order's own
-        // reordering. That was backwards -- APTO's own documentation
-        // (nsp-code.com "Sample Usage") shows every working example
-        // explicitly setting 'orderby' => 'menu_order' so the plugin
-        // knows this is a query it should inject its saved order into.
-        // Confirmed via APTO's own docs, not just theme-side guessing.
+        // RESTORED 2026-09-03 (round 22): round 21 removed this on a
+        // hypothesis (explicit orderby suppresses Auto Apply Sort) that the
+        // user asked to have verified against real evidence rather than
+        // pushed as another guess. It's now proven WRONG, and the actual
+        // bug found instead, by reading APTO Pro's own plugin source
+        // directly (functions.php + include/apto-class.php +
+        // include/apto_functions-class.php, provided by the user) rather
+        // than any more trial and error:
+        //   - APTO's posts_orderby() (apto-class.php ~line 86) matches our
+        //     explicit $args['sort_id'] via query_match_sort_id(), which
+        //     (apto_functions-class.php ~line 348) always tries that exact
+        //     sort_id first and does NOT fall back to auto-detection if it
+        //     fails to match -- so sort_id alone was never the problem.
+        //   - The match itself is done by sort_simple_match_check_on_query()
+        //     (apto_functions-class.php ~line 1670), which for taxonomy
+        //     rules does a literal string comparison:
+        //     `if ($tax_rule['operator'] != $query_tax['operator']) continue;`
+        //     (~line 1791) -- NOT a functional/SQL-equivalence check.
+        //   - Sort #66404 ("ADAPT Analysts Order") is configured in
+        //     wp-admin with Taxonomy Operator = IN. Our tax_query clause
+        //     below was hardcoded to 'AND'. For a single selected term
+        //     these produce identical SQL/filtering results, but APTO's
+        //     match check compares the literal strings 'AND' vs 'IN' and
+        //     fails every time -- silently blocking the FIELD() order
+        //     injection regardless of sort_id or clause shape. This is the
+        //     actual, confirmed root cause of the whole issue (fixed in the
+        //     tax_query below, not here) -- explicit 'orderby' was never
+        //     the problem, so it's restored to APTO's documented setup.
         'orderby' => 'menu_order',
         'order'   => 'ASC',
     );
@@ -650,14 +670,13 @@ function filter_speakers_callback() {
         // second "term_id IN (15788,15789)" clause is redundant -- being
         // tagged 'adapt-analysts' already guarantees membership in that
         // set, so dropping it here doesn't change which posts match, only
-        // simplifies the tax_query shape. Testing whether that compound
-        // (2-clause, relation=AND) shape was why APTO's own Auto Apply
-        // Sort Query Rule matching (Sort #66404, Taxonomy=Expertise/IN/
-        // ADAPT Analysts, confirmed correctly configured in wp-admin)
-        // wasn't recognising this query, even with the right sort_id
-        // passed explicitly (round 9). Kept as the original compound
-        // clause for any other expertise selection (e.g. "Cybersecurity"),
-        // where the second clause is a real, non-redundant restriction.
+        // simplifies the tax_query shape to one clause, which is required
+        // for APTO's Auto Apply Sort Query Rule matching (Sort #66404,
+        // Taxonomy=Expertise/IN/ADAPT Analysts, confirmed correctly
+        // configured in wp-admin) to even be eligible to match this query
+        // at all (see sort_simple_match_check_on_query() in APTO's own
+        // source: it requires the query's tax_query clause COUNT to equal
+        // the Sort's configured rule count).
         $known_expertise_terms = array( 'adapt-analysts', 'adapt-advisors' );
         $only_known_terms      = ! array_diff( $expertise_slugs, $known_expertise_terms );
 
@@ -667,7 +686,29 @@ function filter_speakers_callback() {
                     'taxonomy' => 'expertise',
                     'field'    => 'slug',
                     'terms'    => $expertise_slugs,
-                    'operator' => 'AND',
+                    // FIX 2026-09-03 (round 22): this was hardcoded to
+                    // 'AND'. For a single selected term 'AND' and 'IN'
+                    // produce identical filtering results (a post either
+                    // has the one term or it doesn't) -- but APTO's Auto
+                    // Apply Sort match check compares this operator string
+                    // literally against the Sort's configured Query Rule
+                    // operator ('IN' for Sort #66404), with no tolerance
+                    // for functional equivalence (confirmed by reading
+                    // APTO Pro's actual source, apto_functions-class.php,
+                    // sort_simple_match_check_on_query(): "if
+                    // ($tax_rule['operator'] != $query_tax['operator'])
+                    // continue;"). 'AND' vs 'IN' was silently failing that
+                    // check on every request -- this, not sort_id or
+                    // clause count, is the actual root cause of the wrong
+                    // speaker order. Use 'IN' only when exactly one term is
+                    // selected (matching Sort #66404's rule exactly);
+                    // preserve 'AND' (all-terms-required) for the genuine
+                    // multi-term case below, where switching to 'IN' would
+                    // change which POSTS match, not just their order --
+                    // that case can't match Sort #66404 anyway (its rule
+                    // is a single term), so this doesn't affect ordering,
+                    // only correctness of the actual filtering behavior.
+                    'operator' => count( $expertise_slugs ) === 1 ? 'IN' : 'AND',
                 ),
             );
         } else {
@@ -817,15 +858,58 @@ function filter_speakers_callback() {
 
     $response['pagination'] = adapt_render_ajax_filter_pagination( $speakers_query, $paged );
 
-    // TEMP DIAGNOSTIC 2026-09-03 (round 20): round 19's sort_id fix
-    // (correct Sort #66404) and tax_query simplification made no
-    // observable difference, so before guessing further, read the actual
-    // SQL WP_Query ran -- read-only, no APTO function calls, just a plain
-    // WP_Query property. Remove once analysed.
+    // TEMP DIAGNOSTIC 2026-09-03 (round 20, kept through round 22): round
+    // 19's sort_id fix and tax_query simplification alone made no
+    // observable difference; round 20's SQL capture through this block is
+    // what proved APTO injected NO FIELD() override at all, which led
+    // directly to reading APTO Pro's actual source (round 22) and finding
+    // the real cause -- a literal-string operator mismatch ('AND' vs the
+    // Sort's configured 'IN') in sort_simple_match_check_on_query(), fixed
+    // above in the tax_query. Keeping this block for one more deploy as
+    // confirmation: 'sql_request' should now show a FIELD(wp_posts.ID, ...)
+    // clause listing the ten speaker IDs in the correct saved order. Also
+    // still dumps which callbacks are registered on 'posts_orderby' /
+    // 'pre_get_posts' (read-only, no APTO function calls) as a fallback
+    // diagnostic in case anything unexpected remains. Remove this entire
+    // block once the fix is confirmed live.
+    if ( ! function_exists( 'adapt_describe_hook_callbacks' ) ) {
+        function adapt_describe_hook_callbacks( $hook_name ) {
+            global $wp_filter;
+            if ( empty( $wp_filter[ $hook_name ] ) || ! is_object( $wp_filter[ $hook_name ] ) || ! isset( $wp_filter[ $hook_name ]->callbacks ) ) {
+                return array();
+            }
+            $out = array();
+            foreach ( $wp_filter[ $hook_name ]->callbacks as $priority => $callbacks ) {
+                if ( ! is_array( $callbacks ) ) {
+                    continue;
+                }
+                foreach ( $callbacks as $cb ) {
+                    $fn = isset( $cb['function'] ) ? $cb['function'] : null;
+                    if ( is_string( $fn ) ) {
+                        $label = $fn;
+                    } elseif ( is_array( $fn ) && count( $fn ) === 2 ) {
+                        $obj   = $fn[0];
+                        $label = ( is_object( $obj ) ? get_class( $obj ) : (string) $obj ) . '::' . $fn[1];
+                    } elseif ( $fn instanceof \Closure ) {
+                        $label = 'Closure';
+                    } else {
+                        $label = 'unknown';
+                    }
+                    $out[] = array( 'priority' => $priority, 'callback' => $label );
+                }
+            }
+            return $out;
+        }
+    }
     $response['_debug'] = array(
-        'args_sort_id' => isset( $args['sort_id'] ) ? $args['sort_id'] : null,
-        'args_tax_query' => isset( $args['tax_query'] ) ? $args['tax_query'] : null,
-        'sql_request'  => $speakers_query->request,
+        'args_orderby'          => isset( $args['orderby'] ) ? $args['orderby'] : null,
+        'args_sort_id'          => isset( $args['sort_id'] ) ? $args['sort_id'] : null,
+        'args_tax_query'        => isset( $args['tax_query'] ) ? $args['tax_query'] : null,
+        'sql_request'           => $speakers_query->request,
+        'is_admin'              => is_admin(),
+        'wp_doing_ajax'         => function_exists( 'wp_doing_ajax' ) ? wp_doing_ajax() : null,
+        'posts_orderby_filters' => adapt_describe_hook_callbacks( 'posts_orderby' ),
+        'pre_get_posts_filters' => adapt_describe_hook_callbacks( 'pre_get_posts' ),
     );
 
     wp_reset_postdata();
