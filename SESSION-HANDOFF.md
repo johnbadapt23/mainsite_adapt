@@ -1732,3 +1732,81 @@ Two small (~7px) homepage diffs from the §10 work
 child element heights matched exactly between `?dev=true` and production,
 so they're minor line-height rounding from already-verified fixes, not
 regressions.
+
+### §11 continued -- three more commits, same day (events-listing,
+footer, and two direct user-requested CSS additions)
+
+7. `64cef3c` -- bundles four things found/requested after the six above:
+   - **`.date-content-container` real bug**, distinct from the §10
+     pattern: the events-listing-module event-item card's date/image row
+     was explicitly flagged and *skipped* in an earlier pass (see the
+     "Section 10" comment in `_dev-float-refactor.scss`, ~line 20454, as
+     "real ambiguity, not mechanically safe" -- two different DOM shapes
+     share the compiled selector). But a **different, earlier** mechanical
+     batch (line ~7741, predating that skip decision) had already set
+     `@media(max-width:767px){float:none}` on `.date-content-container`
+     itself, which was never reverted. Production keeps it `float:left`
+     at that breakpoint specifically so it CONTAINS its own still-floating
+     child `.item-content-container` -- a non-floated parent doesn't
+     contain a still-floating child (same containment-failure class as
+     the `.progress-container` bug in item 2 above, roles reversed).
+     Confirmed live on `/edge-events/` at 375px: dev showed 0px-tall
+     (collapsed) date container vs production's 297px, a 64px
+     `events-listing-module` height diff. Fixed by restoring `float:left`
+     later in the cascade (same selector/media, wins by source order).
+   - **Footer accordion** (`.footer-link-container-wrapper`) -- user
+     reported it should be hidden on mobile until the
+     `.footer-column-title-wrapper` above it is tapped; it was unhidden by
+     default. Added `display:none` at `max-width:767px` with an
+     `.active{display:block}` companion. Adding this new media context
+     triggered the same leaf-compound side effect documented in item 3
+     above, on this selector's OWN pre-existing unconditional
+     auto-blockified rule, so an explicit unconditional `display:block`
+     restoration was added alongside it.
+   - **Direct user-requested addition**: `span.links-container.mobile
+     .text-link { display: inline-block; }` (see item 8 below -- this
+     version turned out not to work live and was corrected in `8449441`).
+   - **Direct user-requested addition**: footer-bottom stacking --
+     `.footer-bottom-left`/`.footer-bottom-right { float:none !important;
+     clear:both !important; }` plus `.footer-bottom-right a { float:none
+     !important; clear:both !important; display:inline; }`, verbatim as
+     given by the user.
+
+8. `8449441` -- the `.text-link` addition from `64cef3c` compiled fine
+   but never took effect live. Root cause: a pre-existing, much
+   higher-specificity auto-blockified rule from the original mechanical
+   Category B pass (`section.two-column-services .container
+   .services-column-container .links-container.mobile a { float:none;
+   display:block; }`, full ancestor chain) was winning the cascade over
+   the bare 4-selector `span.links-container.mobile .text-link` rule,
+   regardless of source order. Fixed by matching the same full ancestor
+   chain with `.text-link` appended for the needed extra specificity:
+   `section.two-column-services .container .services-column-container
+   .links-container.mobile a.text-link { display: inline-block; }`.
+   Confirmed live post-push: both "Book a Discovery Session" instances
+   now show `display: inline-block`.
+
+9. `3887a1d` -- found while re-verifying `64cef3c` live on
+   `/edge-events/`: `.event-image-container`, the sibling of
+   `.date-content-container` in the same skipped row group, had its own
+   separate earlier-mechanical-batch bug (line ~8052, `float:none` at
+   `max-width:767px`) that was never caught by the `.date-content-container`
+   fix alone. Production keeps it `float:left` at mobile so it sits beside
+   `.date-content-container` in the same row; dev's `float:none` narrowed
+   `.date-content-container`'s available width, causing its text to wrap
+   differently -- a consistent 16px height diff per card, layered on top
+   of the (already-fixed) 64px collapse. Fixed the same way, restoring
+   `float:left` later in the cascade.
+
+**Live re-verification results (post-push, this pass):** footer
+accordion confirmed fully functional -- collapsed by default, expands on
+title-tap (theme's own JS sets the inline style directly, not via the
+`.active` class my CSS anticipated, but the net effect is correct and my
+`display:none` default was the part that actually mattered);
+footer-bottom stacking confirmed matching the user's exact spec
+(`float:none`, `clear:both`, links stacked full-width); `.text-link`
+confirmed `inline-block` live. `.event-image-container` fix (`3887a1d`)
+is committed but not yet pushed/verified live as of this write-up --
+re-check `/edge-events/` at 375px once pushed (expect
+`event-image-container` height diff to close, and item-height diffs to
+drop from the current -16px to ~0px vs production).
