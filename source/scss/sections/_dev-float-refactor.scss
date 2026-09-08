@@ -21018,6 +21018,16 @@ body.dev-float-refactor {
         padding-top: 1px;
         clear: both;
     }
+
+    // Direct user-requested addition 2026-09-08 (not part of the
+    // mechanical float-refactor audit): user reports a 1px line visible
+    // above and below section.logo-ticker-tape.background-black.
+    // Negative 1px margins pull the section over its neighbours to
+    // close the gap.
+    section.logo-ticker-tape.background-black {
+        margin-top: -1px;
+        margin-bottom: -1px;
+    }
 }
 
 // === Section 18 (hand-designed): source/scss/templates/_app.scss --
