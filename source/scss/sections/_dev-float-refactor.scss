@@ -21217,3 +21217,251 @@ body.dev-float-refactor {
         padding: 62px 0;
     }
 }
+
+// === Section 21 (hand-audited): resolve the 66 selectors flagged by
+// fix-float-none-display.js's context-sensitivity check as "explicit
+// display exists at a different media context -- needs a hand-written,
+// media-scoped override" (see SESSION-HANDOFF.md's 2026-09-07 entry for
+// the full flagged list and how it was generated).
+//
+// These were all left as bare float:none by the mechanical fixer --
+// safe by default (a no-op for the block-default majority: div,
+// section, p, h1-h6, form, etc. never need a display fix regardless of
+// what any other context sets, since this file never touches `display`
+// itself, only `float`) but incomplete for the inline-default minority
+// (span, a) that actually relied on the float itself for blockification
+// at some width, where a DIFFERENT context has its own explicit
+// display.
+//
+// For every one of the 66, the real (ungated) CSS across every media
+// context was read directly (not guessed) to determine one of three
+// outcomes:
+//
+// 1. No action needed -- confirmed via one of:
+//    - block-default tag (div/section/p/h1-h6/form/img is a replaced
+//      element and unaffected either way): width/height/stacking work
+//      identically with or without float, so a bare float:none is
+//      already complete. This covers the large majority: every
+//      "*-container"/"*-column"/"*-card"/"sidebar-*" div, every bare
+//      <section>, every heading, .market-form/.download-block's
+//      "-column"/"-container" divs, .featured-module/.filter-listing/
+//      .partners-cards-module/.services-cards-module's grid/card divs.
+//    - the element is a flex item of an already-flex parent from an
+//      earlier section (header's .main-nav, .menu-buttons, and the
+//      resources-sticky-menu's .resources-link-mobile via .logo's own
+//      display:flex): flex items blockify regardless of their own
+//      display value except display:none, which is still respected --
+//      so production's own display:none at another width continues to
+//      apply untouched no matter what this file does to float.
+//    - position:absolute/fixed at every width (.buttonWrapperSingleResources):
+//      also forces block-level computed display independent of float,
+//      same reasoning as flex items.
+//    - the float and an explicit display already coexist in the exact
+//      SAME real/ungated rule (.text-container.desktop-hide,
+//      .sticky-slider-cards' .inner-text-container/span.p-large, the
+//      "centered-text-links" variant's .text and .links-container,
+//      events-logos-text-block's icon img): this file only ever removes
+//      `float`, never touches `display`, so a display already set
+//      alongside that exact float is completely unaffected by removing
+//      it.
+//    - two flagged selectors (header ...main-nav ul li .megaMenu .column
+//      .menu-link .text, header .resources-sticky-menu ... .menu-link
+//      .text, and .researchArticleTextHeader...replay-button-container)
+//      don't match any class in current markup at all (confirmed via a
+//      whole-repo grep across every .php file) -- dead CSS, not part of
+//      this fix, flagged separately as a dead-code candidate.
+//    - one selector (section.left-text-links.advisors-centered-text-links
+//      .text) is a leaf-compound false positive: the "other context"
+//      the safety check found belongs to a completely different section
+//      (section.centered-text-links.advisors-centered-text-links, a
+//      different real component) that happens to share the same
+//      trailing ".text-container .text" segments -- never the same DOM
+//      subtree, so nothing to reconcile.
+//
+// 2. Needs display:block added, scoped to the SAME media context the
+//    gated float:none rule already uses -- safe because it never
+//    extends the change beyond a range the float removal doesn't
+//    already cover, so it can't newly conflict with anything outside
+//    that range. This is every ".button-container a"/".std-button"-style
+//    case: real/ungated CSS floats and full-widths the <a> ONLY inside
+//    one specific @media (max-width) block, with no display set there
+//    or anywhere else for that selector -- the "other context" the
+//    safety check found is a leaf-compound coincidence with an
+//    unrelated component's ".button-container a".
+//
+// 3. Needs display:block added at the COMPLEMENTARY range to a real,
+//    narrower display:none (or, for .switcher-container, display:flex)
+//    production already sets at one specific breakpoint, where the
+//    float exists ALONE (no display) at every other width -- the same
+//    bug class as .main-nav (see fix-float-none-display.js's own header
+//    comment, "third fix"), fixed the same way .main-nav itself was:
+//    scope the added display:block to explicitly exclude the narrower
+//    range instead of trying to guess an unconditional value.
+body.dev-float-refactor {
+    // --- Outcome 2: display:block at the exact same context the
+    // gated float:none already uses (each is a "*-button a" or
+    // ".std-button" full-width-on-mobile pattern) ---
+    @media (max-width: 1023px) {
+        section.contact-module .container .contact-innner .column.title-details-column .bottom-container .form-popup-button-container a {
+            display: block;
+        }
+        section.two-column-logo-carousel .container .column-container .column.text-column .button-container a {
+            display: block;
+        }
+    }
+    @media (max-width: 767px) {
+        section.partner-form .container .form-text-container .column.text-content-column .bottom-container .form-popup-button-container a {
+            display: block;
+        }
+        section.animation-introduction .container .introduction-content-container .button-container a {
+            display: block;
+        }
+        section.events-title-block .container .content-container .button-container a {
+            display: block;
+        }
+        section.events-title-block.events-title-block-background .container .content-container .button-container a {
+            display: block;
+        }
+        section.partners-cards-module .container .button-container a {
+            display: block;
+        }
+        section.subscribe-introduction .container .content-container .content-inner .button-container a {
+            display: block;
+        }
+        section.two-column-cta .container .column.text-column .button-container a {
+            display: block;
+        }
+        section.two-column-image-text-customer-events .container .column-container .column .button-container a {
+            display: block;
+        }
+        section.two-column-image-text-events .container .two-column-image-text-outer .text-column .button-container a {
+            display: block;
+        }
+        section.two-column-switch-module .container .module-container .switch-module .column-container .column .list-container .button-container a {
+            display: block;
+        }
+        section.two-column-thank-you-module .container .column-container .column .list-container .button-container a {
+            display: block;
+        }
+        section.sponsor-block .container .bottom-block .button-container .std-button {
+            display: block;
+        }
+    }
+
+    // --- Outcome 3: display:block at the complementary range to a real,
+    // narrower production display -- see .press-date-container's
+    // reasoning as the representative example, spelled out in full;
+    // the rest follow the identical shape (float+width alone at every
+    // width except one, where production sets an explicit display of
+    // its own that must be left untouched).
+    //
+    // .item.press-release-item .press-date-container: real CSS is
+    // float:left;width:116px;padding-right:32px at base, with a
+    // SEPARATE `@media (max-width:767px) { display:none }` alongside
+    // it in the same rule (_resources-types.scss). The gated float:none
+    // is unconditional (applies at every width), so scoping this fix to
+    // min-width:768 keeps it from ever competing with that display:none
+    // at 767 and below.
+    @media (min-width: 768px) {
+        .item.press-release-item .press-date-container {
+            display: block;
+        }
+        // .fast-track-text (both real, separately-defined instances --
+        // _form-pages.scss's contact-module version and _events.scss's
+        // partner-form version): float:left;width:100% at base, no
+        // display; real ≤767px override sets display:inline-block of
+        // its own (left untouched by scoping this to >=768).
+        section.contact-module .container .contact-innner .column.title-details-column .bottom-container .fast-track-text {
+            display: block;
+        }
+        section.partner-form .container .form-text-container .column.text-content-column .bottom-container .fast-track-text {
+            display: block;
+        }
+        // .text-link-container (_flexible.scss, animation-introduction):
+        // float:left;width:100% at base, no display; real ≤767px
+        // override is float:none;display:inline-block;width:auto of its
+        // own already.
+        section.animation-introduction .container .introduction-content-container .text-link-container {
+            display: block;
+        }
+        // span.item-excerpt (_registrations.scss): float:left;width:100%
+        // at base, no display; real ≤767px override sets display:none.
+        section.register-listing .container .register-listing-container .upcoming-listing .item.one-third .item-container .item-top span.item-excerpt {
+            display: block;
+        }
+        // .links-container (_flexible.scss, two-column-services text
+        // column): float:left;width:100% at base, no display; real
+        // ≤767px override sets display:none.
+        section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container {
+            display: block;
+        }
+    }
+    // .year-button-sticky (_events.scss): float:left;width:100% at
+    // base, no display; real ≤1023px override (nested inside the same
+    // rule) sets display:none -- complementary range is >=1024.
+    @media (min-width: 1024px) {
+        section.events-listing-module .container .events-listing-top .year-button-container .year-button-sticky {
+            display: block;
+        }
+    }
+    // .switcher-container (_services.scss): float:left;width:100% at
+    // base, no display; real ≤1100px override sets display:flex (not
+    // none) -- complementary range is >=1101, left as display:block
+    // since nothing above 1100 needs the flex treatment.
+    @media (min-width: 1101px) {
+        section.two-column-switch-module .container .title-switch-container .switcher-container {
+            display: block;
+        }
+    }
+
+    // --- Outcome 2b: unconditional display:block, no real other-context
+    // conflict for this exact selector (the flagged "other context" is a
+    // leaf-compound coincidence with an unrelated selector elsewhere) ---
+    section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container .text-link-container a {
+        display: block;
+    }
+    section.content-slider-module .container .top-content .link-container {
+        display: block;
+    }
+
+    // --- Side effect of this section's own additions above, caught by
+    // re-running the isolated verification build after writing them:
+    // adding explicit, context-scoped display:block for the
+    // ".button-container a"/".form-popup-button-container a" family
+    // above fed MORE entries into the whole-file leaf-compound map this
+    // script's safety check uses -- which then newly flagged these 4
+    // OTHER, previously-untouched ".button-container a" instances as
+    // "context-sensitive" too (coincidental leaf-compound collisions
+    // with the entries just added above), causing the mechanical fixer
+    // to stop auto-blockifying them. Before this section existed they
+    // were correctly auto-fixed to float:none;display:block (confirmed
+    // via the isolated build's own "before" snapshot); this restores
+    // exactly that, explicitly, so they're no longer dependent on the
+    // mechanical fixer's now-more-crowded leaf-compound map.
+    section.text-animation-introduction .container .introduction-content-container .column.text-column .animation-text-container .button-container a {
+        display: block;
+    }
+    section.three-column-icon-services .container .column-container .column.cta-column .cta-inner .button-container a {
+        display: block;
+    }
+    section.two-column-subscribe .container .column-container .form-container .form-popup-button-container a {
+        display: block;
+    }
+    section.login-module .container .login-inner .column-container .column .button-container a {
+        display: block;
+    }
+    // Same side effect, caught in a second verification pass: these two
+    // selectors each have a SEPARATE, unconditional (no media query)
+    // ".button-container a" rule in their real CSS in ADDITION to the
+    // media(max-width:767px)-scoped one already fixed above -- that
+    // unconditional one was also previously auto-fixed correctly
+    // (float:none;display:block) and also got newly, coincidentally
+    // leaf-matched into context-sensitivity by this section's own
+    // additions.
+    section.events-title-block .container .content-container .button-container a {
+        display: block;
+    }
+    section.two-column-thank-you-module .container .column-container .column .list-container .button-container a {
+        display: block;
+    }
+}
