@@ -270,8 +270,12 @@
                                         $feature_image_url = get_sub_field( 'image' );
                                         $feature_image_id = $feature_image_url ? attachment_url_to_postid( $feature_image_url ) : 0;
                                         $feature_image_alt = $feature_image_id ? get_post_meta( $feature_image_id, '_wp_attachment_image_alt', true ) : '';
+                                        echo adapt_acf_image(
+                                            array( 'ID' => $feature_image_id, 'url' => $feature_image_url ),
+                                            'full',
+                                            array( 'alt' => $feature_image_alt, 'class' => 'featureImage', 'loading' => 'lazy' )
+                                        );
                                         ?>
-                                        <img loading="lazy" class="featureImage" src="<?php echo esc_url( $feature_image_url ); ?>" alt="<?php echo esc_attr( $feature_image_alt ); ?>"/>
                                     </div>
                                 <?php } else { ?>
                                     <div class="infogram-container">
@@ -296,8 +300,12 @@
                                      $feature_image_url = get_sub_field( 'image' );
                                      $feature_image_id = $feature_image_url ? attachment_url_to_postid( $feature_image_url ) : 0;
                                      $feature_image_alt = $feature_image_id ? get_post_meta( $feature_image_id, '_wp_attachment_image_alt', true ) : '';
+                                     echo adapt_acf_image(
+                                         array( 'ID' => $feature_image_id, 'url' => $feature_image_url ),
+                                         'full',
+                                         array( 'alt' => $feature_image_alt, 'class' => 'featureImage', 'loading' => 'lazy' )
+                                     );
                                      ?>
-                                     <img loading="lazy" class="featureImage" src="<?php echo esc_url( $feature_image_url ); ?>" alt="<?php echo esc_attr( $feature_image_alt ); ?>"/>
                                  </div>
                              <?php } else { ?>
                                  <div class="infogram-container">
@@ -343,9 +351,9 @@
                                                    <span class="description">
                                                        <?php the_sub_field( 'description' ); ?>
                                                    </span>
-                                                   <?php if ( get_sub_field( 'logo') ) { ?>
+                                                   <?php $logo_image = get_sub_field( 'logo' ); if ( $logo_image ) { ?>
                                                        <div class="logoContainer">
-                                                           <img loading="lazy" src="<?php the_sub_field( 'logo' ); ?>" alt="Adapt" />
+                                                           <?php echo adapt_acf_image( $logo_image, 'full', array( 'alt' => 'Adapt', 'loading' => 'lazy' ) ); ?>
                                                        </div>
                                                    <?php } ?>
                                                </div>
@@ -393,9 +401,9 @@
                                                 <span class="description">
                                                     <?php the_sub_field( 'description' ); ?>
                                                 </span>
-                                                <?php if ( get_sub_field( 'logo') ) { ?>
+                                                <?php $logo_image = get_sub_field( 'logo' ); if ( $logo_image ) { ?>
                                                     <div class="logoContainer">
-                                                        <img loading="lazy" src="<?php the_sub_field( 'logo' ); ?>" alt="Adapt" />
+                                                        <?php echo adapt_acf_image( $logo_image, 'full', array( 'alt' => 'Adapt', 'loading' => 'lazy' ) ); ?>
                                                     </div>
                                                 <?php } ?>
                                             </div>
@@ -553,9 +561,9 @@
                                                         <span class="description">
                                                             <?php the_field( 'speaker_description' ); ?>
                                                         </span>
-                                                        <?php if ( get_field( 'logo') ) { ?>
+                                                        <?php $logo_image = get_field( 'logo' ); if ( $logo_image ) { ?>
                                                             <div class="logoContainer">
-                                                                <img loading="lazy" src="<?php the_field( 'logo' ); ?>" alt="Adapt" />
+                                                                <?php echo adapt_acf_image( $logo_image, 'full', array( 'alt' => 'Adapt', 'loading' => 'lazy' ) ); ?>
                                                             </div>
                                                         <?php } ?>
                             						<?php wp_reset_postdata(); ?>
@@ -607,9 +615,9 @@
                                                         <span class="description">
                                                             <?php the_field( 'speaker_description' ); ?>
                                                         </span>
-                                                        <?php if ( get_field( 'logo') ) { ?>
+                                                        <?php $logo_image = get_field( 'logo' ); if ( $logo_image ) { ?>
                                                             <div class="logoContainer">
-                                                                <img loading="lazy" src="<?php the_field( 'logo' ); ?>" alt="Adapt" />
+                                                                <?php echo adapt_acf_image( $logo_image, 'full', array( 'alt' => 'Adapt', 'loading' => 'lazy' ) ); ?>
                                                             </div>
                                                         <?php } ?>
                             						<?php wp_reset_postdata(); ?>

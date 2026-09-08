@@ -8,8 +8,12 @@
                 $feature_image_url = get_sub_field( 'image' );
                 $feature_image_id = $feature_image_url ? attachment_url_to_postid( $feature_image_url ) : 0;
                 $feature_image_alt = $feature_image_id ? get_post_meta( $feature_image_id, '_wp_attachment_image_alt', true ) : '';
+                echo adapt_acf_image(
+                    array( 'ID' => $feature_image_id, 'url' => $feature_image_url ),
+                    'full',
+                    array( 'alt' => $feature_image_alt, 'class' => 'featureImage' )
+                );
                 ?>
-                <img class="featureImage" src="<?php echo esc_url( $feature_image_url ); ?>" alt="<?php echo esc_attr( $feature_image_alt ); ?>"/>
             <?php if ( get_sub_field('image_link')) { ?>
             </a>
             <?php } ?>

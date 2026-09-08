@@ -812,8 +812,10 @@ function filter_speakers_callback() {
                 <a class="slide-out-bio" href="#<?php echo esc_attr( $post_slug ); ?>" id="<?php echo esc_attr( $post_slug ); ?>">
                     <span class="image-container">
                         <span class="bg-container">
-                            <?php $team_member_image = get_field('speaker_image'); ?>
-                            <img src="<?php echo esc_url($team_member_image); ?>" alt="<?php the_title(); ?>" />
+                            <?php
+                            $team_member_image = get_field( 'speaker_image' );
+                            echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                            ?>
                         </span>
                         <span class="text-container">
                             <h5><?php the_title(); ?></h5>
@@ -833,8 +835,10 @@ function filter_speakers_callback() {
                         <span class="bio-top">
                             <span class="image-container">
                                 <span class="bg-container">
-                                    <?php $team_member_image = get_field( 'speaker_image' ); ?>
-                                    <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
+                                    <?php
+                                    $team_member_image = get_field( 'speaker_image' );
+                                    echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                                    ?>
                                 </span>
                                 <span class="border-offset"></span>
                             </span>
@@ -944,8 +948,10 @@ function filter_partners_callback() {
                 <a class="slide-out-bio" href="#<?php echo esc_attr( $post_slug ); ?>" id="<?php echo esc_attr( $post_slug ); ?>">
                     <span class="image-container">
                         <span class="bg-container">
-                            <?php $team_member_image = get_field( 'logo' ); ?>
-                            <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
+                            <?php
+                            $team_member_image = get_field( 'logo' );
+                            echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                            ?>
                         </span>
                         <span class="text-container mobile-hide">
                             <h5 class="labelMedium"><?php the_title(); ?></h5>                                                    
@@ -962,8 +968,10 @@ function filter_partners_callback() {
                         <span class="bio-top">
                             <span class="image-container">
                                 <span class="bg-container">
-                                    <?php $team_member_image = get_field( 'logo' ); ?>
-                                    <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
+                                    <?php
+                                    $team_member_image = get_field( 'logo' );
+                                    echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                                    ?>
                                 </span>
                                 <span class="border-offset"></span>
                             </span>
@@ -1039,8 +1047,10 @@ function edge_filter_partners_callback() {
                 <a class="slide-out-bio" href="#<?php echo esc_attr( $post_slug ); ?>" id="<?php echo esc_attr( $post_slug ); ?>">
                     <span class="image-container">
                         <span class="bg-container">
-                            <?php $team_member_image = get_field( 'logo' ); ?>
-                            <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
+                            <?php
+                            $team_member_image = get_field( 'logo' );
+                            echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                            ?>
                         </span>
                         <span class="text-container mobile-hide">
                             <h5 class="labelMedium"><?php the_title(); ?></h5>                                                    
@@ -1057,8 +1067,10 @@ function edge_filter_partners_callback() {
                         <span class="bio-top">
                             <span class="image-container">
                                 <span class="bg-container">
-                                    <?php $team_member_image = get_field( 'logo' ); ?>
-                                    <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
+                                    <?php
+                                    $team_member_image = get_field( 'logo' );
+                                    echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                                    ?>
                                 </span>
                                 <span class="border-offset"></span>
                             </span>

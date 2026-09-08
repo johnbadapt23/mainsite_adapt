@@ -119,8 +119,10 @@
                                         <a class="slide-out-bio" href="#<?php echo $post_slug; ?>" id="<?php echo $post_slug; ?>">
                                             <span class="image-container">
                                                 <span class="bg-container">
-                                                    <?php $team_member_image = get_field( 'speaker_image' ); ?>
-                                                    <img src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
+                                                    <?php
+                                                    $team_member_image = get_field( 'speaker_image' );
+                                                    echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                                                    ?>
                                                 </span>
                                                 <span class="text-container mobile-hide">
                                                     <h5><?php the_title(); ?></h5>
@@ -140,8 +142,10 @@
                                                 <span class="bio-top">
                                                     <span class="image-container">
                                                         <span class="bg-container">
-                                                            <?php $team_member_image = get_field( 'speaker_image' ); ?>
-                                                            <img loading="lazy" src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
+                                                            <?php
+                                                            $team_member_image = get_field( 'speaker_image' );
+                                                            echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title(), 'loading' => 'lazy' ) );
+                                                            ?>
                                                         </span>
                                                         <span class="border-offset"></span>
                                                     </span>

@@ -1962,3 +1962,101 @@ performance") for proper per-file categorization and sign-off, not
 started as a change -- swapping markup changes rendered output
 (auto `srcset`/`sizes`, possible lazy-loading differences), which is a
 real behavior-change risk that needs scoping first.
+
+---
+
+## 12. Raw `<img>` → `adapt_acf_image()` migration (this pass, committed, not pushed)
+
+### Why / approach
+
+Followed up on the §11 raw-`<img>` audit note above. Rather than
+statically categorizing each ACF field's `return_format` (`url` vs
+`array` vs `id`) per call site -- which turned out to be unreliable,
+since the *same field name* (e.g. `logo`) is configured with different
+return formats in different ACF field groups depending on `location`
+rules (post type), and some call sites reuse a misleadingly-named
+variable across multiple different field fetches -- built a single
+runtime-adaptive helper, `adapt_acf_image()`, in `includes/_functions.php`:
+
+- Inspects the field's *value* at runtime (array with `ID`, numeric
+  ID, or URL string) and resolves the real attachment ID via
+  `attachment_url_to_postid()` when given a URL.
+- On success, renders via `wp_get_attachment_image()` (gets registered
+  image sizes, automatic `srcset`/`sizes`, WebP-rewrite integration).
+- On failure to resolve an attachment ID (external URL, deleted
+  attachment, etc.), falls back to rendering the **exact same plain
+  `<img src="...">` markup the call site used to render directly** --
+  so behavior can never regress even when resolution fails, regardless
+  of which ACF return format is actually in play.
+- Verified with `php-parser` (PHP 8.1) after every edit.
+
+### Scope: converted (30 conversions across 19 files)
+
+`functions.php` (6 -- speaker/partner bio cards), `includes/_functions.php`
+(new helper only), `templates/customer-events-components/_advisor-module.php`
+(2), `_advisors-carousel.php` (1), `_edge-partner-module.php` (2),
+`_partner-module.php` (2), `_speaker-module.php` (2),
+`templates/post-components/_infogram.php` (1, reused the file's existing
+`attachment_url_to_postid()` resolution logic rather than duplicating it),
+`templates/member-single-post.php` (6), `templates/single-post-feb.php` (4),
+`templates/single-post-no-embed.php` (4), `templates/single-post-side-articles.php`
+(4), `templates/template-flexible-nov.php` (2), `templates/template-home-nov.php`
+(1), `templates/single-event.php` (2), `templates/single-event-nov.php` (2),
+`templates/template-agenda.php` (4 -- 3x `logo` with a `width="100"` attribute
+preserved via the helper's `$attr` passthrough, plus 1x `print_header`),
+`templates/single-registration.php` (3x `speaker_image`),
+`templates/template-search.php` (1x taxonomy-term-level `icon` field, via
+`get_field('icon', $term)` -- confirmed the helper works fine for
+term-context ACF fields too, not just post-context).
+
+Fields converted: `logo`, `speaker_image`, `feature_image_url`/`image`
+(the `_infogram.php` pattern), `print_header`, `icon`.
+
+### Explicitly out of scope / left untouched
+
+- **CSS `background-image: url(...)` usages** of `the_sub_field('logo')`/
+  `the_field('logo')` -- these produce a background image, not `<img>`
+  markup, so `adapt_acf_image()` (which only emits `<img>` tags) doesn't
+  apply. Confirmed present and correctly left alone in
+  `member-single-post.php`, `single-event.php`, `single-event-nov.php`,
+  `template-agenda.php` (×3, `logos`/`logos_track_two` background-image
+  variant).
+- **Static theme-bundled SVG icons** (`linkedin-new.svg`, `website.svg`,
+  `round-linkedin.svg`, `gtm-role.svg`, etc. via `get_template_directory_uri()`)
+  -- not WP attachments, `get_field()`/`get_sub_field()` calls near them are
+  for the link `href` or adjacent text, not the image `src`. Confirmed via a
+  theme-wide grep sweep and left untouched (`functions.php`, several
+  `templates/components/*.php` and `templates/customer-events-components/*.php`
+  files, `templates/single-registration.php`, `templates/single-post_author.php`,
+  `templates/template-speakers.php`).
+- **`class="delete-no" style="display: none;"` hidden placeholder `<img>`
+  tags** (video_poster, featured_image, speaker_image, infogram_image --
+  22 occurrences across `member-single-post.php`, `single-post-feb.php`,
+  `post-components/_infogram.php`) -- likely a JS data-source pattern (script
+  reads the `src` attribute rather than rendering the image). **Not
+  converted, not yet discussed with the user** -- flagging for a decision
+  before touching, since it's unclear whether JS elsewhere depends on the
+  exact raw-URL `src` value.
+- **`_archive/templates/partials/_header-old.php`** -- confirmed via grep
+  unreferenced by any live template (`_archive/` is dead code), left
+  untouched.
+
+### Verification
+
+Every one of the 19 modified files re-verified clean with `php-parser`
+(PHP 8.1) in a single batch pass immediately before committing. A
+theme-wide grep swept for any remaining `<img ...>` tags whose `src`
+reads an ACF field via `the_field`/`the_sub_field`/`get_field`/
+`get_sub_field` -- confirmed zero remaining conversion candidates
+outside the explicitly-out-of-scope categories above.
+
+**Committed to `dev`, not pushed** (user pushes from their own
+machine per standing practice). No SCSS/CSS touched this pass -- pure
+PHP markup change, `?dev=true` gate untouched.
+
+### Next steps
+
+- Decide (with user) how to handle the `delete-no` hidden-placeholder
+  and preload/slider-data placeholder `<img>` patterns noted above.
+- No other raw-`<img>`-from-ACF-field call sites remain per the sweep;
+  the migration is functionally complete.

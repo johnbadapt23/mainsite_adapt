@@ -156,7 +156,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 													<span class="speaker-container-inner flex-container">
 														<span class="speaker-image">
 															<span class="bg-image">
-																<img loading="lazy" src="<?php echo get_field('speaker_image'); ?>" alt="<?php echo the_title(); ?>"/>
+																<?php echo adapt_acf_image( get_field( 'speaker_image' ), 'full', array( 'alt' => get_the_title(), 'loading' => 'lazy' ) ); ?>
 															</span>
 														</span>
 														<span class="description">
@@ -174,7 +174,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 															<span class="bg-container">
 																<?php $speaker_image = get_field( 'speaker_image' ); ?>
 																<?php if ( $speaker_image ) { ?>
-																	<img loading="lazy" src="<?php echo $speaker_image; ?>" alt="<?php the_title(); ?>" />
+																	<?php echo adapt_acf_image( $speaker_image, 'full', array( 'alt' => get_the_title(), 'loading' => 'lazy' ) ); ?>
 																<?php } ?>
 															</span>
 															<span class="border-offset"></span>
@@ -411,7 +411,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 								<?php setup_postdata( $post ); ?>
 									<div class="speaker-container-inner">
 										<span class="speaker-image">
-											<img loading="lazy" src="<?php echo get_field('speaker_image'); ?>" alt="<?php echo the_title(); ?>"/>
+											<?php echo adapt_acf_image( get_field( 'speaker_image' ), 'full', array( 'alt' => get_the_title(), 'loading' => 'lazy' ) ); ?>
 										</span>
 										<span class="description">
 											<span class="speaker-name"><?php echo the_title(); ?></span>
