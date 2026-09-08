@@ -21675,4 +21675,39 @@ body.dev-float-refactor {
     section.two-column.two-column-steps .container .title-container {
         display: block;
     }
+
+    // BUGFIX 2026-09-08: three more unscoped display:flex additions
+    // (mechanically-generated, matched by exact-selector display
+    // conflicts found via a whole-file scan for gated display:flex with
+    // no @media wrapper) that beat a real @media(max-width:767px)
+    // display override on the SAME exact selector -- same bug class as
+    // .links-container, .item.mobile-hide's siblings, and .hide-mobile
+    // above. Not yet reachable on a page during this session's live
+    // pass to visually confirm the exact numbers, but the mechanism is
+    // identical and unambiguous: the gated rule and the real ≤767px
+    // rule target the identical selector with conflicting display
+    // values, so the gate always wins at every width since it has no
+    // media condition to lose to.
+    //
+    // - section.list-block .container .list-container .item.mobile-hide
+    //   (source/scss/templates/... -- class name itself documents
+    //   intent): real display:none at max-width:767px.
+    @media (max-width: 767px) {
+        section.list-block .container .list-container .item.mobile-hide {
+            display: none;
+        }
+        // - section.registration-two-column-block .container
+        //   .column-container: real display:block at max-width:767px
+        //   (desktop layout, whatever it is, collapses to a plain block
+        //   on mobile).
+        section.registration-two-column-block .container .column-container {
+            display: block;
+        }
+        // - section.events-listing-module .events-listing.partners-
+        //   events-listing .item .container: real display:block at
+        //   max-width:767px.
+        section.events-listing-module .events-listing.partners-events-listing .item .container {
+            display: block;
+        }
+    }
 }
