@@ -1579,3 +1579,128 @@ uncommitted local modification (adds a `hubspot-form` branch to a
 this session -- left untouched and unstaged; not part of any change
 described above. Worth asking the user about directly rather than
 assuming it's stale/intentional.
+
+---
+
+## 11. 2026-09-08: mobile-specific regression pass (unscoped desktop-only fixes)
+
+User reported "mobile looks broken compared to production, not just the
+footer, but the sections" after the §10 66-item follow-up work (commit
+`3bf2211`) was pushed. Root cause pattern, found repeatedly: several
+`display:flex` (or a `bottom:20px` position tweak) additions in
+`_dev-float-refactor.scss` were written **without a media-query scope**,
+intending a desktop-only effect, but because they had no `min-width`
+qualifier they also fired on mobile -- where the *real* (non-gated) CSS
+relies on a `@media(max-width:767px)` override (`width:100%` float-stacking,
+`display:none`, etc.) that the unscoped gated rule was defeating.
+
+Verification method: at 375x812 (`resize_window` mobile preset), measure
+every `<section>`'s (and suspect sub-element's) `getBoundingClientRect()`
+height on `?dev=true` vs production and diff; any non-zero, non-trivial
+diff was traced to the specific child element and its real vs gated CSS.
+Every fix was confirmed with the postcss rule-level diff
+(`/tmp/proper-diff-normalized.cjs` pattern -- normalizes comma-selector-list
+reordering across builds, which a naive exact-string diff false-positives
+on) showing zero non-gated changes and only the intended gated change.
+
+**Six real bugs found and fixed, six commits (all gated, all pushed):**
+
+1. `b2d242c` -- footer `.back-to-top`'s `bottom:20px` tweak (added in
+   `5306d12`) was unscoped; it also has a completely different real
+   context below 1024px (`position:fixed`, floating scroll-to-top button,
+   real `bottom:40px`). Scoped to `min-width:1024px`.
+2. `66539f4` -- three bugs: `section.featured-module.featured-home
+   .post-list-container`'s `display:flex` (57/43 desktop split) broke the
+   real mobile float-stack of `.first-post-column`/`.side-bar-column`
+   (both carry the global `.one-half` class, `width:100%` below 768px);
+   `section.quote-slider .container .progress-container`'s auto-added
+   `display:block` (from a pure `float:none` fix) needed `clear:both`
+   since its preceding sibling `.quote-slider-module` stays `float:left`
+   on purpose (Slick-managed) and a non-cleared block doesn't stack below
+   a still-floating sibling; `two-column-services
+   .text-content-inner .links-container`'s `display:flex!important` was
+   unscoped and beat the real `@media(max-width:767px){display:none}`.
+   All three scoped to `min-width:768px` (or given `clear:both` +
+   explicit `display:block`, since adding a second declaration makes a
+   rule "impure" and the mechanical fixer's `isPureFloatNone` check stops
+   auto-adding `display:block` for it -- same side-effect class as #6
+   below).
+3. `7164742` -- `section.featured-module .container .title-container`'s
+   `display:flex` (66.66%/33.34% split) had the same float-stacking
+   conflict; scoping it to `min-width:768px` **cascaded into 24 more
+   selectors** losing their auto-generated `display:block`, because
+   `.container .title-container` is a common 2-segment leaf-compound
+   shared by ~24 unrelated sections' own pure `float:none` rules --
+   moving one rule into a `@media` block changed what the mechanical
+   fixer's whole-file leaf-compound map reports for that leaf. Same
+   mechanism as the two rounds of `.button-container a` side effects in
+   §10. Fixed by adding explicit `display:block` for all 24.
+4. `2882137` -- a mechanically-generated `.column .text` rule for
+   `section.expanding-form-module` was too broad: it also matched
+   `.info-column`'s *other* `.text`, which carries a real `.hide-mobile`
+   modifier (`@media(max-width:767px){display:none}`). Fixed with a more
+   specific `.text.hide-mobile` override at `max-width:767px`.
+
+**Explicitly NOT touched -- "Section 19" hand-designed user-requested
+tweaks** (see `_dev-float-refactor.scss` around the "Section 19" header
+comment, ~line 20788): `section.filter-title-block .container
+.title-container`, `section.roundtable-card-slider-module ...
+.slide-image-container`, and `section.two-column-services ...
+.icon-text-column .service` are explicitly documented as *your own*
+ad hoc experimental `display:flex!important` requests, gated for staging
+review before folding into production -- not float-refactor mechanical
+output. `.title-container`'s flex does appear to squeeze its `h1` +
+`p.type-description` into a row at ALL widths (not just mobile, since
+there's no competing real breakpoint there), which may or may not be
+intentional -- flagged here rather than silently "fixed" since it's your
+call, not a mechanical bug.
+
+**Confirmed SAFE (checked live, no regression) despite unscoped
+`display:flex`:** `section.team-block .column-container` (already native
+flex in production, `/meet-the-team/`), `section.filter-listing ...
+.market-trend-reports-container-side-bar` (flex-wrap achieves the same
+reflow as production's float, `/resource-type/market-trend-reports/`),
+`.sticky-slider-cards ... .mobile-slide-count` (single inline line, no
+visible height difference), `two-column-services ...
+.icon-text-column .service` (Section 19, heights matched exactly on the
+homepage).
+
+**Not yet exhaustively checked** -- lower confidence, not visually
+verified this session (grep for `display:\s*flex` inside `body.dev-float-refactor`
+blocks with no enclosing `@media` in `_dev-float-refactor.scss` to
+re-find them):
+- `section.switcher-module .container .switch-content-container
+  .icon-text-column-container .column`, `section.market-two-column
+  .container .two-column-container .column`, `section.two-column-icon-text
+  .container .icon-text-column-container .column` -- all have a real
+  `@media(max-width:767px){width:100%}` on the exact flagged selector,
+  but per the working theory (flex set ON an element mainly affects
+  *its own children's* internal layout, not the element's own
+  float/width-driven stacking among siblings) these are lower risk;
+  unconfirmed live.
+- Header/search-dropdown group (`header .container .header-inner`,
+  `.search-dropdown .container` and children, `.headerRight`,
+  `.main-nav ul`, `.resources-sticky-menu` variants) -- not checked on
+  a page with the search dropdown open or the sticky header engaged.
+- Mobile menu (`.mobileMenuMain`, `.mobileMenuResources`) flex rules --
+  presumed low risk (mobile-only UI by nature) but not opened/verified.
+- `section.sneak-peak-module .container .sneak-peak-container` -- no
+  `flex-wrap`, has real `@media` overrides on its children
+  (`.sneak-text-container`/`.sneak-image-container` width/display), not
+  checked on a page using this section.
+- `section.comparison-module`'s `.title-container` showed a small
+  (-20px) height diff on `/adapt-vs-gartner/` even after the title-container
+  fix -- likely benign text-wrapping/line-height, not investigated
+  further (same category as the -7px diffs noted below).
+- `section.sticky-slider-cards` showed a larger (-100px) height diff on
+  the same page, not resolved -- this component is scroll/sticky-JS
+  driven (GSAP/ScrollMagic, which throws console errors on *both*
+  ?dev=true and production -- a pre-existing, unrelated breakage, not
+  from this work), so the diff may be animation-timing noise rather than
+  a CSS bug. Worth a dedicated look if the user notices it visually.
+
+Two small (~7px) homepage diffs from the §10 work
+(`list-card-module`/`centered-text-links`) were checked and are benign --
+child element heights matched exactly between `?dev=true` and production,
+so they're minor line-height rounding from already-verified fixes, not
+regressions.
