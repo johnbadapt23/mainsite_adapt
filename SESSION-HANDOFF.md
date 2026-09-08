@@ -1640,6 +1640,38 @@ on) showing zero non-gated changes and only the intended gated change.
    `.info-column`'s *other* `.text`, which carries a real `.hide-mobile`
    modifier (`@media(max-width:767px){display:none}`). Fixed with a more
    specific `.text.hide-mobile` override at `max-width:767px`.
+5. `44b8e29` -- `section.switcher-module` and `section.two-column-icon-text`
+   both have a `.column` containing `.icon-container` (float:left, fixed
+   80px) + `.text-container` (float:left, `calc(100% - 80px)`) -- sums to
+   exactly 100% at desktop, side by side. The existing gated fix added
+   `display:flex` to `.column` (correctly, `.icon-container`/
+   `.text-container` are a genuine still-live float pair), but
+   `.text-container`'s real CSS also has a mobile override
+   (`width:100%`), making the pair sum to 180% at that breakpoint --
+   production overflows the float and wraps `.text-container` below the
+   icon (the width-overflow stacking trick). A nowrap flex row instead
+   flex-shrinks both to fit the same row, squeezing icon+text side by
+   side at mobile instead of stacking. Added `flex-wrap:wrap` to both
+   (only engages where the combined basis exceeds the row, i.e. the same
+   breakpoint where production's own overflow-wrap already kicks in).
+6. `5b5b4a6` -- three more exact-selector conflicts found via a
+   whole-file scan for `display:flex` with no `@media` wrapper:
+   `section.list-block .container .list-container .item.mobile-hide`
+   (real `display:none` at max-width:767px -- the class name says it
+   outright), `section.registration-two-column-block .container
+   .column-container` (real `display:block` at max-width:767px), and
+   `section.events-listing-module .events-listing.partners-events-listing
+   .item .container` (real `display:block` at max-width:767px). Same
+   mechanism as `.links-container`/`.hide-mobile` above. **Not visually
+   confirmed live** -- couldn't locate a staging page using
+   `list-block`/`registration-two-column-block`/the partners variant of
+   events-listing in the time available (tried
+   `/benchmark-maturity-assessment/cloud-compute-finops-maturity` for
+   list-block; that page doesn't render a `section.list-block` at all,
+   so the ACF flexible-content block isn't in use there). Verified only
+   structurally (postcss diff: 0 non-gated changes, exactly the 3
+   intended additions). Worth a live look on whichever page actually
+   uses these blocks next time one is found.
 
 **Explicitly NOT touched -- "Section 19" hand-designed user-requested
 tweaks** (see `_dev-float-refactor.scss` around the "Section 19" header
@@ -1669,15 +1701,11 @@ homepage).
 verified this session (grep for `display:\s*flex` inside `body.dev-float-refactor`
 blocks with no enclosing `@media` in `_dev-float-refactor.scss` to
 re-find them):
-- `section.switcher-module .container .switch-content-container
-  .icon-text-column-container .column`, `section.market-two-column
-  .container .two-column-container .column`, `section.two-column-icon-text
-  .container .icon-text-column-container .column` -- all have a real
-  `@media(max-width:767px){width:100%}` on the exact flagged selector,
-  but per the working theory (flex set ON an element mainly affects
-  *its own children's* internal layout, not the element's own
-  float/width-driven stacking among siblings) these are lower risk;
-  unconfirmed live.
+- `section.market-two-column .container .two-column-container .column`
+  -- already has `flex-wrap:wrap` in its gated rule (same group as the
+  confirmed-safe `market-trend-reports-container-side-bar` and
+  `team-block`), so likely safe by the same reasoning, but not directly
+  measured live.
 - Header/search-dropdown group (`header .container .header-inner`,
   `.search-dropdown .container` and children, `.headerRight`,
   `.main-nav ul`, `.resources-sticky-menu` variants) -- not checked on
