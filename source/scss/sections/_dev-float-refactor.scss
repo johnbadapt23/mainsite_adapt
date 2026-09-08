@@ -18963,11 +18963,24 @@ body.dev-float-refactor {
     // CSS, so .column's float is already inert -- bare float:none. But
     // .column itself is NOT flex, and its own .icon-container (80px) +
     // .text-container (calc(100% - 80px)) children still need a real
-    // flex parent to stay side by side (they sum to exactly 100%, no
-    // wrap needed at any breakpoint).
+    // flex parent to stay side by side.
+    //
+    // CORRECTION 2026-09-08: the "sum to exactly 100%, no wrap needed at
+    // any breakpoint" claim above only checked the base/desktop
+    // declarations. .text-container's real CSS has
+    // @media(max-width:1023px){width:100%;margin-top:24px} -- at that
+    // breakpoint the pair sums to 180% (80px icon + 100% text), which in
+    // production overflows the float and wraps below the icon (the
+    // classic stacking-via-overflow trick), but in a flex row with no
+    // wrap, the items just flex-shrink to fit the same row instead --
+    // icon and text end up squeezed side by side instead of stacked.
+    // Adding flex-wrap:wrap reproduces the real stacking at ≤1023px
+    // while leaving the ≥1024px side-by-side layout unaffected (the pair
+    // does sum to exactly 100% there, so nothing wraps).
     section.switcher-module .container .switch-content-container .icon-text-column-container .column {
         float: none;
         display: flex;
+        flex-wrap: wrap;
         align-items: flex-start;
     }
     section.switcher-module .container .switch-content-container .icon-text-column-container .column .icon-container {
@@ -20546,8 +20559,17 @@ body.dev-float-refactor {
     // with no flex parent of their own yet -- .column itself needs
     // display:flex added (currently just float:left;width:50%, a plain
     // grid item of the already-flex .icon-text-column-container).
+    //
+    // BUGFIX 2026-09-08: same gap as switcher-module's identical pattern
+    // above -- .text-container's real CSS is
+    // @media(max-width:767px){width:100%;margin-top:24px}, meant to
+    // overflow-wrap below the 80px icon at mobile (icon+text sums to
+    // 180% there). A nowrap flex row instead squeezes them into the same
+    // row. flex-wrap:wrap restores the real mobile stack without
+    // affecting the ≥768px side-by-side layout (100% sum there).
     section.two-column-icon-text .container .icon-text-column-container .column {
         display: flex;
+        flex-wrap: wrap;
         float: none;
     }
     section.two-column-icon-text .container .icon-text-column-container .column .icon-container,
