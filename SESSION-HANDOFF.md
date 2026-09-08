@@ -1838,3 +1838,127 @@ fix (it did restore the exact production float value on
     Section confirmed present on the homepage; visual close-up not yet
     done as of this write-up -- check the homepage ticker-tape band at
     the top/bottom edges once pushed.
+
+### §11 continued -- full audit closure pass (remaining "not yet
+exhaustively checked" list), same day
+
+Went through every remaining item from the "not yet exhaustively
+checked" list above, live at 375px, `?dev=true` vs production.
+**Everything came back safe** except one new real bug, found and fixed:
+
+- **`market-two-column .two-column-container .column`** -- confirmed
+  safe. Found a live page (`/go-to-market-insights/`). Section height
+  and column height pixel-identical to production (1818px / 328px
+  both).
+- **Header/search-dropdown group** -- checked the mobile hamburger
+  menu (`.mobileMenuMain`) and its Resources submenu
+  (`.mobileMenuResources`): both pixel-identical to production via
+  side-by-side screenshot. Also opened the header search overlay
+  (`.search-dropdown`) and found its "Popular Topics / Reports /
+  Insights" 3-column layout severely broken at mobile width (squished,
+  overlapping the close button) -- but confirmed via screenshot this
+  is **identically broken on production**, i.e. a pre-existing
+  production bug unrelated to this session's work, out of scope, not
+  touched.
+- **Mobile menu flex rules** -- covered by the header check above;
+  confirmed safe.
+- **`sneak-peak-module .sneak-peak-container`** -- found live on
+  `/edge-events/`. First measurement looked like a serious bug (section
+  478px wide, overflowing a 375px viewport) -- traced to a testing
+  artifact, not a real bug: the browser tab used for that check had
+  never had the mobile viewport preset applied (a fresh tab opened via
+  `preview_start` mid-session, still at desktop width). Re-measured
+  correctly at 375px: section height, container height, and container
+  width are all pixel-identical to production (1084.4375px /
+  788.4375px / 335px, exactly).
+- **`comparison-module` -20px and `sticky-slider-cards` -100px
+  diffs on `/adapt-vs-gartner/`** -- both root-caused and confirmed
+  benign, not regressions:
+  - `comparison-module`: `.title-container`, `.comparison-table-
+    container`, and `.button-container` are all `float:left` in
+    production but `float:none` in dev (gated). A floated element
+    establishes its own block-formatting-context (BFC) and so
+    *contains* a child's trailing margin inside its own box height;
+    a non-floated block lets that same margin *collapse through* to
+    the next element instead. Both behaviors produce the exact same
+    visual gap -- confirmed by direct measurement (35px gap between
+    `.title-container` and `.comparison-table-container` in BOTH
+    dev and production) and by pixel-identical screenshots. The
+    ~36px section-level "diff" is purely this margin-accounting
+    artifact, not a rendering difference.
+  - `sticky-slider-cards`: each of the 5 scroll-cards' `.card-title`
+    (H3) renders 20px taller in production (164px) than dev (144px)
+    despite identical font-size/line-height/margin/width and identical
+    visible text-wrapping (same 5 lines, confirmed via Range
+    `getClientRects()`). Traced to `.slider-scrolling-content` being
+    `float:left` in production vs `float:none` in dev -- likely an
+    interaction between the trailing zero-width-space character in the
+    card's CMS-authored copy (`"...counterparts)​"`) and how
+    floated vs block boxes handle a trailing empty inline line box.
+    Gaps *between* cards are identical (120px, both), and a full
+    side-by-side screenshot of card 1 is visually indistinguishable
+    between dev and production. Confirmed benign, imperceptible,
+    pre-existing content quirk -- not touched.
+  - Both diffs also confirmed independent of the pre-existing GSAP/
+    ScrollMagic console error on this page (present identically on
+    both dev and production, unrelated).
+- **`list-block .item.mobile-hide`, `registration-two-column-block
+  .column-container`** (from `5b5b4a6`, previously only structurally
+  verified) -- both found live and visually confirmed this pass:
+  - `list-block`: found on `/benchmark-maturity-assessment/`. All 5
+    `.item.mobile-hide` elements correctly `display:none` in both dev
+    and production; screenshot shows a clean collapsed accordion list.
+    The ~20px section height diff is the same float-BFC margin-
+    containment artifact as above (`.column-container` is
+    `float:left` in production, `float:none` in dev) -- confirmed via
+    screenshot, visually identical.
+  - `registration-two-column-block`: found on a live roundtable
+    registration page (`/roundtable/22-07-2026/...`). `.column-
+    container` correctly `display:block` in both; the first of 3
+    columns shows the same ~20px float-BFC artifact (other two columns
+    are pixel-identical). Full-section screenshot comparison is
+    visually indistinguishable.
+- **`events-listing-module.partners-events-listing .item .container`**
+  (from `5b5b4a6`) -- still **not found live** despite an expanded
+  search this pass (checked `/event-partner/`, `/event-partner/edge-
+  event-partnership/`, `/private-events-partnership/`, `/private-
+  events-sponsorship/`, and a partner-specific edge sub-page). Traced
+  the ACF structure: this variant only renders when a page's flexible-
+  content includes an `events_list` row
+  (`templates/template-event-partner.php` /
+  `template-event-partner-landing.php`), which is editorially optional
+  and apparently not currently used on any live page. Remains
+  structurally-verified only (postcss diff clean). Low risk by analogy
+  -- the base `events-listing-module` variant (same underlying
+  template family) has now been live-verified correct in multiple
+  other contexts this session.
+
+**Net result: the "not yet exhaustively checked" list from the
+original §11 writeup is now fully closed.** No regressions found
+beyond the `event-image-container` fix already applied earlier this
+pass. One pre-existing production bug newly documented (search-
+dropdown mobile layout) but explicitly not touched, per the
+never-change-user-facing-behavior-unless-asked rule -- it's a separate,
+out-of-scope issue.
+
+### Also this pass: raw `<img>` audit note (user-flagged, not started)
+
+User flagged that `functions.php` and other files still use raw
+`<img>` tags where `wp_get_attachment_image()` could be used. Quick
+grep confirms: 424 raw `<img>` occurrences across ~60 files (excluding
+`_archive/`). This is **not** a uniform find-replace -- a meaningful
+share are theme-bundled static SVG icons via
+`get_template_directory_uri()` (e.g. `linkedin-new.svg`,
+`website.svg` in `functions.php`'s team-member markup), which aren't
+WP attachments at all and can't use `wp_get_attachment_image()`.
+Others pull from ACF fields returning raw URL strings rather than
+attachment IDs/arrays, which would need the field's return-format
+changed before the swap is even possible. Some newer components
+(`templates/event-components/_sneak-peak.php`) already do this
+correctly, showing the codebase is inconsistent rather than uniformly
+needing the fix. Logged under the existing PHP/WP-standards audit
+(task list item "Audit theme for PHP 8+/WP standards, dead code,
+performance") for proper per-file categorization and sign-off, not
+started as a change -- swapping markup changes rendered output
+(auto `srcset`/`sizes`, possible lazy-loading differences), which is a
+real behavior-change risk that needs scoping first.
