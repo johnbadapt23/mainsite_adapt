@@ -1366,14 +1366,23 @@ body.dev-float-refactor {
     // live alongside the .footer-top regression fixes above, once the
     // footer's real layout was visible again under ?dev=true. Real/
     // ungated .back-to-top is `position: absolute; bottom: 70px;`
-    // (relative to .footer-bottom, its nearest positioned ancestor);
-    // moves it closer to the bottom edge.
-        footer {
-                .container {
-                        .footer-bottom {
-                                .logo-container {
-                                        .back-to-top {
-                                                bottom: 20px;
+    // (relative to .footer-bottom, its nearest positioned ancestor) --
+    // but ONLY at min-width:1024px. Below that, @include responsive(1023)
+    // switches it to `position: fixed; bottom: 40px;` as a scroll-triggered
+    // floating button (a completely different context). This rule was
+    // originally left unscoped, so its higher specificity (body.dev-
+    // float-refactor ...) overrode that fixed-mobile bottom:40px down to
+    // 20px too, pushing the button 20px lower and clipping it off the
+    // bottom edge on short mobile viewports. FIX 2026-09-08: scope to
+    // min-width:1024px so the mobile fixed-position value is untouched.
+        @media (min-width: 1024px) {
+                footer {
+                        .container {
+                                .footer-bottom {
+                                        .logo-container {
+                                                .back-to-top {
+                                                        bottom: 20px;
+                                                }
                                         }
                                 }
                         }
