@@ -1288,6 +1288,45 @@ body.dev-float-refactor {
                         }
                 }
         }
+        // BUGFIX 2026-09-08 (direct user report): .footer-link-container-
+        // wrapper is a mobile accordion panel -- real (ungated) CSS is
+        // float:left;width:100% at desktop, with
+        // @media(max-width:767px){display:none}, and
+        // &.active{@media(max-width:767px){display:block}} toggled by a
+        // click on the sibling .footer-column-title-wrapper above it. The
+        // mechanical fixer's pure-float:none auto-blockify added an
+        // UNCONDITIONAL display:block (see the earlier "line 208"/199
+        // entries above), which beats the real max-width:767 display:none
+        // at every width, leaving every footer column's link list
+        // permanently expanded on mobile instead of collapsed-until-
+        // tapped. Restoring display:none at max-width:767px, plus an
+        // .active override (higher specificity, wins over both the
+        // unconditional display:block and this display:none) so the
+        // click-to-expand toggle still works.
+        //
+        // Side effect of adding a max-width:767 display value for this
+        // selector: it now has display declared at TWO contexts (this
+        // one and the unconditional base), which made the mechanical
+        // fixer's leaf-compound map treat the ORIGINAL unconditional
+        // pure-float:none rule as newly context-sensitive, silently
+        // dropping its own auto-generated display:block (same mechanism
+        // as the title-container/.button-container-a side effects
+        // elsewhere in this file). .footer-link-container-wrapper is a
+        // <span> (inline by default) with no display of its own in the
+        // real CSS, so it needs this explicit unconditional
+        // display:block restored for desktop -- otherwise it falls back
+        // to inline there, breaking its width:100% layout.
+        footer .container .footer-top .footer-column-container .column .footer-link-container-wrapper {
+                display: block;
+        }
+        @media (max-width: 767px) {
+                footer .container .footer-top .footer-column-container .column .footer-link-container-wrapper {
+                        display: none;
+                }
+                footer .container .footer-top .footer-column-container .column .footer-link-container-wrapper.active {
+                        display: block;
+                }
+        }
         // line 442
         footer {
                 .container {
@@ -1362,6 +1401,23 @@ body.dev-float-refactor {
                         }
                 }
         }
+    // Direct user-requested addition 2026-09-08 (not part of the
+    // mechanical float-refactor audit): footer-bottom-left/right should
+    // stack (clear:both) on mobile instead of sitting float:left/float:
+    // right side by side, and the footer-bottom-right links should flow
+    // inline rather than each floating on its own line.
+    @media (max-width: 767px) {
+        footer .container .footer-bottom .footer-bottom-links-container .footer-bottom-left,
+        footer .container .footer-bottom .footer-bottom-links-container .footer-bottom-right {
+            float: none !important;
+            clear: both !important;
+        }
+        footer .container .footer-bottom .footer-bottom-links-container .footer-bottom-right a {
+            float: none !important;
+            clear: both !important;
+            display: inline;
+        }
+    }
     // ADDITION 2026-09-07: not a float fix -- a position tweak requested
     // live alongside the .footer-top regression fixes above, once the
     // footer's real layout was visible again under ?dev=true. Real/
@@ -19455,6 +19511,13 @@ body.dev-float-refactor {
         float: none;
     }
 
+    // Direct user-requested addition 2026-09-08 (not part of the
+    // mechanical float-refactor audit): .text-link inside the mobile
+    // .links-container variant needs display:inline-block.
+    span.links-container.mobile .text-link {
+        display: inline-block;
+    }
+
     // --- section.centered-text-links: reported live by the user as
     // still floating/overlapping under ?dev=true. .text-container is
     // display:inline-block in the live CSS but span.text (and h2,
@@ -20398,7 +20461,35 @@ body.dev-float-refactor {
 // actual size value, not just float/display. That's a real edit, not a
 // mechanical float->flex swap, so it's left for dedicated individual
 // review with the two real templates open side by side.
+//
+// BUGFIX 2026-09-08: the EARLIER mechanical batch (line ~7741 above,
+// predating this Section's deliberate skip) already touched
+// .date-content-container itself -- `@media(max-width:767px){float:
+// none}` -- without the nuance documented just above. That's actively
+// wrong, not just unreviewed: production's real
+// `.date-content-container` is float:LEFT specifically at
+// max-width:767px (and NOT floated at all at desktop) so that it
+// properly CONTAINS its own still-floating child `.item-content-
+// container` (also float:left, untouched by this file, real CSS with
+// no display of its own). A non-floated parent doesn't contain a
+// still-floating child -- exactly the same containment failure as the
+// .quote-slider .progress-container bug fixed elsewhere in this file,
+// just with the roles of parent/child reversed. Confirmed live
+// (?dev=true vs production, /edge-events/, 375px):
+// .date-content-container was float:none, 0px tall (collapsed) on dev
+// vs float:left, 297px tall (correctly containing its 297px-tall
+// floated child) on production -- the whole 64px difference in
+// section.events-listing-module's height traces to this collapse
+// cascading through the rest of the card. Restoring float:left at
+// max-width:767px here overrides the erroneous line-7741 rule (same
+// selector, same media context, later in the cascade wins).
 body.dev-float-refactor {
+    @media (max-width: 767px) {
+        section.events-listing-module .events-listing .item.event-item .date-content-container {
+            float: left;
+        }
+    }
+
     // section.community-block: .column is a Category A child (parent
     // .column-container is already display:flex itself).
     section.community-block .container .column-container .column {
