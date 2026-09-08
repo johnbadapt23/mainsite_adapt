@@ -2056,7 +2056,85 @@ PHP markup change, `?dev=true` gate untouched.
 
 ### Next steps
 
-- Decide (with user) how to handle the `delete-no` hidden-placeholder
-  and preload/slider-data placeholder `<img>` patterns noted above.
 - No other raw-`<img>`-from-ACF-field call sites remain per the sweep;
   the migration is functionally complete.
+- See §13 below for the `delete-no` hidden-placeholder decision. The
+  preload/slider-data placeholder tags (`$slide['image']`/
+  `$slide['inset_image']` in `single-event.php`/`single-event-nov.php`/
+  `template-agenda.php`/`template-home-nov.php`) are a **different**
+  pattern -- deliberately used, not removed, see §13.
+
+---
+
+## 13. Removed 22 dead `delete-no` hidden `<img>` tags (this pass, committed, not pushed)
+
+### What they were
+
+22 occurrences across 4 files (`templates/components/_resources-content-block.php`
+×1, `templates/member-single-post.php` ×10, `templates/single-post-feb.php`
+×10, `templates/post-components/_infogram.php` ×1) of
+`<img class="delete-no" style="display: none;" src="<?php the_field(...)
+?>" alt=""/>` -- always unconditionally hidden, reading `video_poster`,
+`featured_image`, `speaker_image`, or `infogram_image` ACF fields.
+
+### Why removed (not converted)
+
+Investigated before deciding, rather than guessing:
+
+- **Zero references anywhere in the theme.** A full-repo grep across every
+  `.js` file and every `.scss`/`.css` file found no selector, no class
+  lookup, no `data-*` read -- nothing touches `.delete-no` or reads these
+  tags' `src`. They are not a JS data-source pattern.
+- **For `video_poster`, `featured_image`, `speaker_image`:** every occurrence
+  sits immediately next to a sibling element using the *exact same field*
+  as a CSS `background-image: url(...)` -- i.e. the real, visible image.
+  Since the hidden `<img>` requests the identical URL the background-image
+  already requests, removing it changes zero bytes fetched for that visible
+  image and zero pixels rendered (the element was `display:none`, never
+  painted, in both browser rendering and any headless/print/PDF path).
+- **For `infogram_image`:** grepped every usage of that field name theme-wide
+  -- it is used **exclusively** inside these `delete-no` tags. No
+  background-image, no other reference anywhere. This field's hidden `<img>`
+  had literally no visible counterpart at all -- pure wasted image download
+  on every page load of an infogram-type post.
+- Contrasted this against the *other* hidden-`<img>` pattern flagged in §11
+  (`$slide['image']`/`$slide['inset_image']`, `visibility:hidden;
+  position:absolute; top:-10000px`, in the event banner/agenda templates):
+  that one is a deliberate preload trick for a carousel slide's background-
+  image that isn't in the initial viewport, and removing it risks a visible
+  flash/pop-in when the slide becomes active -- a real behavior-change risk.
+  That pattern was **left untouched**, per the standing rule. `delete-no` is
+  a different, unrelated pattern with no such risk.
+
+### Net effect
+
+Removing these 22 tags eliminates 22 potentially-redundant image HTTP
+requests per relevant page load (`display:none` does not stop the browser
+from fetching an `<img>`'s `src`) -- concentrated on `member-single-post.php`
+and `single-post-feb.php`, which can render up to 4 `infogram_image` fetches
+each per page via repeatable ACF rows, on top of the `video_poster`/
+`featured_image`/`speaker_image` duplicates already covered by the visible
+background-image request. In the 2 files with duplicate print/AMP-style
+markup sections, some page loads were fetching each hidden image **twice**.
+
+Where the enclosing PHP was only an `if ( get_sub_field(...) ) { <img> }`
+guard whose sole purpose was gating the now-removed tag, the whole
+conditional block was removed too (not just the `<img>` line), avoiding a
+redundant ACF field lookup on every loop iteration.
+
+### Verification
+
+Confirmed via `git diff --stat`: 4 files changed, 30 deletions, 0
+insertions -- a pure removal, nothing rewritten. All 4 files re-verified
+clean with `php-parser` (PHP 8.1) after editing. A final theme-wide grep
+confirms zero remaining `delete-no` occurrences (excluding the unreferenced,
+dead `_archive/` directory) and zero remaining references to it in any
+`.js`/`.scss`/`.css` file (there were none to begin with).
+
+No visible-pixel risk: every removed element was `display:none` before and
+after (i.e. the element simply no longer exists, which is indistinguishable
+from "exists but invisible" for anything a user or screen reader can
+perceive), and none was referenced by any script or stylesheet.
+
+**Committed to `dev`, not pushed** (user pushes from their own machine per
+standing practice). `?dev=true` gate untouched.
