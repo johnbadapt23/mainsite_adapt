@@ -20211,6 +20211,26 @@ body.dev-float-refactor {
         float: none;
     }
 
+    // BUGFIX 2026-09-08: a broader mechanically-generated rule for
+    // "section.expanding-form-module .container .column-container
+    // .column .text" auto-added display:block (a pure float:none fix),
+    // but that selector also matches .info-column's OTHER .text
+    // instance, which carries the real .hide-mobile modifier
+    // (source/scss/templates/_customer-events.scss: `&.hide-mobile {
+    // @media(max-width:767px){display:none} }`). The broader rule's
+    // unconditional display:block beat that real mobile-hide. Confirmed
+    // live (?dev=true vs production, /adapt-vs-gartner/, 375px):
+    // .info-column .text.hide-mobile was display:block/visible (96px
+    // tall) on dev vs display:none on production -- the entire 116px
+    // difference in section.expanding-form-module's height. Restoring
+    // display:none at max-width:767px here; the higher specificity
+    // (.text.hide-mobile vs .text) wins over the broader rule.
+    @media (max-width: 767px) {
+        section.expanding-form-module .container .column-container .column .text.hide-mobile {
+            display: none;
+        }
+    }
+
     // section.full-suite-slider-module: .title-container and its
     // children, and .slide-link-container, are all siblings of the
     // confirmed-Slick .full-suite-slider (not nested inside it) -- sole/
