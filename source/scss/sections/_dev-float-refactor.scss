@@ -20499,6 +20499,23 @@ body.dev-float-refactor {
         section.events-listing-module .events-listing .item.event-item .date-content-container {
             float: left;
         }
+
+        // BUGFIX 2026-09-08 (found during live re-verification of the fix
+        // above): the same "real ambiguity, skipped" row group documented
+        // just above also has `.event-image-container` -- a separate
+        // earlier mechanical batch (line ~8052) wrongly set
+        // `float: none` on it at this same max-width:767px context.
+        // Confirmed live (?dev=true vs production, /edge-events/, 375px):
+        // production keeps `.event-image-container` float:left at mobile
+        // (sits beside `.date-content-container`, same row), while dev
+        // had float:none -- this was shrinking `.date-content-container`'s
+        // available width and causing its text to wrap differently
+        // (16px shorter per card). Restoring float:left overrides the
+        // erroneous line-~8052 rule (same selector, same media context,
+        // later in the cascade wins).
+        section.events-listing-module .events-listing .item.event-item .event-image-container {
+            float: left;
+        }
     }
 
     // section.community-block: .column is a Category A child (parent
