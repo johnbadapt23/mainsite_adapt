@@ -1805,8 +1805,36 @@ title-tap (theme's own JS sets the inline style directly, not via the
 `display:none` default was the part that actually mattered);
 footer-bottom stacking confirmed matching the user's exact spec
 (`float:none`, `clear:both`, links stacked full-width); `.text-link`
-confirmed `inline-block` live. `.event-image-container` fix (`3887a1d`)
-is committed but not yet pushed/verified live as of this write-up --
-re-check `/edge-events/` at 375px once pushed (expect
-`event-image-container` height diff to close, and item-height diffs to
-drop from the current -16px to ~0px vs production).
+confirmed `inline-block` live.
+
+**`.event-image-container` fix (`3887a1d`) re-verified post-push:**
+`float:left` is confirmed live and matches production exactly (both
+`event-image-container` and `date-content-container` render at the same
+335px width, same float value). However this did **not** close the
+remaining ~16px per-card height diff on `/edge-events/` -- that
+residual gap traces one level deeper, to `.item-content-container
+.content-inner` and its children (`.title`, `.location`, `.excerpt`,
+`.mobile-link-container`): production keeps all of these `float:left`,
+while dev has them `float:none` (each child's own height matches
+production exactly -- 36px/20px/140px/21px both sides -- but stacking
+non-floated block children produces different margin-collapse behavior
+than stacking floated ones, accounting for the 16px). **This is the
+exact interior of the "Section 10 real ambiguity, not mechanically
+safe" zone already documented above** (the note about `.item-content-
+container`'s `calc(100% - 516px)` needing a containing-block width
+recalculation if converted, "a real edit, not a mechanical float->flex
+swap, left for dedicated individual review with the two real templates
+open side by side"). Not touched this pass, consistent with that
+existing decision -- flagging the 16px explicitly so it isn't mistaken
+for a regression from `3887a1d`, which is otherwise a correct, verified
+fix (it did restore the exact production float value on
+`.event-image-container`, just didn't reach this deeper interior gap).
+
+10. `a038c74` -- direct user-requested addition (gated, not part of the
+    mechanical audit): user reported a 1px line visible above and below
+    `section.logo-ticker-tape.background-black`. Added
+    `margin-top: -1px; margin-bottom: -1px;` to close the gap. Verified
+    via postcss diff (0 non-gated changes, exactly 1 new gated rule).
+    Section confirmed present on the homepage; visual close-up not yet
+    done as of this write-up -- check the homepage ticker-tape band at
+    the top/bottom edges once pushed.
