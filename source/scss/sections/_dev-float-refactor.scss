@@ -19514,7 +19514,18 @@ body.dev-float-refactor {
     // Direct user-requested addition 2026-09-08 (not part of the
     // mechanical float-refactor audit): .text-link inside the mobile
     // .links-container variant needs display:inline-block.
-    span.links-container.mobile .text-link {
+    //
+    // FIX 2026-09-08: the first attempt at this used the bare selector
+    // `span.links-container.mobile .text-link`, which compiled fine but
+    // never won in the cascade -- the mechanical fixer's auto-blockified
+    // rule for the SAME <a> two lines above
+    // (section.two-column-services .container .services-column-container
+    // .links-container.mobile a { float:none; display:block; }) uses the
+    // full ancestor chain and has much higher specificity, so it kept
+    // winning with display:block regardless. Matching that same full
+    // selector chain (with .text-link appended for the extra
+    // specificity needed to beat the plain `a`) fixes it for real.
+    section.two-column-services .container .services-column-container .links-container.mobile a.text-link {
         display: inline-block;
     }
 
