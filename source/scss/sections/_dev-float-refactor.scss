@@ -19653,9 +19653,24 @@ body.dev-float-refactor {
     // section.featured-module .container .title-container: 66.66%
     // .introduction-column + 33.34% .link-container, no flex parent of
     // its own yet.
-    section.featured-module .container .title-container {
-        display: flex;
-        align-items: flex-start;
+    //
+    // BUGFIX 2026-09-08: display:flex was unscoped, but this is a
+    // desktop-only side-by-side split -- both .introduction-column and
+    // .link-container have @include responsive(767){width:100%} in
+    // their real CSS, stacking to a single column via floats on mobile.
+    // Flex ignores float, so on mobile both width:100% flex items
+    // flex-shrank to ~50% each (168px/168px measured live at 375px)
+    // instead of stacking, and their content re-wrapped into the
+    // narrower columns (visibly: "Client-Exclusive Research" title
+    // wrapped to 3 lines with "All Resources" squeezed onto the same
+    // row instead of its own line below). Scoping to min-width:768px
+    // (complementing the real max-width:767px stack) fixes it -- same
+    // pattern as the .post-list-container fix above.
+    @media (min-width: 768px) {
+        section.featured-module .container .title-container {
+            display: flex;
+            align-items: flex-start;
+        }
     }
     section.featured-module .container .title-container .introduction-column {
         float: none;
@@ -21529,6 +21544,93 @@ body.dev-float-refactor {
         display: block;
     }
     section.two-column-thank-you-module .container .column-container .column .list-container .button-container a {
+        display: block;
+    }
+
+    // BUGFIX 2026-09-08: side effect of scoping section.featured-module
+    // .container .title-container's display:flex to min-width:768px
+    // above (mobile fix). ".container .title-container" is an extremely
+    // common 2-segment leaf-compound shared by ~24 unrelated sections'
+    // OWN pure float:none .title-container rules across this file.
+    // Moving the featured-module rule into a @media block changed what
+    // fix-float-none-display.js's whole-file leaf-compound map reports
+    // for that leaf ("has display at min-width:768px" is now a NEW,
+    // different context than before), which made every one of these
+    // other, previously-safe, unconditional ".title-container"
+    // selectors newly look context-sensitive and silently lose their
+    // correct auto-generated display:block. Exact same mechanism as the
+    // two rounds of ".button-container a" side effects documented above
+    // for the 66-item follow-up work. Confirmed via postcss rule diff
+    // against the previous commit's build (24 changed entries, all
+    // "float:none;display:block" -> "float:none"). Restoring each
+    // explicitly here.
+    section.filter-title-block .container .title-container {
+        display: block;
+    }
+    body.template-evr section.fixed-scroller .container .title-container {
+        display: block;
+    }
+    section.author-events.events-listing-module .container .title-container {
+        display: block;
+    }
+    section.author-posts-listing .container .title-container {
+        display: block;
+    }
+    section.comparison-module .container .title-container {
+        display: block;
+    }
+    section.comparison-three-column-text .container .title-container {
+        display: block;
+    }
+    section.filter-listing.in-the-news-listing .container .title-container {
+        display: block;
+    }
+    section.fixed-scroller .container .title-container {
+        display: block;
+    }
+    section.full-suite-slider-module .container .title-container {
+        display: block;
+    }
+    section.logo-ticker-tape .container .title-container {
+        display: block;
+    }
+    section.map-moving-text .container .title-container {
+        display: block;
+    }
+    section.map-with-numbers .container .title-container {
+        display: block;
+    }
+    section.market-featured .container .title-container {
+        display: block;
+    }
+    section.market-two-column .container .title-container {
+        display: block;
+    }
+    section.overlapping-cards .container .title-container {
+        display: block;
+    }
+    section.three-column-icon-services .container .title-container {
+        display: block;
+    }
+    section.three-column-icon-text .container .title-container {
+        display: block;
+    }
+    section.three-column-icon-text-ecosystems.three-column-partnered-research .container .title-container {
+        display: block;
+    }
+    section.two-column-services .container .title-container {
+        display: block;
+    }
+    section.two-column-subscribe .container .title-container {
+        display: block;
+    }
+    section.two-column-text-image-cards .container .title-container {
+        display: block;
+    }
+    section.two-column.two-column-image-text-switcher .container .title-container {
+        display: block;
+    }
+    section.two-column.two-column-steps .container .title-container {
         display: block;
     }
 }
