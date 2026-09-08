@@ -19728,9 +19728,28 @@ body.dev-float-refactor {
     // .post-list-container is already gated float:none from an earlier
     // session; adding display:flex here for its .first-post-column
     // (57%) + .side-bar-column (43%) pair.
-    section.featured-module.featured-home .post-list-container {
-        display: flex;
-        align-items: flex-start;
+    //
+    // BUGFIX 2026-09-08: this was left unscoped by media query, but the
+    // 57%/43% split is a DESKTOP-only layout -- .first-post-column and
+    // .side-bar-column both also carry the global .one-half class, whose
+    // real (non-gated) CSS is `.one-half{width:50%;float:left}` with
+    // `@media(max-width:767px){.one-half{width:100%}}` collapsing them
+    // to a single stacked column on mobile via the "two full-width
+    // floats" pattern. display:flex with no media query turned them into
+    // flex items at ALL widths, which ignores float entirely -- so on
+    // mobile the two width:100% flex items just flex-shrank to ~50%
+    // each (168px/168px measured live at 375px), squeezing a 2-column
+    // row into mobile instead of stacking. Confirmed via live rect diff
+    // (?dev=true vs production, 375x812): section height 1519px vs
+    // 1358px, post-list-container flex-direction:row with 168px-wide
+    // children vs production's float:left, 335px-wide (100%) children.
+    // Scoping to min-width:768px (complementing the real max-width:767px
+    // breakpoint) restores the mobile single-column stack.
+    @media (min-width: 768px) {
+        section.featured-module.featured-home .post-list-container {
+            display: flex;
+            align-items: flex-start;
+        }
     }
     section.featured-module.featured-home .post-list-container .first-post-column .resources-featured-slide {
         float: none;
@@ -20428,11 +20447,36 @@ body.dev-float-refactor {
     // container timer bar are siblings of the confirmed-Slick .quote-
     // slider-module and .quote-slider-thumbnails (not nested inside
     // either).
+    //
+    // BUGFIX 2026-09-08: .progress-container immediately follows
+    // .quote-slider-module in the DOM, which stays float:left on
+    // purpose (Slick-managed, see the exclusion note above). The
+    // mechanical fixer correctly auto-added display:block here (a pure
+    // float:none rule), but a non-floated block that follows a still-
+    // floating full-width sibling doesn't clear it -- its box's top
+    // edge lines up with the top of the float instead of starting below
+    // it, so it visually overlaps .quote-slider-module instead of
+    // stacking under it. Confirmed live (?dev=true, 375px):
+    // .progress-container's rendered rect was 237px tall (220px
+    // .quote-slider-module height + 17px of its own real content,
+    // i.e. it was drawing on top of the float, not clearing it), and
+    // the overlap left section.quote-slider net 58px SHORTER overall
+    // (424px dev vs 482px production) since content was overlapping
+    // instead of stacking. clear:both fixes it -- same pattern already
+    // used for .social-links in the footer fix above.
+    //
+    // Side effect of adding clear:both: this rule is no longer a "pure"
+    // float:none-only declaration, so fix-float-none-display.js's
+    // isPureFloatNone check no longer auto-adds display:block for it
+    // (same mechanism as the .social-links regression earlier this
+    // session) -- adding display:block explicitly to compensate.
     section.quote-slider .container .quote-slider-title {
         float: none;
     }
     section.quote-slider .container .progress-container {
         float: none;
+        clear: both;
+        display: block;
     }
     section.quote-slider .container .progress-container .progress-bar {
         float: none;
@@ -20773,12 +20817,26 @@ body.dev-float-refactor {
     section.two-column-services .container .services-column-container .column.icon-text-column .service {
         display: flex !important;
     }
-    section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container {
-        display: flex !important;
-        align-items: center;
-    }
-    section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container a.text-link {
-        margin-top: 0;
+    // BUGFIX 2026-09-08: this was unscoped, but .links-container's real
+    // (ungated) CSS is float:left;width:100% at base, with
+    // @media(max-width:767px){display:none} -- it's a desktop-only
+    // element (a sibling .links-container.mobile carries the mobile
+    // copy). The unscoped display:flex!important beat that display:none
+    // at every width, forcing this container (and its two links) to
+    // render on mobile when it should be hidden entirely. Confirmed live
+    // (?dev=true, 375px): .links-container.desktop was display:flex,
+    // visible, 64px tall vs production's display:none, adding 64px to
+    // section.two-column-services' .text-column (333px dev vs 269px
+    // production -- the full difference). Scoping to min-width:768px
+    // (complementing the real max-width:767px hide) fixes it.
+    @media (min-width: 768px) {
+        section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container {
+            display: flex !important;
+            align-items: center;
+        }
+        section.two-column-services .container .services-column-container .column.text-column .text-content-inner .links-container a.text-link {
+            margin-top: 0;
+        }
     }
     section.content-slider-module .container .content-slider-container .progress-container {
         padding-top: 1px;
