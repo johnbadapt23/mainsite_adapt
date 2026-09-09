@@ -2784,3 +2784,88 @@ Committed as `4bfd15b` to `dev`, not pushed. Task #22 closed. The ATTO/
 APTO plugin-update recommendation and the RUCSS safelist check (§19)
 are both flagged back to the user as separate, non-theme-code action
 items.
+
+## 21. Query Monitor follow-up on homepage `?dev=true`: duplicate logo-lookup queries (fixed) + slow `permalink_customizer` query (plugin-level, flagged)
+
+User installed Query Monitor and sent two screenshots from checking the
+homepage under `?dev=true`.
+
+### Finding 1 (theme bug, fixed): duplicate `attachment_url_to_postid()` per logo
+
+Query Monitor's Duplicate Queries panel showed 134 total duplicates, the
+largest single group being paired (`Count: 2`, identical each time)
+`SELECT post_id, meta_value FROM wp_..._postmeta WHERE meta_key =
+'_wp_attached_file' AND meta_value = '<company-logo-filename>'` queries,
+Caller = `attachment_url_to_postid`, one pair per homepage partner logo
+(Metcash, AWS, Slack, Bupa, ServiceNow, IBM, Officeworks, etc.).
+
+Root cause: `templates/components/_logo-ticker-v2.php` (dispatched from
+`template-home.php`'s `logo_ticker_tape` ACF layout -- confirmed this is
+the "Home Template" used live) renders the same set of partner logos
+**twice**, back-to-back, in two separate `.moving-text` spans -- a
+standard CSS marquee/ticker technique (duplicate the content once so the
+scroll animation can loop seamlessly with no visible seam). Each of the
+two render loops independently called `attachment_url_to_postid(
+$logo['url'] )` to resolve the ACF image URL to an attachment ID, so
+every logo's ID was looked up twice per page load instead of once.
+
+Fix: resolve all logo IDs into a `$ticker_logo_ids` array in a single
+pass before either span renders, then have both spans `foreach` over
+that array instead of re-running `have_rows()`/`attachment_url_to_postid()`
+each time. Output/markup is byte-identical; only the query count changes
+(halved, for every logo, on every page load of this component).
+
+Also applied the identical fix to `templates/components/_logo-ticker.php`,
+which has the exact same bug pattern but is currently **not referenced by
+any `get_template_part()` call** (confirmed via sitewide grep) -- fixed
+for consistency in case it's reused later, flagged here as dead code
+otherwise (same category as the 3 dead `get_term_link()` files in §18,
+not deleted, awaiting a batched cleanup decision).
+
+Note: `templates/landing-components/_logo-ticker.php` (used by
+`template-landing.php`) is a different, unrelated file that already reads
+`$logo['ID']` directly from the ACF field -- no `attachment_url_to_postid()`
+call, not affected by this bug.
+
+Verified both edited files parse clean with `php-parser` (8.1). Committed
+as `dd031a6` to `dev`, not pushed.
+
+### Finding 2 (plugin-level, not theme code -- flagged, not fixed)
+
+Query Monitor's Slow Queries panel topped out at a 0.2143s query filtering
+`wp_postmeta` on `meta_key = 'permalink_customizer'`, comparing
+`LOWER(meta_value)` against the literal strings `'?dev=true'` and
+`'?dev=true/'` via `LEFT()`/`LENGTH()` (i.e. checking whether any post's
+custom-permalink meta value is a prefix match for the current query
+string) -- Caller/Component both showed as "Unknown" in Query Monitor,
+which typically means the query didn't originate from a theme template
+function QM can attribute a file/line to.
+
+Grepped the entire theme (`templates/`, `includes/`, root PHP files) for
+`permalink_customizer` -- zero matches. Also checked the
+`advanced-post-types-order` plugin source connected to this session (the
+one folder of plugin code available) -- zero matches there either. This
+meta key and the prefix-match-against-current-URL pattern is consistent
+with a permalink-rewriting plugin (e.g. "Custom Fields Permalink 2",
+seen in the plugins list during the WP Rocket check in §19) hooking into
+every request's routing/`parse_request` to see if the current URL matches
+a custom permalink -- which would explain why it's firing even on
+`?dev=true` (a query string with no matching post, forcing a full scan
+each time) and why QM can't attribute it to a theme file.
+
+This is the same shape of finding as the ATTO/APTO duplicate-query issue
+in §20: real, measurable, but not theme-fixable code from here since the
+plugin's source isn't in a connected folder. Flagged back to the user
+rather than guessed at -- recommend checking which plugin owns the
+`permalink_customizer` meta key (Query Monitor's own "Hooks & Actions" or
+"Queries by Component" view, filtered to this query, usually names the
+plugin even when the Caller column says "Unknown"), and if that plugin
+has a "skip non-matching/dev URLs" or caching option.
+
+### Status
+
+Theme-side fix (duplicate logo queries) committed `dd031a6` to `dev`, not
+pushed -- awaiting the user's push-from-their-machine step per standing
+workflow. The slow `permalink_customizer` query remains an open,
+plugin-level action item for the user to triage, same as the ATTO/APTO
+plugin-update recommendation.
