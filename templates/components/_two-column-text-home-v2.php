@@ -25,7 +25,7 @@
     position: relative;
     padding-left: 0;
 }
-#home-two-column-text-3 .column-container .column.body-text:before {
+#home-two-column-text-<?= get_row_index(); ?> .column-container .column.body-text:before {
     background: radial-gradient(rgba(0, 0, 0, .8), rgba(0, 0, 0, .8) 30%, transparent, transparent);
     content: '';
     position: absolute;
@@ -60,7 +60,13 @@
 
 
 
-<section id="home-two-column-text-<?= get_row_index(); ?>" class="flex-two-column-text home-two-column-text <?php echo get_sub_field( 'background_colour' ); ?>" style="background-image: url(<?= get_sub_field('background_image')['url']; ?>); background-repeat: no-repeat; background-position: center; background-size: cover;">
+<section 
+    id="home-two-column-text-<?= get_row_index(); ?>" 
+    class="flex-two-column-text home-two-column-text <?php echo get_sub_field('background_colour'); ?>"
+    <?php if ($background_image) : ?>
+        style="background-image: url('<?= esc_url($background_image['url']); ?>'); background-repeat: no-repeat; background-position: center; background-size: cover;"
+    <?php endif; ?>
+>
     <div class="container">
         <?php if (get_sub_field( 'title' )) { ?>
             <h2><?php echo get_sub_field( 'title' ); ?></h2>
