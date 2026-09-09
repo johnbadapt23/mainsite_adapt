@@ -2400,3 +2400,79 @@ no risk -- the type inconsistency is ugly but not an actual bug, nothing is
 broken today) vs. the full `empty()`-based refactor (real regression risk,
 needs its own dedicated verification pass). **User chose to leave all 12
 as-is.** No code changed. Task #18 closed.
+
+---
+
+## 17. `.article-container-three-post`/`.market-trend-reports-container-three-post` `.item` row -- found + fixed while verifying §15
+
+### Task
+
+Not user-requested -- found incidentally while spot-checking §15's
+"harmless side effect" selectors live on `/all-resources/`.
+
+### Symptom
+
+`.item` cards in these two selectors' 3-up grid (used on all-resources,
+plus resource-type/topic/podcast/thank-you pages per an existing
+2026-09-03 code comment) rendered with image and content stacked
+vertically under `?dev=true` (item height 197px) instead of side by side
+(110px on production).
+
+### Root cause
+
+Pre-existing gap, not caused by §15's commit. `.grid-wrapper` (the `.item`
+cards' parent) was already correctly gated to `display:flex; flex-wrap:
+wrap` to arrange the cards themselves, but each individual `.item`'s own
+internal row (`.image-container`/`.video-container` beside
+`.item-content-container`, `source/scss/templates/_resources-types.scss:
+3306-3377`) never got a flex parent of its own -- so removing their floats
+collapsed that inner row into a vertical stack.
+
+### Fix
+
+`.item` gets `display:flex; align-items:flex-start`;
+`.image-container`/`.video-container` (direct children of `.item` here,
+confirmed via `templates/resources-components/_articles-featured-block.php:
+87-100` -- no `<a>`-wrapper layer like §15's market-featured case) get
+`flex-shrink:0`. Applied unconditionally (not scoped to a media query --
+the row exists at every breakpoint, unlike §15's mobile-only case).
+
+**Cross-talk with `section.featured-types`, caught before committing.**
+That homepage component (`templates/components/_featured-types.php`)
+reuses the same `.article-container-three-post` class for an unrelated
+purpose (documented in an existing 2026-09-03 "BUGFIX" comment in this
+same file) with its own, already-correct, already-`display:flex`
+production CSS -- already matched by an existing higher-specificity gated
+override. That override only sets `display`, not `align-items` or
+`flex-shrink`, so the new generic rule's `align-items:flex-start` and
+`flex-shrink:0` would otherwise have leaked into it via the cascade (same
+selector matched by both rules, unmasked properties still apply). Added a
+matching higher-specificity correction (`align-items:stretch;
+flex-shrink:1`, restoring the flex defaults) to the existing
+featured-types override block -- same specificity-elevation technique
+used by the original 2026-09-03 BUGFIX (`:not()` with a descendant
+combinator gets mangled by clean-css's minifier, confirmed back then;
+elevating specificity instead is unaffected by minification).
+
+### Verification
+
+- Postcss AST-level selector diff (same script as every other fix in this
+  doc) against the previous build: exactly 9 additions, all intended (the
+  new `.item`/`.image-container`/`.video-container` rules for both
+  selectors, plus the 3 featured-types corrective rules), 0 unrelated
+  changes.
+- Live-verified on `/all-resources/`: injected the new rules under
+  `?dev=true` and re-measured all 3 sampled cards -- item heights
+  111/111/155 and image/content positions identical to production on
+  every card.
+- Live-verified `section.featured-types` on the homepage, both its
+  `.type-container` cards (image+title) and its `.all-container` "All
+  Resources" card: measured geometry with and without the new rules
+  injected -- byte-identical in both cases, confirming the corrective
+  override fully neutralizes the cascade leak.
+- `footer.min.css` confirmed byte-identical via `md5sum` (footer bundle
+  doesn't import this section).
+
+### Status
+
+Committed as `48fa14d` to `dev`, not pushed.
