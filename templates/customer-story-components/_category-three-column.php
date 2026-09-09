@@ -17,13 +17,30 @@
                 )
             )
         ); 
-        $termTax = get_term($category_ids[0], 'customer-stories-categories');
-        $term_link = get_term_link($termTax);
+        $termTax = get_term( $category_ids[0], 'customer-stories-categories' );
+        // get_term() returns false (invalid $category_ids[0]) or WP_Error
+        // (unregistered taxonomy) instead of a WP_Term whenever the ACF
+        // "category" field is left empty or its selected term is deleted --
+        // normalize both to null so every use below can rely on a single
+        // truthy check instead of separately handling each failure mode.
+        if ( ! $termTax || is_wp_error( $termTax ) ) {
+            $termTax = null;
+        }
+        // get_term_link() itself returns WP_Error for a null/invalid term,
+        // and echoing a WP_Error object directly fatals ("Object of class
+        // WP_Error could not be converted to string") -- only call it once
+        // $termTax is confirmed valid, and re-use the resulting string
+        // (not $termTax) everywhere below, including the share-link URLs
+        // further down this file.
+        $term_link = $termTax ? get_term_link( $termTax ) : '';
+        if ( is_wp_error( $term_link ) ) {
+            $term_link = '';
+        }
         ?>
         <div class="related-title-container">
-            <span>                                
-                <h2 class="black-text"><?php echo $termTax->name; ?> <?php if($termTax->slug == 'event-delegate'){ ?>Feedback<?php } ?></h2>
-                <p class="p-large text-dark-grey"><?php echo get_field('sub_title', $termTax ); ?></p>
+            <span>
+                <h2 class="black-text"><?php echo $termTax ? $termTax->name : ''; ?> <?php if ( $termTax && $termTax->slug == 'event-delegate' ) { ?>Feedback<?php } ?></h2>
+                <p class="p-large text-dark-grey"><?php echo $termTax ? get_field( 'sub_title', $termTax ) : ''; ?></p>
             </span>
             <span class="link-container"><a class="red-text text-link large-link-text red-underline-link external-link" href="<?php echo $term_link; ?>" target="_self">See more</a></span>
         </div>
@@ -83,11 +100,15 @@
                                     }
                                 }
                                 ?>
-                                <?php if($subcategory){ ?> 
+                                <?php if($subcategory){ ?>
                                     <span class="sub-cat label-XSmall">/ <?php echo $subcategory->name; ?></span>
-                                <?php } else { ?> 
-                                    <span class="sub-cat label-XSmall">/ <?php echo $q->name; ?></span>
-                                <?php } ?> 
+                                <?php } else { ?>
+                                    <!-- Was `$q->name` -- $q was never defined in this file (copy-paste
+                                    leftover from _category-slider.php); the term this fallback is meant
+                                    to name is $termTax, the block's own top-level category, already
+                                    resolved above and null-guarded. -->
+                                    <span class="sub-cat label-XSmall">/ <?php echo $termTax ? $termTax->name : ''; ?></span>
+                                <?php } ?>
                                 <?php if ( get_field( 'show_quote_in_listing' ) == 1 ) { ?>
                                     <?php if ( have_rows( 'content' ) ): ?>
                                         <?php while ( have_rows( 'content' ) ) : the_row(); ?>
@@ -200,7 +221,7 @@
                                             <span class="share-title labelMedium black-text">Share this</span>
                                             <span class="share-links-container">
                                                 <span class="copy-link share">
-                                                    <input type="text" value="<?php echo get_term_link( $termTax ); ?>?story=<?php echo $slug; ?>" id="postLink" style="display: none;">
+                                                    <input type="text" value="<?php echo $term_link; ?>?story=<?php echo $slug; ?>" id="postLink" style="display: none;">
                                                     <a onclick="copyJobLink()">
                                                         <span class="image-icon-container">
                                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
@@ -220,7 +241,7 @@
                                                     }
                                                 </script>
                                                 <span class="share-linked-in share">
-                                                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php echo get_term_link( $termTax ); ?>?story=<?php echo $slug; ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
+                                                    <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php echo $term_link; ?>?story=<?php echo $slug; ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
                                                         <span class="image-icon-container">
                                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-black.svg" alt="Share on LinkedIn" width="24px"/>
                                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/linked-in-hover.svg" alt="Share on LinkedIn" width="24px"/>
@@ -228,7 +249,7 @@
                                                     </a>
                                                 </span>								
                                                 <span class="share-email share">
-                                                    <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo get_term_link( $termTax ); ?>?story=<?php echo $slug; ?>" target="_blank" rel="noopener noreferrer">
+                                                    <a class="emailShare" href="mailto:?&subject=<?php the_title(); ?>&body=<?php echo $term_link; ?>?story=<?php echo $slug; ?>" target="_blank" rel="noopener noreferrer">
                                                         <span class="image-icon-container">
                                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/job-email.svg" alt="Share via Email" width="24px"/>
                                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/email-red-hover.svg" alt="Share via Email" width="24px"/>

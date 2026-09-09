@@ -1,5 +1,13 @@
 <?php
 $terms = get_the_terms($post->ID, 'customer-stories-categories');
+// Defaults for when no parent category is found at all (not just the
+// WP_Error edge case handled below) -- $category_link/_name/_slug are
+// used unconditionally in the markup further down (no wrapping `if
+// ($parent_category)` there), so leaving them unset in that case was a
+// pre-existing "Undefined variable" warning on every such page load.
+$category_link = '';
+$category_name = '';
+$category_slug = '';
 
 if (!empty($terms) && !is_wp_error($terms)) {
     $parent_category = null;
@@ -15,6 +23,18 @@ if (!empty($terms) && !is_wp_error($terms)) {
     // If no parent found, check if the term itself has a parent
     if (!$parent_category && isset($terms[0]->parent) && $terms[0]->parent != 0) {
         $parent_category = get_term($terms[0]->parent, 'customer-stories-categories');
+        // get_term() returns WP_Error (not false) when the taxonomy itself
+        // fails to be valid/registered -- the `if ($parent_category)` guard
+        // below doesn't catch that (WP_Error is an object, always truthy),
+        // which would otherwise reach $parent_category->name (a harmless
+        // PHP8 warning) and get_term_link($parent_category) (which passes
+        // the WP_Error straight through) -- if that result is ever echoed
+        // directly, it fatals ("Object of class WP_Error could not be
+        // converted to string"). Normalize to null here so the existing
+        // truthy check covers both failure modes.
+        if ( is_wp_error( $parent_category ) ) {
+            $parent_category = null;
+        }
     }
 
     // Assign category details if a valid parent category was found
@@ -22,6 +42,9 @@ if (!empty($terms) && !is_wp_error($terms)) {
         $category_name = $parent_category->name;
         $category_slug = $parent_category->slug;
         $category_link = get_term_link($parent_category);
+        if ( is_wp_error( $category_link ) ) {
+            $category_link = '';
+        }
 
         // Get child terms (sub-categories) of the parent category
         $child_terms = get_terms([

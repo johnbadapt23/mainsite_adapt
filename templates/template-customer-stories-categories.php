@@ -13,9 +13,18 @@ $keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
 if ($q && $q->parent != 0) {
     // Redirect child category to its parent archive
     $parent_term = get_term($q->parent, 'customer-stories-categories');
-    if ($parent_term) {
-        wp_redirect(get_term_link($parent_term), 301);
-        exit;
+    // get_term() returns WP_Error (not false) if the taxonomy itself is
+    // ever invalid/unregistered -- `if ($parent_term)` alone doesn't catch
+    // that (WP_Error is an object, always truthy). Both get_term_link()
+    // called on that WP_Error and wp_redirect() concatenating it into the
+    // Location header would otherwise fatal ("Object of class WP_Error
+    // could not be converted to string").
+    if ($parent_term && ! is_wp_error($parent_term)) {
+        $parent_term_link = get_term_link($parent_term);
+        if (! is_wp_error($parent_term_link)) {
+            wp_redirect($parent_term_link, 301);
+            exit;
+        }
     }
 }
 

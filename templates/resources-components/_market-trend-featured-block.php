@@ -2,18 +2,32 @@
     <div class="container">
         <div class="title-container desktop">
             <div class="introduction-column two-thirds">
-                <?php $term = get_term_by('slug', 'market-trend-reports', 'resource-type');?>
+                <?php
+                $term = get_term_by('slug', 'market-trend-reports', 'resource-type');
+                // See _articles-featured-block.php's identical fix for why:
+                // get_term_by() returning false here used to reach an
+                // unguarded echo get_term_link($term), which fatals on a
+                // WP_Error result ("Object of class WP_Error could not be
+                // converted to string").
+                if ( ! $term || is_wp_error( $term ) ) {
+                    $term = null;
+                }
+                $term_link = $term ? get_term_link( $term ) : '';
+                if ( is_wp_error( $term_link ) ) {
+                    $term_link = '';
+                }
+                ?>
                 <?php if (get_sub_field( 'title' )) {?>
                     <h2 class="taxonomy-title text-black"><?php echo get_sub_field( 'title' ); ?></h2>
                     <p class="taxonomy-description text-black"><?php echo get_sub_field( 'text' ); ?></p>
                 <?php } else { ?>
 
-                    <h2 class="taxonomy-title text-black"><?php echo $term->name; ?></h2>
-                    <p class="taxonomy-description text-black"><?php echo $term->description; ?></p>
+                    <h2 class="taxonomy-title text-black"><?php echo $term ? $term->name : ''; ?></h2>
+                    <p class="taxonomy-description text-black"><?php echo $term ? $term->description : ''; ?></p>
                 <?php } ?>
             </div>
             <div class="link-container one-third">
-                <a class="red-text-link" href="<?php echo get_term_link($term); ?>"><?php echo get_sub_field( 'view_all_text' ); ?></a>
+                <a class="red-text-link" href="<?php echo $term_link; ?>"><?php echo get_sub_field( 'view_all_text' ); ?></a>
             </div>
         </div>
         <div class="sidebar">
@@ -30,18 +44,32 @@
         </div>
         <div class="title-container mobile">
             <div class="introduction-column two-thirds">
-                <?php $term = get_term_by('slug', 'market-trend-reports', 'resource-type');?>
+                <?php
+                $term = get_term_by('slug', 'market-trend-reports', 'resource-type');
+                // See _articles-featured-block.php's identical fix for why:
+                // get_term_by() returning false here used to reach an
+                // unguarded echo get_term_link($term), which fatals on a
+                // WP_Error result ("Object of class WP_Error could not be
+                // converted to string").
+                if ( ! $term || is_wp_error( $term ) ) {
+                    $term = null;
+                }
+                $term_link = $term ? get_term_link( $term ) : '';
+                if ( is_wp_error( $term_link ) ) {
+                    $term_link = '';
+                }
+                ?>
                 <?php if (get_sub_field( 'title' )) { ?>
                     <h2 class="taxonomy-title text-black"><?php echo get_sub_field( 'title' ); ?></h2>
                     <p class="taxonomy-description text-black"><?php echo get_sub_field( 'text' ); ?></p>
                 <?php } else { ?>
 
-                    <h2 class="taxonomy-title text-black"><?php echo $term->name; ?></h2>
-                    <p class="taxonomy-description text-black"><?php echo $term->description; ?></p>
+                    <h2 class="taxonomy-title text-black"><?php echo $term ? $term->name : ''; ?></h2>
+                    <p class="taxonomy-description text-black"><?php echo $term ? $term->description : ''; ?></p>
                 <?php } ?>
             </div>
             <div class="link-container one-third">
-                <a class="red-text-link" href="<?php echo get_term_link($term); ?>"><?php echo get_sub_field( 'view_all_text' ); ?></a>
+                <a class="red-text-link" href="<?php echo $term_link; ?>"><?php echo get_sub_field( 'view_all_text' ); ?></a>
             </div>
         </div>
         <div class="post-container grid-wrapper">
