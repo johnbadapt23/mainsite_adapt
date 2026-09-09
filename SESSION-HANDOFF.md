@@ -2869,3 +2869,136 @@ pushed -- awaiting the user's push-from-their-machine step per standing
 workflow. The slow `permalink_customizer` query remains an open,
 plugin-level action item for the user to triage, same as the ATTO/APTO
 plugin-update recommendation.
+
+## 22. Systemic float-collapse bug: `section.full-suite-slider-module` (+ preemptive `section.company-slider` fix) -- user-reported, root-caused, fixed
+
+User: "please continue on the float thing tasks as I can still see a lot
+of it. Sample page: https://staging.adapt.com.au/buyer-persona-cfo/"
+
+### Investigation
+
+Loaded `/buyer-persona-cfo/?dev=true` at 1440x900: the hero card slider
+looked cut off with a lot of blank space to its right. Traced that first
+lead (a Slick carousel that auto-scrolls continuously, `autoplaySpeed:
+0, speed: 16000, cssEase: 'linear'` in `main.js`) and confirmed it was a
+red herring -- pausing it on a clean slide showed it rendering correctly
+on both dev and production.
+
+The real bug was found by comparing `document.body.scrollHeight`
+directly between `?dev=true` and production on the same page: 10007px
+(dev) vs 10409px (production), a 402px gap. Walking `main`'s direct
+child `<section>` top/height values on both pinpointed exactly where
+they diverged: everything matched pixel-for-pixel through `section.
+benchmarking-four-column`, then `section.full-suite-slider-module`
+measured 447px on dev vs 983px on production.
+
+### Root cause
+
+`source/scss/global/_styles.scss` has a sitewide base rule:
+```
+section {
+    float: left;
+    width: 100%;
+}
+```
+Every `<section>` on the site floats by default (an old-school layout
+technique). Floating an element has a second effect beyond positioning:
+it makes the element establish a new block formatting context, which
+auto-contains ("auto-clears") any still-floating descendants for the
+purpose of the parent's own height -- this is the same mechanism
+`overflow:hidden`/`clearfix` hacks replicate manually.
+
+`section.full-suite-slider-module` contains `.slider-outer > .full-
+suite-slider`, a Slick carousel that an earlier pass in this file
+correctly identified as still-live and deliberately left `float:left`
+(never converted -- correct call, Slick manages its own positioning).
+But the section's *own* float -- which was silently doing the job of
+containing that floated carousel -- got stripped by this file's blanket
+`body.dev-float-refactor section { float: none; }` rule. Nothing
+replaced the containment it was providing, so `.slider-outer` collapsed
+to 0 height and the whole section shrank to just its title.
+(The floated carousel still rendered -- floats aren't clipped by a
+collapsed parent -- but it painted underneath the next section's opaque
+background, which is why it looked entirely missing rather than merely
+mispositioned.)
+
+A second, smaller instance of the identical mechanism one level down:
+`.title-container` (a child of the section) had already been converted
+`float:left` -> `float:none` by an earlier pass in this file. That
+alone let its `h2`'s 8px `margin-bottom` collapse through into the
+section's own box instead of staying inside `.title-container` --
+975px vs production's 983px, even after fixing the main collapse.
+
+### Fix
+
+Two `display: flow-root` rules added to the existing `body.dev-float-
+refactor` block in `_dev-float-refactor.scss`, right next to this
+component's other already-existing overrides:
+```
+section.full-suite-slider-module {
+    display: flow-root;
+}
+section.full-suite-slider-module .container .title-container {
+    display: flow-root;
+}
+```
+`flow-root` re-establishes the same block-formatting-context
+containment a float provides, without reintroducing the float itself
+-- it only affects elements that actually have uncontained floating
+descendants, so it can't regress anything that wasn't relying on it.
+
+Verified via live-injected `<style>` on both the `?dev=true` tab and a
+second production tab (same active carousel slide confirmed on both
+before comparing, since the carousel auto-scrolls): section height came
+out 983px === 983px. Then walked every `main > section`'s top/height on
+both tabs end-to-end -- all ten sections matched exactly, including
+everything *after* the fixed section (confirming the fix didn't just
+patch the one section but also correctly restored the downstream
+layout that depended on its height). `main`'s total height matched
+exactly too (11122px === 11122px); the only remaining page-height gap
+was inside `<footer>` (872px dev vs 898px prod, 26px) -- screenshotted
+the footer directly and it renders complete with no missing/overlapping
+content, so this reads as pre-existing/unrelated to today's fix (footer
+layout was already a separately-completed task, §"Fix footer float/flex
+layout bugs", earlier this engagement) rather than a new regression;
+flagging it rather than chasing it further since it wasn't part of what
+the user reported seeing.
+
+Rebuilt with `gulp build:styles-split` in a scratch copy (`npm install
+--ignore-scripts` was needed this time -- default install failed on a
+gifsicle native-build error unrelated to CSS, no-op for our purposes
+since we only need gulp-sass). Diffed old vs new `main-nofooter.min.css`
+line-by-line (`sed 's/}/}\n/g'` to make the minified file diffable) and
+confirmed only the two new selectors were added, byte-identical
+everything else.
+
+### Preemptive companion fix: `section.company-slider`
+
+While root-causing the above, found the exact same shape of latent bug
+by inspection: this file's own header comment names `.company-slide-
+container` (inside `section.company-slider`) as a second Slick carousel
+"left floating on purpose" with the identical structure -- `float:left;
+width:100%` (`source/scss/templates/_customer-events.scss` ~line 3417),
+no containment of its own, same reliance on the section's now-stripped
+float.
+
+Could not find a live page in this session with that ACF block enabled
+to visually confirm (checked `/adapt-vs-gartner/`, `/custom-partnered-
+research/`, `/ecosystem-consulting-partners/`, `/executive-advisors/` --
+none render it). Applied the same `display: flow-root` fix to `section.
+company-slider` anyway since it's provably safe either way (it can only
+restore missing containment, never regress a section that wasn't
+relying on it) -- but this one specific instance is unverified live,
+flagging that clearly. Also checked a third similarly-flagged carousel,
+`.home-content-slider` inside `section.content-slider-module`, live on
+the homepage: its height already matches production exactly (1228px vs
+1227px, 1px rounding) via a *different*, already-existing fix from an
+earlier pass (`clear:both` on the sibling `.progress-container` rather
+than a section-level flow-root) -- confirmed no action needed there.
+
+### Status
+
+Committed as `45f2ddc` to `dev`, not pushed. This component (`.full-
+suite-slider-module`) is used by 13 templates per a sitewide grep, and
+the fix is fully scoped to the class itself (not page-specific), so the
+same fix applies wherever it appears.
