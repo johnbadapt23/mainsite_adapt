@@ -11,6 +11,12 @@ if($keyword != '') {
         'post_type' => 'post',
         'posts_per_page' => -1,
         'no_found_rows' => true,
+        // Only used below to collect which top-level resource-type
+        // terms are in use among the matched posts (filter buttons) --
+        // never displayed itself, so fields=>ids skips fetching
+        // post_content/postmeta for every match instead of full post
+        // objects.
+        'fields' => 'ids',
         's' => $keyword,
         'paged'=> $paged,
         'tax_query' => array(
@@ -27,6 +33,7 @@ if($keyword != '') {
         'post_type' => 'post',
         'posts_per_page' => -1,
         'no_found_rows' => true,
+        'fields' => 'ids',
         'paged'=> $paged,
         'tax_query' => array(
             'relation' => 'AND',
@@ -50,11 +57,22 @@ if($keyword != '') {
         </div>
         <div class="topic-button-container-outer">
             <div class="topic-button-container filter-button-container">
-                <?php $terms = array(); ?>
-                <?php $loop = new WP_Query( $args ); ?>
-                <?php if ( $loop->have_posts() ) : ?>
-                    <?php while ( $loop->have_posts() ) : $loop->the_post();
-                        $topics = get_the_terms( $post->ID, 'resource-type' );
+                <?php
+                // BUGFIX/PERF 2026-09-09: this used to run a full
+                // posts_per_page=>-1 WP_Query (every matched post, every
+                // column, every meta join) purely to walk its results and
+                // collect distinct top-level resource-type terms for the
+                // filter buttons below -- the posts themselves were never
+                // displayed. fields=>ids (set above) makes the query only
+                // fetch the ID column; get_the_terms() per ID is unchanged
+                // (still one cached lookup per matched post), so the
+                // collected $terms set and its order are identical to
+                // before, just without the full post-object overhead.
+                $terms = array();
+                $loop = new WP_Query( $args );
+                if ( $loop->posts ) :
+                    foreach ( $loop->posts as $topic_post_id ) :
+                        $topics = get_the_terms( $topic_post_id, 'resource-type' );
                         if($topics){
                             foreach( $topics as $topic ){
                                 if($topic-> parent == 0){
@@ -64,11 +82,9 @@ if($keyword != '') {
                                 }
                             }
                         }
-                    ?>
-                    <?php endwhile; ?>
-                <?php else : ?>
-                <?php endif; ?>
-                <?php wp_reset_postdata(); ?>
+                    endforeach;
+                endif;
+                ?>
                 <a href="<?php echo get_term_link( $q );?>"class="filter-button<?php if($filterType == '') { ?> selected<?php } ?>">All</a>
                 <?php foreach($terms as $term) { ?>
                     <a href="<?php echo get_term_link( $q );?>?filter-type=<?php echo $term -> slug; ?>"class="filter-button<?php if($filterType == '') { } else { if ($term -> slug == $filterType ) { ?> selected<?php }}?><?php if ($q->slug == 'peer-insights'){ ?> peer-insights<?php } ?>"><?php echo $term -> name; ?></a>

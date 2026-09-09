@@ -564,6 +564,13 @@ $filterBy = array();
                             's' => $keyword,
                             'posts_per_page' => -1,
                             'no_found_rows' => true,
+                            // Only used below to tally per-term counts
+                            // for the filter-type dropdown (get_the_terms
+                            // per matched post ID) -- the posts themselves
+                            // are never displayed, so fields=>ids skips
+                            // fetching post_content/postmeta for every
+                            // match instead of full post objects.
+                            'fields' => 'ids',
                             'paged'=> $paged,
                             'tax_query' => array(
                                 'relation' => 'AND',
@@ -590,6 +597,7 @@ $filterBy = array();
                             'post_type' => 'post',
                             'posts_per_page' => -1,
                             'no_found_rows' => true,
+                            'fields' => 'ids',
                             'paged'=> $paged,
                             'tax_query' => array(
                                 'relation' => 'AND',
@@ -669,13 +677,24 @@ $filterBy = array();
                             }
                         }
                     }
+                    // BUGFIX/PERF 2026-09-09: this used to run a full
+                    // posts_per_page=>-1 WP_Query (every matched post,
+                    // every column, every meta join) purely to walk its
+                    // results and tally per-term counts for the
+                    // filter-type dropdown -- the posts themselves were
+                    // never displayed. fields=>ids (set above) makes the
+                    // query only fetch the ID column; get_the_terms() per
+                    // ID is unchanged (still one cached lookup per
+                    // matched post), so $filterTypesResults and
+                    // $counterResults come out identical to before, just
+                    // without the full post-object overhead.
                     $loop = new WP_Query( $args );
 
-                    if ( $loop->have_posts() ) : ?>
+                    if ( $loop->posts ) : ?>
                     <?php $counterResults = 0; ?>
-                    <?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
+                    <?php foreach ( $loop->posts as $insight_post_id ) : ?>
                             <?php
-                                $terms = get_the_terms( $post->ID, 'filter-types' );
+                                $terms = get_the_terms( $insight_post_id, 'filter-types' );
                             ?>
 
                             <?php if ( $terms ) { ?>
@@ -687,7 +706,7 @@ $filterBy = array();
                                 <?php } ?>
                             <?php } ?>
                             <?php $counterResults++; ?>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
 
                     <?php
 
