@@ -58,7 +58,9 @@
 <?php endif; ?>
 
 
-
+<?php 
+$background_image = get_sub_field('background_image');
+?>
 
 <section 
     id="home-two-column-text-<?= get_row_index(); ?>" 
