@@ -717,7 +717,18 @@ $filterBy = array();
                     // find out the QueryString:
                     $queryString = $_SERVER['QUERY_STRING'];
                     // put it all together:
-                    $queryURL = "/blog?" . $queryString; ?>
+                    // SECURITY 2026-09-09: $_SERVER['QUERY_STRING'] is raw,
+                    // attacker-controlled request data. $queryURL built from
+                    // it used to be echoed unescaped into 3 href attributes
+                    // below (lines ~738/1033/1134) -- a crafted query string
+                    // like `?"><script>...` would break out of the
+                    // attribute (reflected XSS). esc_url() here, once at
+                    // the source, makes every echo of $queryURL below safe
+                    // without touching each call site individually; it's
+                    // the standard WP function for exactly this (URL going
+                    // into an href), so legitimate query strings render
+                    // identically.
+                    $queryURL = esc_url( "/blog?" . $queryString ); ?>
 
                     <?php
                         $totalTypes = count($filterTypesResults); ?>
