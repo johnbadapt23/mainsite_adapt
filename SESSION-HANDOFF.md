@@ -3108,3 +3108,79 @@ one-liners plus the company-slider completion committed as `f865409`,
 `e826d15`, `b213d66`. Next step once pushed: re-check the three live
 baselines above match exactly (same filter buttons, same order), and
 try again to locate a page using `template-insights.php`.
+
+**Update, next session turn**: pushed as `e24269f`. Re-checked all 3
+live baselines (`/resource-type/articles`, `/topic/data-strategy`,
+`/search-results?searchWords=cloud`) -- byte-for-byte identical filter
+buttons, same "441 results" total. `template-insights.php` still not
+located live.
+
+## 24. N+1 query audit: `foreach` loops running one `WP_Query` per iteration
+
+Continuing task #2's audit into a new class of bug: a `new WP_Query()`
+(or `get_posts()`) called *inside* a loop over another query's results,
+a taxonomy's terms, or an ACF-selected ID list -- running the query once
+per iteration instead of once total.
+
+Delegated a sitewide search (excluding the 3 confirmed-dead files and
+anything already tagged `BUGFIX/PERF 2026-09` from this session's
+earlier fixes). Most hits were false positives on inspection -- ACF
+`have_rows()` repeater loops that build one query *after* the loop
+closes, or `foreach` loops that only accumulate `tax_query` clauses into
+a single shared args array before one query runs (`_events-listing.php`
+and its `-partners` variant, `_advisor-module.php`/`_edge-partner-
+module.php`/`_partner-module.php`/`_speaker-module.php`'s expertise
+filter loops, `template-events-old.php`). Real, repeated N+1 found in
+exactly 3 files, all the same shape: an editor picks a list of taxonomy
+term IDs (ACF field), and the template loops that list running one
+`WP_Query` per term instead of one query with `tax_query => ['terms' =>
+$terms, 'operator' => 'IN']`:
+
+- `templates/components/_related-articles-taxonomies-grid.php` (3
+  branches: event/topic/filter-type) -- **unbounded per term**
+  (`posts_per_page => -1`, no cap at all).
+- `templates/components/_related-articles-taxonomies-locked.php` (same
+  3 branches) -- bounded (`posts_per_page => 8, orderby => rand`).
+- `templates/components/_related-articles-taxonomies.php` (same 3
+  branches) -- same as `-locked`, bounded + random.
+
+**Looked closer before touching anything and found the "obvious" fix
+(merge into one `tax_query IN` query) is wrong for 2 of these 3 files,
+not just a nice-to-have:**
+
+- The two `orderby => rand` files (`-locked` and the plain variant) are
+  fetching *8 random posts per selected term* by design -- e.g. 3
+  selected terms = up to 24 curated posts, one random-8 group per term.
+  A single merged `IN` query would instead return 8 random posts total
+  across all terms combined -- a real content change (fewer, differently
+  -composed posts), not a performance-neutral rewrite.
+- The grid file additionally resets a `$counter` variable to `-1` at the
+  *start of each term's inner loop* (drives a `layout0`..`layout7` CSS
+  class cycle, and a post matching 2 selected terms currently renders
+  twice, once per term). Merging into one query changes the counter
+  cycle boundaries and de-duplicates that repeat post -- again a real
+  behavior change, not just a query-count reduction.
+
+So unlike the filter-button fix (§23), this one isn't a safe drop-in --
+it would need an explicit decision on whether "8 random per term" /
+per-term duplicate rendering is actually wanted, which is a product
+question, not a query-optimization one. Left the query *structure*
+alone in all 3 files.
+
+**What was safe and got fixed**: `_related-articles-taxonomies-locked.
+php`'s 3 query blocks were missing `no_found_rows` (the file has zero
+pagination anywhere -- grepped clean), so WordPress was running
+`SQL_CALC_FOUND_ROWS` on every one of those per-term queries for a
+count nothing ever reads. Same zero-behavior-change fix as task #23's
+21-file pass. The plain `-taxonomies.php` variant already had
+`no_found_rows` set; the grid variant already had it too (only its
+unbounded `-1` and the counter/dedup behavior above remain open).
+
+### Status
+
+`no_found_rows` fix committed `2840909` to `dev`, not pushed. The
+unbounded-per-term query in `_related-articles-taxonomies-grid.php` and
+the per-term duplicate-post/counter semantics in all 3 files remain
+open, flagged here pending a product decision rather than a query
+rewrite -- not attempted without explicit sign-off given the behavior-
+change risk identified above.
