@@ -21118,16 +21118,37 @@ body.dev-float-refactor {
 // then .text-column, both classed "one-half" too, DOM order matches
 // visual order, no reversal needed) -- given its own flex parent here.
 //
-// Deliberately NOT fixing: section.market-featured .container
-// .grid-wrapper .item .item-content-container's @media (max-width:
-// 767px) mobile-row override. templates/components/_market-featured.php
-// renders <section class="market-featured filter-listing"> -- its
-// .item.one-third card picks up a shared base selector spanning
-// _events.scss/_resources-types.scss (the same family fixed/skipped in
-// Sections 10/12) whose .image-container/<a> float behavior at the
-// base (non-mobile) breakpoint wasn't fully traced. Needs a dedicated
-// pass through that shared selector's full definition before it's safe
-// to touch -- left uncovered for a future section rather than guessed.
+// RESOLVED, 2026-09-09 (was "deliberately not fixing" above):
+// section.market-featured .container .grid-wrapper .item's markup is
+// <div class="item one-third articles"><a><span class="image-container">
+// <span class="bg-container">...</span></span></a><span class=
+// "item-content-container">...</span></div> (templates/components/
+// _market-featured.php:29-77). Traced the base (non-mobile) breakpoint
+// that blocked this before: `.image-container`'s only float comes from
+// the sitewide bare `.image-container { float:left; width:100%; }`
+// rule (no file-specific override for this card type at all), which is
+// ALREADY gated globally (`body.dev-float-refactor .image-container {
+// float:none; display:block; }`, this same file) -- so at the base
+// breakpoint .image-container already renders width:100%, un-floated,
+// full-width-stacked-above-content, both gated and ungated. Nothing
+// left to fix there. The only genuinely live, uncovered float is
+// .item-content-container's OWN @media (max-width:767px) override
+// (source/scss/templates/_market.scss:406, float:left; width:calc(100%
+// - 126px)), which pairs with .image-container's mobile-only fixed
+// 126x90 size to form a real same-direction 2-item row (image left,
+// content right, natural DOM order -- no row-reverse needed, unlike
+// Section 6's subscribe-form). Fixed below: .item becomes the flex
+// parent (mobile only, since at the base breakpoint it's correctly a
+// stacked block, no row); its direct-child <a> (wrapping .image-
+// container) gets flex-shrink:0 to match its fixed-width image, since
+// flexbox "blockifies" the <a> into a real sized flex item instead of
+// the zero-size collapsed inline box floats left it as; .item-content-
+// container's own float is dropped in the same media query it was
+// declared in. Verified live: measured production's rendered box
+// positions (image 126x90 at left:20, content at left:146/width:209,
+// both same row, item height 110px) and reproduced them exactly via
+// injected CSS on ?dev=true before committing this as the real fix (all
+// 3 cards on /go-to-market-insights/ checked, pixel-identical).
 //
 // No Slick involvement (grepped source/js/main.js), no collisions
 // (.market-column-container/.two-column-container are unique to this
@@ -21148,6 +21169,23 @@ body.dev-float-refactor {
     }
     section.market-two-column .container .two-column-container .column .inner-column {
         float: none;
+    }
+
+    // section.market-featured .item mobile row fix (see the corrected
+    // "RESOLVED" comment above -- .item.one-third.articles's <a>
+    // (image) + .item-content-container 2-item row, same-direction
+    // floats, no reversal needed).
+    @media (max-width: 767px) {
+        section.market-featured .container .grid-wrapper .item {
+            display: flex;
+            align-items: flex-start;
+        }
+        section.market-featured .container .grid-wrapper .item > a {
+            flex-shrink: 0;
+        }
+        section.market-featured .container .grid-wrapper .item .item-content-container {
+            float: none;
+        }
     }
 }
 
