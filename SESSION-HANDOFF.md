@@ -3184,3 +3184,48 @@ the per-term duplicate-post/counter semantics in all 3 files remain
 open, flagged here pending a product decision rather than a query
 rewrite -- not attempted without explicit sign-off given the behavior-
 change risk identified above.
+
+**Update, next session turn**: pushed as `383e3ac` (bundled with the
+user's own concurrent `single-registration.php` commit -- confirmed
+`origin/dev` now matches local `HEAD` exactly, both commits present).
+
+## 25. Security pass: unsanitized `$_GET`/`$_POST`/`$_SERVER` usage
+
+Continuing task #2 into a new category: superglobal reads that reach
+HTML output, raw SQL, or a file path without sanitization/escaping.
+Delegated a sitewide search. Result: the overwhelming majority of
+`$_GET`/`$_POST` reads in this theme are already correctly wrapped in
+`sanitize_text_field()`/`intval()` (no `$_REQUEST`/`$_COOKIE` usage
+exists at all). One real, live-relevant finding:
+
+**`template-insights.php` -- reflected XSS (fixed).** `$queryURL` was
+built from raw `$_SERVER['QUERY_STRING']` (100% attacker-controlled)
+and echoed unescaped into 3 separate `href` attributes (~lines 738,
+1033, 1134). A crafted query string like `?"><script>...</script>`
+would break out of the attribute. Fixed by wrapping the single
+assignment in `esc_url()` rather than each echo site -- standard WP
+function for a URL going into `href`, legitimate query strings render
+identically. Committed `8cdfb54`.
+
+**Same bug shape found in 5 more files, left untouched (confirmed
+dead).** `member-single-post.php`, `single-post-no-embed.php` (x2),
+`single-post-feb.php`, and `single-post-side-articles.php` (x2) all
+have a `substr($host, 0 - strlen($allowed_host)) == $allowed_host`
+`HTTP_REFERER` check that's both missing an `isset()` guard (PHP 8.1+
+deprecation warning when no referrer is sent -- common, referrers are
+client-optional) and bypassable (`evil-adapt.com.au` satisfies the
+suffix check as if it were a real `adapt.com.au` referrer, since
+there's no requirement for a `.` boundary before the match). Checked
+reachability before touching anything: none of these 5 files have a
+`Template Name` header, and grepping the whole theme for
+`get_template_part`/`include`/`require`/`single_template` turns up zero
+references to any of them -- `single-post.php`, the one file WP's
+`single-{post_type}.php` naming convention actually routes to for the
+`post` type, doesn't contain this code at all. Same dead-code category
+as §18's confirmed-unreachable files (which the user already chose to
+leave as-is) -- left these alone rather than re-litigating that
+decision on lower-severity, unreachable code.
+
+### Status
+
+Committed `8cdfb54` to `dev`, not pushed.
