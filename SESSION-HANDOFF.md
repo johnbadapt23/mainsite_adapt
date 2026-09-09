@@ -2587,3 +2587,200 @@ PHP-FPM process health, server error logs, WordPress plugin review,
 database performance, caching/hosting setup) are infrastructure-level
 and out of scope for this sandbox, which only has access to this git
 repo -- flagged back to the user to take to whoever manages hosting.
+The user then explicitly followed up asking for two of those items:
+WP Rocket cache config (they have it installed) and theme DB query
+optimization -- see §19 and §20 below.
+
+---
+
+## 19. WP Rocket caching config check (user follow-up)
+
+### What could actually be checked
+
+No access to the WP Rocket plugin's settings (stored in `wp_options`) or
+the server/database from this sandbox -- only this theme's git repo.
+Checked what's observable from theme code plus the live site instead.
+
+**Confirmed active:** `meta-generator: WP Rocket 3.23.3.3` present on
+fetched pages.
+
+**Theme-level integration points found in `functions.php`, both look
+deliberate and correctly scoped:**
+- `rocket_delay_js_exclusions` filter excludes `jquery.min.js`/
+  `gsap.min.js`/`mediaelement-and-player.min.js`/the theme's own
+  `main.min.js` from WP Rocket's "Delay JS execution" feature, but
+  **only on the homepage** (`$request_uri === '/'`).
+- `pre_get_rocket_option_remove_unused_css` filter forces WP Rocket's
+  "Remove Unused CSS" (RUCSS) **off** specifically on the front page
+  (`is_front_page()` returns `0`) -- this was already relied on earlier
+  this session (§2a) to help rule out RUCSS as a cause of a different
+  bug.
+- One `<script nowprocket>` tag (`_text-animation-introduction-v2.php`)
+  correctly excludes an inline animation-driving script from Delay JS
+  sitewide, not just the homepage.
+
+**A real, unverified risk worth the user checking directly.** RUCSS
+being force-disabled only on the homepage implies it's **enabled
+everywhere else**. RUCSS works by crawling a page's rendered DOM and
+stripping any CSS selector that doesn't match anything found there. The
+entire `?dev=true` gated float-refactor CSS (`_dev-float-refactor.scss`,
+every rule scoped `body.dev-float-refactor ...`) depends on a class that
+is **never present** during an automated crawl (it only appears when a
+real visitor manually adds `?dev=true` to the URL) -- meaning RUCSS's
+crawler would very plausibly classify every single gated rule as
+"unused" and strip it from what real anonymous visitors receive on any
+non-homepage page, regardless of what the compiled CSS file itself
+contains. Grepped the whole theme for any RUCSS safelist/exclusion
+entry for `.dev-float-refactor` (`rocket_rucss_safelist` filter or
+similar) -- **none exists**.
+
+Could not confirm or rule this out directly: this browser session is
+authenticated as a WP admin (confirmed via the admin bar, Query Monitor,
+and other admin-only assets loading), and WP Rocket's caching/
+optimization pipeline (including RUCSS) does not apply to logged-in
+admin sessions by default -- so every live check this session (including
+the successful `?dev=true` verifications in §15/§17) was against the
+**uncached, unoptimized** version of the site, not what an anonymous
+visitor's browser actually receives. Getting a true logged-out view
+would have required logging this session out of WP admin (no credentials
+to log back in afterward, so declined to do that unilaterally) or fetching
+via a tool with direct HTTP header/raw-HTML access (not available here --
+`web_fetch` is stateless/anonymous but only returns extracted text, not
+raw `<link>` tags or cache signatures).
+
+**Recommendation:** in the WP Rocket dashboard, check **Settings → File
+Optimization → Remove Unused CSS** on a non-homepage page while logged
+out (or in an incognito window) with `?dev=true` -- if the flexed/
+un-floated layout doesn't appear, RUCSS is stripping the gated CSS and
+`body.dev-float-refactor` (or the specific selectors used throughout
+`_dev-float-refactor.scss`) needs adding to RUCSS's CSS Safelist. This
+is also a broader risk for anything else in the theme that only becomes
+relevant after JS interaction (mobile menu open states, dropdowns,
+accordions, active/expanded classes) -- RUCSS's static crawl doesn't
+click or interact with the page, so any CSS gated behind a
+JS-toggled class has the same theoretical exposure. Worth a full RUCSS
+safelist review generally, not just for the float-refactor gate.
+
+### Status
+
+Investigation only, no code changed (nothing in the theme needed fixing
+-- both existing Rocket-related filters are correct). Flagged to the
+user for a direct dashboard check they can do that this sandbox cannot.
+
+---
+
+## 20. Database query optimization pass (user follow-up, task #22)
+
+### Approach
+
+Used a research subagent to enumerate ~100+ `new WP_Query(` calls
+theme-wide and cross-reference against the earlier `no_found_rows` sweep
+(§8, which had explicitly left `template-insights.php` and
+`template-search-results.php` unaudited), N+1 patterns in loops, and
+exact-duplicate queries. Personally verified every finding before
+fixing (checked each file for `wp_pagenavi()`/`paginate_links()`/
+`next_posts_link()`/`->max_num_pages` before touching `no_found_rows`,
+since adding it to a genuinely-paginated query would silently break
+pagination).
+
+### Fixed
+
+**Two genuinely redundant queries removed:**
+- `template-search-results.php`: deleted an entire second, unbounded
+  (`posts_per_page => -1`) `WP_Query` (`$counterargs`) that duplicated
+  `$args`' `post_type`/keyword/`tax_query` just to loop through every
+  matching post in PHP and count them into `$counterResults`. `$args`
+  itself doesn't set `no_found_rows` (it feeds `wp_pagenavi()`), so
+  `$posts->found_posts` already has the identical number for free.
+- `template-insights.php`: the "filter-types" dropdown options were
+  computed twice -- once for the desktop `#filterBy` select, once for
+  the mobile `.filter-by-mobile` one -- via the exact same
+  `WP_Query($args)` + `get_the_terms()` loop (or the exact same
+  `get_terms()` call in the no-filter/no-keyword branch). Computed once
+  into `$filterTypeTerms`, reused by both blocks.
+
+  Both of the explicitly-deferred files from §8 turned out to already
+  have `no_found_rows` correctly applied everywhere safe, and correctly
+  omitted where real pagination depends on it -- no gaps, only the two
+  redundant-query issues above.
+
+**`no_found_rows => true` added to 29 more `WP_Query()` calls across 21
+files**, after confirming none of their results are ever used for
+pagination: the 5 `resources-components/_*-featured-block.php` files,
+`_resources-featured-block.php` (3), `_most-popular-posts.php`,
+`_category-three-column.php`, `single-customer_stories.php`,
+`single-post-side-articles.php`, `single-post-no-embed.php`,
+`components/_featured-posts.php` (2), `components/_market-featured.php`,
+`post-components/_media-related.php`, `_post-related.php` (2 branches),
+`_press-related.php`, `_post-related-best-practices.php` (2 branches),
+`types-components/_type-two-column.php`, `template-registration.php`
+(3), `components/_related-articles-taxonomies.php` (3),
+`thank-you-components/_featured-posts.php`.
+
+Left untouched: `customer-story-components/_category-slider.php` (same
+pattern, confirmed unreachable/dead code -- see §18); `template-
+registration.php`'s queries also have no `posts_per_page` cap and no
+pagination UI at all, which is a display question rather than a
+DB-load one, not touched here.
+
+Verified every edited file parses clean under PHP 8.1 via `php-parser`.
+No CSS/visual output touched. Committed as `4bfd15b` to `dev`, not
+pushed.
+
+**Caught and reverted before committing:** the editing subagent made an
+unrelated, unrequested change to `source/scss/templates/_customer-
+events.scss` (`margin-top: 104px` → `margin-top: 0` on
+`.partner-fixed-scroller`) that had nothing to do with this task --
+caught via a full `git status`/`git diff` review before commit,
+reverted with `git checkout --`, confirmed clean before committing only
+the intended PHP files. Worth remembering to always diff-review a
+subagent's changes against the full repo status, not just the files it
+claims to have touched.
+
+### The bigger finding -- not theme code, flagged to the user
+
+The user mentioned installing Query Monitor mid-session, which made a
+live cross-check possible via its full raw query/stack-trace data
+(`window.QueryMonitorData.data.db_queries.data.rows`, extracted directly
+in the browser session rather than through QM's own UI, which needs
+its AJAX panels to be manually opened first).
+
+On `/all-resources/` (`template-resources.php`): **130 total DB queries
+per page load**, of which **95 (73%) trace back to two third-party
+plugins**, not the theme:
+- **Advanced Taxonomy Terms Order** ("ATTO" class prefix in stack
+  traces) -- v2.8.7.1 installed, v3.9.4 available. Its `_terms_clauses`
+  hook (wired into WordPress's `terms_clauses` filter, which every
+  taxonomy term query in the request passes through) produced **40+11+
+  10+5+5+3+3 = 77 literally-duplicate SQL queries** for what should be
+  cacheable/identical term-hierarchy lookups.
+- **Advanced Post Types Order** ("APTO" class prefix) -- v5.9.7
+  installed, v6.1.2 available. Its `get_sort_view_id_by_attributes()`
+  already has its own memoization (`$APTO->cache_key_exists()`/
+  `cache_get_key()`, keyed on `md5($sortID . serialize($attr))`) but
+  still produced 6 duplicate queries via `sort_multiple_match_check_on_
+  query()`/`query_match_sort_id()` -- the caching wraps the *result*,
+  not the inner lookup, so a cache-key mismatch still re-runs the
+  expensive part.
+
+This dwarfs anything fixable in the theme itself (only ~27 of the 130
+queries on this page trace to theme templates). The Desktop\advanced-
+post-types-order folder connected to this session turned out to be the
+actual APTO plugin source (editable), but a source-level fix wasn't
+attempted here: both plugins are several major versions behind their
+latest release, both by the same vendor (Nsp Code), and a version jump
+that large very plausibly already includes query-caching/performance
+fixes on the vendor's side -- the simplest, safest, highest-leverage fix
+is almost certainly just updating both plugins first, then re-measuring
+with Query Monitor to see if the duplication persists, rather than
+hand-patching a third-party plugin's core sorting/ordering logic (high
+blast radius if a fix is wrong -- this logic drives admin drag-and-drop
+ordering across every post type and taxonomy sitewide) without an
+explicit decision from the user first.
+
+### Status
+
+Committed as `4bfd15b` to `dev`, not pushed. Task #22 closed. The ATTO/
+APTO plugin-update recommendation and the RUCSS safelist check (§19)
+are both flagged back to the user as separate, non-theme-code action
+items.
