@@ -19964,8 +19964,23 @@ body.dev-float-refactor {
     }
 
     // .market-trend-reports-container-three-post / .article-container-
-    // three-post: plain 3-up grid (nth-child(3n+1){clear:left}), no flex
-    // parent of its own yet.
+    // three-post: plain 3-up grid (nth-child(3n+1){clear:left}) --
+    // .grid-wrapper below correctly wraps the .item cards into a
+    // flex row, but each .item's OWN internal row (.image-container/
+    // .video-container beside .item-content-container,
+    // source/scss/templates/_resources-types.scss:3306-3377) never got a
+    // flex parent of its own. RESOLVED, 2026-09-09 (found while verifying
+    // the unrelated Section 17 market-featured fix, see below): confirmed
+    // live on /all-resources/ under ?dev=true that this collapsed the row
+    // into a vertical stack (item height 197px vs production's 110px).
+    // templates/resources-components/_articles-featured-block.php:87-100
+    // confirms `.image-container`/`.video-container` are direct children
+    // of `.item` here (not wrapped in an `<a>` the way Section 17's
+    // market-featured `.item` is) -- flex-shrink:0 goes directly on them.
+    // No row-reversal needed (DOM order matches visual order at every
+    // breakpoint; percentages sum to 100% at both the base 32.7%/67.3%
+    // split and the <=767px 35.8%/64.2% split, so this applies
+    // unconditionally rather than inside a media query).
     .market-trend-reports-container-three-post .container .grid-wrapper,
     .article-container-three-post .container .grid-wrapper {
         display: flex;
@@ -19975,6 +19990,14 @@ body.dev-float-refactor {
     .market-trend-reports-container-three-post .container .grid-wrapper .item,
     .article-container-three-post .container .grid-wrapper .item {
         float: none;
+        display: flex;
+        align-items: flex-start;
+    }
+    .market-trend-reports-container-three-post .container .grid-wrapper .item .image-container,
+    .article-container-three-post .container .grid-wrapper .item .image-container,
+    .market-trend-reports-container-three-post .container .grid-wrapper .item .video-container,
+    .article-container-three-post .container .grid-wrapper .item .video-container {
+        flex-shrink: 0;
     }
     .market-trend-reports-container-three-post .container .grid-wrapper .item .item-content-container,
     .article-container-three-post .container .grid-wrapper .item .item-content-container {
@@ -20010,6 +20033,27 @@ body.dev-float-refactor {
     section.featured-types .article-container-three-post .container .grid-wrapper .item .item-content-container {
         display: flex;
         align-items: center;
+    }
+    // Same higher-specificity-override technique as the BUGFIX above,
+    // needed again for the new generic .article-container-three-post
+    // .item fix (2026-09-09, see comment above that block): that fix adds
+    // `align-items: flex-start` and `flex-shrink: 0` on
+    // `.image-container`/`.video-container`, which would otherwise leak
+    // into this already-correct, already-`display:flex` featured-types
+    // instance too (same selector, matched by both rules) and change its
+    // computed `align-items` from the flex default (`stretch`, since
+    // _flexible.scss's `.item { display: flex; }` above never sets
+    // align-items) to `flex-start`, and its image/video-container's
+    // `flex-shrink` from the flex default (`1`) to `0` -- neither of
+    // which this already-working instance needs or was verified against.
+    // Restoring both to their un-gated defaults here keeps this instance
+    // byte-for-byte identical to before, regardless of the new generic fix.
+    section.featured-types .article-container-three-post .container .grid-wrapper .item {
+        align-items: stretch;
+    }
+    section.featured-types .article-container-three-post .container .grid-wrapper .item .image-container,
+    section.featured-types .article-container-three-post .container .grid-wrapper .item .video-container {
+        flex-shrink: 1;
     }
 }
 
