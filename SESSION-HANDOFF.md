@@ -3374,9 +3374,18 @@ safe as-is:**
 
 ### Status
 
-Committed `815661a` (fields=>ids) and a follow-up commit (open-positions
-reset) to `dev`, not pushed. This closes out the MEDIUM-tier
+Committed `815661a` (fields=>ids) and `dc211b1` (open-positions reset +
+this doc) to `dev`. This closes out the MEDIUM-tier
 `posts_per_page => -1` follow-up list from §23/§24 -- the only
 remaining open item in that area is the grid-file counter/dedup
 behavior-change decision from §24, which still needs explicit product
 sign-off before any query-merge is attempted.
+
+**Update, next session turn**: pushed as `dc211b1`, confirmed
+`origin/dev` matches `HEAD` exactly. Verified live:
+- `/edge-events/` and `/event-partner/edge-event-partnership/` (the
+  `-listing`/`-partners` fix) -- `#yearButtons` renders `["2026",
+  "2027"]` on both, active-state and sort order unchanged.
+- `/careers/` (the `_open-positions.php` reset fix) -- position list
+  unchanged (`Sales Associate, Executive Program Engagement`, `People &
+  Operations Lead`), byte-identical to the pre-push baseline.
