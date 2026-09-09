@@ -525,6 +525,11 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 			                                <span class="sub-column-title">In partnership with</span>
 			                            <?php } ?>			                            
 			                        <?php } ?>
+
+									<?php if ($columnCount == 1 && get_sub_field('column_title')){ ?>
+										<span class="sub-column-title"><?php echo str_contains(get_sub_field('column_title'), '&nbsp') ? '' : get_sub_field('column_title'); ?></span>
+									<?php } ?>
+									
 									<div class="logo-container" <?php if( get_sub_field( 'logo_height' )){ ?>style="height: <?php echo get_sub_field( 'logo_height' ); ?>px;"<?php } ?>>
 										<?php $image_logo = get_sub_field( 'image_logo' ); ?>
 										<?php if ( $image_logo ) { ?>
