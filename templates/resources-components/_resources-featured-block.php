@@ -9,6 +9,7 @@
                             <?php
                                 $args = array(
                                     'post_type' => 'post',
+                                    'no_found_rows' => true,
                                     'posts_per_page' => 3,
                                     'paged'=> $paged,
                                     'tax_query' => array(
@@ -221,6 +222,7 @@
                             <?php
                                 $args = array(
                                     'post_type' => 'post',
+                                    'no_found_rows' => true,
                                     'posts_per_page' => 4,
                                     'paged'=> $paged,
                                     'tax_query' => array(
@@ -327,6 +329,7 @@
                                 // in-template query (same pattern as the "most-recent"
                                 // branch of this same field above).
                                 $most_popular_args = array(
+                                    'no_found_rows'  => true,
                                     'meta_key'       => 'post_views_count',
                                     'posts_per_page' => 4,
                                     'orderby'        => 'meta_value_num',

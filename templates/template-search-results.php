@@ -103,49 +103,17 @@ if($keyword != '') {
                     }
                 }
 
-                $counterargs = array(
-                    'post_type' => 'post',
-                    'posts_per_page' => -1,
-                    'no_found_rows' => true,
-                    's' => $keyword,
-                    'paged'=> $paged,
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'category',
-                            'field' => 'slug',
-                            'terms' => 'private-post',
-                            'operator' => 'NOT IN',
-                        ),
-                        'relation' => 'AND',
-                    )
-                );
-
-                if($filterType != '') {
-                    if(empty($filterType)){
-
-                    } else {
-                        // print_r($filterType);
-                        array_push($counterargs['tax_query'],array(
-                                'taxonomy' => 'resource-type',
-                                'field' => 'slug',
-                                'terms' => $filterType,
-                                'operator' => 'IN'
-                            )
-                        );
-                    }
-                }
-                $loop = new WP_Query( $counterargs );
-                    if ( $loop->have_posts() ) :
-                        $counterResults = 0;
-                        while ( $loop->have_posts() ) : $loop->the_post();
-                            $counterResults++;
-                        endwhile;
-                    endif;
-
-                    wp_reset_postdata(); ?>
+                // Was a full second WP_Query (posts_per_page => -1, same
+                // post_type/s/tax_query as $args below) run only to loop
+                // through every matching post in PHP and count them --
+                // $args itself doesn't set no_found_rows, so WordPress
+                // already computes the correct total via
+                // SQL_CALC_FOUND_ROWS for the real, paginated query below;
+                // $posts->found_posts gives the identical number for free.
+                ?>
                 <?php $posts = new WP_Query( $args );
                 if( $posts->have_posts() ): ?>
-                    <span class="total"><span class="text-medium-grey">Showing: </span><span class="text-black"><?php echo $counterResults; ?> results</span></span>
+                    <span class="total"><span class="text-medium-grey">Showing: </span><span class="text-black"><?php echo $posts->found_posts; ?> results</span></span>
                     <div class="search-results">
                         <?php while( $posts->have_posts() ) : $posts->the_post(); ?>
                             <div class="item full-width">

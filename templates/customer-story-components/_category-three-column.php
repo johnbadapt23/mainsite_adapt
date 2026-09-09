@@ -4,6 +4,7 @@
         <?php 
         $args = array(
             'post_type' => 'customer_stories',
+            'no_found_rows' => true,
             'posts_per_page' => 3,
             'paged' => $paged,
             'post_status' => 'publish',

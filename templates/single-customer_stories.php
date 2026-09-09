@@ -456,6 +456,7 @@ $displayed_posts[] = get_the_ID();
             <?php
                 $args = array(
                     'post_type' => 'customer_stories',
+                    'no_found_rows' => true,
                     'posts_per_page' => 3,
                     'paged'=> $paged,
                     'post__not_in' => array($current_post_id),

@@ -67,6 +67,7 @@
                     <?php
                     $args = array(
                         'post_type' => 'media',
+                        'no_found_rows' => true,
                         'posts_per_page' => 2,
                         'paged'=> $paged                        
                     ); ?>

@@ -190,6 +190,7 @@
                 				global $post;
                 				$args=array(
                 		        	'post_type' => 'post',
+                		        	'no_found_rows' => true,
                 		        	'post_status' => 'publish',
                 		        	'posts_per_page' => 6,
                                     'post__not_in' => array( $postID )

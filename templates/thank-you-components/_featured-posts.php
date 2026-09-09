@@ -21,6 +21,7 @@
                 <?php
                 $args = array(
                     'post_type' => 'post',
+                    'no_found_rows' => true,
                     'posts_per_page' => 4,
                     'paged'=> $paged,
                     'tax_query' => array(

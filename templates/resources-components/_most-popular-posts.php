@@ -4,6 +4,7 @@
     // page -- WP_Query() is the documented replacement for exactly this
     // kind of secondary, in-template query.
     $most_popular_args = array(
+        'no_found_rows'  => true,
         'meta_key'       => 'post_views_count',
         'posts_per_page' => 4,
         'orderby'        => 'meta_value_num',

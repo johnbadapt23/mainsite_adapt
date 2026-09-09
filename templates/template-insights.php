@@ -255,6 +255,35 @@ $filterBy = array();
             }
         }
     }
+
+    // Was duplicated verbatim further down (once for the desktop
+    // #filterBy dropdown, once for the mobile .filter-by-mobile one) --
+    // both ran the exact same WP_Query($args) + get_the_terms() loop (or
+    // the exact same get_terms() call in the no-filter/no-keyword branch)
+    // to build the identical list of "filter-types" terms actually used
+    // by the current result set. Computed once here and reused by both
+    // markup blocks below instead of running it twice per page load.
+    if ( $filterTopics != '' || $keyword != '' ) {
+        $filterTypeTerms = array();
+        $loop = new WP_Query( $args );
+        if ( $loop->have_posts() ) :
+            while ( $loop->have_posts() ) : $loop->the_post();
+                $types = get_the_terms( $post->ID, 'filter-types' );
+                if ( $types ) {
+                    foreach ( $types as $type ) {
+                        if ( ! in_array( $type, $filterTypeTerms ) ) {
+                            $filterTypeTerms[] = $type;
+                        }
+                    }
+                }
+            endwhile;
+        endif;
+        wp_reset_postdata();
+    } else {
+        $filterTypeTerms = get_terms( 'filter-types', array(
+            'hide_empty' => true,
+        ) );
+    }
 ?>
     <section class="postHeader">
         <div class="container">
@@ -369,36 +398,7 @@ $filterBy = array();
                     <div id="filterBy">
                         <span class="select-label">Filter By:</span>
                         <select class="dropdown-class" name="filter-posts" id="filterBox" onchange="document.location.href=location.href+this.options[this.selectedIndex].value;">
-                             <?php if($filterTopics != '' || $keyword != '') { ?>
-                                <?php $terms = array(); ?>
-                                <?php $loop = new WP_Query( $args ); ?>
-                                <?php if ( $loop->have_posts() ) : ?>
-                                   <?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
-                                       <?php
-                                           $types = get_the_terms( $post->ID, 'filter-types' );
-                                           if($types){
-                                               foreach( $types as $type ){
-                                                   if( ! in_array( $type, $terms )){
-                                                       $terms[] = $type;
-                                                   }
-                                               }
-                                           }
-                                       ?>
-                                   <?php endwhile; ?>
-                                    <?php else : ?>
-                                   <?php endif; ?>
-                                   <?php wp_reset_postdata();
-                                   ?>
-                               <?php } else { ?>
-                                    <?php
-                                    $term_m = 'filter-types';
-                                    ?>
-                                    <?php
-                                    $terms = get_terms( $term_m, array(
-                                     'hide_empty' => true,
-                                    ) );
-                                    ?>
-                               <?php }  ?>
+                             <?php $terms = $filterTypeTerms; // computed once above, reused here and by the mobile dropdown below ?>
 
                             <option value="<?php if ($filterTopics != '' || $sortBy != '' || $filterType != '' || $keyword != '' ) { ?>&<?php } else if (isset($keyword)) { ?>&<?php } else { ?>?<?php } ?>filterType=all">All</option>
                             <?php foreach($terms as $term) { ?>
@@ -454,36 +454,7 @@ $filterBy = array();
                             <div class="filter-by-mobile" id="filterBy">
                                 <span class="title select-label">Filter By: <span class="current-value"><?php if($filterType == '') {?>All<?php } else { if ($filterType == 'all') { ?>All<?php } else {?><?php echo esc_html( $filterType ); ?><?php } } ?></span></span>
                                 <span class="mobile-filter-container mobile">
-                                    <?php if($filterTopics != '' || $keyword != '') { ?>
-                                       <?php $terms = array(); ?>
-                                       <?php $loop = new WP_Query( $args ); ?>
-                                       <?php if ( $loop->have_posts() ) : ?>
-                                          <?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
-                                              <?php
-                                                  $types = get_the_terms( $post->ID, 'filter-types' );
-                                                  if($types){
-                                                      foreach( $types as $type ){
-                                                          if( ! in_array( $type, $terms )){
-                                                              $terms[] = $type;
-                                                          }
-                                                      }
-                                                  }
-                                              ?>
-                                          <?php endwhile; ?>
-                                           <?php else : ?>
-                                          <?php endif; ?>
-                                          <?php wp_reset_postdata();
-                                          ?>
-                                      <?php } else { ?>
-                                           <?php
-                                           $term_m = 'filter-types';
-                                           ?>
-                                           <?php
-                                           $terms = get_terms( $term_m, array(
-                                            'hide_empty' => true,
-                                           ) );
-                                           ?>
-                                      <?php }  ?>
+                                    <?php $terms = $filterTypeTerms; // same list computed once above the desktop dropdown ?>
                                       <span class="checkboxButton filterItemMobile">
                                           <label>
                                             <input type="checkbox" name="filterType" <?php if($filterType == '') { } else { if ($filterType == 'all') { ?> checked <?php }}?> value="all"><span class="checkbox-text">All</span>
