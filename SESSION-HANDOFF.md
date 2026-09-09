@@ -3229,3 +3229,77 @@ decision on lower-severity, unreachable code.
 ### Status
 
 Committed `8cdfb54` to `dev`, not pushed.
+
+## §26 — PHP 8.1 "null to internal function" audit: `nav_menu_item_id`
+filter chain investigated, confirmed non-issue, no fix needed
+
+Continuing the PHP 8.1 deprecation-warning audit (theory: this could
+explain the external site auditor's original "PHP coding error"
+report), an Explore agent flagged one MEDIUM-confidence lead worth
+checking personally: `includes/_hooks.php` registers two filters on
+`nav_menu_item_id`, both priority 10:
+
+```php
+add_filter('nav_menu_item_id',   'custom_wp_nav_menu');       // line 44, registered first
+add_filter('nav_menu_item_id',   'custom_nav_id_filter', 10, 2 ); // line 48, registered second
+```
+
+`custom_nav_id_filter` (`includes/_customisations.php:96-98`) has no
+`return` statement at all:
+
+```php
+function custom_nav_id_filter( $id, $item ) {
+	//return strtolower( str_replace( ' ','-',$item->title ) );
+}
+```
+
+Read on its own this looks like a real bug -- same-priority filters run
+in registration order, so this second filter receives whatever the
+first filter computed as its own `$id` argument and then silently
+discards it, returning implicit `null` for every nav menu item on
+every page (nav menus render sitewide).
+
+**Traced the full chain and it's a harmless no-op, not a bug:**
+
+1. `custom_wp_nav_menu($var)` (`_customisations.php:66-78`) is a
+   generic filter reused on two different hooks (`nav_menu_item_id`
+   and `page_css_class`). It branches on `is_array($var)`: `page_css_
+   class` passes an array (does an `array_intersect` against an
+   allow-list), but `nav_menu_item_id` passes a **string** (e.g.
+   `'menu-item-123'`). So on this hook `is_array($var)` is always
+   false, and the function unconditionally returns `''` -- the id was
+   already being blanked out by the *first* filter, before
+   `custom_nav_id_filter` ever runs.
+2. `custom_nav_id_filter` then receives `$id = ''`, and returns
+   implicit `null` instead of `''`. The only actual effect of the
+   missing `return` is swapping `''` for `null`.
+3. WP core's `Walker_Nav_Menu::start_el()` does
+   `$id = $id ? ' id="' . esc_attr( $id ) . '"' : '';` -- a plain
+   falsy check. `''` and `null` are both falsy, so the rendered `<li>`
+   markup is byte-for-byte identical either way: no `id` attribute.
+   `esc_attr()` (or any strictly-typed internal function) is never
+   even called with the `null` value, since the ternary short-circuits
+   first -- so this also isn't a source of the null-to-internal-
+   function deprecation warnings the audit was originally looking for.
+4. Grepped `source/scss/` and `source/js/` for anything keyed off a
+   `#menu-item-N`-style id selector: found nothing. The only nav-item
+   selector in `main.js` (`li.menu-item-has-children`) is a *class*,
+   supplied by the unrelated `nav_menu_css_class` filter, not this id
+   attribute.
+
+**Conclusion**: zero visible or functional impact in either direction.
+The commented-out `return` on line 97 suggests an abandoned mid-
+refactor, but there's nothing left to finish -- the id attribute was
+already suppressed by the first filter regardless. Not fixing this:
+restoring the return wouldn't change any rendered output (id was
+already always blank), and touching a sitewide nav-render filter chain
+for a purely cosmetic/dead code-path carries more risk than benefit.
+This also closes out this window's PHP 8.1 deprecation sub-audit --
+the Explore agent's other candidates were low-confidence (ACF fields
+in valid `have_rows()` loops practically never return `null` in
+practice), and this was the one lead worth chasing down personally.
+
+### Status
+
+No code change. Investigated and closed, flagged here for the record.
+Nothing to push.
