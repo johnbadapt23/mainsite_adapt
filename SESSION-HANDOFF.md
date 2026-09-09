@@ -3578,4 +3578,49 @@ pass).
   rushed.
 
 Rebuilt/diffed (scratch-dir workflow, clean single-line diffs both
-times) and committed as a follow-up. Not yet pushed.
+times) and committed as a follow-up. Pushed, confirmed live.
+
+## §29 -- Header pixel-parity audit (user request: "check header, needs
+to be the same pixel to pixel from the non-gated version")
+
+Systematic `?dev=true` vs production comparison of `<header
+class="header clear background-black">` end to end, using a recursive
+DOM-tree measurement script (x/y/w/h/display/float per node, several
+levels deep) run on two side-by-side tabs at the same viewport, rather
+than eyeballing. Covered both breakpoints:
+
+**Desktop (1440px):** every measured node -- logo, main nav `<ul>`,
+menu-buttons, client-login, booking-button -- matched production
+exactly (identical x/y/w/h down to hundredths of a pixel). One cosmetic
+`display` difference only (flex vs `float:left` block) with identical
+resulting box geometry, not a bug. The desktop hover mega-menu
+(`.main-nav > ul > li.dropdown .dropDownSection`) also matched
+exactly (466.89px both) -- it has a fixed-height container, immune to
+this bug class.
+
+**Mobile (375px):** opened the mobile nav panel (`.mobileMenuMain`,
+via the same class-toggle `main.js` uses) and its "Resources" dropdown
+and confirmed the base panel, nav item list, and buttons are all
+byte-identical to production. The "Resources" dropdown submenu itself,
+however, was NOT: `.dropDownSection` measured 509px (production:
+587px, -78px) and its `.full-width` subscribe-form sibling measured
+247px (production: 279px, -32px). Root-caused and fixed -- see §28-
+style writeup added directly above this entry in `_dev-float-refactor.
+scss` (three separate instances of the same containment/margin-
+collapse bug classes already established in this file: `.all-link-
+container` losing containment of its still-floated `.all-link` child,
+and two separate cases of a child's margin collapsing through an
+unfloated parent that used to be floated). All three confirmed via
+live CSS-injection testing to close the gap to an EXACT match with
+production (587px / 279.28px / 24px, all three numbers). `.groupSection`
+(the sibling class sharing the identical base rule for other dropdown
+variants) got the same fix defensively, not live-verified.
+
+### Status
+
+Committed to `dev`, not pushed. This is the most rigorous pixel-parity
+check the header has had all engagement -- previous "Sections 1-6"
+work covered the *original* narrow-width/no-width/carousel-adjacent
+categories, but (like §22/§28) never specifically checked for this
+newer containment/margin-collapse bug class, which is how this survived
+undetected until now.

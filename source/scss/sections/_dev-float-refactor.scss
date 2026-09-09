@@ -18944,6 +18944,67 @@ body.dev-float-refactor {
         float: none;
     }
 
+    // BUGFIX 2026-09-09: found live pixel-diffing the mobile "Resources"
+    // nav dropdown (li.main-dropdown.resources-menu .mobile-sub-menu
+    // .dropDownSection) against production at 375px -- 78px short
+    // (509px vs production's 587px), plus its .full-width sibling
+    // (subscribe form) 32px short. Three separate instances of the same
+    // float-refactor bug classes already documented elsewhere in this
+    // file, all inside this one dropdown:
+    //
+    // 1. .dropDownSection .all-link-container: real/ungated CSS
+    //    (_header.scss ~2865) is `float:left`, already converted to
+    //    float:none in an earlier mechanical batch (see the "P2 only,
+    //    NOT .all-link-container" comment above) -- but its child
+    //    .all-link (the "See all X" link) stays float:left (Slick-
+    //    carousel-style still-floating-child pattern, just a plain
+    //    link instead of a carousel). Confirmed live: collapsed from
+    //    24px to 0px. Same flow-root fix as the carousel sections.
+    // 2. .full-width (wraps .form-container-inner, the subscribe form):
+    //    real CSS gives .form-container-inner a 32px margin-top: while
+    //    .full-width was floated (production), a floated parent
+    //    contains a child's margin inside its own box; once float:none
+    //    (dev), that margin collapses straight through instead --
+    //    identical mechanism to full-suite-slider-module's
+    //    .title-container fix (§22). Confirmed live: 247px -> 279px
+    //    with flow-root, exact match to production.
+    // 3. .dropDownSection itself: the first child is a.title-link
+    //    (display:inline, wraps the still-float:none-converted
+    //    .columnTitle/.columnText), whose OWN first descendant
+    //    (.columnTitle) carries a real margin-top:32px. With
+    //    .dropDownSection no longer floated, that margin-top collapses
+    //    all the way up through the inline title-link and out of
+    //    dropDownSection's own box (same collapse mechanism as #2, just
+    //    two levels deep). Confirmed live: 555px -> 587px with
+    //    flow-root, exact match to production, closing the section
+    //    completely.
+    //
+    // All three confirmed via live before/after height measurement on
+    // /?dev=true injected CSS, then verified against production at the
+    // same 375px viewport -- final numbers matched production exactly
+    // (587px dropDownSection, 279.28px full-width). .groupSection is
+    // the sibling class sharing the identical base rule (_header.scss
+    // ~2755: `.groupSection, .dropDownSection { float: left; ... }`)
+    // for a different dropdown variant not currently found live --
+    // included defensively since flow-root can only add back
+    // containment, never remove it, same reasoning as company-slider's
+    // preemptive fix. Desktop's equivalent hover mega-menu (`.main-nav
+    // > ul > li.dropdown .dropDownSection`) was checked and is already
+    // pixel-identical to production (466.89px both) -- it has a fixed-
+    // height container that isn't affected by this bug, no fix needed
+    // there.
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .dropDownSection,
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .groupSection {
+        display: flow-root;
+    }
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .dropDownSection .all-link-container,
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .groupSection .all-link-container {
+        display: flow-root;
+    }
+    .mobileMenuMain .mobileInner .container .main-nav-mobile ul li.main-dropdown .mobile-sub-menu .full-width {
+        display: flow-root;
+    }
+
     .mobileMenuResources .mobileInner .main-links-container .container {
         display: flex;
         justify-content: space-between;
