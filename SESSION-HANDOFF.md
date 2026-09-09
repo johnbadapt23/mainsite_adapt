@@ -3303,3 +3303,80 @@ practice), and this was the one lead worth chasing down personally.
 
 No code change. Investigated and closed, flagged here for the record.
 Nothing to push.
+
+## §27 — Remaining `posts_per_page => -1` files (MEDIUM tier) audited
+
+Followed up on the tier list from §23/§24: `_events-listing.php`,
+`_events-listing-partners.php`, `single-post_author.php`, plus three
+files that turned up in a fresh grep not previously catalogued
+(`_advisors-carousel.php`, `single-position.php`,
+`_open-positions.php`) and two more (`old-template-resource-type.php`,
+`template-resource-type-pre-media.php`). Delegated a read-only research
+pass (Explore agent), then personally verified before touching
+anything.
+
+**Finding: nearly everything already had `no_found_rows => true`** from
+an earlier pass -- there wasn't a `no_found_rows` gap left to close in
+any of these files. Two genuine, safe fixes found instead:
+
+1. **`fields => 'ids'` on the years-terms query** in both
+   `_events-listing.php` and `_events-listing-partners.php` -- same
+   shape as the `template-topic.php`/`template-resource-type.php` fix
+   from §23: a `posts_per_page => -1` query used *only* to walk matched
+   events and collect distinct top-level `years` terms for the year
+   filter buttons, never to display the posts (display happens in a
+   separate, unrelated query further down each file, left untouched).
+   Converted `while($loop->have_posts()): $loop->the_post();` to
+   `foreach($loop->posts as $event_post_id)` and dropped the
+   now-unnecessary `wp_reset_postdata()`. Identical `$terms` output,
+   just skips fetching full post rows. Committed `815661a`.
+
+2. **Missing `wp_reset_postdata()` in `_open-positions.php`** -- a real
+   (if narrow-probability) bug, not a `posts_per_page` issue: this file
+   is one of ~20 interchangeable flexible-content layouts a page editor
+   can place in any order on `template-flexible.php`/`template-home.
+   php`. Its position-listing `while()` loop calls `the_post()` but
+   never resets afterward, so global `$post` stays pointed at the last
+   matched position post once the block finishes. Any later
+   flexible-content block on the same page reading `the_title()`/`the_
+   permalink()`/global `$post` without an explicit ID would silently
+   render that leftover position instead of the real page content. The
+   sibling copy of this exact query in `single-position.php` already
+   calls `wp_reset_postdata()` -- this file was just missing it. Added
+   the same call. Checked the live `/careers/` page (where this block
+   currently renders last, nothing downstream reads `$post`), confirmed
+   output is unaffected either way -- the fix is purely defensive.
+
+**Everything else in this batch checked and left untouched, confirmed
+safe as-is:**
+
+- `single-post_author.php` -- 4 separate `-1` queries, all already have
+  `no_found_rows`. One (`event_link` matching, ~line 212) is technically
+  an IDs-only extraction loop but relies on ACF `get_field()` needing
+  `the_post()`-based context; restructuring to `fields=>ids` would need
+  manual `setup_postdata()` per ID -- not worth the risk on this single-
+  CPT detail page. The other 3 are full display loops (title/permalink/
+  ACF fields/repeaters) with homemade grouping/counter logic tied to
+  iteration order -- not `fields=>ids` candidates.
+- `_advisors-carousel.php` -- single `-1` query, already has
+  `no_found_rows`, results merged into an array and rendered with full
+  post data (`get_the_title()`, ACF fields, terms) -- not a terms-only
+  extraction, left as-is.
+- `single-position.php` -- already has `no_found_rows`; full display
+  loop (permalink/title/term), not a `fields=>ids` candidate. Has an
+  inert `paged => $paged` param alongside `posts_per_page => -1` (dead,
+  since `-1` ignores paging) -- cosmetic only, not touched.
+- `old-template-resource-type.php` / `template-resource-type-pre-media.
+  php` -- re-confirmed dead via fresh header + sitewide-reference check
+  (no `Template Name:`, zero references anywhere in theme code), matches
+  the prior-session finding already on record here. Left as-is per the
+  user's standing "leave dead files alone" decision.
+
+### Status
+
+Committed `815661a` (fields=>ids) and a follow-up commit (open-positions
+reset) to `dev`, not pushed. This closes out the MEDIUM-tier
+`posts_per_page => -1` follow-up list from §23/§24 -- the only
+remaining open item in that area is the grid-file counter/dedup
+behavior-change decision from §24, which still needs explicit product
+sign-off before any query-merge is attempted.

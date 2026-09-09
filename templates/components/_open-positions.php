@@ -35,6 +35,20 @@ if( $posts->have_posts() ): ?>
                         </span>
                     </a>
                 <?php endwhile; ?>
+                <?php
+                // BUGFIX 2026-09-09: this block is one of ~20 flexible-
+                // content layouts (see template-flexible.php) that a page
+                // editor can place in any order. Without wp_reset_postdata()
+                // here, global $post stays pointed at the last position
+                // post from the while() loop above after this block
+                // finishes -- any later flexible-content block on the same
+                // page that reads global $post/the_title()/the_permalink()
+                // without an explicit ID would silently render that
+                // leftover position's data instead of the real page. The
+                // sibling copy of this exact query in single-position.php
+                // already calls wp_reset_postdata(); this file was missing
+                // it. ?>
+                <?php wp_reset_postdata(); ?>
                 <?php if ( have_rows( 'looking_for_another_role', 'options' ) ) : ?>
                 	<?php while ( have_rows( 'looking_for_another_role', 'options' ) ) : the_row(); ?>
                         <span class="other-roles-container background-medium-light-grey">
