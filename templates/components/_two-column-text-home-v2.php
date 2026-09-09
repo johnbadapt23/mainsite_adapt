@@ -60,13 +60,21 @@
 
 <?php 
 $background_image = get_sub_field('background_image');
+
+$background_url = '';
+
+if (is_array($background_image) && !empty($background_image['url'])) {
+    $background_url = $background_image['url'];
+} elseif (is_string($background_image)) {
+    $background_url = $background_image;
+}
 ?>
 
 <section 
     id="home-two-column-text-<?= get_row_index(); ?>" 
     class="flex-two-column-text home-two-column-text <?php echo get_sub_field('background_colour'); ?>"
-    <?php if ($background_image) : ?>
-        style="background-image: url('<?= esc_url($background_image['url']); ?>'); background-repeat: no-repeat; background-position: center; background-size: cover;"
+    <?php if ($background_url) : ?>
+        style="background-image: url('<?= esc_url($background_url); ?>'); background-repeat: no-repeat; background-position: center; background-size: cover;"
     <?php endif; ?>
 >
     <div class="container">
