@@ -205,6 +205,42 @@ body.dev-float-refactor {
     header .container .header-inner .headerRight .menu .main-nav ul li {
         float: none;
     }
+
+    // BUGFIX 2026-09-09: user-reported "gap differences between header
+    // menu items on hover" -- root cause found via full pixel-by-pixel
+    // capture of every element under header.header, dev vs production,
+    // with all 5 top-level dropdowns forced open on both. All 5 nav
+    // <li> (Our Services, Events, Resources, For Customers, About
+    // Adapt) measured 44px tall under ?dev=true vs 48px on production
+    // -- a consistent 4px shift affecting every item's hover hitbox and
+    // the dropdown-arrow/active-state position beneath it, exactly
+    // matching what the user could see but a container-level check
+    // missed.
+    //
+    // Cause: `.main-nav ul` above got `float:none; display:flex;` (the
+    // deliberate nav->flexbox conversion from an earlier session) with
+    // no explicit height on the `li` itself. `ul` has an explicit
+    // `height: 48px` (real/ungated rule, source/scss/partials/
+    // _header.scss:146) plus `padding-top: 4px`, and everything here
+    // is `box-sizing: border-box` (sitewide reset), so the UL's
+    // *content* box -- what flex children stretch to fill via the
+    // default `align-items: normal` (= stretch) -- is only
+    // 48 - 4 = 44px. On production `li` is a plain float (not a flex
+    // item), so it never stretches to the UL's box at all; its height
+    // comes purely from its own child `>a`'s `line-height: 48px`
+    // (_header.scss:163), giving the full 48px regardless of the UL's
+    // padding. Fix: pin `li`'s height explicitly so flex stretch has
+    // nothing left to shrink. Scoped to `.main-nav > ul > li` (direct
+    // children only) rather than the plain `ul li` above -- the first
+    // attempt at this used `ul li` and it also matched every nested
+    // <li> inside the mega-menu dropdowns (events list, resources
+    // list, adapt list, etc.), forcing THEM to 48px too and badly
+    // breaking their layout. Verified live: all 5 top-level items now
+    // measure 48px tall, at the exact same x/y as production, with no
+    // regression on the nested dropdown lists.
+    header .container .header-inner .headerRight .menu .main-nav > ul > li {
+        height: 48px;
+    }
 }
 
 // === Section 3 (hand-designed): resources sticky-menu row ===
@@ -1574,6 +1610,26 @@ body.dev-float-refactor {
                         }
                 }
         }
+    // BUGFIX 2026-09-09: found during the same header pixel-by-pixel
+    // audit as the nav-item-height fix above. .services-content-inner
+    // (and its child .it-content.services-content, which switches
+    // between the "IT Leaders"/"Tech Vendors" panels on hover) is a
+    // <div>, originally `float:left;width:100%` (_header.scss:313/320)
+    // wrapping still-floated descendants (.overview-container,
+    // .links-container, both float:left). With float:none applied
+    // above and no compensating containment, both collapsed to
+    // height:0 under ?dev=true (visually: the entire right-hand panel
+    // of the Services mega menu disappeared), vs 408.5px on
+    // production. display:flow-root on both restores containment
+    // without reintroducing float positioning -- same pattern as the
+    // .dropDownSection fix below. Verified live: both now measure
+    // 671x408.5 at the same position as production.
+    header .container .headerRight .menu .main-nav ul li .megaMenu.servicesMenu .container .column.content-column .services-content-inner {
+        display: flow-root;
+    }
+    header .container .headerRight .menu .main-nav ul li .megaMenu.servicesMenu .container .column.content-column .services-content-inner .it-content.services-content {
+        display: flow-root;
+    }
     // line 314
         header {
                 .container {
@@ -1794,6 +1850,34 @@ body.dev-float-refactor {
                         }
                 }
         }
+    // BUGFIX 2026-09-09: found during the header pixel-by-pixel audit.
+    // .menu-bottom (only present in .eventsMenu -- the "view all
+    // events" footer strip) is a <div>, originally
+    // `float:left;width:100%;margin-top:32px` (_header.scss:518-522).
+    // With float:none above and no explicit `clear`, its own top
+    // border edge is computed as if the still-floated two-column
+    // layout above it (.container's .column.one-half x2, height
+    // 515px) didn't exist, landing right after the empty (height:0)
+    // .container instead. Adding `clear:both` alone gets the box down
+    // to the right Y (667px, the floats' bottom edge) but the
+    // margin-top:32px then gets absorbed into the clearance
+    // calculation per spec instead of adding on top of it -- CSS
+    // clearance is defined as max(0, floatBottom - normalFlowPosition),
+    // which already accounts for the margin, so a cleared block's
+    // final position is capped at floatBottom regardless of how large
+    // its margin-top is. A real float doesn't have this cap: a new
+    // same-width float that can't fit beside prior floats drops below
+    // them AND still applies its own margin-top on top of that,
+    // landing at 667+32=699 -- matching production exactly. Simplest
+    // fix that reproduces this is to just leave it floated (this is
+    // the one rule in this specific chain where reverting the gate's
+    // float:none, rather than compensating for it, is the right call
+    // -- verified live against production down to the pixel: menu-
+    // bottom, its text, and its "view all events" link all landed at
+    // the exact same x/y/w/h as production).
+    header .container .headerRight .menu .main-nav ul li .megaMenu.eventsMenu .menu-bottom.menu-bottom {
+        float: left;
+    }
     // line 517
         header {
                 .container {
@@ -1862,6 +1946,74 @@ body.dev-float-refactor {
                         }
                 }
         }
+    // BUGFIX 2026-09-09: header pixel-by-pixel audit (user-reported
+    // "gap differences between header menu items on hover"). This is
+    // the main finding: .dropDownSection (the repeating "title +
+    // description" block used across the Events/Resources/Customer/
+    // Adapt mega-menu columns) is a <span>, originally
+    // `float:left;width:100%;margin-bottom:40px` (_header.scss:557),
+    // whose floated children (.columnText, .all-link-container, the
+    // list-based variant's `ul`, all float:left in the real CSS) it
+    // used to contain via its own float-generated BFC. With float:none
+    // above and no compensating containment, those children escape the
+    // (now content-box-only) parent -- e.g. on eventsMenu, dropDown-
+    // Section's own reported height collapsed to 20px (just its
+    // .columnTitle) while the still-floated .columnText hung 24px
+    // below it uncounted, so the NEXT dropDownSection started only
+    // 20+40=60px later instead of the real ~96px -- a directly visible
+    // per-item spacing shrink on hover, matching exactly what the user
+    // described. display:flow-root restores containment without
+    // reintroducing float positioning (same technique already used for
+    // the mobile Resources-dropdown fix in an earlier session).
+    // Self-doubled class (`.dropDownSection.dropDownSection`) for
+    // specificity: this selector chain is otherwise IDENTICAL to the
+    // one above it, and .dropDownSection is a <span> -- originally
+    // floated, so it also gets a `display:block` compensating rule
+    // from the automated fix-float-none-display.js pass (same
+    // mechanism documented for .links-container/.text-link and
+    // section.sponsor-block elsewhere in this file). That generated
+    // rule is appended after everything in this source file at build
+    // time, so on equal specificity it would silently win and put
+    // display:block back, discarding the BFC. The extra class beats it
+    // regardless of source order. Verified live against production,
+    // matched exactly: eventsMenu's 3 dropDownSections (56px, 56px,
+    // 72px tall, starting at y=152/248/344), all 5 megaMenu columns'
+    // .all-link-container and list positions, and adaptMenu's UL.
+    header .container .headerRight .menu .main-nav ul li .megaMenu .column .dropDownSection.dropDownSection {
+        display: flow-root;
+    }
+    // Companion fix: once dropDownSection contains its floats again,
+    // a *repeated* group inside the SAME dropDownSection (customerMenu
+    // packs 3 title-link+columnTitle+columnText groups in one shared
+    // dropDownSection, not one each) still has a layout bug -- each
+    // subsequent .columnTitle (itself un-floated by the rule below,
+    // now a plain block) positions ignoring the PRECEDING group's
+    // still-floated .columnText sibling (per spec, a non-floated
+    // block's own top edge is computed as if prior floats don't exist;
+    // only its inline content wraps around them), so its box overlaps
+    // the float and its line content gets squeezed, inflating its own
+    // height. Confirmed live: customerMenu's 2nd/3rd columnTitle
+    // landed at y=176/272 with height 92 instead of y=248/344 height
+    // 20. `clear:both` on .columnTitle (a no-op on the FIRST group in
+    // each dropDownSection, since nothing floated precedes it there)
+    // and on .all-link-container (which follows the last group's
+    // float the same way) fixes both. Same specificity note as above
+    // applies -- self-doubled for safety.
+    header .container .headerRight .menu .main-nav ul li .megaMenu .column .dropDownSection .columnTitle.columnTitle,
+    header .container .headerRight .menu .main-nav ul li .megaMenu .column .dropDownSection .all-link-container.all-link-container {
+        clear: both;
+    }
+    // Companion fix: the list-based dropDownSection variant (resources-
+    // Menu's link list, adaptMenu's link list) has the same issue for
+    // its `ul` -- a plain block now, following the still-floated
+    // .columnText sibling above it, positioned overlapping it instead
+    // of below it. Confirmed live: adaptMenu's UL landed at y=176
+    // (overlapping .columnText) instead of y=232; resourcesMenu's
+    // subTitle .columnTitle (already fixed by the clear:both above,
+    // since it's also a .columnTitle) confirmed no double-fix needed.
+    header .container .headerRight .menu .main-nav ul li .megaMenu .column .dropDownSection > ul {
+        clear: both;
+    }
     // line 559
         header {
                 .container {
@@ -1964,6 +2116,45 @@ body.dev-float-refactor {
                         }
                 }
         }
+    // BUGFIX 2026-09-09: header pixel-by-pixel audit. eventsMenu's
+    // second column (the plain event-date list, not the description
+    // list) uses `a.external-link-event`, real/ungated CSS
+    // (_header.scss:685-687) overrides the general `ul li a` float:
+    // left;width:100% with `width:auto` so the link shrinks to fit its
+    // own text, leaving room for the sibling .event-month badge to sit
+    // on the same line at a position that varies with each link's text
+    // length -- that's why production's link widths/positions are all
+    // different per row. On a FLOATED element `width:auto` shrink-
+    // wraps (the shrink-to-fit algorithm); the `float:none` two blocks
+    // up plus the automated display:block compensating fix (a <a> is
+    // originally inline, same un-blockify mechanism noted throughout
+    // this file) turns it into a plain block instead, where `width:
+    // auto` means "fill the container" -- so under ?dev=true every
+    // link rendered the full 231.5px column width regardless of text.
+    // Confirmed live: dev showed a uniform 231.5px for all 10 links vs
+    // production's 159.38/224.03/143.77/163.56/121.72/116.2/148.86/
+    // 117.09/168.45/168.23px.
+    //
+    // Fix: keep it a real float (matching production) rather than
+    // faking shrink-to-fit with inline-block -- inline-block was tried
+    // first and got the widths right but introduced a ~5-40px
+    // cumulative vertical drift down the list (mixing an inline-block
+    // element with the sibling inline .event-month in the same line
+    // box inflates the parent <li>'s height beyond the intended 21px,
+    // compounding with every row). Re-floating needs its parent <li>
+    // to regain BFC containment (flow-root, same pattern as every
+    // other fix in this file) since the <li> itself was also converted
+    // to float:none with nothing to contain the now-floated <a>.
+    // Verified live: all 10 links' x/y/width/height and the "view all
+    // events" menu-bottom position that depends on this column's total
+    // height now match production exactly.
+    header .container .headerRight .menu .main-nav ul li .megaMenu .column .dropDownSection ul li a.external-link-event {
+        float: left;
+        display: block;
+    }
+    header .container .headerRight .menu .main-nav ul li .megaMenu .column .dropDownSection ul li.events-links-container.events-links-container {
+        display: flow-root;
+    }
     // line 699
         header {
                 .container {

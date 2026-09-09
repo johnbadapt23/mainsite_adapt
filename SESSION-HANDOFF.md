@@ -3624,3 +3624,157 @@ work covered the *original* narrow-width/no-width/carousel-adjacent
 categories, but (like §22/§28) never specifically checked for this
 newer containment/margin-collapse bug class, which is how this survived
 undetected until now.
+
+### Correction (2026-09-09, same session continued): the "desktop
+matched exactly" claim above was WRONG
+
+User pushback, verbatim: *"I am not blind. YOu can see the difference
+between the gaps each item when you hover header menu items. Check it
+side by side if needed. compare it properly. pixel by pixel. the
+distance to each item and so on."* -- followed by *"and I also notice
+there are floated elements in the header and mega menu."*
+
+They were right. The §29 desktop check above only measured
+container-level boxes (`.main-nav > ul`, one `.dropDownSection`'s
+outer box) -- it never opened all 5 dropdowns simultaneously and
+compared item-by-item spacing *within* each menu, which is exactly
+where the real bugs were hiding.
+
+**Re-investigation method:** opened all 5 top-level desktop dropdowns
+on two side-by-side tabs (`?dev=true` vs production, both 1440x900),
+then ran a script capturing `[tagName, className, x, y, width,
+height]` for literally every element inside `header.header` (804
+elements) on both tabs, and diffed the two arrays index-for-index
+(safe since both environments render the identical DOM structure --
+only computed layout differs). This found what the container-level
+check missed. Four distinct, confirmed bugs, all following bug classes
+already established in this file (BFC-containment-loss and
+margin-collapse-through, described in §22/§28), plus one genuinely new
+one:
+
+1. **Top-level nav item height (44px vs 48px), all 5 items.** The
+   biggest single contributor to "the distance to each item on hover"
+   -- every one of Our Services / Events / Resources / For Customers /
+   About Adapt was 4px short under `?dev=true`. Cause: `.main-nav ul`
+   was converted to `float:none;display:flex` (deliberate, from an
+   earlier session's nav->flexbox pass), but its `<li>` children have
+   no explicit height, so they stretch (default `align-items:normal` =
+   stretch) to the UL's *content box* -- and since everything is
+   `box-sizing:border-box` and the UL has `height:48px` +
+   `padding-top:4px`, the content box is only 44px. Production's `<li>`
+   is a real float (unaffected by the UL's box model), sized purely by
+   its child `<a>`'s `line-height:48px`. Fixed by pinning
+   `.main-nav > ul > li { height: 48px }` directly (note: scoped with
+   `>` combinators -- the first attempt used a plain `ul li` descendant
+   selector and it also caught every nested `<li>` inside the dropdown
+   content lists, breaking those badly; had to redo it scoped to direct
+   children of the top-level nav list only).
+
+2. **`.dropDownSection` containment loss (THE main "gap" bug).** Same
+   float:none-without-flow-root pattern as §22/§28/mobile-Resources,
+   just not caught for the DESKTOP mega-menu instance of
+   `.dropDownSection` until this pass. On eventsMenu, dropDownSection's
+   reported height collapsed from the real 56/56/72px to 20px (just
+   its `.columnTitle`), so consecutive items were spaced 60px apart
+   instead of ~96px -- a large, directly visible per-item gap shrink,
+   the closest single match to the user's literal complaint.
+   `display:flow-root` fixes it, same as always. Two companion bugs
+   surfaced once this was fixed: (a) customerMenu packs 3 repeated
+   title-link/columnTitle/columnText groups inside ONE shared
+   dropDownSection (not one each like eventsMenu) -- once contained,
+   groups 2 and 3 still overlapped the previous group's still-floated
+   `.columnText`, needing `clear:both` on `.columnTitle` and
+   `.all-link-container`; (b) the list-based variant (resourcesMenu,
+   adaptMenu) had the same issue for its `<ul>`, needing `clear:both`
+   there too.
+
+3. **`.menu-bottom` (eventsMenu's "view all events" footer) 32px
+   short, wrong Y entirely (184 vs 699).** `float:none` on a div that's
+   meant to drop below two full-height floated columns leaves it
+   positioned as if the columns weren't there (normal-flow block
+   position ignores floats). `clear:both` gets partway there (667) but
+   the CSS clearance calculation absorbs the `margin-top:32px` instead
+   of adding it on top (spec: clearance = max(0, floatBottom -
+   marginPosition), which already accounts for the margin). A real
+   float doesn't have this cap -- reverting to `float:left` (the one
+   fix in this whole pass that goes back to the original rule instead
+   of compensating for its removal) reproduces production's 699px
+   exactly.
+
+4. **`external-link-event` links (eventsMenu's date-list column) all
+   rendered full-width instead of shrink-to-fit.** Real CSS
+   (`_header.scss:685-687`) sets `width:auto` on this specific `<a>`
+   variant so it hugs its own text, leaving the `.event-month` badge
+   room to sit at a text-length-dependent position -- that's why every
+   link has a different width in production. `width:auto` shrink-wraps
+   on a float but fills-container on a plain block, and the gate's
+   float:none (+ the automated display:block compensator) turned it
+   into the latter. Tried `display:inline-block` first to fake
+   shrink-to-fit without re-floating -- got the widths right but
+   introduced a growing vertical drift (mixing inline-block with the
+   sibling inline `.event-month` in one line box inflates the parent
+   `<li>`'s height). Re-floating for real (`float:left`, matching
+   production) plus `display:flow-root` on the parent `<li>` (to
+   re-contain it) fixed both position and width exactly.
+
+5. **Bonus, same audit pass: `.services-content-inner` /
+   `.it-content.services-content` (servicesMenu's right-hand hover
+   panel) collapsed to height:0**, hiding the entire IT-Leaders/
+   Tech-Vendors switching panel content under `?dev=true`. Same
+   flow-root fix.
+
+**Specificity note for whoever touches this next:** several of these
+new rules target `<span>`/`<a>` elements that were originally floated,
+which means `fix-float-none-display.js`'s automated pass also
+generates a `display:block` rule for the same selector chain,
+appended after everything in this source file at build time. On equal
+specificity that generated rule would silently win and undo the
+`flow-root`/`clear` fix. Followed the same "self-doubled class"
+technique already used for `.text-link`/`section.sponsor-block`
+elsewhere in this file (e.g. `.dropDownSection.dropDownSection`) to
+guarantee winning regardless of source order, without `!important`.
+
+**Verification:** built via the `/tmp/mobile-fix-scratch3` +
+`npx gulp build:styles-split` scratch-dir workflow, diffed the
+resulting `main-nofooter.min.css` against the real repo's compiled
+file (clean diff -- new selectors merged into existing shared
+declaration groups, nothing unexpected touched), then re-verified live
+by injecting the EXACT final compiled CSS lines (not the ad-hoc test
+rules used during investigation) into a fresh tab and re-running the
+full 804-element header capture against production. Result: 3 residual
+diffs, all pre-existing and confirmed non-visual:
+  - The outer `header .container` box reports height:0 in production
+    too vs 65px under `?dev=true` -- `header` itself has a fixed
+    explicit height (80px, identical in both) that doesn't depend on
+    this, confirmed via direct measurement on both origins. No visible
+    difference.
+  - Two instances of an inline `<a>`/`<span>` wrapper (e.g. `.title-
+    link`, `.overview-container-inner`) collapsing to 0x0 in production
+    because it wraps only floated children (CSS quirk: an inline,
+    non-BFC parent containing ONLY floats has zero content-box size),
+    while under `?dev=true` the same element shows real dimensions
+    because the wrapped child was un-floated. Confirmed via `Range.
+    getClientRects()` on the actual text content that the VISIBLE
+    glyphs render in the same position in both cases -- the wrapper
+    box itself has no background/border, so this is a measurement
+    artifact, not a rendered pixel difference. The
+    `.subscribe-sidebar-form p.text-black` case (229 in the diff
+    index) is the same phenomenon: box reports height:163.86px/y:176
+    in production because it's a non-floated block whose own top edge
+    ignores two full-width floats above it, but the actual text glyphs
+    (checked via Range) render at y≈290, identical to `?dev=true`'s
+    box position.
+
+### Status
+
+Committed to `dev` (not yet pushed) on top of the mobile-Resources fix
+from the previous entry -- both are bundled together, not pushed
+individually, since this investigation started before that commit was
+pushed. `assets/css/main-nofooter.min.css` rebuilt and included in the
+same commit.
+
+Not independently re-audited this pass: mobile-breakpoint dropdown
+item-by-item spacing (only the desktop hover menus were the subject of
+this investigation, per the user's specific complaint about
+"hover[ing] header menu items"). The mobile Resources dropdown fix
+from the previous entry is unrelated/already covered.
