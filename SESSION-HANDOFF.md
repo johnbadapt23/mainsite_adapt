@@ -3389,3 +3389,144 @@ sign-off before any query-merge is attempted.
 - `/careers/` (the `_open-positions.php` reset fix) -- position list
   unchanged (`Sales Associate, Executive Program Engagement`, `People &
   Operations Lead`), byte-identical to the pre-push baseline.
+
+## §28 — Systematic sweep: every Slick carousel section audited for the
+§22 BFC-containment-loss bug class, 18 sections fixed
+
+### Why
+
+User asked directly: "did you finish the float task updates to all
+files, templates?" Honest answer at the time: no, on two separate axes.
+(1) The original narrow-width/no-width/carousel-adjacent audit (723
+flagged declarations) only hand-reviewed 13 of ~34 template SCSS files
+as "Sections" 1-19 -- the rest have only the original mechanical bulk
+`float:none` conversion, never individually reviewed. (2) Separately,
+and more urgently: §22's `full-suite-slider-module`/`company-slider`
+fix was for a bug CLASS (section relies on the sitewide `section
+{float:left}` rule to auto-contain an internal still-floating Slick
+carousel; the gate's blanket `float:none` on the section removes that
+containment; section height collapses) that was found reactively, one
+user report at a time -- it was never swept systematically, and it can
+exist in ANY section with a carousel, "done" Sections 1-19 included
+(confirmed below: `_flexible.scss` is a "done" Section 7 file, yet
+`section.form-popup-slider-module` inside it needed checking too --
+turned out already safe via a pre-existing `overflow:hidden`, but that
+was luck, not audit coverage).
+
+### Method
+
+Grepped every `.slick(...)` init in `source/js/main.js` (~30 total,
+covering every carousel sitewide), traced each carousel's selector back
+to its enclosing `<section>` via the real PHP templates (delegated the
+initial mapping to a read-only research pass, then personally verified
+every finding against the actual template/SCSS source before acting --
+same discipline as every other fix this engagement), and checked each
+section's BASE (ungated) CSS for any pre-existing containment
+(`overflow`, `display:flex/grid`, or a trailing `clear:both` sibling)
+that would already protect it regardless of the refactor gate.
+
+**Already safe, no fix needed (3 sections/groups):**
+- `section.form-popup-slider-module` (`_flexible.scss`) -- own base
+  rule already has `overflow: hidden`.
+- `section.content-slider-module` -- its `.progress-container` already
+  has `clear: both` (this file, ~line 21146), a valid clearfix-
+  equivalent fix, applied 2026-09-03.
+- `section.quote-slider` (bare, landing/event variants) -- same
+  `.progress-container{clear:both}` mechanism, applied 2026-09-08.
+  `section.quote-slider.market-buyer-quotes` doesn't need it at all
+  (`.quote-slider-module` is `display:flex` there, never floated).
+
+**Fixed this pass -- `display: flow-root` added to 20 section
+selectors covering 18 distinct sections** (some selectors share a base
+class across multiple template files: `cards-module` covers 3 files,
+`peer-insights-featured` covers 2): `cards-module`, `large-testimonial-
+slider`, `left-text-links.left-text-links-slider`, `left-text-links.
+gtm-map-block`, `stories-hero-slider`, `story-categories-slider-
+module`, `two-column-services.landing-two-column-slider`, `sponsor-
+block`, `download-block.resources-block`, `logos-block`, `position-
+icon-slider`, `speakers-block`, `resources-featured`, `best-practices-
+featured`, `flip-card-module`, `peer-insights-featured`, `staff-
+slider-module`, `lifestyle-slider-block`, `keynote-slider-module`,
+`roundtable-card-slider-module`. Full per-section source-template
+citations are in the code comments (`_dev-float-refactor.scss`, right
+after the `company-slider`/`full-suite-slider-module` block).
+
+Rebuilt via the scratch-dir workflow; postcss-style diff against the
+previous compiled CSS showed exactly one changed line -- the merged
+`display:flow-root` selector list gaining these 20 new entries, nothing
+else touched.
+
+### Live verification (this pass, `?dev=true` CSS-injection technique --
+before/after height, then compared against production)
+
+**Confirmed real, severe, currently-live bugs -- fixed, byte-identical
+to production after the fix:**
+- `/careers/`: `section.staff-slider-module` was **160px** under
+  `?dev=true` (should be **789.328125px** -- a 5x collapse); after
+  injecting the fix, exactly 789.328125px, matching production exactly.
+- `/careers/`: `section.lifestyle-slider-block` was **250px** (should
+  be **801.375px** -- a 3.2x collapse); after the fix, exactly
+  801.375px, matching production exactly.
+- `/all-resources/`: `section.peer-insights-featured` was **376px**
+  (should be **785.75px** -- more than half missing); after the fix,
+  exactly 785.75px, matching production exactly.
+
+**Confirmed safe no-ops** (fix present in CSS but measured height
+identical with/without it on this particular page -- carousel likely
+not float-collapsing in this specific content configuration; harmless
+either way since `flow-root` only adds containment, never removes it):
+`section.two-column-services.landing-two-column-slider` (become-a-
+partner, 746.625px both, matches production exactly), `section.
+roundtable-card-slider-module` (private-executive-roundtables,
+814px both), `section.stories-hero-slider` (customer-stories,
+925.71875px both), `section.resources-featured` (all-resources,
+1561.65625px both).
+
+**Not yet found on a live page this pass** (fix is in, provably safe
+by the same "can only add containment" logic as `company-slider`'s
+original preemptive fix, just not live-confirmed yet): `large-
+testimonial-slider`, `left-text-links.left-text-links-slider`,
+`left-text-links.gtm-map-block`, `story-categories-slider-module`,
+`download-block.resources-block`, `logos-block`, `position-icon-
+slider`, `speakers-block`, `best-practices-featured`, `flip-card-
+module`, `keynote-slider-module`. Checked ~10 candidate pages
+(homepage, about-us, meet-the-team, go-to-market-insights, benchmark-
+maturity-assessment, market-buyer-intelligence-platform-advantage,
+ecosystem-consulting-partners) without finding these specific blocks --
+they're likely used on pages not yet found, or on ACF-optional layout
+slots not currently populated anywhere live (same situation as the
+`events-listing-module.partners-events-listing` case documented in
+§11).
+
+### Three pre-existing, UNRELATED gaps discovered as a byproduct --
+flagged, NOT fixed, NOT caused by this pass's changes
+
+Confirmed each of these is unaffected by the flow-root fix (identical
+measurement with the fix injected vs not) -- pre-existing bugs in the
+already-gated CSS for these sections, separate root cause, out of
+scope for this pass:
+- `/all-resources/` `section.resources-featured`: dev 1561.65625px vs
+  production 1379.875px (~182px gap). This section already has ~30
+  hand-written nested overrides in `_dev-float-refactor.scss`
+  (including a note referencing an earlier user report specifically
+  about "resources-featured") -- an already heavily-worked area, this
+  looks like a different, more specific bug within it.
+- `/private-executive-roundtables/` `section.roundtable-card-slider-
+  module`: dev 814px vs production 854px (~40px gap).
+- `/become-a-partner/` `section.sponsor-block`: dev 1499.75px vs
+  production 849.1875px (~650px gap, dev is TALLER than production --
+  opposite direction from the other two, likely a different bug
+  mechanism entirely).
+
+### Status
+
+Committed to `dev`, not pushed. This closes the "did you finish the
+float task" question for the Slick-carousel/BFC-containment bug class
+specifically -- all ~30 carousels sitewide now traced and covered
+(fixed or confirmed already-safe). The separate, larger "13 of ~34
+files hand-reviewed for the ORIGINAL 3 risk categories" gap from §6 is
+still open and not addressed by this pass -- that's a bigger, slower
+lift (each file needs the full per-selector categorize-and-review
+treatment Sections 1-19 got, not a single mechanical pattern like this
+pass). The 3 newly-found unrelated gaps above need their own dedicated
+investigation, not attempted here.

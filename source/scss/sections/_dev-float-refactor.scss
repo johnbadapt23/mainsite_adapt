@@ -20465,6 +20465,168 @@ body.dev-float-refactor {
         display: flow-root;
     }
 
+    // SYSTEMATIC SWEEP 2026-09-09: full-suite-slider-module and
+    // company-slider (both above) were found reactively (user report +
+    // pattern-matching) as instances of one bug CLASS: any
+    // section.xxx that (a) relied on the sitewide `section{float:left}`
+    // rule (source/scss/global/_styles.scss) for BFC-containment of an
+    // internal still-floating child, and (b) has that section-level
+    // float removed by the blanket `body.dev-float-refactor section
+    // {float:none}` rule (this file, ~line 736) with no other
+    // containment (overflow/display/clear-sibling) to replace it, loses
+    // that containment and collapses. Rather than wait for more user
+    // reports, audited every one of the ~30 Slick-carousel
+    // initializations in source/js/main.js (main.js's own `.slick()`
+    // targets a track/slide element that Slick's own library CSS keeps
+    // float:left -- untouched by this refactor, so any section wrapping
+    // one is a candidate), traced each carousel's markup back to its
+    // enclosing `<section>`, and checked that section's base (ungated)
+    // CSS for a pre-existing overflow/display/clearfix that would
+    // already protect it regardless of this refactor.
+    //
+    // Two carousels turned out already safe and are NOT duplicated here:
+    // - section.form-popup-slider-module (source/scss/templates/
+    //   _flexible.scss) already has `overflow: hidden` in its own base
+    //   rule -- that alone establishes a BFC independent of float, so
+    //   the gate's float:none can't break its containment.
+    // - section.content-slider-module's .content-slider-container
+    //   .progress-container already has `clear: both` (this file,
+    //   ~line 21146) -- a trailing cleared sibling is a valid
+    //   BFC-equivalent workaround, same mechanism as section.quote-
+    //   slider's own .progress-container fix elsewhere in this file.
+    // - section.quote-slider (bare, landing/event variants) is likewise
+    //   already covered by that same .progress-container{clear:both}
+    //   fix. section.quote-slider.market-buyer-quotes doesn't need it at
+    //   all (.quote-slider-module is display:flex there, not floated).
+    //
+    // The following section selectors have NO such pre-existing
+    // protection -- confirmed via their base (ungated) SCSS rule having
+    // no overflow/display/clear on the section itself -- and each wraps
+    // a Slick carousel confirmed still-floating (Slick-managed, outside
+    // this refactor's scope). None of these have been individually
+    // live-verified yet the way full-suite-slider-module was (that
+    // needed a specific live page + before/after height comparison per
+    // section, which takes real time per selector) -- but the fix is
+    // provably safe by the same logic as section.company-slider's
+    // preemptive fix above: display:flow-root can only ADD back
+    // containment that floating used to provide for free, it cannot
+    // remove or change anything for a section that turns out not to
+    // need it. Flagging each with its source template + carousel for
+    // whoever verifies live next.
+    section.cards-module {
+        // templates/benchmark-components/_cards-fixed-bg.php,
+        // templates/benchmark-components/_cards-dark.php,
+        // templates/gtm-components/_cards-dark.php -- wraps
+        // .card-container.card-slider and/or .gtm-icon-slider (Slick).
+        display: flow-root;
+    }
+    section.large-testimonial-slider {
+        // templates/gtm-components/_large-testimonials.php -- wraps
+        // .large-quote-slide-container (Slick).
+        display: flow-root;
+    }
+    section.left-text-links.left-text-links-slider {
+        // templates/benchmark-components/_left-text-links-slider.php --
+        // wraps .left-text-link-slider (Slick).
+        display: flow-root;
+    }
+    section.left-text-links.gtm-map-block {
+        // templates/gtm-components/_two-column-map.php -- wraps
+        // .mobile-gtm-card-slider (Slick, mobile-only init).
+        display: flow-root;
+    }
+    section.stories-hero-slider {
+        // templates/customer-story-components/_hero-slider.php --
+        // wraps .mobile-story-slider (Slick, mobile-only init).
+        display: flow-root;
+    }
+    section.story-categories-slider-module {
+        // templates/customer-story-components/_category-slider.php --
+        // wraps .category-slider-container (Slick). This selector also
+        // has its own explicit float:left in base CSS (_customer-
+        // stories.scss), but the gate's `body.dev-float-refactor
+        // section{float:none}` (0,1,1 specificity, element+ancestor
+        // class) beats the base rule's `.story-categories-slider-module
+        // {float:left}` (0,1,0, single class) regardless -- same
+        // mechanism documented throughout this file.
+        display: flow-root;
+    }
+    section.two-column-services.landing-two-column-slider {
+        // templates/landing-components/_two-column-slider.php -- wraps
+        // .column-slider-container (Slick).
+        display: flow-root;
+    }
+    section.sponsor-block {
+        // templates/landing-components/_sponsorship.php -- wraps
+        // .sponsors-slider-container (Slick).
+        display: flow-root;
+    }
+    section.download-block.resources-block {
+        // templates/components/_resources-block.php (and its may_
+        // duplicate) -- wraps .resources-container.resources-slider
+        // (Slick).
+        display: flow-root;
+    }
+    section.logos-block {
+        // templates/components/_logos-block.php -- wraps .logos-slider
+        // (Slick).
+        display: flow-root;
+    }
+    section.position-icon-slider {
+        // templates/components/_position-icon-slider.php -- wraps
+        // .icon-slider (Slick, "Careers Icon Slider").
+        display: flow-root;
+    }
+    section.speakers-block {
+        // templates/components/_speakers-block.php -- wraps
+        // .speakers-bottom.mobile-slider (Slick, mobile-only init).
+        display: flow-root;
+    }
+    section.resources-featured {
+        // templates/resources-components/_resources-featured-block.php
+        // -- wraps .resources-featured-slider (Slick).
+        display: flow-root;
+    }
+    section.best-practices-featured {
+        // templates/resources-components/_best-practices-featured-
+        // block.php -- wraps .post-container inside a direct
+        // section.featured-module.best-practices-featured Slick init.
+        display: flow-root;
+    }
+    section.flip-card-module {
+        // templates/event-components/_flip-cards.php -- wraps
+        // .flip-card-container.mobile (Slick, mobile-only init, direct
+        // section.flip-card-module .container ... selector).
+        display: flow-root;
+    }
+    section.peer-insights-featured {
+        // templates/resources-components/_peer-insights-featured-
+        // block.php AND _expert-featured-block.php (both render this
+        // same section class combo) -- wraps .peer-featured-slider /
+        // .expert-featured-slider (Slick).
+        display: flow-root;
+    }
+    section.staff-slider-module {
+        // templates/components/_staff-slider.php -- wraps
+        // .staff-slider.desktop / .staff-slider.mobile (Slick).
+        display: flow-root;
+    }
+    section.lifestyle-slider-block {
+        // templates/components/_life-slider.php -- wraps
+        // .lifestyle-slider (Slick).
+        display: flow-root;
+    }
+    section.keynote-slider-module {
+        // templates/event-components/_slider.php -- wraps
+        // .keynote-slider (Slick).
+        display: flow-root;
+    }
+    section.roundtable-card-slider-module {
+        // templates/roundtable-components/_card-slider.php -- wraps
+        // .roundtable-card-slider (Slick).
+        display: flow-root;
+    }
+
     // section.two-column-logo-carousel: .text-inner/.button-container are
     // sole/stacked or Category A (own local flex); confirmed NOT Slick
     // (no .slick() call in main.js targets logo-carousel/moving-logos --
