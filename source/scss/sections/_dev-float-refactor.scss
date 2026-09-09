@@ -20417,6 +20417,37 @@ body.dev-float-refactor {
         float: none;
     }
 
+    // section.full-suite-slider-module itself relied on the sitewide
+    // `section { float: left; }` rule (source/scss/global/_styles.scss,
+    // line 92) for more than positioning: floating a block also makes it
+    // establish a new block formatting context, which auto-contains
+    // (auto-clears) any still-floating descendants for the purpose of the
+    // parent's own height. .full-suite-slider (the Slick carousel,
+    // intentionally left float:left above) depends on that BFC. Once the
+    // blanket `body.dev-float-refactor section { float: none; }` rule
+    // (this file, ~line 736) removed the section's own float, .slider-
+    // outer collapsed to 0 height and the whole section shrank to just
+    // its title -- confirmed live on /buyer-persona-cfo/ (447px under
+    // ?dev=true vs production's 983px). display:flow-root re-establishes
+    // the same BFC/containment without reintroducing the float itself.
+    section.full-suite-slider-module {
+        display: flow-root;
+    }
+    // .title-container itself was ALSO converted float:left -> float:none
+    // by the exact-selector override above (this file, ~line 20409) --
+    // that alone drops it from a float-established BFC to a plain block,
+    // letting its h2's 8px margin-bottom collapse straight through into
+    // .full-suite-slider-module's own box instead of staying inside
+    // .title-container. Confirmed live: section height came out 975px
+    // (still 8px short of production's 983px) until .title-container also
+    // got display:flow-root, which stops that collapse the same way its
+    // own float used to. With both flow-root rules the section matches
+    // production exactly (983px, verified via live-injected CSS on
+    // /buyer-persona-cfo/ before this was built/committed).
+    section.full-suite-slider-module .container .title-container {
+        display: flow-root;
+    }
+
     // section.two-column-logo-carousel: .text-inner/.button-container are
     // sole/stacked or Category A (own local flex); confirmed NOT Slick
     // (no .slick() call in main.js targets logo-carousel/moving-logos --
