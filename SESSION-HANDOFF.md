@@ -2353,3 +2353,50 @@ still-open later.
 ### Status
 
 Committed as `8aa5150` to `dev`, not pushed. Task #19 closed.
+
+---
+
+## 16. `isset($_GET[...]) ? array_map(...) : ''` ternary sites -- investigated, left as-is per user decision
+
+### Task
+
+12 sites across `template-events-old.php`, `template-insights.php`,
+`template-post.php`, `template-search.php` all follow the pattern
+`isset($_GET['x']) ? array_map('sanitize_text_field', (array)$_GET['x']) :
+'';` -- a type-mismatched ternary (array in the true branch, empty string in
+the false branch). Flagged during the broader audit as a code-smell worth
+resolving.
+
+### Investigation
+
+Traced every downstream consumer of each of these variables
+(`$filterCat`/`$filterType`/`$filterDuration`/`$filterTopics`/`$filterEvent`
+across the 4 files -- checkbox `in_array()` state, dozens of `!= ''`/`==
+''`/`empty()` guards including several **combined OR-guards** across
+multiple filter variables used as "is any filter active" checks, URL
+query-string building for sort links, results-grid class toggling, and
+counter text). Conclusion: the `''`-vs-array asymmetry is **load-bearing**,
+not accidental dead code -- converting the false branch to a consistent
+`[]` default (the natural, more "correct"-looking fix) would silently
+invert those guards, since in PHP `[] == ''` is `false` (arrays are never
+loosely-equal to non-array scalars) -- meaning every `!= ''` guard would
+become permanently `true`, incorrectly signaling "a filter is active" even
+when nothing is selected. A mechanical `?? []`-style modernization is
+therefore unsafe; a real fix would mean rewriting all 12 sites *and* every
+one of their dozens of downstream consumers to use `empty()`/`count()`
+checks instead -- a much larger, riskier refactor than originally scoped,
+touching call-sites across all 4 files with no isolated way to verify it
+short of exercising every filter combination on every affected page.
+
+Also checked `_archive/dec-2025-functions.php`, `_archive/nov-functions.php`,
+`_archive/oct-functions.php` for a similar pattern (found 3 matches using
+`array()` as the false branch instead of `''`) -- confirmed these are dead,
+archived files, not live/relevant.
+
+### Decision
+
+Presented to the user as a choice: leave all 12 as-is (no behavior change,
+no risk -- the type inconsistency is ugly but not an actual bug, nothing is
+broken today) vs. the full `empty()`-based refactor (real regression risk,
+needs its own dedicated verification pass). **User chose to leave all 12
+as-is.** No code changed. Task #18 closed.
