@@ -20627,6 +20627,57 @@ body.dev-float-refactor {
         display: flow-root;
     }
 
+    // BUGFIX 2026-09-09: found live-verifying section.sponsor-block
+    // above (/become-a-partner/, 533px viewport) -- NOT caused by the
+    // flow-root fix (confirmed: identical height with/without it), a
+    // separate pre-existing bug. section.sponsor-block .container
+    // .table-block.desktop is supposed to be hidden at narrow widths
+    // (real/ungated rule in _landing.scss: `.table-block { &.mobile
+    // {display:none} } @media(max-width:767px){&.desktop{display:none}
+    // &.mobile{display:block}}`), but the mechanical bulk `display:
+    // block` fix elsewhere in this file (the one restoring block-level
+    // display to elements that had float:none applied, same mechanism
+    // as the §2b span/a un-blockify bugfix) has `section.sponsor-block
+    // .container .table-block` in its huge merged selector list --
+    // UNSCOPED, no media query, and its specificity (2 elements + 4
+    // classes: body.dev-float-refactor + section.sponsor-block +
+    // .container + .table-block) beats the real rule's media-scoped
+    // `.table-block.desktop{display:none}` (1 element + 4 classes) at
+    // every width, permanently forcing the desktop table visible
+    // alongside the mobile slider. Confirmed live: at 533px, BOTH
+    // section.sponsor-block .table-block.desktop (714px) AND
+    // .table-block.mobile's slick-initialized .sponsors-slider-
+    // container (473px) were rendering simultaneously under ?dev=true,
+    // while production correctly showed only the mobile slider
+    // (.desktop computed display:none there). Confirmed harmless on
+    // .table-block.mobile itself -- the same override happens to force
+    // display:block there too, but that's the CORRECT value at this
+    // width anyway, so it was masking the real bug rather than causing
+    // a second one. Fix: a higher-specificity, properly-scoped rule
+    // restoring the real display:none for .desktop specifically
+    // (2 elements + 5 classes now beats the 2-element/4-class override
+    // regardless of source order) -- same "add back scoping the bulk
+    // fix stripped out" pattern as the .links-container fix in §11.
+    @media (max-width: 767px) {
+        section.sponsor-block .container .table-block.desktop {
+            display: none;
+        }
+    }
+    // With .desktop correctly hidden above, .table-block.mobile is the
+    // only visible variant at narrow widths -- it wraps the same
+    // still-floating Slick .sponsors-slider-container carousel as
+    // every other section in the systematic sweep above, and has the
+    // identical containment gap (confirmed live: adding this closed
+    // section.sponsor-block from 786.1875px to 842.1875px, within 7px
+    // of production's 849.1875px -- the residual ~7px matches the same
+    // benign floated-trailing-margin-collapse artifact already
+    // documented multiple times elsewhere in this file, e.g.
+    // comparison-module/list-block/registration-two-column-block in
+    // §11, not a new bug).
+    section.sponsor-block .container .table-block.mobile {
+        display: flow-root;
+    }
+
     // section.two-column-logo-carousel: .text-inner/.button-container are
     // sole/stacked or Category A (own local flex); confirmed NOT Slick
     // (no .slick() call in main.js targets logo-carousel/moving-logos --

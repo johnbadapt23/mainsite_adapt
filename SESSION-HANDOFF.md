@@ -3520,13 +3520,62 @@ scope for this pass:
 
 ### Status
 
-Committed to `dev`, not pushed. This closes the "did you finish the
-float task" question for the Slick-carousel/BFC-containment bug class
+Committed to `dev`, pushed. This closes the "did you finish the float
+task" question for the Slick-carousel/BFC-containment bug class
 specifically -- all ~30 carousels sitewide now traced and covered
 (fixed or confirmed already-safe). The separate, larger "13 of ~34
 files hand-reviewed for the ORIGINAL 3 risk categories" gap from §6 is
 still open and not addressed by this pass -- that's a bigger, slower
 lift (each file needs the full per-selector categorize-and-review
 treatment Sections 1-19 got, not a single mechanical pattern like this
-pass). The 3 newly-found unrelated gaps above need their own dedicated
-investigation, not attempted here.
+pass).
+
+**Update, same session, follow-up on the 3 unrelated gaps:**
+
+- **`section.sponsor-block` (~650px gap) -- root-caused and fixed.**
+  Not a containment-loss bug at all: `section.sponsor-block .container
+  .table-block.desktop` is supposed to be hidden at narrow widths (real/
+  ungated rule in `_landing.scss`, `@media(max-width:767px){&.desktop{
+  display:none}}`), but the mechanical bulk `display:block` fix
+  elsewhere in this file (the one restoring block-level display to
+  elements that had `float:none` applied, same mechanism as the §2b
+  span/a un-blockify bugfix) has `section.sponsor-block .container
+  .table-block` in its huge merged selector list -- unscoped, no media
+  query, and its specificity (2 elements + 4 classes) beats the real
+  rule's media-scoped one (1 element + 4 classes) at every width,
+  permanently forcing the desktop table visible alongside the mobile
+  slider. Confirmed live: at 533px, BOTH the desktop table (714px) AND
+  the mobile slider (473px) were rendering simultaneously under
+  `?dev=true`; production correctly showed only the mobile slider.
+  Fixed with a higher-specificity, properly `@media(max-width:767px)`-
+  scoped override restoring `display:none` for `.desktop` specifically
+  -- same "add back the scoping the bulk fix stripped out" pattern as
+  the `.links-container` fix in §11. That alone closed the section from
+  1499.75px to 786.1875px (production: 849.1875px). The residual ~63px
+  turned out to be the SAME containment-loss pattern as the rest of
+  this pass, one level deeper -- `.table-block.mobile` (now the only
+  visible variant) wraps the same still-floating Slick carousel and
+  needed its own `display:flow-root` too. Added it; closed the section
+  to 842.1875px, within 7px of production -- that residual matches the
+  same benign floated-trailing-margin-collapse artifact already
+  documented multiple times elsewhere in this file (comparison-module/
+  list-block/registration-two-column-block in §11), not a new bug.
+- **`section.roundtable-card-slider-module` (~40px gap) -- investigated
+  further, not resolved.** The section's own `flow-root` (from this
+  pass) is correctly applied and its children look properly contained
+  (verified DOM structure: `.top-content` and `.roundtable-card-slider`
+  both floated, `.container` wrapping both without collapse). No
+  obvious single override explains the remaining ~40px the way the
+  sponsor-block bug had one -- most likely the same benign margin-
+  collapse artifact class as the sponsor-block residual, just larger,
+  but not confirmed. Left as-is rather than guess further; flagged for
+  whoever picks this up next.
+- **`section.resources-featured` (~182px gap) -- not investigated this
+  pass.** Already has ~30 hand-written nested overrides from earlier
+  sessions (including a note referencing a prior user report
+  specifically about this section) -- a bigger, more tangled area than
+  the other two, deliberately left for a dedicated pass rather than
+  rushed.
+
+Rebuilt/diffed (scratch-dir workflow, clean single-line diffs both
+times) and committed as a follow-up. Not yet pushed.
