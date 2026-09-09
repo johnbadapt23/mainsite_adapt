@@ -2476,3 +2476,114 @@ elevating specificity instead is unaffected by minification).
 ### Status
 
 Committed as `48fa14d` to `dev`, not pushed.
+
+---
+
+## 18. PHP fatal-crash bug: unguarded `get_term_link()` against `WP_Error` (task #20)
+
+### Task
+
+User relayed an external developer's site audit reporting "a PHP coding
+error within the WordPress theme" causing crashes, plus generic
+server/infra recommendations (checking PHP-FPM processes, server error
+logs, database performance, caching -- all out of scope here, no server
+access from this sandbox, only this git repo). Asked to prioritize
+finding the PHP bug. Prior PHP audit passes (§7/§8) covered PHP 8.1
+compatibility, dead code, debug leaks, and `no_found_rows` -- all clean.
+This pass targeted actual runtime-error risks instead of style/
+modernization.
+
+### The bug class
+
+`get_term_link( $term )` returns a `WP_Error` object (not a string)
+whenever `$term` isn't resolvable to a real term. `WP_Error` has no
+`__toString()` method, so `echo get_term_link(...)` (or any string
+concatenation of its result) throws a genuine PHP 8 **fatal** error:
+`Uncaught Error: Object of class WP_Error could not be converted to
+string`. This is a crash, not a warning -- matches the external report
+closely.
+
+Used a research subagent to enumerate all 168 `get_term_link(` call
+sites theme-wide and trace each argument's origin, then personally
+verified and fixed every live, reachable instance:
+
+### Fixed
+
+- **5 `resources-components/_*-featured-block.php` files** (articles,
+  expert, peer-insights, best-practices, and market-trend-reports --
+  the last has 2 occurrences, desktop + mobile copies): each does
+  `$term = get_term_by('slug', <hardcoded-slug>, 'resource-type');` then
+  used it in a completely unguarded `echo get_term_link($term)`.
+  `get_term_by()` returns `false` if that resource-type term is ever
+  renamed or deleted -- `get_term_link(false)` returns `WP_Error` --
+  crash on every page load of that block. Pre-computed a null-safe
+  `$term_link` string once per block (`$term_link = $term ?
+  get_term_link($term) : '';` plus an `is_wp_error()` check on the
+  result) instead of calling `get_term_link()` inline, and null-guarded
+  the sibling `$term->name`/`$term->description` property reads too.
+
+- **`customer-story-components/_category-three-column.php`**: same root
+  cause via `get_term($category_ids[0], 'customer-stories-categories')`,
+  triggered by leaving the ACF "category" field on this flexible-content
+  block empty, or deleting its selected term. 4 separate unguarded echo
+  sites (the "See more" link, the copy-link input, and 2 share-link
+  URLs). Confirmed this file is live (wired to the `customer_story_
+  category_slider` ACF layout on `template-customer-stories.php`), unlike
+  its sibling `_category-slider.php` (see below). Also fixed an
+  unrelated bug in the same file: a fallback branch echoed `$q->name`
+  where `$q` is never defined anywhere in this file -- a copy-paste
+  leftover from `_category-slider.php` -- should be `$termTax` (the
+  block's own category, already resolved earlier in the file) per the
+  surrounding logic's clear intent.
+
+- **`single-customer_stories.php` + `template-customer-stories-
+  categories.php`**: both already had a `if ($parent_category)`/
+  `if ($parent_term)` truthy guard around a similar `get_term()` result
+  -- but that only blocks `false`/`null`. `WP_Error` is an object and
+  PHP objects are always truthy, so it slips straight through the
+  existing guard. Narrower trigger than the cases above (only fires if
+  the `customer-stories-categories` taxonomy itself fails to register,
+  not just a deleted term), but the identical crash class. Added
+  `is_wp_error()` checks alongside the existing truthy checks in both
+  files. Also initialized `single-customer_stories.php`'s `$category_
+  link`/`$category_name`/`$category_slug` to `''` up front, since they're
+  used unconditionally in the template markup with no wrapping guard at
+  all -- meaning the plain "no parent category found" case (not just the
+  WP_Error edge case) was already hitting undefined-variable warnings on
+  every such page load, independent of this fix.
+
+### Verification
+
+Every changed instance is provably behavior-preserving on the happy
+path (a valid, existing term -- which is the case on the live site
+today): the added checks are pure `if`/ternary guards around the exact
+same calls, so when the term resolves normally, `$term_link` equals
+exactly what `get_term_link($term)` returned before. All 8 edited files
+confirmed parsing clean under PHP 8.1 via `php-parser` (no PHP CLI in
+this sandbox, same constraint as §7). No CSS/visual output touched, so
+the usual live pixel-diff verification doesn't apply here -- this is a
+pure PHP correctness fix, same category as §7's modernization pass.
+
+### Found but not fixed -- flagged for a separate decision
+
+Three files contain the identical `get_term_link()`-on-`WP_Error`
+pattern but are **confirmed unreachable** (no `get_template_part()`/
+`include`/`require` call and no `Template Name:` header anywhere in the
+theme references them, checked via sitewide grep):
+`templates/old-template-resource-type.php`,
+`templates/template-resource-type-pre-media.php`, and
+`templates/customer-story-components/_category-slider.php` (the source
+of the `$q` copy-paste bug fixed above). Zero live crash risk as-is, but
+worth a deletion decision -- same category as the earlier dead-code
+cleanups (§8) but a larger removal than that pass's scope, so left
+untouched pending sign-off rather than deleted unilaterally.
+
+### Status
+
+Committed as `56f4e6c` to `dev`, not pushed. Task #20 closed.
+
+The rest of the external audit's recommendations (server resources,
+PHP-FPM process health, server error logs, WordPress plugin review,
+database performance, caching/hosting setup) are infrastructure-level
+and out of scope for this sandbox, which only has access to this git
+repo -- flagged back to the user to take to whoever manages hosting.
