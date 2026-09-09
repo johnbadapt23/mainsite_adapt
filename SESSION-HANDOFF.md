@@ -2227,11 +2227,129 @@ correction to the "2." comment documenting the gap and where it was found.
   Screenshot confirms the card now visually matches production (icon
   top-right, heading/text/button stacked left).
 
-**Still to do once this is pushed and deployed:** re-verify live on the
-actual deployed staging asset (not just the injected-style simulation) to
-close this out completely -- the injection proves the CSS is correct, but
-hasn't exercised the real built/deployed file end to end.
+**Update:** pushed by the user and re-verified live against the actual
+deployed staging asset (not just the injected-style simulation) --
+`marginFromRight: 24` measured directly on the deployed
+`.mobile-menu-bottom .subscribe-sidebar-form .icon-container`, matching
+production exactly, plus a visual screenshot confirmation. Closed out.
 
-**Committed to `dev`, not pushed** (user pushes from their own machine per
-standing practice). `?dev=true` gate itself untouched -- this only fixes a
-gap in the CSS gated *behind* it.
+Committed as `a8c7ae3`, pushed and verified. `?dev=true` gate itself
+untouched -- this only fixed a gap in the CSS gated *behind* it.
+
+---
+
+## 15. `_market.scss` `.item.one-third` float gap (Section 17's deliberately-uncovered case) -- resolved, plus a build-pipeline bug found while verifying it
+
+### Task
+
+Section 17 (`63e4511`, §2m above) deliberately left one case uncovered:
+`section.market-featured`'s mobile-only `.item .item-content-container` row
+override, because the `.item.one-third` card appeared to share a base
+selector family with `_events.scss`/`_resources-types.scss` whose desktop
+float behavior hadn't been fully traced. The user asked for this to be
+investigated and closed out.
+
+### Root cause, actually traced this time
+
+Read `templates/components/_market-featured.php` directly: the card is
+`<div class="item one-third articles"><a><span class="image-container">
+<span class="bg-container">...</span></span></a><span class=
+"item-content-container">...</span></div>`. The earlier "shared base
+selector" concern turned out to be a red herring -- the only `.item.one-third`
+selector in `_resources-types.scss` (line 3392) belongs to a completely
+unrelated section (`featured-module.best-practices-featured`); the actual
+generic grid float for `.filter-listing .item.one-third` cards (in
+`_resources-types.scss`) is entirely **ungated** (not part of the float
+refactor at all), so it's identical under `?dev=true` and production and
+was never a bug.
+
+The real, narrow gap: `.image-container`'s only float is the sitewide bare
+`.image-container { float: left; width: 100%; }` rule, already gated
+elsewhere in this same file (`body.dev-float-refactor .image-container {
+float: none; display: block; }`) -- nothing left to fix there. The one
+genuinely uncovered float is `.item-content-container`'s own
+`@media (max-width: 767px)` override (`source/scss/templates/_market.scss:
+406`, `float: left; width: calc(100% - 126px)`), which pairs with
+`.image-container`'s mobile-only fixed 126x90 size to form a real
+same-direction 2-item row (image left, content right, natural DOM order --
+no `row-reverse` needed, unlike Section 6's subscribe-form).
+
+### Fix
+
+Added to `_dev-float-refactor.scss`, inside the existing
+`@media (max-width: 767px)` block that already holds Section 17's
+`.market-two-column` rules:
+
+```scss
+@media (max-width: 767px) {
+    section.market-featured .container .grid-wrapper .item {
+        display: flex;
+        align-items: flex-start;
+    }
+    section.market-featured .container .grid-wrapper .item > a {
+        flex-shrink: 0;
+    }
+    section.market-featured .container .grid-wrapper .item .item-content-container {
+        float: none;
+    }
+}
+```
+
+Also rewrote the old "Deliberately NOT fixing" comment (§2m) into a
+"RESOLVED, 2026-09-09" block with the full trace, so it isn't mistaken for
+still-open later.
+
+### Verification
+
+- **Live injection before touching source-of-truth build:** measured
+  production's actual rendered box positions on `/go-to-market-insights/`
+  (image 126x90 at left:20, content at left:146/width:209, item height
+  110px across all 3 featured cards), then injected the exact new rules as
+  a `<style>` tag on the live `?dev=true` page and re-measured -- pixel-
+  identical to production on all 3 cards.
+- **Build-pipeline bug found while verifying the compiled output:** the
+  first rebuild (`npx gulp build:styles`) showed the new rules correctly
+  compiled into `main.min.css`, but they were **missing entirely** from
+  `main-nofooter.min.css` -- alarming, since `main-nofooter.min.css` is the
+  actually-enqueued file (`main.min.css` is the unused rollback artifact,
+  per `gulpfile.js`'s own comment, §9/§2a). Spent a long debugging pass
+  isolating each pipeline stage by hand (raw `dart-sass` compile → clean-css
+  → `fix-float-none-display.js` → `split-oversized-rules.js`) against a
+  manually glob-expanded copy of `main.scss` -- the new rules survived
+  every single stage in isolation, which didn't match the missing-in-
+  practice result and pointed at a process error rather than a real code
+  bug.
+  **Actual root cause:** `main-nofooter.min.css` isn't produced by
+  `build:styles` at all -- it's produced by the separate
+  `build:styles-split` task (`source/gulp/tasks/build/styles-split.js`,
+  `build:styles-main-nofooter` sub-task), which compiles from a
+  **different entry point** (`source/scss/main-nofooter.scss`, not
+  `main.scss`). The debugging session had only ever run `build:styles`,
+  so `main-nofooter.min.css` on disk was simply stale (left over from
+  before this fix was added to the SCSS source) -- not corrupted by any
+  pipeline stage. Repeating the same isolated-stage test against
+  `main-nofooter.scss`'s own compiled output confirmed the rules survive
+  every stage there too, and running the correct task
+  (`npx gulp build:styles-split`) produced a `main-nofooter.min.css` with
+  all three new rules present and correct on the first try.
+- **Full postcss AST-level semantic diff** (individual-selector
+  granularity, not just merged-rule granularity, to avoid clean-css's
+  regrouping producing false positives) against the previous committed
+  `main-nofooter.min.css`: exactly 3 real additions (the new rules above),
+  plus one incidental, verified-harmless side effect --
+  `fix-float-none-display.js`'s cross-selector matching stopped adding a
+  redundant explicit `display: block` to two unrelated gated rules
+  (`.article-container-three-post` and `.market-trend-reports-container-
+  three-post`'s `.item`, both `float:none`-only) now that a real `display`
+  exists for a same-tail selector elsewhere. Confirmed harmless: that
+  `.item` is a `<div>` (`templates/resources-components/
+  _articles-featured-block.php`), and per the CSS spec a `<div>` with
+  `float: none` computes to `display: block` regardless of whether it's
+  declared explicitly -- verified directly with `getComputedStyle()` on a
+  bare test element in the live browser session. `footer.min.css` came out
+  byte-identical (footer bundle doesn't import this section) --
+  confirmed via `md5sum`.
+
+### Status
+
+Committed as `8aa5150` to `dev`, not pushed. Task #19 closed.
