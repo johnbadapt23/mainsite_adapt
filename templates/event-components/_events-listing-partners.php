@@ -6,6 +6,13 @@ $args = array(
     'meta_key'  => 'date',
     'posts_per_page' => -1,
     'no_found_rows' => true,
+    // PERF 2026-09-09: only used below to collect distinct top-level
+    // 'years' terms from the matched events (year filter buttons) --
+    // the posts themselves are never displayed here, so fields=>ids
+    // skips fetching post_content/postmeta for every match. Same
+    // pattern applied to template-topic.php/template-resource-type.php
+    // and the non-partners _events-listing.php.
+    'fields' => 'ids',
     'orderby'   => 'meta_value_num',
     'order'     => 'ASC',
     'meta_query' => array(
@@ -18,10 +25,10 @@ $args = array(
 ); ?>
 <?php $loop = new WP_Query( $args ); ?>
 <?php $terms = array(); ?>
-<?php if ( $loop->have_posts() ) : ?>
-    <?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
+<?php if ( $loop->posts ) : ?>
+    <?php foreach ( $loop->posts as $event_post_id ) : ?>
     <?php
-$years = get_the_terms( $post->ID, 'years' );
+$years = get_the_terms( $event_post_id, 'years' );
 if($years){
     foreach( $years as $year ){
         if($year-> parent == 0){
@@ -34,11 +41,8 @@ if($years){
     }
 }
 ?>
-<?php endwhile; ?>
-<?php else : ?>
+<?php endforeach; ?>
 <?php endif; ?>
-<?php wp_reset_postdata();
-?>
 
 <section class="events-listing-module background-black" <?php if (get_sub_field( 'id' )) { ?>id="<?php echo get_sub_field( 'id' ); ?>"<?php } ?>>
     <div class="container">
