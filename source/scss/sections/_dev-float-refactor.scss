@@ -20251,6 +20251,23 @@ body.dev-float-refactor {
     section.company-slider .container .company-progress-container .company-progress {
         float: none;
     }
+    // section.company-slider itself: same structural bug as
+    // section.full-suite-slider-module above (confirmed live on
+    // /buyer-persona-cfo/, see that comment for the full mechanism).
+    // .company-slide-container is float:left; width:100% (source/scss/
+    // templates/_customer-events.scss ~line 3417) with no containment of
+    // its own -- it relied entirely on this section's own float (from the
+    // sitewide `section { float:left }` base rule) for height. Applying
+    // the same display:flow-root preemptively: same source pattern, same
+    // "left floating Slick carousel with no other containment" shape,
+    // just not caught live yet -- none of this session's sample pages
+    // (adapt-vs-gartner, custom-partnered-research, ecosystem-consulting-
+    // partners, executive-advisors) have this ACF block enabled to
+    // confirm against. Safe either way: flow-root only restores
+    // containment, it can't regress a section that wasn't relying on it.
+    section.company-slider {
+        display: flow-root;
+    }
 
     // section.new-cta: .column-container already has float:none in the
     // live CSS (global class flex confirmed active/intentional here).
