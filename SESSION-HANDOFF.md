@@ -2138,3 +2138,100 @@ perceive), and none was referenced by any script or stylesheet.
 
 **Committed to `dev`, not pushed** (user pushes from their own machine per
 standing practice). `?dev=true` gate untouched.
+
+---
+
+## 14. Real bug found + fixed: `.mobileMenuResources` subscribe-form icon (task "verify Sections 1-19 with ?dev=true")
+
+### What was being verified
+
+Picked up the open task to check specific still-unverified areas from §6/§11's
+open-items list: mobile nav main menu dropdowns, the "Our Services" sub-list,
+its subscribe form, and the separate Resources panel's logo/ADAPT header row --
+all with `?dev=true` on staging, at 375px.
+
+Getting the in-app browser's `computer` click tool to work at all on this site
+at mobile width was unreliable (consistent hard timeouts on every click,
+including a plain logo link) -- worked around it by dispatching real
+`element.click()` calls via `javascript_tool` instead, which behave like a
+genuine DOM click and were not affected.
+
+### Results
+
+- **Main hamburger menu** (`a.nav[aria-label="Open menu"]`) -- opens
+  correctly, all 5 top-level items present and correctly styled.
+- **"Our Services" sub-list** (`.mobile-services-dropdown` toggle) -- expands
+  correctly: Transformation Services / Go-to-Market Services rows, icon +
+  label + chevron, matches production's structure (content text differs, CMS
+  data only, not a CSS issue).
+- **Subscribe form inside the main mobile menu's Resources section** and
+  **the separate Resources panel's logo/ADAPT header row** (`a.navResources`
+  toggle, found on `/all-resources/`) -- the logo/ADAPT row
+  (`.mobileMenuResources .main-links-container .container`, the Section 6
+  fix from `482216b`) is pixel-correct: clean `space-between` split, "A
+  [icon] Resources" left / "ADAPT >" right, matches production exactly.
+- **Real bug found:** the "Join the ADAPT Insider Community" subscribe card
+  at the bottom of the *separate* Resources panel (`.mobileMenuResources`,
+  `templates/partials/_header.php:221-239`) rendered with its envelope icon
+  at the **top-left** under `?dev=true`, vs **top-right** on production --
+  measured precisely (not just eyeballed): production has the icon 24px
+  from the card's right edge (`float:right` in the live, ungated CSS,
+  `source/scss/partials/_header.scss:4338-4375`, selector
+  `.mobile-menu-bottom .subscribe-sidebar-form .icon-container`); `?dev=true`
+  had it 24px from the **left** edge, i.e. plain DOM order with no
+  compensating flex fix.
+
+### Root cause
+
+The existing Section 6 comment (`_dev-float-refactor.scss`, "2." in the
+numbered writeup above the `body.dev-float-refactor` block) claimed this
+icon+content split markup "appears once in `_mega-main-menu-mobile.php`...
+fixed twice, once per dropdown tier" and fixed both of *those* occurrences
+with a `flex-direction: row-reverse` translation of the float. That claim
+was incomplete: the identical markup+CSS pattern (same classes:
+`.subscribe-sidebar-form.mobile-menu-subscribe-form`, same
+`.icon-container`/`.form-content` split) also exists a third time, in a
+completely different PHP file (`templates/partials/_header.php`, the
+standalone `.mobileMenuResources` panel, scoped in SCSS as
+`.mobile-menu-bottom .subscribe-sidebar-form`). This third instance was
+never mechanically or manually swept, so it only inherited the generic
+`.subscribe-sidebar-form { float: none; }` bare rule (removes the icon's
+float with no replacement), never the row-reverse compensation.
+
+### Fix
+
+Added the identical row-reverse fix, scoped to `.mobile-menu-bottom
+.subscribe-sidebar-form` (confirmed unique sitewide -- exactly one PHP
+occurrence, one SCSS occurrence), immediately after the two existing
+`.mobileMenuMain` instances in `_dev-float-refactor.scss`, plus a
+correction to the "2." comment documenting the gap and where it was found.
+
+### Verification
+
+- Rebuilt via the standard scratch-dir cycle (`/tmp/mobile-fix-scratch`);
+  `npx gulp build:styles` succeeded.
+- Diffed the compiled `main-nofooter.min.css` old vs new with a `postcss`
+  AST-level rule comparison (selector+declaration sets, not raw text) rather
+  than a naive text diff, because clean-css re-groups identical-declaration
+  rules and reshuffles unrelated selectors between groups on any edit,
+  producing large but meaningless line-level diffs otherwise. Result: the
+  *only* real change across the entire stylesheet is the 3 new selectors
+  (`.mobile-menu-bottom .subscribe-sidebar-form`, its `.icon-container`, its
+  `.form-content`) gaining their declarations -- confirmed by resolving every
+  other apparent add/remove pair back to a net-zero selector-shuffle within
+  an unrelated, pre-existing `display:block;float:none` group.
+- Live-verified the fix itself before committing: since the fix isn't
+  deployed to staging yet, injected the exact new CSS as a `<style>` tag on
+  the live staging page via `javascript_tool` and re-measured -- icon moved
+  from 24px-from-left to 24px-from-right, matching production exactly.
+  Screenshot confirms the card now visually matches production (icon
+  top-right, heading/text/button stacked left).
+
+**Still to do once this is pushed and deployed:** re-verify live on the
+actual deployed staging asset (not just the injected-style simulation) to
+close this out completely -- the injection proves the CSS is correct, but
+hasn't exercised the real built/deployed file end to end.
+
+**Committed to `dev`, not pushed** (user pushes from their own machine per
+standing practice). `?dev=true` gate itself untouched -- this only fixes a
+gap in the CSS gated *behind* it.

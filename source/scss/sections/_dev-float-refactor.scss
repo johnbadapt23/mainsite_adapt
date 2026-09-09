@@ -18786,7 +18786,21 @@ body.dev-float-refactor {
 //    this markup block appears once in
 //    _mega-main-menu-mobile.php:438-443 but the SCSS declares the same
 //    icon+content split twice, once per dropdown tier, so both are fixed
-//    identically). Source DOM order is icon-container THEN form-content,
+//    identically. CORRECTION, 2026-09-09: a live ?dev=true vs production
+//    check on /all-resources/ found a third, separate occurrence of this
+//    same markup+CSS pattern -- templates/partials/_header.php:221-239's
+//    .mobileMenuResources panel (the standalone Resources slide-in menu,
+//    a different PHP file from the mega-menu one above), scoped in
+//    source/scss/partials/_header.scss:4338-4375 as `.mobile-menu-bottom
+//    .subscribe-sidebar-form`. This third instance was missing from the
+//    original mechanical sweep entirely, so it only picked up the bare
+//    `.subscribe-sidebar-form { float: none; }` rule below (its outer
+//    float), never the icon/content row-reverse fix -- the icon fell
+//    back to plain DOM order (left) instead of matching production's
+//    float:right (right). Fixed below with the identical row-reverse
+//    technique, its own dedicated selector.
+//
+//    Source DOM order is icon-container THEN form-content,
 //    but icon-container floats right and form-content floats left, so a
 //    plain justify-content:space-between (Section 5's usual 2-item
 //    pattern) would visually reverse them. flex-direction:row-reverse
@@ -18886,6 +18900,29 @@ body.dev-float-refactor {
     }
 
     .mobileMenuMain .mobileInner .container .main-nav-mobile ul .services-inner-mobile li.main-dropdown .mobile-sub-menu .full-width .form-container-inner .subscribe-sidebar-form .form-content {
+        float: none;
+    }
+
+    // Third occurrence, found 2026-09-09 (see corrected comment above) --
+    // templates/partials/_header.php's separate .mobileMenuResources
+    // panel, scoped source/scss/partials/_header.scss:4338 as
+    // `.mobile-menu-bottom .subscribe-sidebar-form` (`.mobile-menu-bottom`
+    // is confirmed unique sitewide -- one PHP occurrence, one SCSS
+    // occurrence). Identical row-reverse technique to the two
+    // .mobileMenuMain instances above.
+    .mobile-menu-bottom .subscribe-sidebar-form {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .mobile-menu-bottom .subscribe-sidebar-form .icon-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+    .mobile-menu-bottom .subscribe-sidebar-form .form-content {
         float: none;
     }
 
