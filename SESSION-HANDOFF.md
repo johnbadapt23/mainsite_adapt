@@ -3002,3 +3002,109 @@ Committed as `45f2ddc` to `dev`, not pushed. This component (`.full-
 suite-slider-module`) is used by 13 templates per a sitewide grep, and
 the fix is fully scoped to the class itself (not page-specific), so the
 same fix applies wherever it appears.
+
+## 23. Two user-requested CSS one-liners + finishing the DB query audit's `posts_per_page => -1` follow-up (task #27)
+
+### User-requested CSS
+
+Two explicit, verbatim requests, both added exactly as given:
+
+- `body.template-benchmarking section.left-text-links.advisors-
+  centered-text-links.left-text-links-image .container .text-container
+  .text { margin-left: 0; }` -- added inside the existing `.text-
+  container` block in `_benchmarking.scss` (production CSS, not gated).
+  Spot-checked live on `/buyer-persona-cfo/` at desktop and mobile,
+  both production and `?dev=true`: computed `margin-left` was already
+  `0px` in every state checked, so no visible effect there -- added
+  regardless since the request was explicit and may target a state not
+  sampled. Committed `f865409`.
+- `section.fixed-scroller.partner-fixed-scroller { margin-top: 0; }` --
+  was `104px` at desktop in `_customer-events.scss` (mobile already had
+  its own `margin-top:0px` override, now redundant and removed since it
+  matches the new base value). This one's a real, visible change:
+  confirmed live on `/buyer-persona-cfo/`, pulls the section up 104px
+  (1756px -> 1652px from viewport top). Committed `e826d15`.
+- Also caught and fixed while rebuilding for the above: the
+  `section.company-slider` `display:flow-root` fix from §22 had only
+  ever been added to the SCSS source, never actually rebuilt into CSS or
+  committed -- the scratch copy used for an interim rebuild was stale
+  and would have silently dropped it. Rebuilt and committed on its own
+  first (`b213d66`), isolated from the two rules above.
+
+Every one of these was verified by diffing the freshly-built
+`main-nofooter.min.css` against the previous commit's version
+line-by-line (`sed 's/}/}\n/g'` to make the minified file diffable) --
+each commit's diff contains exactly the selector(s) its message claims,
+nothing else.
+
+### `posts_per_page => -1` filter-button follow-up (task #27, user chose "fix the 4 filter-button files now")
+
+Continuing the DB query audit from §20 (task #22): found 20 more
+`posts_per_page => -1` (fetch-everything) queries across 11 files.
+Presented a risk breakdown to the user; they chose to fix the 4
+highest-risk ones now (the rest logged below as still-open).
+
+`template-topic.php`, `template-resource-type.php`, `template-search-
+results.php`, and `template-insights.php` each ran a full `posts_per_
+page => -1` `WP_Query` (every matched post, every column, every
+postmeta join) purely to loop the results in PHP and collect distinct
+taxonomy terms for filter buttons/dropdowns -- the matched posts
+themselves were never displayed. `template-insights.php`'s version
+tallies a per-term *count* (for the filter-type dropdown's "(12)"-style
+labels) rather than just presence, but the same pattern applies.
+
+Confirmed live before touching anything: `/search-results?searchWords=
+cloud` alone was scanning **441** full post rows just to build 5 filter
+buttons.
+
+Fix: added `'fields' => 'ids'` to each of the 8 `$args` blocks (keyword
++ no-keyword branch x 4 files) so MySQL returns only the ID column, and
+changed each consumption loop from `have_posts()`/`the_post()` to
+iterating the returned ID array directly (`foreach ($loop->posts as
+$id)`). `get_the_terms()` per ID is unchanged -- still the same cached
+per-post lookup as before -- so the collected term set (and its order,
+and template-insights.php's counts) come out identical to the old code,
+just without ever materializing a full post object for rows that were
+only ever going to be discarded.
+
+Hit one real mistake while editing `template-insights.php`: pasted a
+stray `<?php` tag inside an already-open PHP block (the surrounding
+`if(...) { ... }` never closes back to HTML between lines ~638-694),
+which `php-parser` caught immediately (`syntax error, unexpected '<' on
+line 680`) -- removed the redundant tag, re-ran the parser clean.
+Verified all 4 files parse with `php-parser` (8.1) after the fix.
+
+Captured live filter-button baselines (text/href/selected-state) on
+`/resource-type/articles`, `/topic/data-strategy`, and `/search-
+results?searchWords=cloud` *before* committing, to diff against after
+the next push -- these three are straightforward to re-check live since
+each is a public page. Could not find a live URL that uses `template-
+insights.php` in this session at all (checked the REST API's page list
+by `template` field -- zero pages reference it; it may not currently be
+assigned anywhere, same situation as the confirmed-dead files in §18
+and the unverified `company-slider` case in §22). Applied the
+identical, by-then-twice-validated pattern there on code-review
+confidence alone.
+
+### Still open (not fixed, logged per the user's "flag it" choice implicitly covering the rest)
+
+The other 7 files from the same audit, by risk tier:
+
+- **HIGH**: `_related-articles-taxonomies-grid.php` (3x, `post` type,
+  looped per taxonomy term with no dedup/limit).
+- **MEDIUM**: `_events-listing.php` (2x), `_events-listing-partners.php`
+  (2x) -- `event` CPT, client-side year-filtered, no server pagination.
+- **MEDIUM**: `single-post_author.php` -- author's full post history
+  (chunked client-side into groups of 6, but still unbounded per
+  prolific author), plus its `event`/`registration` sub-queries.
+- **LOW**: `_open-positions.php`, `single-position.php` (`position`
+  CPT, small/bounded), `_advisors-carousel.php` (`speaker` CPT,
+  small/bounded).
+
+### Status
+
+All 4 files committed as `f9aecb7` to `dev`, not pushed. Two CSS
+one-liners plus the company-slider completion committed as `f865409`,
+`e826d15`, `b213d66`. Next step once pushed: re-check the three live
+baselines above match exactly (same filter buttons, same order), and
+try again to locate a page using `template-insights.php`.
