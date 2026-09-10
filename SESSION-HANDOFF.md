@@ -4351,3 +4351,89 @@ since matchHeight's own selectors are global/unscoped, so any
 `.item.full-width` anywhere is equally exposed) rather than trying to
 compensate around it -- `.item-column.one-half` now stays floated
 under the gate exactly as in production. Not yet pushed as of writing.
+
+## §35 -- 2026-09-10 (cont.): rebuilt + verified §34's compiled CSS from a
+new sandbox (this account's `device_bash` mount to the user's machine was
+down all session -- file access only via stage/edit/commit, no direct
+shell/git on the user's machine)
+
+### What was confirmed already on disk before touching anything
+
+Staged `_dev-float-refactor.scss` and `_header.scss` and grepped/read them
+directly (not just trusted this doc's prose): the §33 fixes (logo
+`img.light.light`, the `admin-bar` top-offset rule, the
+`:not(.filter-featured-post)` exclusion) and the §34 fix (the two
+matchHeight-colliding blocks removed, only the explanatory comment
+remains) are all genuinely present in the source files, not just
+described. `assets/css/main-nofooter.min.css`'s mtime predates both
+scss files' mtimes, confirming the compiled asset was stale relative to
+source (expected -- CI rebuilds fresh from source on every push, so the
+committed local `assets/` copy isn't kept in lockstep with every local
+source edit).
+
+### Build
+
+No git/npm/gulp access on the user's machine this session, so the build
+ran in this session's own cloud sandbox instead: staged every file
+`build:styles-main-nofooter`/`build:styles-footer` actually need (all of
+`source/scss/`, the 8 vendored component CSS files in
+`mainNoFooterSrc`, every file under `source/gulp/` -- gulpfile.js's
+`require-dir` call eager-requires every task file, including unrelated
+ones like `deploy/ftp.js`/`serve/proxy.js`, so a `Task never defined:
+serve:proxy` / `build:images` assertion error is what you get if any is
+missing, even though only the two style tasks were actually invoked --
+`package.json`, `package-lock.json`), ran `npm ci --ignore-scripts` (a
+plain `npm ci` fails on `jpeg-recompress-bin`'s postinstall trying to
+fetch a prebuilt binary -- blocked by this sandbox's own egress, same
+symptom as the "outbound HTTPS blocked" note elsewhere in this doc, not
+a real problem since nothing here needs image binaries), then `npx gulp
+build:styles-main-nofooter build:styles-footer`.
+
+`footer.min.css` came out byte-identical to the committed copy (expected
+-- `footer-only.scss` doesn't import `_header.scss` or
+`_dev-float-refactor.scss`). `main-nofooter.min.css` came out 1207 bytes
+larger.
+
+### Verification method (adapted for this sandbox: no access to the real
+previous git commit to diff against)
+
+A naive `diff` on the two minified files (or even on a naive `}`-split
+one-rule-per-line version) is not usable here: clean-css's
+`restructureRules` can reshuffle which selectors share a merged,
+comma-joined rule anywhere in the file in response to an unrelated
+change elsewhere, so a line-based diff surfaces enormous, unreadable
+false-looking deltas even when nothing meaningfully changed. Instead
+wrote a small postcss-based script
+(`css-diff.js`, cloud-sandbox-only, not part of the repo) that parses
+both stylesheets into an AST, decomposes every rule's comma-separated
+selector list into individual `(selector, normalized declaration set)`
+entries (so selector-list reordering can't hide or fake a diff), and
+multiset-compares old vs new per bare selector. Verdict: **32 selectors
+differ**, every one indepedently explained by a fix already documented
+in this file (mostly §31-§34: the matchHeight-block removals, the logo/
+admin-bar/filter-featured-post fixes, the `article-container-three-post`
+specificity fixes, the `cards-progress`/`keynote-progress` self-doubled
+classes, a slick-arrow `top:-50px` + `:after{display:none}` fix from an
+earlier section). Total selector count moved from 15,087 to 15,099 (net
++12, consistent with the additions/removals above). Nothing outside
+that list changed -- no unrelated bulk-generated category was
+restructured, no unexplained selector appeared or vanished.
+
+**Not independently confirmed live** (no browser tool available in this
+pass) -- this is a build/compile-level verification only, not the
+live-pixel-parity check this file's methodology normally finishes with.
+
+### Status
+
+Rebuilt `main-nofooter.min.css` committed back into
+`assets/css/main-nofooter.min.css` on the user's machine (via this
+session's file-staging bridge). `footer.min.css` unchanged, not
+rewritten. **Still not committed to git or pushed** -- this session has
+no working git/shell access to the user's machine this pass. Remaining
+steps for whoever picks this up next: `git add`/`commit`/`push` the
+already-correct `_dev-float-refactor.scss` + `_header.scss` +
+`main-nofooter.min.css`, then do the live `?dev=true` pixel-parity check
+this file's methodology calls for on `/all-resources/` and
+`/resource-type/market-trend-reports/` before calling §34 fully closed
+out.
+
