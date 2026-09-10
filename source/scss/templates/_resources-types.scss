@@ -2241,9 +2241,23 @@ section.featured-module {
                         width: 28px;
                         height: 28px;
 
+                        // BUGFIX 2026-09-10: a bare, unscoped `button.slick-prev
+                        // { top: -50px }` / `button.slick-next { top: -20px }`
+                        // rule (source/scss/templates/_market.scss, written for
+                        // section.centerModeCarousel) has no section scope, so
+                        // it leaks sitewide onto every Slick prev/next button,
+                        // including these. It also adds an `::after` with its
+                        // own prev.svg/next.svg background image, which leaks
+                        // in too. Pinning `top` explicitly here (both arrows to
+                        // -50px, matching what .slick-prev already inherited by
+                        // coincidence -- .slick-next was inheriting the
+                        // mismatched -20px) and hiding the leaked `::after` so
+                        // this carousel no longer depends on that unrelated
+                        // module's unscoped rule.
                         &.slick-prev {
                             left: auto;
                             right: -123px;
+                            top: -50px;
 
                             &:before {
                                 content: '';
@@ -2255,10 +2269,15 @@ section.featured-module {
                                 top: 0;
                                 left: 0;
                             }
+
+                            &:after {
+                                display: none;
+                            }
                         }
 
                         &.slick-next {
                             right: -160px;
+                            top: -50px;
 
                             &:before {
                                 content: '';
@@ -2269,6 +2288,10 @@ section.featured-module {
                                 height: 28px;
                                 top: 0;
                                 left: 0;
+                            }
+
+                            &:after {
+                                display: none;
                             }
                         }
                     }

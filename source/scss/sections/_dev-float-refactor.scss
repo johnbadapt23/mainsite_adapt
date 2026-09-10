@@ -16618,7 +16618,24 @@ body.dev-float-refactor {
     // same one-off exception as `.menu-bottom`) reproduces production
     // exactly -- .cards-progress lands at relative y=796 in both, and
     // the whole section's height, previously 90px short, now matches.
-    .cards-progress {
+    //
+    // CORRECTION 2026-09-10 (post-push verification on staging): this
+    // override never actually took effect. fix-float-none-display.js
+    // collects every single-class float:none declaration (including the
+    // one above) into one bulk-generated `float:none;display:block`
+    // rule appended near the end of the build. That bulk rule has the
+    // exact same specificity as this plain `.cards-progress` override
+    // and comes later in the compiled file, so it silently won the
+    // cascade and the live site never changed -- confirmed by fetching
+    // the deployed main-nofooter.min.css directly and finding
+    // `.cards-progress{float:left}` (this rule) followed later by
+    // `body.dev-float-refactor .cards-progress,...{float:none;
+    // display:block}` (the bulk one) winning by source order. Same
+    // specificity-vs-build-order trap documented elsewhere in this file
+    // for span/a elements; fixed the same way, with a self-doubled class
+    // to guarantee this wins regardless of build order, without
+    // !important.
+    .cards-progress.cards-progress {
         float: left;
     }
     // line 379
