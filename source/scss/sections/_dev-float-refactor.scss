@@ -88,6 +88,25 @@ body.dev-float-refactor {
         float: none;
     }
 
+    // BUGFIX 2026-09-10: the bulk-generated span/a leaf display:block
+    // restore rule (`body.dev-float-refactor section.flip-card-module
+    // .container .top-container .inner span.text` -- generated for the
+    // un-floated span.text leaf, but written WITHOUT the `.mobile`
+    // modifier class) still matches span.text.mobile, and ties the real
+    // `span.text.mobile { display: none; }` rule (_events.scss) on class
+    // count (6 classes each) -- the bulk rule wins the tie because its
+    // selector also has one extra element (body + section + span = 3 vs
+    // section + span = 2 on the real rule), permanently showing the
+    // mobile-only "Scroll to discover..." caption at desktop widths.
+    // Confirmed live on /event-partner/edge-event-partnership/ (1440px):
+    // .top-container grew from 167px to 188px -- exactly the visible
+    // mobile span's 28px line minus overlap. Same bug class as the
+    // .cards-progress specificity fix elsewhere in this file; same
+    // self-doubled-class remedy (adds a 7th class, wins outright).
+    section.flip-card-module .container .top-container .inner span.text.mobile.mobile {
+        display: none;
+    }
+
     // cards-module.gtm-cards-module.static-cards (source/scss/templates/_gtm.scss)
     section.cards-module.gtm-cards-module.static-cards .card-container {
         float: none;
@@ -7705,6 +7724,27 @@ body.dev-float-refactor {
         .keynote-progress {
                 float: none;
         }
+    // BUGFIX 2026-09-10: same margin-clearance-absorption bug as
+    // .cards-progress (roundtable-card-slider-module) and .menu-bottom
+    // (header) elsewhere in this file -- `.keynote-progress` (the thin
+    // scroll-progress bar under section.keynote-slider-module's slider,
+    // /edge-events/) is real/ungated `float:left; width:100%;
+    // margin-top:90px` (source/scss/templates/_events.scss:1645-1648).
+    // With float:none above, it becomes a normal block sibling right
+    // after the still-floated slider, and its 90px margin-top gets
+    // absorbed into the float's clearance instead of adding on top of
+    // it, leaving the section 90px short (1058.1875px in production vs
+    // 968.1875px under ?dev=true). Confirmed live: reverting to
+    // float:left (matching production, same one-off exception as
+    // .cards-progress/.menu-bottom) reproduces production exactly.
+    // Self-doubled class from the start this time -- .cards-progress
+    // shipped as a plain single-class override first and silently lost
+    // to fix-float-none-display.js's bulk-generated float:none rule at
+    // the same specificity until caught and corrected; no reason to
+    // repeat that mistake here.
+    .keynote-progress.keynote-progress {
+        float: left;
+    }
     // line 1671
         section.sneak-peak-module {
                 .container {
@@ -22182,6 +22222,66 @@ body.dev-float-refactor {
     section.featured-types .article-container-three-post {
         padding: 62px 0;
     }
+}
+
+// BUGFIX 2026-09-10 (user-reported: "the articles section here is not
+// identical to the non-gated version", /all-resources/): the
+// margin:unset above was only ever compensated for the
+// section.featured-types (homepage) instance, via the padding:62px 0
+// fix directly above -- per the user's explicit direction at the time,
+// since that instance stays non-floated and padding doesn't have
+// margin's collapsing behavior. Every OTHER usage of the real
+// `.article-container-three-post`/`.market-trend-reports-container-
+// three-post` rule (source/scss/templates/_resources-types.scss:3308-
+// 3313: `float:left; width:100%; padding:64px 0; margin:62px 0;`) --
+// e.g. section.articles-featured (/all-resources/) and section.filter-
+// listing (/resource-type/market-trend-reports/, template-resource-
+// type.php and friends) -- was left with margin fully zeroed and no
+// replacement, silently losing all 62px of top spacing before this
+// block. Padding isn't a safe substitute here the way it was for the
+// homepage instance: both of these have `background-light-grey`, so
+// padding (inside the box, filled with that background) would visibly
+// extend the grey background upward instead of leaving a plain gap --
+// only a real margin (or an equivalent-looking float-based gap)
+// reproduces production. Confirmed live on /all-resources/: with
+// margin-top restored but float still :none, the block renders 421px
+// higher than production and overlapping the still-floated content
+// above it (block-ignores-preceding-floats-for-its-own-position, the
+// same mechanism documented throughout this file) -- restoring float:
+// left as well (matching production, one-off exception like .menu-
+// bottom/.cards-progress) fixes the position, at which point the
+// section's own height came up 62px short of production because
+// section.articles-featured lost the BFC/containment its own former
+// float used to provide for this now-again-floated child. Confirmed
+// live: with all three restored (float:left + margin-top:62px on the
+// three-post block, plus display:flow-root on section.articles-
+// featured), a full 52-element diff of section.articles-featured
+// against production came back with only the one pre-existing benign
+// "container height 0 due to floated children" diff, documented
+// throughout this file, that isn't a real visual difference. Also
+// confirmed the identical float:none/margin-top:0 breakage live on
+// .market-trend-reports-container-three-post
+// (/resource-type/market-trend-reports/) and fixed it the same way;
+// section.filter-listing did not need a flow-root addition there --
+// its own height already tracked the added margin correctly on that
+// page, unlike section.articles-featured.
+.article-container-three-post.article-container-three-post,
+.market-trend-reports-container-three-post.market-trend-reports-container-three-post {
+    float: left;
+    margin-top: 62px;
+}
+// The homepage instance must stay excluded from the float+margin
+// restore above (it intentionally stays non-floated with padding
+// instead, per the existing fix two rules up) -- re-zero what the
+// general rule just restored, scoped narrowly enough
+// (section.featured-types ancestor class) to beat it regardless of
+// source order.
+section.featured-types .article-container-three-post.article-container-three-post {
+    float: none;
+    margin-top: 0;
+}
+section.articles-featured.articles-featured {
+    display: flow-root;
 }
 
 // === Section 21 (hand-audited): resolve the 66 selectors flagged by
