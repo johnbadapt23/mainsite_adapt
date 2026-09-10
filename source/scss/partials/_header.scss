@@ -2331,6 +2331,27 @@ body.template-resources {
     }
 }
 
+// BUGFIX 2026-09-10 (user-reported, real/production bug -- not part of
+// the ?dev=true float-refactor work): header.resources-sticky
+// .resources-sticky-menu is given `position: fixed; top: 0;` above
+// (body.post/body.search-results/body.template-resources block), but
+// unlike the main `header` element (which has its own `body.admin-bar
+// & { top: 32px !important; }` compensation at the top of this file),
+// nothing here accounts for the 32px (46px on mobile, per WP core's
+// own admin-bar breakpoint) the wp-admin toolbar adds to the top of
+// the viewport when a logged-in user with the bar enabled is viewing
+// the page. Without this, the fixed sticky menu sits underneath/
+// behind the admin bar instead of just below it. Mirrors the existing
+// body.admin-bar pattern for the main header.
+body.post.admin-bar header.resources-sticky .resources-sticky-menu,
+body.search-results.admin-bar header.resources-sticky .resources-sticky-menu,
+body.template-resources.admin-bar header.resources-sticky .resources-sticky-menu {
+    top: 32px !important;
+
+    @media (max-width: 782px) {
+        top: 46px !important;
+    }
+}
 
 .search-dropdown {
     position: fixed;

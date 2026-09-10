@@ -332,6 +332,29 @@ body.dev-float-refactor {
         float: none;
     }
 
+    // BUGFIX 2026-09-10 (user-reported, screenshot showing both logo
+    // variants stacked): the bulk-generated leaf display:block restore
+    // rule for the un-floated img above
+    // (`body.dev-float-refactor header .resources-sticky-menu .container
+    // .resources-sticky-inner .scroll-image-container .logo img { float:
+    // none; display: block; }`, specificity (0,6,3) -- 6 classes) beats
+    // the real `header .resources-sticky-menu .container
+    // .scroll-image-container .logo img.light { display: none; }` rule
+    // (_header.scss, specificity (0,5,2) -- only 5 classes, one fewer
+    // than the bulk rule since it doesn't include the intermediate
+    // `.resources-sticky-inner` class) on the class column alone,
+    // regardless of element count -- permanently forcing the light-logo
+    // variant to display:block alongside the dark one. Same bug class as
+    // the flip-card-module `span.text.mobile` fix elsewhere in this file:
+    // the bulk leaf-restorer doesn't know some floated leaves are
+    // *supposed* to stay display:none (toggle-pair elements like
+    // .dark/.light), it just restores block unconditionally. Fixed with
+    // a self-doubled `.light` class (8 classes total, beats the bulk
+    // rule's 6 outright).
+    header .resources-sticky-menu .container .resources-sticky-inner .scroll-image-container .logo img.light.light {
+        display: none;
+    }
+
     header .resources-sticky-menu .container .resources-sticky-inner .scroll-image-container .logo .resources-link-mobile {
         float: none;
     }
@@ -20178,7 +20201,31 @@ body.dev-float-refactor {
     // ungated rect diff + live DOM inspection on the homepage. Scoping
     // this rule to :not(.featured-home) restores it to only the
     // intended standalone resources-featured component.
-    section.featured-module.resources-featured:not(.featured-home) .container {
+    //
+    // BUGFIX 2026-09-10 (found live on /resource-type/market-trend-
+    // reports/, user-adjacent verification pass): `section.resources-
+    // featured` has a THIRD variant beyond the standalone component and
+    // the homepage's `.featured-home` -- `template-resource-type.php`
+    // (and its old-template/pre-media/podcast siblings) render `section
+    // class="resources-featured featured-module filter-featured-post
+    // <resourceType>"`, whose `.container` wraps a single `.item
+    // <slug> full-width` (real CSS: block-level, `float: none`,
+    // `width: 100%` by simple default -- never floated at all, so it
+    // doesn't need or want the flex conversion). Its own inner two-
+    // column split uses `.item-column.one-half` -- a different class
+    // from the sidebar variant's `.one-half.side-bar-column`/
+    // `.one-half.slider-column` -- so it was never the intended target
+    // of this rule either. flex-ifying its `.container` shrank the
+    // single `.item` child to ~49% width (browser's flex-basis:auto
+    // content-based sizing instead of the real block-level 100%).
+    // Confirmed live: `.item.market-trend-reports.full-width` was
+    // 640.17px instead of production's 1300px. `:not(.filter-featured-
+    // post)` added alongside the existing `:not(.featured-home)`
+    // exclusion, verified safe via a full-repo grep confirming every
+    // `section.resources-featured` usage falls into exactly one of
+    // these three variants (plain/sidebar, .featured-home, or
+    // .filter-featured-post) -- no fourth combination exists.
+    section.featured-module.resources-featured:not(.featured-home):not(.filter-featured-post) .container {
         display: flex;
         align-items: flex-start;
     }
