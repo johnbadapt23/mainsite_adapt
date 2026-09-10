@@ -16577,6 +16577,50 @@ body.dev-float-refactor {
         .cards-progress {
                 float: none;
         }
+    // BUGFIX 2026-09-10: section.roundtable-card-slider-module was
+    // flagged in an earlier pass as having an unexplained ~40px gap on
+    // /private-executive-roundtables/ ("investigated further, not
+    // resolved" -- see SESSION-HANDOFF.md). Re-measured today and the
+    // gap was actually much larger (~2900px) in a naive automated
+    // check -- that turned out to be a testing artifact, not a real
+    // bug: WP Rocket's "Delay JavaScript" optimization holds
+    // main.min.js (which bundles jQuery + Slick) until a real user
+    // interaction on the production URL, while `?dev=true` bypasses
+    // that optimization and loads it immediately -- so an automated
+    // check with no genuine interaction event catches production
+    // BEFORE Slick has initialized (all 7 slides stacked vertically,
+    // un-sliced) and wrongly reports a huge false gap. Re-tested with a
+    // real scroll interaction dispatched on both tabs (confirmed via
+    // `jQuery.fn.slick` and `.slick-initialized` presence) and the
+    // REAL residual gap is 90px, not ~2900 and not the earlier ~40.
+    //
+    // Root cause of the real 90px: `.cards-progress` (the thin
+    // scroll-progress bar under the slider) is real/ungated
+    // `float:left;width:100%;margin-top:90px` (_roundtable.scss:343-
+    // 346). Its parent `.cards-progress-container` has no CSS of its
+    // own (plain default block). With `.cards-progress` converted to
+    // float:none above, it becomes a normal block sibling positioned
+    // right after two still-floated full-width siblings (`.top-
+    // content`, `.roundtable-card-slider`) -- same "block ignores
+    // preceding floats for its own box position" rule documented
+    // throughout this file, except here the visible effect is on
+    // margin instead of position: the browser calculates where
+    // `.cards-progress`'s line content can render as max(margin-
+    // derived nominal position, float-clearing position), and since
+    // the nominal position (90px) is far less than the float's bottom
+    // edge (706px), the render position is capped at 706px and the
+    // margin-top is entirely swallowed -- identical mechanism to the
+    // `.menu-bottom` clearance-absorption bug fixed in the header pass
+    // (see that entry for the full explanation of why a real float's
+    // margin adds on top of the clearing position but a cleared/
+    // unfloated block's margin gets absorbed into it instead).
+    // Confirmed live: reverting to float:left (matching the original,
+    // same one-off exception as `.menu-bottom`) reproduces production
+    // exactly -- .cards-progress lands at relative y=796 in both, and
+    // the whole section's height, previously 90px short, now matches.
+    .cards-progress {
+        float: left;
+    }
     // line 379
         section.experience-module {
                 .container {
@@ -20108,6 +20152,21 @@ body.dev-float-refactor {
     }
     section.featured-module.resources-featured .container .one-half.side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner > a .video-container {
         width: 100%;
+        // BUGFIX 2026-09-10: the width:100% fix above (2026-09-03) solved
+        // the collapsed-width problem but introduced a new collapsed-HEIGHT
+        // problem it didn't account for: .video-container's real padding-
+        // top:22.8% (source/scss/templates/_resources-types.scss:2573) is
+        // ALSO a percentage of the same containing block as width -- which
+        // this very rule just changed from .resources-side-posts-inner to
+        // the <a>. Since the <a> is only 32.7% as wide, the un-rescaled
+        // 22.8% now resolves to 22.8% of a 32.7%-wide box instead of a
+        // 100%-wide box, collapsing the thumbnail height from ~96px to
+        // ~31px (confirmed live on /all-resources/, all 3 video cards in
+        // the sidebar). Rescaling so the effective ratio survives the
+        // narrower containing block: 22.8% / 32.7% = 69.7248%. Confirmed
+        // live: this restores all 3 sidebar video-container rects to an
+        // exact match with production (134.88 x 96.03).
+        padding-top: 69.7248%;
     }
 
     // section.featured-module.featured-home: the homepage variant
@@ -20175,6 +20234,11 @@ body.dev-float-refactor {
     }
     section.featured-module.featured-home .post-list-container .side-bar-column .recent-sidebar .resources-side-posts .resources-side-posts-inner > a .video-container {
         width: 100%;
+        // BUGFIX 2026-09-10: same padding-top percentage-base shift as the
+        // plain resources-featured sidebar fix above -- see that block's
+        // comment for the full explanation. Same source rule (22.8% /
+        // 32.7% = 69.7248%), same fix.
+        padding-top: 69.7248%;
     }
 
     // section.featured-module.type-two-column: plain 2-up grid

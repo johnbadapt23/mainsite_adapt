@@ -3778,3 +3778,125 @@ item-by-item spacing (only the desktop hover menus were the subject of
 this investigation, per the user's specific complaint about
 "hover[ing] header menu items"). The mobile Resources dropdown fix
 from the previous entry is unrelated/already covered.
+
+## §30 -- 2026-09-10: WP Rocket delay-JS false-positive discovery, plus two
+real bugs found and fixed (`.cards-progress`, sidebar `.video-container`)
+
+### New testing-methodology finding: WP Rocket "Delay JavaScript Execution"
+
+While re-investigating the previously-flagged, unresolved
+`section.roundtable-card-slider-module` gap (~40px, `/private-executive-
+roundtables/`), an automated (no real interaction) measurement showed an
+enormous ~2900px gap -- dev height 1011px vs production 3909px. Root
+cause turned out to be a testing artifact, not CSS: WP Rocket's "Delay
+JavaScript Execution" optimization rewrites `<script src="...">` to
+`<script type="text/rocketlazyloadscript" data-rocket-src="...">` on
+real (non-`?dev=true`) page loads, deferring `main.min.js` (which
+bundles jQuery + Slick + all site JS) until a genuine user-interaction
+event fires. `?dev=true` bypasses this optimization and loads scripts
+immediately. Waiting several seconds does not trigger it. A
+programmatic `scrollIntoView()`/`location.reload()` does not count as a
+trusted interaction either. Only a real interaction dispatched via the
+browser tool's `computer` action (e.g. a `scroll`, after a prior
+`screenshot` call) counts -- confirmed by checking `jQuery.fn.slick`
+(false until triggered) and the script tag's `type`/`data-rocket-src`
+attributes. Before the interaction, every slide renders stacked/un-
+sliced, so any Slick-carousel section measured on production too early
+reports a false huge gap.
+
+**Implication for future testing**: any pixel-parity check involving a
+Slick carousel (or any other main.min.js-dependent behavior) must
+dispatch a real `computer` tool interaction on the production tab
+before measuring, every time -- not just once per session. This likely
+explains some of the earlier "gap not yet investigated" notes on other
+carousel-adjacent sections in this document; those should be treated as
+suspect until re-checked with this methodology, not assumed to be real
+bugs.
+
+### Bug found + fixed: `.cards-progress` (roundtable-card-slider-module)
+
+After re-measuring `/private-executive-roundtables/` with a real
+interaction dispatched first, the real residual gap was 90px (not
+~2900, not the earlier ~40). Root cause: `.cards-progress` (the thin
+scroll-progress bar under the slider) is real/ungated `float:left;
+width:100%; margin-top:90px` (`source/scss/templates/_roundtable.scss`
+:343-346), converted to `float:none` in the gated refactor. Its parent
+`.cards-progress-container` has no CSS of its own. With the float
+removed, `.cards-progress` becomes a normal block sibling immediately
+after two still-floated full-width siblings, and its `margin-top` gets
+absorbed into float clearance instead of adding on top of it --
+identical mechanism to the `.menu-bottom` clearance-absorption bug
+fixed in the header pass (see §29's correction entry). Confirmed live:
+reverting to `float: left` (matching production, same one-off exception
+as `.menu-bottom`) reproduces production exactly -- lands at relative
+y=796 in both, full 97-element diff empty.
+
+Fix written to `_dev-float-refactor.scss` (the
+`// --- source/scss/templates/_roundtable.scss (8 declarations) ---`
+block, ~line 16574): `.cards-progress { float: left; }` immediately
+after the existing `float: none;` declaration, with a detailed inline
+comment.
+
+### Bug found + fixed: sidebar `.video-container` height collapse (`resources-featured`)
+
+Also re-investigated the flagged `section.resources-featured` gap
+(~182px, `/all-resources/`). With a real interaction dispatched first,
+the section's own top-level rect matched production exactly
+(`[0, 160, 1425, 913.625]`), but a full 117-element item-by-item diff
+surfaced a genuine bug: the three video-badge posts in the sidebar
+(`.resources-side-posts .resources-side-posts-inner > a
+.video-container`) rendered at height ~31px instead of production's
+~96px, with every post below the first one shifting up to compensate --
+that shift was the source of the previously-reported ~182px gap
+(image-only sidebar posts, which don't hit this code path, matched
+exactly).
+
+Root cause: an earlier fix (2026-09-03, already in this file) for a
+different bug -- `.video-container`'s width:32.7% collapsing once its
+parent `<a>` became an unstyled flex item -- solved the width problem
+by giving the `<a>` `flex: 0 0 32.7%` and `.video-container` `width:
+100%`. But `.video-container`'s real `padding-top: 22.8%`
+(`source/scss/templates/_resources-types.scss:2573`, the standard
+aspect-ratio padding-hack) is *also* a percentage of the same
+containing block as `width` -- which that 2026-09-03 fix silently
+changed from `.resources-side-posts-inner` (full width) to the `<a>`
+(32.7% of that width). The un-rescaled 22.8% now resolves against a
+box 32.7% as wide, collapsing the thumbnail height by the same factor.
+Fix: rescale so the effective ratio survives the narrower containing
+block -- `22.8% / 32.7% = 69.7248%`. Confirmed live: this restores all
+3 sidebar video-container rects to an exact match with production
+(134.88 x 96.03), and the full 117-element diff comes back empty aside
+from one benign, expected non-bug: the `.slick-dots` active-dot index
+differed between the two tabs at capture time because the carousel had
+auto-advanced between the two measurements (confirmed via each tab's
+own `.slick-active` class) -- not a CSS issue.
+
+The same 2026-09-03 fix (and therefore the same missing-rescale bug)
+also exists verbatim for the homepage's `featured-home` sidebar variant
+(`section.featured-module.featured-home .post-list-container
+.side-bar-column ...`); fixed identically there too, since the
+underlying percentages are the same, though not independently
+re-verified live on the homepage this pass (only `/all-resources/` was
+directly re-measured).
+
+Fixes written to `_dev-float-refactor.scss`: added `padding-top:
+69.7248%;` (with explanatory comments) to both the
+`section.featured-module.resources-featured ... .video-container` rule
+and the `section.featured-module.featured-home ... .video-container`
+rule (~lines 20153 and 20220).
+
+### Status
+
+**Not yet built, diffed, or committed.** The sandbox's Linux VM was
+wedged for this entire investigation (Plan9 mount / "user already
+exists" RPC errors, persisting across app restart and a full PC
+reboot) so the usual rebuild-CSS-and-diff-before-committing step could
+not run. Both fixes above are written directly to
+`_dev-float-refactor.scss` only. Once shell access is available again:
+rebuild via the established `/tmp` scratch-dir + `npx gulp
+build:styles-split` workflow, diff the compiled
+`assets/css/main-nofooter.min.css` against the repo's current version,
+copy back, and commit both fixes together (they were investigated in
+the same pass). `git status`/`git log` were also never reachable this
+pass, so it's unconfirmed whether the user has pushed the two commits
+from §29 (`50be22e`, `abf65e6`) yet.
