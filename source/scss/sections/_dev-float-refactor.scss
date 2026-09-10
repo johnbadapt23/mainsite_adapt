@@ -20359,29 +20359,41 @@ body.dev-float-refactor {
         float: none;
     }
 
-    // section.resources-featured (top-level, filter/search-listing
-    // usage, distinct from the .featured-module.resources-featured
-    // component above): .item-column.one-half pairs (image + content),
-    // no flex parent of their own yet.
-    section.resources-featured .container .item.market-trend-reports,
-    section.resources-featured .container .item.full-width {
-        display: flex;
-        align-items: flex-start;
-    }
-    section.resources-featured .container .item.market-trend-reports .item-column.one-half,
-    section.resources-featured .container .item.full-width .item-column.one-half {
-        float: none;
-    }
-
-    // section.articles-featured.featured-module: same .item-column.one-half
-    // pattern.
-    section.articles-featured.featured-module .container .grid-wrapper .item.full-width {
-        display: flex;
-        align-items: flex-start;
-    }
-    section.articles-featured.featured-module .container .grid-wrapper .item.full-width .item-column.one-half {
-        float: none;
-    }
+    // BUGFIX 2026-09-10 (self-found during the filter-featured-post
+    // container re-verification above, /resource-type/market-trend-
+    // reports/): the two blocks below (originally: flex-ify
+    // .item.market-trend-reports/.item.full-width and float:none their
+    // .item-column.one-half children) were REMOVED, not just re-scoped.
+    // Root cause is JS, not CSS: main.js runs `$('.item.market-trend-
+    // reports .item-column').matchHeight();` and `$('.item.full-width
+    // .item-column').matchHeight();` (jQuery matchHeight plugin) on
+    // these exact elements. matchHeight predates flexbox and is well
+    // documented (upstream) as unreliable when applied to flex children
+    // -- confirmed live: under the gate (item-column un-floated into a
+    // flex row via the removed rules), matchHeight measured the image
+    // column's natural height as 171px instead of its real 356.9375px
+    // (padding-top:56.3% aspect-ratio box) and locked BOTH columns to
+    // the wrong 171px via inline `style="height: ...px"`, causing the
+    // two columns' text to visibly overlap (confirmed via screenshot,
+    // reproduced with a real scroll interaction, not just forced script
+    // injection -- ruled out as a testing artifact). Production never
+    // hits this because `.item-column.one-half` stays real/ungated
+    // `float: left; width: 50%;` there (confirmed live: production's
+    // own matchHeight call correctly measures 356.938px and applies it
+    // to both columns) -- matchHeight was written for exactly this
+    // float-based 2-column pattern. There was no BFC-containment or
+    // other reason these needed un-floating in the first place (this
+    // nested 2-column float pair is self-contained; it doesn't interact
+    // with the outer section-level `float:none` compensation elsewhere
+    // in this file) -- it was swept up mechanically along with every
+    // other sitewide float:left by the original generator pass. Safest
+    // fix: leave `.item-column.one-half` floated under the gate too,
+    // identically to production, for both the section.resources-
+    // featured usage (market-trend-reports/full-width filter-listing
+    // items) and the section.articles-featured.featured-module.item
+    // .full-width usage (same matchHeight selectors are global -- not
+    // scoped by ancestor section -- so any `.item.full-width` anywhere
+    // is equally at risk of the identical bug).
 
     // .market-trend-reports-container-three-post / .article-container-
     // three-post: plain 3-up grid (nth-child(3n+1){clear:left}) --

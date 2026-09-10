@@ -3900,3 +3900,454 @@ copy back, and commit both fixes together (they were investigated in
 the same pass). `git status`/`git log` were also never reachable this
 pass, so it's unconfirmed whether the user has pushed the two commits
 from §29 (`50be22e`, `abf65e6`) yet.
+
+## §31 -- 2026-09-10 (cont.): CI build confirmed unnecessary before push;
+`.cards-progress` specificity re-fix; two new user-reported/found bugs
+fixed; flow-root verification sweep continued and effectively closed
+
+### CI already rebuilds and force-deploys compiled CSS/JS on every push
+
+Confirmed by reading `.github/workflows/deploy.yml`: every push to `dev`
+runs `npx gulp build:styles build:styles-split build:scripts`, and the
+deploy step's `sync-delta-includes` unconditionally re-uploads
+`assets/css/main.min.css`, `assets/css/main-nofooter.min.css`,
+`assets/css/footer.min.css`, and `assets/js/main.min.js` regardless of
+git diff. **Local `npx gulp` builds before committing are not required
+-- commit the `source/scss`/`source/js` changes directly and push; CI
+compiles and force-deploys the output.** This corrects an earlier
+instruction in this session to run a local build first.
+
+### `.cards-progress` fix from §30 was live but NOT actually working -- root cause: bulk-rule specificity tie
+
+Re-verified `.cards-progress { float: left; }` (written in §30) against
+the real deployed CSS (not live-injected -- see next section for why
+that distinction matters) and found it was losing the cascade despite
+being present in the compiled output. Root cause, newly understood this
+pass: `fix-float-none-display.js` bulk-collects the `float: none;` (and,
+for span/a leaves, `display: block;`) overrides for many originally-
+floated single-class elements into one huge merged selector list near
+the end of the compiled CSS. A hand-written override that reverts one
+of those elements back to `float: left` as a **bare single-class
+selector** has *identical* specificity to the bulk rule, and loses the
+tie because the bulk rule comes later in file order. Fix: use a
+self-doubled class (`.cards-progress.cards-progress`) to add one extra
+class and win outright, without `!important`. Re-verified this is
+actually live now via a cache-busted `fetch()` of the real compiled
+CSS (see next section -- not live-injection).
+
+**Audited all other bare `float: left;`-style overrides in
+`_dev-float-refactor.scss` for the same bug (7 found via grep): only
+`.cards-progress` was affected. The other 6 were already safe** (either
+already self-doubled, or the real rule they're overriding has fewer
+classes than the bulk rule so there's no tie to lose).
+
+### Methodology correction: live-`<style>`-injection verification is unreliable for specificity bugs
+
+`document.head.appendChild()`-injected `<style>` tags always win the
+cascade regardless of true selector specificity, because they're
+appended to the DOM after every real stylesheet. Every prior "confirmed
+via live injection" claim for a plain-class override in this project's
+history should be treated as unverified for cascade-order/specificity
+purposes specifically (it's still valid for confirming the CSS
+*values* are correct). The only reliable check for "does my override
+actually win against the real compiled CSS" is one of:
+1. `fetch()` the real, currently-deployed CSS file with a cache-busting
+   query param and grep/parse its actual rule order, or
+2. Swap the page's real `<link rel="stylesheet">` tag for a freshly-
+   fetched one (`disabled = true` the old one) so the browser's own
+   cascade engine resolves it for real, or
+3. Compute selector specificity by hand ([id-count, class-count,
+   element-count] tuples, compared column-by-column) and compare
+   candidate vs. competing selectors directly -- fastest when you
+   already know both selector strings (used below for the
+   `flip-card-module` fix, since it can't be confirmed live until
+   deployed).
+
+### Also newly confirmed: the compiled CSS file is aggressively cached
+
+`assets/css/main-nofooter.min.css` is served `Cache-Control: public,
+max-age=31536000` (1 year) with a static `?ver=` query string that CI
+does **not** bump on redeploy. A browser tab (or an automated test tab)
+opened before a deploy can silently keep serving a year-stale cached
+copy afterward. Workaround: always fetch with a unique cache-busting
+query param (`?cb=Date.now()`), or hard-navigate a fresh tab.
+
+### Bug found + fixed (user-reported): peer-insights-featured Slick arrows
+
+User reported: `section.featured-module.peer-insights-featured
+.slide-column .peer-featured-slider button.slick-arrow.slick-next`
+(and `.slick-prev`) should use `top: -50px` and hide the `::after`
+pseudo-element. Root cause: an unscoped rule in `_market.scss`
+(`button.slick-next`/`.slick-prev`, written for
+`section.centerModeCarousel` only, no section-scoping) was bleeding
+onto every Slick arrow sitewide, including this one. Fixed directly in
+`source/scss/templates/_resources-types.scss` (real/ungated file, not
+gated -- this is a genuine production bug, not a float-refactor
+regression) with `top: -50px` and `&:after { display: none; }` added to
+both `&.slick-prev` and `&.slick-next`. **Pushed and confirmed live.**
+
+### Bug found + fixed: `.article-container-three-post` / `.market-trend-reports-container-three-post` margin/float regression (user-reported: "articles section not identical" on `/all-resources/`)
+
+The homepage instance of this shared card-grid class had already been
+patched (2026-09-03, compensating via padding) but every *other*
+instance -- including `/all-resources/`'s "articles" flexible-content
+row and `/resource-type/market-trend-reports/` -- was still broken by
+the same margin-clearance-absorption bug (real rule: `float: left;
+margin: 62px 0;`, `_resources-types.scss:3308`; homepage's own
+`section.articles-featured.featured-module` further zeroes the bottom
+margin, `_resources-types.scss:2947`). Fix (self-doubled classes from
+the start, applying the §30/§31 lesson): restore `float: left;
+margin-top: 62px;` for both classes, then re-zero it specifically for
+the homepage's `section.featured-types` instance (which needs the
+padding-based fix instead, to avoid a visible background-color bleed),
+plus `display: flow-root;` on `section.articles-featured.articles-
+featured` itself. Live-verified (before push) via style-injection: full
+52-element diff empty except one benign artifact; exact match also on
+`/resource-type/market-trend-reports/`. **Written to
+`_dev-float-refactor.scss` (~line 22173) -- not yet confirmed pushed.**
+
+### Bug found + fixed: `.keynote-progress` margin-clearance-absorption (`/edge-events/`)
+
+Same bug class as `.cards-progress` (§30) and `.menu-bottom` (§29):
+real rule is `float: left; width: 100%; margin-top: 90px;`
+(`_events.scss:1645`); un-floating it for the gated refactor absorbs
+the `margin-top` into clearance instead of adding it on top. Fixed with
+a self-doubled class from the start (`.keynote-progress.keynote-
+progress { float: left; }`, ~line 7705), avoiding the mistake that
+`.cards-progress` originally made. **Written to `_dev-float-refactor.scss`
+-- not yet confirmed pushed.**
+
+### Bug found + fixed: `section.flip-card-module` mobile-caption leaking onto desktop (`/event-partner/edge-event-partnership/`)
+
+Found during the flow-root verification sweep (below), not user-
+reported. `section.flip-card-module`'s `top-container` height was
+188px under `?dev=true` vs. 167px in production at 1440px viewport --
+traced to `span.text.mobile` (the "Scroll to discover..." mobile-only
+caption, real rule `_events.scss:3864`: `span.text.mobile { display:
+none; }` outside a `max-width: 767px` media query) rendering
+`display: block` (visible) at desktop width under the gate. Root cause:
+the bulk leaf-`display:block`-restore rule generated for the un-floated
+`span.text` was written *without* the `.mobile` modifier class
+(`body.dev-float-refactor section.flip-card-module .container
+.top-container .inner span.text`), but since it still matches
+`span.text.mobile`, and both it and the real `span.text.mobile` rule
+have 6 classes, the bulk rule wins the specificity tie on the *element*
+column (3 elements: body+section+span, vs. the real rule's 2:
+section+span) -- same specificity-tie bug class as `.cards-progress`,
+just breaking the tie a different way. Verified by hand-computing both
+selectors' specificity tuples ([0,6,2] real vs. [0,6,3] bulk) rather
+than live-testing, since this fix can't be confirmed live until
+deployed (see methodology note above). Fix: self-doubled `.mobile`
+class (`span.text.mobile.mobile { display: none; }`, 7 classes, beats
+both outright) added to `_dev-float-refactor.scss` right after the
+existing `section.flip-card-module` block near the top of the file.
+**Written -- not yet confirmed pushed.**
+
+### Flow-root verification sweep: effectively closed
+
+Continued the systematic verification of every gated `display:
+flow-root` section (list originally ~19 items). This pass:
+
+- **Confirmed clean (exact pixel match) via live pages found this
+  session**: `section.position-icon-slider` (`/careers/people-
+  operations-lead`, exact match 1425x998.72 both), `section.two-column-
+  services.landing-two-column-slider` (`/become-a-partner/` and the
+  `*-edge/become-a-partner/` family, exact height match, only a benign
+  ~15px width delta consistent with a scrollbar artifact),
+  `section.peer-insights-featured` (`/all-resources/`, both instances
+  exact match -- the section-level flow-root itself, independent of the
+  arrow fix already confirmed separately).
+- **Found and fixed a new bug**: `section.flip-card-module` (see above).
+- **No live instance found on any published page**, after an extensive
+  search across the full page-sitemap plus resource/customer-stories/
+  position/event-partner singles (~25+ pages checked this session,
+  on top of pages checked in earlier sessions): `section.speakers-
+  block` (its component file `templates/components/_speakers-block.php`
+  is never actually included by `get_template_part` from
+  `template-speakers.php` -- that template hand-rolls its own inline
+  `<section class="speakers-block">` markup instead -- AND
+  `template-speakers.php`/`template-speaker.php` aren't assigned to any
+  page in the sitemap; `/speakers/` 404s), `section.story-categories-
+  slider-module` (`templates/customer-story-components/_category-
+  slider.php` is **dead code** -- confirmed via grep that no template
+  anywhere calls `get_template_part` for it; the one place it's
+  mentioned is a comment in `_category-three-column.php` referencing it
+  as the source of a copy-paste leftover, not an include), `section.
+  logos-block` (the `logo_block` ACF flexible-content layout on
+  "Flexible Template" -- checked every Flexible-Template-driven page
+  found in the sitemap, including `/careers/` and `/about-us/`; not
+  currently selected on any of them), `section.download-block.
+  resources-block` (the `resources_block` ACF layout option on
+  `single-resource.php`/`single-resources.php`; checked ~8 individual
+  resource posts across every resource-type taxonomy term, none
+  currently use this layout), `section.best-practices-featured` (the
+  `best_practices_guides` ACF layout option on `template-resources.php`,
+  the "Resources Landing" template used by `/all-resources/`; that
+  page's current content rows don't include this layout),
+  `section.left-text-links.left-text-links-slider` (carried over from
+  before this session, re-confirmed unused this pass).
+
+  **None of these six are reachable by a real visitor today** -- they're
+  either genuinely dead code or unpopulated ACF layout options. This
+  means the gated flow-root fix for each is unverifiable live *and*,
+  more importantly, harmless either way: since nothing currently
+  renders through them, `?dev=true` removal cannot regress what isn't
+  showing. They should stay flagged as "unverified, low-risk, revisit
+  if/when a page starts using them" rather than blocking factors.
+
+### Updated status on "is `?dev=true` removal safe yet?"
+
+**Still no** -- this pass alone surfaced three more genuine, previously
+undetected bugs (`.article-container-three-post`/margin, `.keynote-
+progress`/margin, `flip-card-module`/mobile-caption-leak), on top of
+the `.cards-progress` fix turning out to have never actually worked.
+The verification process keeps finding real bugs, which is itself the
+argument for finishing it properly before flipping the gate off.
+
+### Outstanding pending-push list (as of end of this session)
+
+Three fixes are written to `_dev-float-refactor.scss` but not yet
+confirmed pushed by the user:
+1. `.article-container-three-post`/`.market-trend-reports-container-
+   three-post` margin/float regression + homepage exclusion +
+   `section.articles-featured` flow-root (~line 22173).
+2. `.keynote-progress.keynote-progress { float: left; }` (~line 7705).
+3. `section.flip-card-module ... span.text.mobile.mobile { display:
+   none; }` (near the top of the file, in the existing flip-card-module
+   block).
+
+All three should be committed and pushed together next -- no local
+build step needed (see CI note above), just `git add`, `git commit`,
+`git push`. Once pushed and deployed, re-verify all three live (the
+`article-container-three-post` fix specifically against `/all-
+resources/`'s "articles" section, which was directly observed still
+showing the pre-fix ~126px gap this session, confirming the fix hasn't
+gone out yet).
+
+### Remaining open item
+
+Task #49 (the older "~13 of 34 files never hand-reviewed" audit gap)
+was not addressed this pass -- still open.
+
+## §32 -- 2026-09-10 (cont.): the three §31 fixes were pushed and
+deployed, but `.article-container-three-post` was STILL broken live --
+root cause was a specificity miscalculation in the fix itself, not a
+deploy problem
+
+### Confirmed the §31 push deployed successfully
+
+After the user pushed, the compiled CSS (re-fetched with cache-busting)
+picked up all three fixes within ~5 minutes -- confirmed by checking
+`Last-Modified` advanced and the fix strings became present. The
+earlier "fixes aren't live yet" read a few minutes prior was correct at
+the time; it was just deploy lag, not a failed push.
+
+### But the user immediately reported (with a screenshot) that
+`/all-resources/`'s "Articles" section still looked wrong under
+`?dev=true` -- spacing "way too off"
+
+Re-measuring confirmed it: `.article-container-three-post`'s computed
+`float` was still `none` and `margin-top` still `0px`, even though the
+fresh CSS unambiguously contained `.article-container-three-post
+.article-container-three-post { float: left; margin-top: 62px; }`
+ranked *after* the competing bulk `body.dev-float-refactor
+.article-container-three-post { float: none; display: block; }` rule
+in the file.
+
+### Root cause: a specificity-column mistake, not a cascade-order or build/cache problem
+
+CSS specificity is compared column-by-column, **(ID-count,
+class-count, element-count)**, moving to the next column only when the
+current one ties. The competing bulk rule is `body.dev-float-refactor
+.article-container-three-post` -- 1 element (`body`) + 2 classes
+(`dev-float-refactor`, `article-container-three-post`) ->
+**(0, 2, 1)**. The `.article-container-three-post`
+fix from §31 was written **unscoped, outside any `body.dev-
+float-refactor { }` wrapper** (a plain top-level rule, left over from
+before the `body.dev-float-refactor { .article-container-three-post,
+... { margin: unset; } }` block that precedes it in the file --
+the new rule was appended after that block's closing brace instead of
+inside it) -- so it compiled to just `.article-container-three-post
+.article-container-three-post` -- 0 elements + 2 classes -> **(0, 2,
+0)**. Comparing (0,2,1) vs (0,2,0): IDs tie, classes tie (2=2), so the
+decision falls to the element column, where the bulk rule's 1 beats
+the fix's 0 -- **the bulk rule wins outright, regardless of which rule
+comes later in the file.** Doubling a class only helps once the class
+column itself is ahead or tied *and* the element column is also
+covered; it does not compensate for a missing element-selector prefix
+the way I'd assumed when writing it. This invalidates part of the
+"self-doubled class always wins the tie" mental model used elsewhere
+in this file -- it's only reliable when the doubled-class rule is
+nested inside `body.dev-float-refactor { }` (regaining the `body`
+element + `.dev-float-refactor` class the bulk rules always carry), or
+when the class count is bumped high enough to win the class column
+outright on its own regardless of element count (e.g. the
+`flip-card-module` fix from §31, which used a *triple*-repeated class
+specifically so the class column alone decides).
+
+**Verification method used this time**: rather than trusting the live
+page (subject to the caching/deploy-lag issues documented in §31) or
+manual selector-tuple arithmetic alone, the fix was verified by
+reconstructing the exact competing rules in an isolated in-page test
+(`document.createElement` a bare test `<style>` + test element,
+inject just the 2-4 rules in question, read `getComputedStyle`, then
+remove them) -- this reproduces the browser's real cascade engine
+without any dependency on what's actually deployed, and is now the
+preferred verification method for any future specificity dispute in
+this file, ahead of both live-injection (known unreliable, see §31)
+and hand-computed tuples alone (this bug slipped through hand
+computation once already).
+
+### Fix
+
+Moved the three rules (`article-container-three-post`/`market-trend-
+reports-container-three-post` general float+margin restore, the
+`section.featured-types` homepage exclusion, and `section.
+articles-featured` flow-root) inside a `body.dev-float-refactor { }`
+wrapper, and bumped the general rule's doubled class to appear
+alongside the wrapper (regaining the element-column parity) so its
+specificity (0,3,1) beats the bulk rule's (0,2,1) outright on the class
+column, independent of element count. The homepage-exclusion rule was
+similarly given the `body.dev-float-refactor` prefix plus its existing
+`section.featured-types` scoping, landing at (0,4,2) -- unambiguously
+above the general rule's (0,3,1), not reliant on source-order
+tie-breaking. **Verified via the isolated-reconstruction method above
+-- both the general case and the homepage-exclusion case now resolve
+correctly.** Not yet re-pushed/deployed as of writing.
+
+### Audit: are there other unscoped self-doubled-class fixes in this file?
+
+Dispatched a full-file audit (12 self-doubled-class instances found
+total, covering `.menu-bottom`, several header/megaMenu overrides,
+`.keynote-progress`, `.cards-progress`, and the three
+`article-container-three-post`-related rules). **Result: all 12 are
+correctly nested inside a `body.dev-float-refactor { }` block** --
+the just-fixed `article-container-three-post` set was the only
+offender, and it's now fixed. No other latent instances of this
+specific bug remain in the file as of this pass.
+
+### Status
+
+Written to `_dev-float-refactor.scss`, verified via isolated
+reconstruction, pushed, deployed, and **confirmed live via full
+pixel-parity on both `/all-resources/` (exact height match, 1083.9375
+== 1083.9375) and `/resource-type/market-trend-reports/`'s
+`.market-trend-reports-container-three-post` (exact match, 321.90625
+== 321.90625)**.
+
+## §33 -- 2026-09-10 (cont.): two more user-reported bugs found + fixed
+during the re-verification pass, plus one more self-found via the same
+sweep
+
+### User-reported: two logos rendered simultaneously in the resources-sticky-menu's small logo
+
+Screenshot showed both `img.dark` and `img.light` visible/stacked
+inside `.resources-sticky-menu .scroll-image-container .logo`. Root
+cause: same bug class as the `flip-card-module`/`span.text.mobile` fix
+in §31 -- the bulk-generated leaf display:block restore rule
+(`body.dev-float-refactor header .resources-sticky-menu .container
+.resources-sticky-inner .scroll-image-container .logo img { float:
+none; display: block; }`, 6 classes) beat the real `header
+.resources-sticky-menu .container .scroll-image-container .logo
+img.light { display: none; }` rule (_header.scss, only 5 classes --
+one fewer, since it lacks the intermediate `.resources-sticky-inner`
+class the gated bulk rule has) on the class column alone. Fixed with a
+self-doubled `.light` class (8 classes, beats 6 outright), nested
+inside the existing `body.dev-float-refactor { }` block. Verified via
+isolated reconstruction (not live-injection) per the §32 methodology.
+
+### User-reported: `header.resources-sticky .resources-sticky-menu` needs `top: 32px` when the WP admin bar is present
+
+**Not a float-refactor/gate bug at all** -- a real, always-present
+production bug, confirmed by its location in the real/ungated
+`_header.scss`. The main `header` element already has its own
+`body.admin-bar & { top: 32px !important; @media(max-width:782px){top:
+46px!important;} }` compensation (line 33), but the separate
+`.resources-sticky-menu` fixed-position bar
+(`body.post/body.search-results/body.template-resources header
+.resources-sticky { .resources-sticky-menu { position: fixed; top: 0;
+... } }`, line ~2291) had no equivalent, so it renders underneath the
+admin bar for logged-in users instead of below it. Fixed by adding a
+parallel `body.post.admin-bar/.search-results.admin-bar/
+.template-resources.admin-bar header.resources-sticky
+.resources-sticky-menu { top: 32px !important; @media(...){top:
+46px!important;} }` rule right after the existing block (not nested
+via `body.admin-bar &`, since that would have compiled to two
+different `body.X` ancestor selectors chained via a descendant
+combinator -- invalid/never-matching; WordPress puts all body classes
+on the same single `<body>` element, so a compound class selector
+`body.post.admin-bar` is the correct form here).
+
+### Self-found during the same re-verification pass: `section.resources-featured.filter-featured-post` container width collapse
+
+While re-checking `/resource-type/market-trend-reports/` for the §32
+fix, noticed `.item.market-trend-reports.full-width` was 640.17px wide
+under `?dev=true` vs. production's 1300px (~49%, not full width).
+Root cause: `section.resources-featured` has a *third* variant beyond
+the two already known about (the standalone sidebar component, and
+the homepage's `.featured-home`, excluded back in the 2026-09-03 fix)
+-- `template-resource-type.php` and its old-template/pre-media/podcast
+siblings render `section.resources-featured.featured-module
+.filter-featured-post`, whose `.container` wraps a single `.item
+<slug> full-width` that was never floated in the first place (real
+CSS: plain block, default 100% width). The existing
+`:not(.featured-home)` exclusion on `section.featured-module
+.resources-featured .container { display: flex; }` didn't cover this
+third variant, so it got flex-ified too, and the browser's
+flex-basis:auto content-sizing shrank the single item instead of
+respecting its intended 100% width. Fixed by adding
+`:not(.filter-featured-post)` alongside the existing exclusion.
+Verified via a full-repo grep confirming exactly three
+`section.resources-featured` usages exist (plain/sidebar,
+`.featured-home`, `.filter-featured-post`) -- no fourth variant -- and
+via shadow-DOM-isolated reconstruction (confirms `display: block`,
+matching production) rather than live-page injection, since the live
+page's own thousands of unrelated rules produced a false-positive
+"still flex" result when tested with a plain `<style>` injection (a
+new, narrower variant of the injection-unreliability issue documented
+in §31 -- this time caused by an unrelated same-page rule incidentally
+matching the bare `.container` class, not by specificity/cascade
+order).
+
+### Status
+
+All three written to `_dev-float-refactor.scss` /
+`_header.scss`, verified via isolated reconstruction, pushed, deployed,
+and confirmed live: logo fix and admin-bar fix both correct; the
+`filter-featured-post` container-width fix correct (`.item.market-
+trend-reports.full-width` back to 1300px, matching production) but
+re-verifying the FULL section surfaced one more bug, documented next.
+
+## §34 -- 2026-09-10 (cont.): matchHeight-vs-flexbox bug found while
+re-verifying the §33 container-width fix
+
+While confirming `.item.market-trend-reports.full-width` was back to
+its correct 1300px width, the section's overall height still didn't
+match production (351px vs. 537px), and a screenshot showed the two
+inner columns' text visibly overlapping. Root cause is **JavaScript,
+not CSS**: `main.js` runs jQuery's `matchHeight` plugin on these exact
+elements (`$('.item.market-trend-reports .item-column').matchHeight()`
+and `$('.item.full-width .item-column').matchHeight()`). matchHeight
+pre-dates flexbox and doesn't reliably measure flex children -- under
+the gate, an earlier (unrelated to §33) rule had converted
+`.item-column.one-half` from real/ungated `float: left` to
+`float: none` inside a `display: flex` parent, and matchHeight
+measured the image column's natural height as 171px instead of its
+true 356.9375px (a padding-top:56.3% aspect-ratio box), then locked
+*both* columns to the wrong 171px via inline `style="height:...px"`.
+Confirmed with a real scroll interaction (not forced script injection)
+that this reproduces reliably, and confirmed production's own
+matchHeight call measures correctly (356.938px) because
+`.item-column.one-half` stays really/ungated float-based there --
+matchHeight was written for exactly that pattern. There was no
+BFC-containment reason for un-floating this pair in the first place
+(self-contained 2-column float, doesn't interact with the section-
+level float compensation elsewhere in the file) -- it was swept up
+mechanically by the original sitewide generator pass along with every
+other float:left in the codebase. **Fix: removed the flex-conversion
+rules entirely** (both the `section.resources-featured` usage and the
+`section.articles-featured.featured-module .item.full-width` usage,
+since matchHeight's own selectors are global/unscoped, so any
+`.item.full-width` anywhere is equally exposed) rather than trying to
+compensate around it -- `.item-column.one-half` now stays floated
+under the gate exactly as in production. Not yet pushed as of writing.
