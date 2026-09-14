@@ -110,3 +110,12 @@ section.experience-module .container .experience-container {
     display: block;
     float: none;
 }
+
+// justify-content is orthogonal to the audit override on this selector
+// (section.events-title-block.events-title-block .container.container
+// .content-container.content-container .button-container.button-container
+// only sets float:none;display:block -- no justify-content anywhere), so
+// there's nothing to beat here; plain rule, no !important.
+.template-event-partner section.events-title-block .container .content-container .button-container {
+    justify-content: center;
+}
