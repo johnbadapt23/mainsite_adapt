@@ -1,17 +1,15 @@
-/* This file intentionally left empty.
+/* This file previously carried ~150 !important overrides working around
+ * selectors that clean-css's restructureRules (source/gulp/tasks/build/
+ * styles-split.js) was merging into one giant `float:none;display:block`
+ * rule even though they actually needed `display:flex`/`display:grid`.
  *
- * It used to carry ~150 !important overrides working around selectors
- * that clean-css's restructureRules (source/gulp/tasks/build/styles-split.js)
- * was merging into one giant `float:none;display:block` rule even though
- * they actually needed `display:flex`/`display:grid`.
- *
- * Root-caused and fixed properly instead: source/gulp/fix-float-none-display.js
- * (the pipeline step that decides whether a float:none-only rule needs
- * display:block added) was comparing selectors by exact string, so a
- * specificity-doubled override selector (`.foo.foo`, from
- * merge-transform.js's boosting technique) was never recognised as "the
- * same selector" as its plain, undoubled counterpart that already had a
- * real display:flex/grid declared elsewhere -- so it mechanically added
+ * That was root-caused and fixed properly instead: source/gulp/
+ * fix-float-none-display.js (the pipeline step that decides whether a
+ * float:none-only rule needs display:block added) was comparing selectors
+ * by exact string, so a specificity-doubled override selector (`.foo.foo`,
+ * from merge-transform.js's boosting technique) was never recognised as
+ * "the same selector" as its plain, undoubled counterpart that already had
+ * a real display:flex/grid declared elsewhere -- so it mechanically added
  * display:block anyway, and being later/higher-specificity, it won.
  * fix-float-none-display.js now normalizes selectors (collapses
  * consecutive duplicate classes) before comparing, so it correctly
@@ -20,7 +18,16 @@
  * comment for the full explanation, and SESSION-HANDOFF.md for the
  * write-up (search "fix-float-none-display").
  *
- * Kept as an empty file (rather than deleted) because this session
- * doesn't have shell access to this machine to remove it -- safe to
- * `git rm source/scss/sections/_flex-override-fix.scss` whenever
- * convenient; it compiles to nothing either way. */
+ * 2026-09-14: repurposed for a small, unrelated, explicitly-requested fix
+ * for the "Cookie Notice" plugin's button row -- its buttons were being
+ * caught by float/display cleanup elsewhere and stacking instead of
+ * sitting side by side. */
+
+body #cookie-notice .cookie-notice-container .cn-buttons-container button {
+    float: none !important;
+    clear: both !important;
+}
+
+span#cn-notice-buttons {
+    display: flex;
+}
