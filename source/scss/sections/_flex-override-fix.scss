@@ -75,19 +75,37 @@ section.expanding-form-module .container .column-container .column .form-embed {
     width: auto;
 }
 
-// Checked the compiled CSS: no rule anywhere currently declares float/display
-// for .experience-container, .experience-text-column .experience-text-container,
-// or its span children -- no audit override to beat, so plain rules (no
-// !important) as requested.
-.experience-container {
+// .experience-container itself WAS being overridden -- traced it back to
+// source/scss/templates/_roundtable.scss:794-800, a hand-written, doubled-
+// class audit override (`section.experience-module.experience-module
+// .container.container .experience-container.experience-container { float:
+// none; }`). That's a pure float:none-only rule, so fix-float-none-display.js
+// mechanically appends display:block to it -- and my first attempt at this
+// fix used the bare class `.experience-container`, which is too short to be
+// recognised as "the same selector" by that script's normalizer (it checks
+// either an exact full-chain match or the last-two-segment leaf compound;
+// a single-token selector matches neither). Using the real full selector
+// chain here instead means fix-float-none-display.js's own selector-
+// normalizing logic recognises this as the existing display for that
+// selector and skips generating the float:none;display:block override for
+// it at all -- removing it from the giant merged selector list at the root,
+// same fix as the original "fifth fix", rather than fighting it with
+// !important.
+section.experience-module .container .experience-container {
     display: flex;
     flex-direction: row-reverse;
 }
 
+// .experience-text-column .experience-text-container's own float:none rule
+// (same file, line ~804-814) already matches this 2-segment selector via
+// leaf-compound, so it was never being overridden -- confirmed in the
+// compiled CSS (not present in the float:none;display:block merged list).
 .experience-text-column .experience-text-container {
     display: flex;
 }
 
+// No float:none/display rule exists anywhere for span children of
+// .experience-text-container, so nothing to reconcile here -- plain rule.
 .experience-text-column .experience-text-container span {
     display: block;
     float: none;
