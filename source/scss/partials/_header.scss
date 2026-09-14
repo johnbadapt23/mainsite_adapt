@@ -4846,7 +4846,25 @@ header .container.container .headerRight.headerRight .menu.menu .main-nav.main-n
         display: flow-root;
     }
 
-header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu.servicesMenu.servicesMenu .container.container .column.column.content-column.content-column .services-content-inner.services-content-inner .it-content.it-content.services-content.services-content {
+// BUGFIX 2026-09-14: the rule above was originally hardcoded to
+// `.it-content.it-content.services-content.services-content` --
+// i.e. it only ever targeted the "IT Leaders" panel, unconditionally,
+// regardless of whether that panel was the active one. .services-content
+// is `display:none` by default and only `display:block` via `&.active`
+// (see partials/_header.scss:320); because this selector's specificity
+// (4 doubled classes deep in the same long chain) beats that plain
+// `.active` rule, .it-content stayed permanently visible (flow-root)
+// even when a *different* panel (e.g. .tech-content) was the one
+// actually toggled active -- and since .tech-content never got the
+// flow-root containment fix, ITS floated children collapsed to 0
+// height instead. Net effect: both panels visible/broken at once,
+// looking like "items only meant to show on hover are always shown".
+// Fix: match `.active` instead of a specific panel's class, so flow-root
+// (and its containment fix) only ever applies to whichever panel is
+// currently the active one -- works for .it-content, .tech-content, or
+// any future variant, and the inactive panel's own `display:none` is
+// no longer beaten by this rule at all.
+header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu.servicesMenu.servicesMenu .container.container .column.column.content-column.content-column .services-content-inner.services-content-inner .services-content.services-content.active.active {
         display: flow-root;
     }
 
