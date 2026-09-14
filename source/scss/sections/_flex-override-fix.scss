@@ -62,3 +62,33 @@ section.expanding-form-module .container .column-container .column .form-embed {
 .events-listing-module span.year-container {
     display: flex !important;
 }
+
+// Checked the compiled CSS: no rule anywhere currently declares float/display
+// for .bottom-text or .text-link-container under .events-title-block, so
+// there's no audit override fighting these -- plain rules, no !important.
+.events-title-block span.bottom-text {
+    display: block;
+}
+
+.events-title-block span.bottom-text span.text-link-container {
+    display: inline-block;
+    width: auto;
+}
+
+// Checked the compiled CSS: no rule anywhere currently declares float/display
+// for .experience-container, .experience-text-column .experience-text-container,
+// or its span children -- no audit override to beat, so plain rules (no
+// !important) as requested.
+.experience-container {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.experience-text-column .experience-text-container {
+    display: flex;
+}
+
+.experience-text-column .experience-text-container span {
+    display: block;
+    float: none;
+}
