@@ -4437,3 +4437,64 @@ this file's methodology calls for on `/all-resources/` and
 `/resource-type/market-trend-reports/` before calling §34 fully closed
 out.
 
+## §36 -- 2026-09-14: §34/§35's remaining steps closed out (commit was
+already pushed by the user between sessions; this pass did the live
+pixel-parity verification)
+
+### What had changed since §35
+
+This session also had no working `device_bash` shell on the user's
+machine (same "Windows update blocks the mount" symptom as §35 -- file
+access only via the stage/list/commit bridge, confirmed by attempting
+`git status` first and getting the mount failure before falling back).
+Read `.git/logs/HEAD`, `.git/refs/heads/dev`, and
+`.git/refs/remotes/origin/dev` directly off disk (staged individually --
+these are tiny plumbing files, not a full clone) rather than assuming
+anything: found a commit `c5012d3` ("updates") made *after* §35's last
+write to this file, with `refs/heads/dev` and `refs/remotes/origin/dev`
+pointing at the identical hash -- i.e. the user had already run the
+`git add`/`commit`/`push` §35 asked for, without updating this doc.
+Confirmed on github.com/johnbadapt23/mainsite_adapt/actions (no repo
+credentials needed -- public repo, unauthenticated browser read) that
+**Build and Deploy Theme #159** (commit `c5012d3`, branch `dev`)
+completed successfully in 2m41s.
+
+### Live pixel-parity check (the step §35 couldn't reach)
+
+Using the built-in browser at a 1440x900 viewport (the mobile-width
+default the pane opens at will silently make float/flex layouts render
+single-column and hide exactly these bugs -- resized explicitly before
+measuring):
+
+- **`/resource-type/market-trend-reports/` -- the §34 matchHeight fix.**
+  Under `?dev=true`: `.item-column.one-half` computed `float: left`
+  (stays real/ungated, as intended), both columns' `getBoundingClientRect()`
+  height 356.9375 with matching inline `height: 356.938px` from
+  matchHeight -- no overlap, full-width item container 1300px. Production
+  (no `?dev=true`) needed a real click first to observe the same result --
+  WP Rocket's delay-JS feature holds `main.js` (and therefore the
+  matchHeight call) until a genuine user interaction there, while
+  `?dev=true` bypasses that delay and runs it immediately (per the
+  existing note elsewhere in this file on `rocket_delay_js_exclusions`) --
+  after that click, production measured the identical 356.9375/356.938px
+  on both columns. **Exact match, confirmed live.**
+- **`/all-resources/` -- the §31/§32 `article-container-three-post` fix.**
+  `?dev=true` and production both resolve to identical
+  `getBoundingClientRect()` (`y: 1770.5625, height: 387`), `float: left`,
+  `margin-top: 62px`. **Exact match, confirmed live.**
+
+### Status
+
+§34 and §35 are now fully closed out: fix written, built, committed,
+pushed, deployed (Actions run #159, green), and live-verified via
+pixel-parity on both pages this file's methodology calls for. This
+session still has no `device_bash` access to the user's machine (same
+blocker as §35), so this entry itself was written from the staged copy
+and committed back to `SESSION-HANDOFF.md` via the file-staging bridge
+only -- **not yet added/committed/pushed to git**. Whoever picks this up
+next (or the user, in the same pass): `git add SESSION-HANDOFF.md &&
+git commit -m "docs: log §36 - confirm §34/35 live via pixel-parity" &&
+git push`. No further open optimization items are recorded in this file
+as of this entry -- next session should re-check with the user for new
+regressions/requests before assuming there's nothing left to do.
+
