@@ -526,20 +526,20 @@ function adapt_webp_poster_url( $url ) {
     return $url;
 }
 
-// Gate for in-progress CSS work (currently: the sitewide float->flexbox
-// modernization pass) that hasn't been visually verified on every page yet.
-// Visiting any URL with ?dev=true adds a body class that the gated rules in
-// source/scss/sections/_dev-float-refactor.scss target; without it, the
-// site renders with the original (untouched) float-based CSS exactly as
-// before. This lets that pass be reviewed page-by-page on this exact
-// environment before any of it becomes the default for real visitors --
-// once a batch is confirmed safe, its rules move out of the gated file and
-// the matching original float declarations are removed for real, same as
-// was already done for the list-card/flip-card/static-cards modules.
+// Sitewide float->flexbox modernization pass. Promoted to the default for
+// every visitor on 2026-09-14, after the pixel-parity verification pass
+// documented in SESSION-HANDOFF.md (§10 onward, closed out §28/§29/§37/
+// §38) found the gated rules in source/scss/sections/_dev-float-
+// refactor.scss render identically to the original float-based CSS.
+// ?dev=false is kept as a quick rollback lever back to the untouched
+// original CSS, in case a real visitor turns up something this pass
+// missed -- remove this filter entirely (and fold the gated file's rules
+// into the real per-template SCSS for good) once that's no longer needed.
 function adapt_dev_gate_body_class( $classes ) {
-    if ( isset( $_GET['dev'] ) && $_GET['dev'] === 'true' ) {
-        $classes[] = 'dev-float-refactor';
+    if ( isset( $_GET['dev'] ) && $_GET['dev'] === 'false' ) {
+        return $classes;
     }
+    $classes[] = 'dev-float-refactor';
     return $classes;
 }
 add_filter( 'body_class', 'adapt_dev_gate_body_class' );
