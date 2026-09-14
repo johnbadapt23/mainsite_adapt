@@ -119,3 +119,33 @@ section.experience-module .container .experience-container {
 .template-event-partner section.events-title-block .container .content-container .button-container {
     justify-content: center;
 }
+
+// NOT something added this session -- this is a pre-existing audit-override
+// rule in source/scss/templates/_post.scss:2289-2295, a doubled-class
+// `section.post-title-block.post-title-block .container.container
+// .featured-video-container.featured-video-container { float: none; }`.
+// It's pure float:none-only, so fix-float-none-display.js mechanically
+// appended display:block to it (correctly, in isolation -- the BARE
+// `.featured-video-container` class genuinely has no display declared
+// anywhere). The bug: `.featured-video-container` is also the base class
+// of `.featured-video-container.mobile`/`.featured-video-container.desktop`
+// (same file, lines 345-366) -- two separate elements, one shown per
+// viewport width via display:none/block. Because the audit override's
+// selector is doubled (higher specificity) and matches ANY element
+// carrying the base class regardless of what other classes it also has,
+// its unconditional display:block was beating BOTH the `.mobile` and
+// `.desktop` variants' own display rules, showing/hiding neither correctly
+// (confirmed live: the merged selector list's rule for this chain read
+// `{float:none;display:block}`, and .mobile's own `{display:none}` rule,
+// undoubled, has strictly less specificity).
+// Root-cause fix, same pattern as .experience-container above: declare the
+// BARE class's real display explicitly, using the exact undoubled
+// production selector chain, so fix-float-none-display.js's normalizer
+// recognises it and skips generating the float:none;display:block override
+// for it at all. This plain rule has LESS specificity than
+// `.featured-video-container.mobile`/`.desktop` (one fewer class), so
+// those still correctly win over it -- no !important, and the responsive
+// toggle is restored.
+section.post-title-block .container .featured-video-container {
+    display: block;
+}
