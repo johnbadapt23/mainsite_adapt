@@ -1,129 +1,26 @@
-/* --- display:flex override fix (adapt theme, homepage/§44) ---
- * clean-css's restructureRules optimization (level 2, enabled in
- * source/gulp/tasks/build/styles-split.js) merges every compiled rule
- * that shares an identical declaration body into one combined selector
- * list, regardless of where in source/scss it originated. Across the
- * whole compiled stylesheet, ~400 selectors happen to share the exact
- * declaration 'float:none;display:block' and get merged into one rule --
- * correct for most of them, but 11 of those selectors have their OWN,
- * separate rule elsewhere in source that also sets display:flex (plus
- * flex-direction/gap/align-items/etc.), alongside a now-redundant
- * float:left. Because the merged rule's declaration text is identical
- * across all ~400 selectors, clean-css doesn't know 11 of them actually
- * need flex, not block -- it silently wins the cascade over the real
- * flex rule wherever the merge happens to land it in the output.
+/* This file intentionally left empty.
  *
- * Fixed at the compiled-CSS level once already (see SESSION-HANDOFF.md
- * §44), but that fix doesn't survive a rebuild (`gulp build:styles-split`
- * regenerates the file from source/scss and clean-css re-runs the same
- * merge). This is the durable, source-level fix: !important is used
- * deliberately here (not this codebase's usual specificity-doubling
- * pattern from merge-transform.js) because clean-css's restructuring can
- * relocate rules unpredictably across the file -- a same-specificity tie
- * would depend on where clean-css decides to put each rule, which isn't
- * something source order can reliably control post-optimization.
- * !important is safe here since these are 11 manually-identified,
- * individually-verified selectors, not a blanket mechanical rule. */
-
-section.featured-stories .container .featured-stories-container .featured-stories-item .related-inner .company-logo-container {
-    float: left !important;
-    width: 100% !important;
-    height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    position: relative !important;
-    padding: 0 !important;
-}
-
-section.featured-stories .container .featured-stories-container .featured-stories-item.first-featured .related-inner .related-bottom .bottom-section {
-    display: flex !important;
-    flex-direction: column !important;
-    align-self: flex-end !important;
-    width: 100% !important;
-    float: left !important;
-}
-
-section.featured-stories .container .featured-stories-container .featured-stories-item.first-featured .related-inner .related-bottom .company-logo-container {
-    float: left !important;
-    width: 100% !important;
-    height: 56px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    position: relative !important;
-    padding: 0 !important;
-}
-
-section.featured-stories .container .featured-stories-container .featured-stories-item.first-featured .related-inner .related-bottom .top-section {
-    display: flex !important;
-    width: 100% !important;
-    float: left !important;
-    flex-direction: column !important;
-    align-self: flex-start !important;
-}
-
-section.filter-title-block .container .topic-button-container-outer .topic-button-container {
-    float: left !important;
-    width: 100% !important;
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    position: relative !important;
-    padding-bottom: 10px !important;
-    padding-right: 60px !important;
-}
-
-section.left-text-links.advisors-centered-text-links .container .text-container .links-container {
-    float: left !important;
-    width: 100% !important;
-    text-align: left !important;
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 16px !important;
-}
-
-section.list-card-module .container .list-card-container {
-    float: left !important;
-    width: 100% !important;
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 32px !important;
-}
-
-section.map-with-numbers .container .map-outer .column-container {
-    width: 100% !important;
-    display: flex !important;
-    max-width: 1080px !important;
-    float: left !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 100px 33px !important;
-    position: relative !important;
-}
-
-section.partner-form .container .form-text-container {
-    float: left !important;
-    width: 100% !important;
-    display: flex !important;
-    padding: 60px !important;
-    border: 1px solid #000 !important;
-    border-top-left-radius: 36px !important;
-}
-
-section.post-article-container .container .post-column-container {
-    display: flex !important;
-    float: left !important;
-    width: 100% !important;
-}
-
-section.quote-slider.customer-events-slider .container .quote-slider-outer .quote-slider-module .quote-slide .customer-quote-slider-inner .logo-text-container {
-    float: left !important;
-    width: 100% !important;
-    display: flex !important;
-    gap: 24px !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-}
+ * It used to carry ~150 !important overrides working around selectors
+ * that clean-css's restructureRules (source/gulp/tasks/build/styles-split.js)
+ * was merging into one giant `float:none;display:block` rule even though
+ * they actually needed `display:flex`/`display:grid`.
+ *
+ * Root-caused and fixed properly instead: source/gulp/fix-float-none-display.js
+ * (the pipeline step that decides whether a float:none-only rule needs
+ * display:block added) was comparing selectors by exact string, so a
+ * specificity-doubled override selector (`.foo.foo`, from
+ * merge-transform.js's boosting technique) was never recognised as "the
+ * same selector" as its plain, undoubled counterpart that already had a
+ * real display:flex/grid declared elsewhere -- so it mechanically added
+ * display:block anyway, and being later/higher-specificity, it won.
+ * fix-float-none-display.js now normalizes selectors (collapses
+ * consecutive duplicate classes) before comparing, so it correctly
+ * recognises these selectors already have an explicit display and skips
+ * them -- no override CSS needed at all. See that file's "fifth fix"
+ * comment for the full explanation, and SESSION-HANDOFF.md for the
+ * write-up (search "fix-float-none-display").
+ *
+ * Kept as an empty file (rather than deleted) because this session
+ * doesn't have shell access to this machine to remove it -- safe to
+ * `git rm source/scss/sections/_flex-override-fix.scss` whenever
+ * convenient; it compiles to nothing either way. */

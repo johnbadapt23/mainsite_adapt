@@ -5508,3 +5508,104 @@ pre-existing and cosmetic on the homepage, not fixed -- needs the
 user's explicit go-ahead given the no-build-pipeline risk, and needs
 `device_bash` back (or a manual staged-file patch + careful review) to
 execute safely.
+
+
+---
+
+## §45 -- Real, source-level fix for the display:flex regression (replaces §44's !important patch); scroll-freeze investigation still open
+
+§44's fix (11 `!important` overrides appended to the compiled CSS) was
+correctly flagged by the user as the wrong shape of fix -- band-aid,
+and it doesn't scale: the user subsequently found two more large chunks
+of the same merged `float:none;display:block` rule with more broken
+selectors inside (34 in one paste, then asked to stop patching with
+`!important` altogether and find the real cause). All of it verified
+correct.
+
+### Root cause, found and fixed at the source
+
+`source/gulp/fix-float-none-display.js` (the pipeline step that decides
+whether a `float:none`-only rule needs `display:block` added, so an
+inline element like `<span>` doesn't silently collapse once its float
+is neutralised) already has a whole-file, order-independent safety net
+for exactly this class of problem: before adding `display:block` to a
+selector, it checks whether that selector already has an explicit
+`display` declared anywhere else in the stylesheet, and skips it if so.
+
+That check compares selectors by exact string (with a secondary
+"leaf compound" fallback for padded-ancestor cases like `.main-nav`,
+documented in the file's own "fourth fix" history). It never accounted
+for `merge-transform.js`'s specificity-boosting technique, used
+pervasively by this whole float-audit engagement, which doubles every
+class in a selector (`.foo` -> `.foo.foo`) so overrides reliably win
+the cascade. A doubled override selector and its plain production
+counterpart are the same real selector, but two different strings --
+so the safety net never recognised them as related, and mechanically
+added `display:block` to the doubled/merged rule anyway, silently
+beating a real `display:flex` set elsewhere.
+
+Fixed with a full sweep, not selector-by-selector: parsed the actual
+compiled output, found every rule reducing to `float:none;display:block`
+across the WHOLE file (1,778 unique selectors across several separate
+merged rules, not just the one the user first pasted), and checked each
+one for a second, separate declaration containing
+`display:flex`/`grid`/`inline-flex`. **116 of 1,778** are genuinely
+affected -- confirmed this is a proper superset of both selector lists
+the user pasted (zero missing either way).
+
+The actual fix: `fix-float-none-display.js` now normalizes selectors
+(collapses consecutive duplicate classes, `.foo.foo` -> `.foo`) before
+every comparison -- both the exact-selector and leaf-compound checks --
+and the "does this selector have a display anywhere else" check was
+broadened from "at a different media context" to "at any context",
+since the missed cases here are same-context (the doubled selector's
+own true declaration is at the identical, no-media-query context, just
+written under a different-looking string). Verified end-to-end by
+actually running `gulp build:styles-main-nofooter` against a fresh copy
+of the current source tree with the patched script: all 116 selectors
+now resolve to their correct `display:flex`/`grid` value with **zero**
+`!important` anywhere in the output, and the compiled file is
+marginally *smaller* than before (1,806,868 vs 1,806,881 bytes) rather
+than the ~35KB larger it would have been with the override-file
+approach. `footer.min.css` re-checked the same way -- still clean, no
+affected selectors there.
+
+§44's `_flex-override-fix.scss` (the 11-selector `!important` file) is
+now superseded and has been emptied out (left as a documented no-op,
+not deleted -- this session still doesn't have shell access to the
+user's machine to `git rm` it; safe to delete whenever convenient).
+
+### Status: fixed on disk, NOT yet pushed
+
+Both changed files --
+`source/gulp/fix-float-none-display.js` (the real fix) and
+`source/scss/sections/_flex-override-fix.scss` (emptied) -- are
+committed to the user's machine via the device bridge, but **not yet
+committed to git or pushed**. The user needs to `git add`, commit, and
+push `dev` themselves (same as the earlier `0bd5311` "fixes for
+staging" push) for the "Build and Deploy Theme" workflow to pick this
+up and redeploy.
+
+### Separately: scroll-freeze bug found live, root cause not yet found
+
+While verifying the previous fix live on `https://staging.adapt.com.au/`,
+found that mouse-wheel/trackpad scrolling does **nothing at all** --
+`window.scrollTo()` (programmatic) works fine and every individual
+section renders correctly when scrolled to that way, but a real wheel
+event never moves the page. This is very likely the actual "ruined,
+everything is broken" symptom the user has been reporting all along --
+a visitor who can't scroll past the hero would perceive the entire site
+as broken even though the sections underneath are fine. Ruled out: a
+fatal top-level script error halting the rest of `main.min.js` (all
+vendor libs concatenated after the GSAP plugin -- AOS, jquery.scrollbar,
+perfectScrollbar, matchHeight, select2, slick, Cookies -- are all
+defined and present on `window`, so the console error is a normal
+`console.error()` call, not a thrown exception); a full-viewport fixed
+overlay intercepting the wheel event (checked via `elementFromPoint` at
+the scroll coordinate -- ordinary content div, not an overlay); and the
+`.perfectScrollbar()` calls in `main.js` (none target `body`/`html`,
+all scoped to small containers). Not yet found: what is actually
+swallowing the wheel event. This investigation was interrupted by the
+push/revert/selector-fix conversation and is still open -- worth
+picking up next, since it's likely the highest-impact issue of
+everything found this session.

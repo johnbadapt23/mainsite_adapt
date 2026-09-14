@@ -198,8 +198,30 @@ function mediaContext(node) {
     return parts.join(' > ');
 }
 
+// 2026-09-14, fifth fix (found live on staging: a batch of selectors
+// with a genuine, same-context display:flex were still getting a
+// mechanical display:block, breaking their layout -- e.g.
+// `section.featured-stories .container ... .company-logo-container`).
+// Root cause: merge-transform.js's specificity-boosting technique
+// (source/scss/sections/*.scss, the float-audit override files) doubles
+// every class in a selector (`.foo` -> `.foo.foo`) so overrides reliably
+// win the cascade. That's invisible to a human reading the CSS, but to
+// this script's exact-string and leaf-compound comparisons, a doubled
+// selector and its plain counterpart are two unrelated strings -- so a
+// hand-written `display:flex` on the plain selector was never being
+// recognised as "the same selector" as the doubled `float:none`-only
+// rule this script was about to blockify. Same underlying class of bug
+// as the third/fourth fixes above (selector string equality isn't
+// selector equivalence), different cause. Fix: strip consecutive
+// duplicate class tokens before any comparison, so `.foo.foo` and `.foo`
+// normalize to the same key. Redundant classes never change what a
+// selector matches, so this is safe in both directions.
+function normalizeSelector(sel) {
+    return sel.replace(/(\.[\w-]+)(?:\1)+/g, '$1');
+}
+
 function leafCompound(sel) {
-    var tokens = sel.trim().split(/\s+/).filter(function (t) {
+    var tokens = normalizeSelector(sel).trim().split(/\s+/).filter(function (t) {
         return t !== '>' && t !== '+' && t !== '~';
     });
     if (!tokens.length) {
@@ -231,10 +253,16 @@ function fixFloatNoneDisplay(css) {
         var ctx = mediaContext(rule);
         var selList = rule.selectors;
         selList.forEach(function (sel) {
-            if (!displayContextsBySelector.has(sel)) {
-                displayContextsBySelector.set(sel, new Set());
+            // Normalized (duplicate-class-collapsed) key -- see the fifth
+            // fix comment on normalizeSelector above. Both the exact-string
+            // map and the leaf map are keyed by the normalized form so a
+            // doubled override selector and its plain production
+            // counterpart are recognised as the same real selector.
+            var baseSel = normalizeSelector(sel);
+            if (!displayContextsBySelector.has(baseSel)) {
+                displayContextsBySelector.set(baseSel, new Set());
             }
-            displayContextsBySelector.get(sel).add(ctx);
+            displayContextsBySelector.get(baseSel).add(ctx);
 
             var leaf = leafCompound(sel);
             if (!displayContextsByLeaf.has(leaf)) {
@@ -264,7 +292,11 @@ function fixFloatNoneDisplay(css) {
             var needsFix = [];
             var leaveAlone = [];
             selectors.forEach(function (sel) {
-                var baseSel = sel;
+                // Normalized so a specificity-doubled override selector
+                // (`.foo.foo`) and its plain production counterpart
+                // (`.foo`) are treated as the same real selector -- see
+                // the fifth-fix comment on normalizeSelector above.
+                var baseSel = normalizeSelector(sel);
 
                 if (hasDisplay.has(ctx + '::' + baseSel)) {
                     // Already has an explicit display at this exact
@@ -274,9 +306,25 @@ function fixFloatNoneDisplay(css) {
                     return;
                 }
 
+                // Whole-file, order-independent check: does ANY rule for
+                // this same normalized selector -- at this same context
+                // or a different one -- declare an explicit display
+                // anywhere in the stylesheet? Originally this only fired
+                // for a DIFFERENT context (the forward-accumulated
+                // hasDisplay set above already covered the same-context
+                // case, but only when that other rule happens to appear
+                // EARLIER in file/cascade order). Broadened to any
+                // context: a same-context match that hasDisplay missed
+                // means the real display-declaring rule appears LATER in
+                // the file than this float:none rule (e.g. a doubled-
+                // class override selector that normalizeSelector now
+                // matches to its plain counterpart) -- exactly the bug
+                // this fifth fix exists for. Skipping mechanically here
+                // is strictly safer either way: a genuine same-context
+                // display already answers the "what should this render
+                // as" question, so this script has nothing useful to add.
                 var otherContexts = displayContextsBySelector.get(baseSel);
-                var hasContextSensitiveDisplay = otherContexts &&
-                    [...otherContexts].some(function (c) { return c !== ctx; });
+                var hasKnownDisplay = otherContexts && otherContexts.size > 0;
 
                 // Belt-and-braces check for hand-written overrides whose
                 // selector string doesn't exactly match production's
@@ -285,27 +333,28 @@ function fixFloatNoneDisplay(css) {
                 // too. See "fourth fix" header comment.
                 var leaf = leafCompound(baseSel);
                 var leafContexts = displayContextsByLeaf.get(leaf);
-                var hasLeafContextSensitiveDisplay = !hasContextSensitiveDisplay && leafContexts &&
-                    [...leafContexts].some(function (c) { return c !== ctx; });
+                var hasLeafKnownDisplay = !hasKnownDisplay && leafContexts && leafContexts.size > 0;
 
-                if (hasContextSensitiveDisplay || hasLeafContextSensitiveDisplay) {
+                if (hasKnownDisplay || hasLeafKnownDisplay) {
                     // This selector (or its leaf compound) has an
-                    // explicit display somewhere else in the stylesheet,
-                    // at a DIFFERENT media context -- its display is
-                    // genuinely responsive in production. A context-
-                    // blind display:block here could win the cascade at
-                    // a width it was never meant to apply at (this is
-                    // exactly what happened to .main-nav). Not safe to
-                    // fix mechanically -- leave the bare float:none as-is
-                    // and flag for a human to write a properly
-                    // media-scoped override.
-                    var matchedContexts = hasContextSensitiveDisplay ? otherContexts : leafContexts;
+                    // explicit display declared somewhere else in the
+                    // stylesheet -- its correct display value is already
+                    // known and shouldn't be guessed at mechanically here.
+                    // If that's at a different media context, it may be
+                    // genuinely responsive in production (the original
+                    // concern this check was written for -- see
+                    // .main-nav above); if it's at this same context, it's
+                    // the fifth-fix case (a doubled-class override this
+                    // script previously failed to recognise). Either way:
+                    // leave the bare float:none as-is and flag for a
+                    // human to confirm, rather than risk a wrong guess.
+                    var matchedContexts = hasKnownDisplay ? otherContexts : leafContexts;
                     leaveAlone.push(sel);
                     skippedContextSensitive.push({
                         selector: baseSel,
                         context: ctx || '(no media query)',
                         otherContexts: [...matchedContexts].map(function (c) { return c || '(no media query)'; }),
-                        matchedBy: hasContextSensitiveDisplay ? 'exact-selector' : 'leaf-compound (' + leaf + ')',
+                        matchedBy: hasKnownDisplay ? 'exact-selector' : 'leaf-compound (' + leaf + ')',
                     });
                     return;
                 }
@@ -330,7 +379,7 @@ function fixFloatNoneDisplay(css) {
                 // selector has a display" for any later rule, same as
                 // any other declareDisplay case below.
                 needsFix.forEach(function (sel) {
-                    hasDisplay.add(ctx + '::' + sel);
+                    hasDisplay.add(ctx + '::' + normalizeSelector(sel));
                 });
             }
             return;
@@ -341,7 +390,7 @@ function fixFloatNoneDisplay(css) {
         if (declaresDisplay) {
             var selList = rule.selectors;
             selList.forEach(function (sel) {
-                hasDisplay.add(ctx + '::' + sel);
+                hasDisplay.add(ctx + '::' + normalizeSelector(sel));
             });
         }
     });
