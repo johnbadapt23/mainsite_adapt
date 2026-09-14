@@ -5375,3 +5375,136 @@ user's "not main" decision), §43 (this section -- PHPCS audit
 complete, 0 PHP 8.1 compatibility issues found, WordPress-Extra
 findings summarized above with 91% auto-fixable). No files changed on
 disk this section.
+
+
+---
+
+## §44 -- Homepage "ruined" report: revert (already done) + the two real bugs underneath it
+
+Follow-up to the user's "you ruined it, revert changes today" report on
+`https://staging.adapt.com.au/`. The revert itself (16 SCSS files + 2
+compiled CSS bundles, back to exact pre-§41 backups) was already done
+and committed earlier this session. This section covers what was found
+*after* the revert, since the user correctly pushed back that reverting
+alone didn't fix the live page, and asked to fix the actual problem.
+
+### Bug 1 (fixed, committed) -- 11 selectors stuck on `display:block`
+
+Not caused by today's work -- confirmed present in the pre-§41-fix CSS
+too, so it predates this session's float audit. Root cause: `clean-css`'s
+`restructureRules` optimization (documented risk since §40) merges every
+rule sharing byte-identical declarations into one combined selector,
+regardless of original grouping. Combined with `merge-transform.js`'s
+specificity-doubling (`.foo.foo`), this produced one 400-selector rule
+`{float:none;display:block}` in `main-nofooter.min.css`. 389 of those 400
+selectors genuinely want `display:block` and are unaffected. **11 do
+not** -- their original, pre-merge declaration explicitly set
+`display:flex` (plus `flex-direction`/`gap`/`align-items`/etc.)
+alongside a now-inert `float:left`, so the merged rule was silently
+overriding their layout to block.
+
+Found programmatically (not by manual read-through of 400 selectors):
+parsed the compiled CSS, located every selector in the merged rule,
+looked up each one's other/original declaration elsewhere in the file,
+and flagged only the ones whose original declaration contained
+`display:flex`/`grid`/`inline-flex`. Fix: appended 11 override rules at
+the end of `main-nofooter.min.css`, each using the selector's exact
+already-doubled-class form (matches/exceeds the offending rule's
+specificity) and restoring its full original flex declaration, placed
+after the offending rule so source order wins the cascade tie -- same
+approach as a manual CSS specificity war, done safely since nothing
+else in the file was touched.
+
+Affected selectors: `featured-stories` (4, incl. `.first-featured`
+variants), `filter-title-block .topic-button-container`,
+`left-text-links.advisors-centered-text-links .links-container`,
+`list-card-module .list-card-container`, `map-with-numbers
+.column-container`, `partner-form .form-text-container`,
+`post-article-container .post-column-container`,
+`quote-slider.customer-events-slider ... .logo-text-container`.
+
+`footer.min.css` has the same `{float:none;display:block}` merged rule
+mechanism but was checked the same way and has **zero** affected
+selectors -- none of its merged-rule selectors have a `display:flex`
+original declaration. No changes needed there.
+
+Fix applied to `assets/css/main-nofooter.min.css` (1,806,881 ->
+1,810,391 bytes) and committed to device with an `expectedMtimeMs`
+guard (matched, zero rejection). **Not yet visible on the live site** --
+see Verification below.
+
+### Bug 2 (root-caused, not yet fixed -- needs a decision) -- GSAP console error, unrelated to Bug 1 and to today's work
+
+The `(animation.gsap) -> ERROR: TweenLite or TweenMax could not be
+found...` error the user saw is **not new** -- it's independently
+documented at two earlier points in this file (this session's own
+§11 and §37), both before today's revert/fix work, both noting it
+reproduces identically on `?dev=true` and production. Re-confirmed live
+via Claude-in-Chrome console + network capture just now: the error
+fires from `main.min.js:7:697` -- i.e. from inside the theme's own
+compiled JS bundle, not an external CDN script (network log shows no
+separate ScrollMagic request at all).
+
+Root cause, traced through `source/gulp/paths.js`:
+`build:scripts` concatenates a **fixed list of vendor files** --
+including `scrollmagic/uncompressed/ScrollMagic.js` and its
+`plugins/animation.gsap.js` -- unconditionally into `main.min.js`,
+which is enqueued on **every** page. `animation.gsap.js` does its own
+`TweenLite`/`TweenMax` presence check at load/parse time (not when
+`.setTween()` is actually called), so it logs this error on every page
+load, site-wide, regardless of whether that page uses ScrollMagic.
+Meanwhile GSAP itself is (correctly, per an earlier session's
+optimization) only conditionally loaded via `adapt_page_needs_gsap()`
+on 8 specific templates -- the homepage isn't one of them, so GSAP
+never loads there, and the plugin's check always fails there.
+
+**On the homepage specifically this is cosmetic, not functional**:
+confirmed live `.fixed-scroller-inner` and `.map-fixed-scroller-container`
+(the only two DOM hooks `main.js` uses ScrollMagic for) are both
+**absent** from the homepage DOM, so no ScrollMagic code path actually
+runs there -- only the vendor plugin's own load-time self-check fires.
+Scroll itself works normally (`window.scrollY` responds, no
+`overflow:hidden` trap observed beyond the one pre-existing,
+already-documented `overflow:hidden auto` seen identically before and
+after the revert).
+
+**Why not fixed this section:** the real fix touches a vendored
+third-party library file (`source/components/scrollmagic/.../plugins/
+animation.gsap.js`) and/or the compiled `main.min.js` bundle, and
+`device_bash` is still unavailable this session (same Windows-update
+mount issue noted throughout), so there's no way to run `gulp
+build:scripts` to rebuild and verify the bundle the normal way. Hand-
+patching the 142KB minified bundle directly (same technique used for
+the CSS fix) is possible but riskier for JS than CSS -- a bad edit here
+can silently break event bindings sitewide, not just misrender one
+section. Flagging as a clearly-scoped follow-up rather than guessing at
+a minified JS patch without a build pipeline to verify against.
+**Needs the user's go-ahead before it's attempted.**
+
+### Verification note -- CSS fix is correct on disk but not yet visible live
+
+Confirmed via `device_list_dir` that `main-nofooter.min.css` on disk is
+now exactly the fixed 1,810,391-byte file. But live network capture
+shows the page still serving a stale copy: response headers show
+`Cache-Control: public, max-age=31536000` (one year) and a
+`Last-Modified` timestamp from *before* even today's earlier revert,
+and this didn't change across a hard navigation or a randomized
+cache-busting query string on the page URL -- consistent with a
+CDN/reverse-proxy layer (not WP Rocket's page cache, which `?nocache=1`
+already accounts for elsewhere in this doc) caching the CSS asset
+itself for up to a year and not keying on query strings the way the
+HTML page cache does. This is outside what a file-level fix can
+address -- **the user (or whoever holds the CDN/Cloudflare dashboard)
+needs to purge that asset's cache** for the fix to show up on
+`https://staging.adapt.com.au/`. Not something I have credentials or
+access to do from here.
+
+### Status
+
+Bug 1 (display:flex regression): fixed, verified on disk, committed to
+device, blocked only on an external cache purge outside this session's
+access. Bug 2 (GSAP console error): root-caused precisely, confirmed
+pre-existing and cosmetic on the homepage, not fixed -- needs the
+user's explicit go-ahead given the no-build-pipeline risk, and needs
+`device_bash` back (or a manual staged-file patch + careful review) to
+execute safely.
