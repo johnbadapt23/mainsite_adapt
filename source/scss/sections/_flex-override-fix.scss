@@ -149,3 +149,21 @@ section.experience-module .container .experience-container {
 section.post-title-block .container .featured-video-container {
     display: block;
 }
+
+// Same pattern again: source/scss/templates/_post.scss:2673-2681 has a
+// doubled-class, pure `float: none;`-only audit rule for the bare
+// `.meta-tag-container` class (no .mobile/.desktop collision this time --
+// just a plain "needs flex" case). Declaring the real display on the exact
+// undoubled production selector lets fix-float-none-display.js's
+// normalizer recognise it and skip the mechanical display:block for it,
+// same as .experience-container/.featured-video-container above -- so this
+// compiles as genuine display:flex with no !important needed.
+section.post-article-container .container .post-content .meta-tag-container {
+    display: flex;
+}
+
+// width:auto is orthogonal to the .tags.meta-tags audit override (that one
+// only sets float:none;display:block, no width), so nothing to beat here.
+.meta-tag-container .meta-tags {
+    width: auto;
+}
