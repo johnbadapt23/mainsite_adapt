@@ -353,3 +353,232 @@ section.author-events.events-listing-module {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 9
+
+section.speaker-profile.speaker-profile.author-section.author-section {
+                .container.container {
+                        .column-container.column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 31
+
+section.speaker-profile.speaker-profile.author-section.author-section {
+                .container.container {
+                        .column-container.column-container {
+                                .image-column.image-column {
+                                        @include responsive(767) {
+                                                .mobile-title-container.mobile-title-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 36
+
+section.speaker-profile.speaker-profile.author-section.author-section {
+                .container.container {
+                        .column-container.column-container {
+                                .image-column.image-column {
+                                        @include responsive(767) {
+                                                .mobile-title-container.mobile-title-container {
+                                                        h2 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 43
+
+section.speaker-profile.speaker-profile.author-section.author-section {
+                .container.container {
+                        .column-container.column-container {
+                                .image-column.image-column {
+                                        @include responsive(767) {
+                                                .mobile-title-container.mobile-title-container {
+                                                        h3 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 88
+
+section.speaker-profile.speaker-profile.author-section.author-section {
+                .container.container {
+                        .column-container.column-container {
+                                .button-container.button-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 92
+
+section.speaker-profile.speaker-profile.author-section.author-section {
+                .container.container {
+                        .column-container.column-container {
+                                .button-container.button-container {
+                                        .linkedin-button.linkedin-button {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 125
+
+section.speaker-profile.speaker-profile.author-section.author-section {
+                .container.container {
+                        .column-container.column-container {
+                                .details-column.details-column {
+                                        h1 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 136
+
+section.speaker-profile.speaker-profile.author-section.author-section {
+                .container.container {
+                        .column-container.column-container {
+                                .details-column.details-column {
+                                        h3 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 150
+
+section.speaker-profile.speaker-profile.author-section.author-section {
+                .container.container {
+                        .column-container.column-container {
+                                .details-column.details-column {
+                                        .textBlock.textBlock {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 170
+
+section.author-posts-listing.author-posts-listing {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 175
+
+section.author-posts-listing.author-posts-listing {
+                .container.container {
+                        .title-container.title-container {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 183
+
+section.author-posts-listing.author-posts-listing {
+                .container.container {
+                        .list-container.list-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 208
+
+section.author-posts-listing.author-posts-listing {
+                .container.container {
+                        .list-container.list-container {
+                                .item.item {
+                                        .image-container.image-container, .video-container.video-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 253
+
+section.author-posts-listing.author-posts-listing {
+                .container.container {
+                        .list-container.list-container {
+                                .pagination-container.pagination-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 302
+
+section.author-events.author-events.events-listing-module.events-listing-module {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 307
+
+section.author-events.author-events.events-listing-module.events-listing-module {
+                .container.container {
+                        .title-container.title-container {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+section.author-events.author-events.events-listing-module.events-listing-module .container.container .title-container.title-container {
+        display: block;
+    }
+
+section.author-posts-listing.author-posts-listing .container.container .title-container.title-container {
+        display: block;
+    }

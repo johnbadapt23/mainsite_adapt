@@ -1966,3 +1966,636 @@ section.repeatable-image-text {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 39
+
+section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column.text-column.text-column {
+                                        .inner-text.inner-text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 109
+
+section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column.image-column.image-column {
+                                        .map-container.map-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 113
+
+section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column.image-column.image-column {
+                                        .map-container.map-container {
+                                                img {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 260
+
+section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
+                .container.container {
+                        .column-container.column-container {
+                                .card-inner.card-inner {
+                                        .card-top.card-top {
+                                                span {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 329
+
+section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
+                .container.container {
+                        .column-container.column-container {
+                                .card-inner.card-inner {
+                                        .bottom-details.bottom-details {
+                                                .bottom-detail.bottom-detail {
+                                                        .detail.detail {
+                                                                .detail-title.detail-title {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 341
+
+section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
+                .container.container {
+                        .column-container.column-container {
+                                .card-inner.card-inner {
+                                        .bottom-details.bottom-details {
+                                                .bottom-detail.bottom-detail {
+                                                        .detail.detail {
+                                                                .detail-text.detail-text {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 519
+
+section.stats.stats {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        &.quote-column.quote-column {
+                                                .headerLarge.headerLarge {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 586
+
+section.overlapping-cards.overlapping-cards {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 602
+
+section.overlapping-cards.overlapping-cards {
+                .container.container {
+                        .title-container.title-container {
+                                .inner-text.inner-text {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 611
+
+section.overlapping-cards.overlapping-cards {
+                .container.container {
+                        .title-container.title-container {
+                                .inner-text.inner-text {
+                                        h2 {
+                                                p {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 629
+
+section.overlapping-cards.overlapping-cards {
+                .container.container {
+                        .overlapping-cards-container.overlapping-cards-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 635
+
+section.overlapping-cards.overlapping-cards {
+                .container.container {
+                        .overlapping-card-wrapper.overlapping-card-wrapper {
+                                float: none;
+                        }
+                }
+        }
+
+// line 654
+
+section.overlapping-cards.overlapping-cards {
+                .container.container {
+                        .overlapping-card.overlapping-card {
+                                float: none;
+                        }
+                }
+        }
+
+// line 687
+
+section.overlapping-cards.overlapping-cards {
+                .container.container {
+                        .overlapping-card.overlapping-card {
+                                .column-container.column-container {
+                                        .text-column.text-column {
+                                                .text-inner.text-inner {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 692
+
+section.overlapping-cards.overlapping-cards {
+                .container.container {
+                        .overlapping-card.overlapping-card {
+                                .column-container.column-container {
+                                        .text-column.text-column {
+                                                .text-inner.text-inner {
+                                                        h2 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 716
+
+section.overlapping-cards.overlapping-cards {
+                .container.container {
+                        .overlapping-card.overlapping-card {
+                                .column-container.column-container {
+                                        .text-column.text-column {
+                                                .text-inner.text-inner {
+                                                        .text.text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1035
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                &.static-cards.static-cards {
+                        .card-container.card-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1060
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                &.static-cards.static-cards {
+                        .card-container.card-container {
+                                .static-card.static-card {
+                                        .icon-container.icon-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1089
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                &.static-cards.static-cards {
+                        .card-container.card-container {
+                                .static-card.static-card {
+                                        .content-container.content-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1100
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                &.static-cards.static-cards {
+                        .card-container.card-container {
+                                .static-card.static-card {
+                                        .content-container.content-container {
+                                                .content-container-inner.content-container-inner {
+                                                        .card-title.card-title {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1108
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                &.static-cards.static-cards {
+                        .card-container.card-container {
+                                .static-card.static-card {
+                                        .content-container.content-container {
+                                                .content-container-inner.content-container-inner {
+                                                        .card-text.card-text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1350
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                .container.container {
+                        .icon-accordion.icon-accordion {
+                                .gtm-icon-accordion.gtm-icon-accordion {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1354
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                .container.container {
+                        .icon-accordion.icon-accordion {
+                                .gtm-icon-accordion.gtm-icon-accordion {
+                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1366
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                .container.container {
+                        .icon-accordion.icon-accordion {
+                                .gtm-icon-accordion.gtm-icon-accordion {
+                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
+                                                .gtm-icon-title.gtm-icon-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1394
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                .container.container {
+                        .icon-accordion.icon-accordion {
+                                .gtm-icon-accordion.gtm-icon-accordion {
+                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
+                                                .gtm-icon-answer.gtm-icon-answer {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1400
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                .container.container {
+                        .icon-accordion.icon-accordion {
+                                .gtm-icon-accordion.gtm-icon-accordion {
+                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
+                                                .gtm-icon-answer.gtm-icon-answer {
+                                                        .icon-column-container.icon-column-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1406
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                .container.container {
+                        .icon-accordion.icon-accordion {
+                                .gtm-icon-accordion.gtm-icon-accordion {
+                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
+                                                .gtm-icon-answer.gtm-icon-answer {
+                                                        .icon-column-container.icon-column-container {
+                                                                .gtm-icon-column.gtm-icon-column {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1419
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
+                .container.container {
+                        .icon-accordion.icon-accordion {
+                                .gtm-icon-accordion.gtm-icon-accordion {
+                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
+                                                .gtm-icon-answer.gtm-icon-answer {
+                                                        .icon-column-container.icon-column-container {
+                                                                .gtm-icon-column.gtm-icon-column {
+                                                                        .icon-container.icon-container {
+                                                                                img {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1510
+
+section.three-column-video-gtm.three-column-video-gtm.three-column-icon-text-ecosystems.three-column-icon-text-ecosystems.three-column-partnered-research.three-column-partnered-research {
+                .container.container {
+                        .column-container.column-container .column.column {
+                                .text-container.text-container, .link-container.link-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1516
+
+section.three-column-video-gtm.three-column-video-gtm.three-column-icon-text-ecosystems.three-column-icon-text-ecosystems.three-column-partnered-research.three-column-partnered-research {
+                .container.container {
+                        .column-container.column-container .column.column {
+                                .text-container.text-container, .link-container.link-container {
+                                        p {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1535
+
+section.three-column-video-gtm.three-column-video-gtm.three-column-icon-text-ecosystems.three-column-icon-text-ecosystems.three-column-partnered-research.three-column-partnered-research {
+                .container.container {
+                        .image-video-container.image-video-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1627
+
+section.map-with-numbers.map-with-numbers {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1632
+
+section.map-with-numbers.map-with-numbers {
+                .container.container {
+                        .title-container.title-container {
+                                .labelXXL.labelXXL {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1644
+
+section.map-with-numbers.map-with-numbers {
+                .container.container {
+                        .map-outer.map-outer {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1685
+
+section.map-with-numbers.map-with-numbers {
+                .container.container {
+                        .map-outer.map-outer {
+                                .column-container.column-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1707
+
+section.map-with-numbers.map-with-numbers {
+                .container.container {
+                        .map-outer.map-outer {
+                                .column-container.column-container {
+                                        .column.column {
+                                                .numbers-text.numbers-text {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1721
+
+section.map-with-numbers.map-with-numbers {
+                .container.container {
+                        .map-outer.map-outer {
+                                .column-container.column-container {
+                                        .column.column {
+                                                .labelMedium.labelMedium {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1773
+
+section.repeatable-image-text.repeatable-image-text {
+                .container.container {
+                        .inner.inner {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1816
+
+section.repeatable-image-text.repeatable-image-text {
+                .title-container.title-container {
+                        float: none;
+                }
+        }
+
+// line 1855
+
+section.repeatable-image-text.repeatable-image-text {
+                .cards.cards {
+                        float: none;
+                }
+        }
+
+// line 1895
+
+section.repeatable-image-text.repeatable-image-text {
+                .cards.cards {
+                        .column-container.column-container {
+                                .column.column {
+                                        &.image-column.image-column {
+                                                .image-container.image-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1955
+
+section.repeatable-image-text.repeatable-image-text {
+                .cards.cards {
+                        .column-container.column-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .button-container.button-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module.static-cards.static-cards .card-container.card-container {
+        float: none;
+    }
+
+section.map-with-numbers.map-with-numbers .container.container .title-container.title-container {
+        display: block;
+    }
+
+section.overlapping-cards.overlapping-cards .container.container .title-container.title-container {
+        display: block;
+    }
+
+section.three-column-icon-text.three-column-icon-text .container.container .title-container.title-container {
+        display: block;
+    }
+
+section.three-column-icon-text-ecosystems.three-column-icon-text-ecosystems.three-column-partnered-research.three-column-partnered-research .container.container .title-container.title-container {
+        display: block;
+    }

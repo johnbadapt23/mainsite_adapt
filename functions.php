@@ -526,23 +526,15 @@ function adapt_webp_poster_url( $url ) {
     return $url;
 }
 
-// Sitewide float->flexbox modernization pass. Promoted to the default for
-// every visitor on 2026-09-14, after the pixel-parity verification pass
-// documented in SESSION-HANDOFF.md (§10 onward, closed out §28/§29/§37/
-// §38) found the gated rules in source/scss/sections/_dev-float-
-// refactor.scss render identically to the original float-based CSS.
-// ?dev=false is kept as a quick rollback lever back to the untouched
-// original CSS, in case a real visitor turns up something this pass
-// missed -- remove this filter entirely (and fold the gated file's rules
-// into the real per-template SCSS for good) once that's no longer needed.
-function adapt_dev_gate_body_class( $classes ) {
-    if ( isset( $_GET['dev'] ) && $_GET['dev'] === 'false' ) {
-        return $classes;
-    }
-    $classes[] = 'dev-float-refactor';
-    return $classes;
-}
-add_filter( 'body_class', 'adapt_dev_gate_body_class' );
+// Sitewide float->flexbox modernization pass: the ?dev=true/dev=false gate
+// and its `dev-float-refactor` body class have been removed entirely
+// (2026-09-14). The gated rules in source/scss/sections/_dev-float-
+// refactor.scss were merged permanently into the real per-template SCSS
+// files after a full pixel-parity verification pass (SESSION-HANDOFF.md
+// §10 onward, closed out §28/§29/§37/§38, final merge+verification §40) --
+// see §40 for the merge mechanics and the computed-style cascade
+// verification that confirmed no visual regressions. There is no more
+// toggle: the modernized flexbox rules are just the CSS now.
 
 // Shared helpers for the 3 AJAX filter callbacks below (speakers,
 // partners, edge partners). Their query-building and HTML render loops

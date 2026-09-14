@@ -1,7 +1,18 @@
-// Adds `display: block` to any gated (`body.dev-float-refactor`-prefixed)
-// override whose only declaration is `float: none`, wherever the
-// corresponding un-gated (production) rule for that same selector does
-// NOT already set an explicit `display` of its own.
+// Adds `display: block` to any rule whose only declaration is
+// `float: none`, wherever no OTHER rule for that same (selector, media
+// context) already sets an explicit `display` of its own.
+//
+// 2026-09-14: generalized from gated-only (`body.dev-float-refactor`-
+// prefixed) to every `float:none`-only rule in the compiled stylesheet.
+// The class gate this was originally written against has been removed
+// (the float->flexbox modernization pass it guarded is now permanent,
+// merged into the real per-template SCSS -- see SESSION-HANDOFF.md) so
+// there is no more "gated override vs. real production rule" distinction
+// left to key off; every such rule is now just an ordinary rule, and the
+// underlying blockification concern this script fixes (see below) is
+// exactly as real for any of them, so it applies uniformly now. The
+// selector-matching logic (comments below, all still accurate) is
+// otherwise unchanged.
 //
 // Why this exists (2026-09-02, see SESSION-HANDOFF.md "Section 6 float
 // refactor" / the "?dev=true" testing round after it): `float` is not
@@ -218,10 +229,7 @@ function fixFloatNoneDisplay(css) {
             return;
         }
         var ctx = mediaContext(rule);
-        var isGated = rule.selector.indexOf('body.dev-float-refactor') === 0;
-        var selList = isGated
-            ? rule.selectors.map(function (sel) { return sel.replace(/^body\.dev-float-refactor\s+/, ''); })
-            : rule.selector.split(',').map(function (s) { return s.trim(); });
+        var selList = rule.selectors;
         selList.forEach(function (sel) {
             if (!displayContextsBySelector.has(sel)) {
                 displayContextsBySelector.set(sel, new Set());
@@ -247,17 +255,16 @@ function fixFloatNoneDisplay(css) {
 
     root.walkRules(function (rule) {
         var ctx = mediaContext(rule);
-        var isGated = rule.selector.indexOf('body.dev-float-refactor') === 0;
         var decls = rule.nodes ? rule.nodes.filter(function (n) { return n.type === 'decl'; }) : [];
         var declaresDisplay = decls.some(function (d) { return d.prop === 'display'; });
-        var isPureFloatNone = isGated && decls.length === 1 && decls[0].prop === 'float' && decls[0].value === 'none';
+        var isPureFloatNone = decls.length === 1 && decls[0].prop === 'float' && decls[0].value === 'none';
 
         if (isPureFloatNone) {
             var selectors = rule.selectors;
             var needsFix = [];
             var leaveAlone = [];
             selectors.forEach(function (sel) {
-                var baseSel = sel.replace(/^body\.dev-float-refactor\s+/, '');
+                var baseSel = sel;
 
                 if (hasDisplay.has(ctx + '::' + baseSel)) {
                     // Already has an explicit display at this exact
@@ -329,12 +336,10 @@ function fixFloatNoneDisplay(css) {
             return;
         }
 
-        // Any other rule (gated or not) that sets an explicit display
-        // -- record it so later rules for the same selector see it.
+        // Any other rule that sets an explicit display -- record it so
+        // later rules for the same selector see it.
         if (declaresDisplay) {
-            var selList = isGated
-                ? rule.selectors.map(function (sel) { return sel.replace(/^body\.dev-float-refactor\s+/, ''); })
-                : rule.selector.split(',').map(function (s) { return s.trim(); });
+            var selList = rule.selectors;
             selList.forEach(function (sel) {
                 hasDisplay.add(ctx + '::' + sel);
             });

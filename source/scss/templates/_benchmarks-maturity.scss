@@ -1371,3 +1371,44 @@ section.list-block {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 1079
+
+section.list-block.list-block {
+                .container.container {
+                        .title-block.title-block {
+                                float: none;
+                        }
+                }
+        }
+
+@media (max-width: 767px) {
+        section.two-column-image-text-customer-events.two-column-image-text-customer-events .container.container .column-container.column-container .column.column .button-container.button-container a {
+            display: block;
+        }
+    }
+
+@media (max-width: 767px) {
+        section.list-block.list-block .container.container .list-container.list-container .item.item.mobile-hide.mobile-hide {
+            display: none;
+        }
+    }
+
+section.full-suite-slider-module.full-suite-slider-module .container.container .title-container.title-container {
+        display: block;
+    }
+
+section.two-column.two-column.two-column-steps.two-column-steps .container.container .title-container.title-container {
+        display: block;
+    }

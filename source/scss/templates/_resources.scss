@@ -1126,3 +1126,508 @@ body.template-resources {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 6
+
+section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
+                float: none;
+        }
+
+// line 71
+
+section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
+                .container.container {
+                        .column.column {
+                                &.image-column.image-column {
+                                        .image-container.image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 121
+
+section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .text-inner.text-inner {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 138
+
+section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 152
+
+section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .text-details-container.text-details-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 173
+
+section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .text-details-container.text-details-container {
+                                                .subtitle.subtitle {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 183
+
+section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .text-details-container.text-details-container {
+                                                .date.date {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 193
+
+section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .button-container.button-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 328
+
+section.resources-content.resources-content {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .speaker.speaker {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 333
+
+section.resources-content.resources-content {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .speaker.speaker {
+                                                .authorSingle.authorSingle {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 428
+
+section.resources-content.resources-content {
+                .container.container {
+                        .resources-subtitle.resources-subtitle {
+                                float: none;
+                        }
+                }
+        }
+
+// line 451
+
+section.download-block.download-block.resources-block.resources-block {
+                .container.container {
+                        .download-block-title.download-block-title {
+                                float: none;
+                        }
+                }
+        }
+
+// line 471
+
+section.download-block.download-block.resources-block.resources-block {
+                .container.container {
+                        .resources-container.resources-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 523
+
+section.download-block.download-block.resources-block.resources-block {
+                .container.container {
+                        .resources-container.resources-container {
+                                .resources-image-container.resources-image-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 614
+
+section.download-block.download-block.resources-block.resources-block {
+                .container.container {
+                        .resources-container.resources-container {
+                                span.listing-title.listing-title {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 620
+
+section.download-block.download-block.resources-block.resources-block {
+                .container.container {
+                        .resources-container.resources-container {
+                                span.type.type {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 727
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .resources-container.resources-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 738
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .preview-container.preview-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 743
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .preview-container.preview-container {
+                                                @media (max-width: 1023px) {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 749
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .preview-container.preview-container {
+                                                .download-image-container.download-image-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 769
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .download-container.download-container {
+                                                @media (max-width: 1023px) {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 774
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .download-container.download-container {
+                                                .download-title.download-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 795
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .download-container.download-container {
+                                                .downloads.downloads {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 830
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .download-container.download-container {
+                                                .downloads.downloads {
+                                                        a.download-link.download-link {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 877
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .download-container.download-container {
+                                                .downloads.downloads {
+                                                        .download-switch-container.download-switch-container {
+                                                                li {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 888
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .download-container.download-container {
+                                                .downloads.downloads {
+                                                        .download-switch-container.download-switch-container {
+                                                                li {
+                                                                        a {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 896
+
+.mfp-wrap.mfp-wrap.download-container.download-container {
+                .mfp-content.mfp-content {
+                        .resourcesPopup.resourcesPopup {
+                                .container.container {
+                                        .download-container.download-container {
+                                                .downloads.downloads {
+                                                        .download-switch-container.download-switch-container {
+                                                                li {
+                                                                        span.download-switch-span.download-switch-span {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 966
+
+section.resources-cta-block.resources-cta-block {
+                float: none;
+        }
+
+// line 988
+
+section.resources-cta-block.resources-cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                .column.column.text-column.text-column {
+                                        .cta-title.cta-title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1019
+
+section.resources-cta-block.resources-cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                .column.column.text-column.text-column {
+                                        .text.text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1046
+
+section.resources-cta-block.resources-cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                .column.column.text-column.text-column {
+                                        .button-container.button-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1066
+
+section.resources-cta-block.resources-cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                .column.column.image-column.image-column {
+                                        .main-image-container.main-image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1077
+
+section.resources-cta-block.resources-cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                .column.column.image-column.image-column {
+                                        .main-image-container.main-image-container {
+                                                img {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1102
+
+section.resources-cta-block.resources-cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                .column.column.image-column.image-column {
+                                        .overlay-image-container.overlay-image-container {
+                                                img {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+@media (max-width: 767px) {
+        section.registration-two-column-block.registration-two-column-block .container.container .column-container.column-container {
+            display: block;
+        }
+    }

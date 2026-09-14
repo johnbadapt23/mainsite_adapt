@@ -627,3 +627,238 @@ section.experience-module {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 344
+
+.cards-progress.cards-progress {
+                float: none;
+        }
+
+// BUGFIX 2026-09-10: section.roundtable-card-slider-module was
+
+// flagged in an earlier pass as having an unexplained ~40px gap on
+
+// /private-executive-roundtables/ ("investigated further, not
+
+// resolved" -- see SESSION-HANDOFF.md). Re-measured today and the
+
+// gap was actually much larger (~2900px) in a naive automated
+
+// check -- that turned out to be a testing artifact, not a real
+
+// bug: WP Rocket's "Delay JavaScript" optimization holds
+
+// main.min.js (which bundles jQuery + Slick) until a real user
+
+// interaction on the production URL, while `?dev=true` bypasses
+
+// that optimization and loads it immediately -- so an automated
+
+// check with no genuine interaction event catches production
+
+// BEFORE Slick has initialized (all 7 slides stacked vertically,
+
+// un-sliced) and wrongly reports a huge false gap. Re-tested with a
+
+// real scroll interaction dispatched on both tabs (confirmed via
+
+// `jQuery.fn.slick` and `.slick-initialized` presence) and the
+
+// REAL residual gap is 90px, not ~2900 and not the earlier ~40.
+
+//
+
+// Root cause of the real 90px: `.cards-progress` (the thin
+
+// scroll-progress bar under the slider) is real/ungated
+
+// `float:left;width:100%;margin-top:90px` (_roundtable.scss:343-
+
+// 346). Its parent `.cards-progress-container` has no CSS of its
+
+// own (plain default block). With `.cards-progress` converted to
+
+// float:none above, it becomes a normal block sibling positioned
+
+// right after two still-floated full-width siblings (`.top-
+
+// content`, `.roundtable-card-slider`) -- same "block ignores
+
+// preceding floats for its own box position" rule documented
+
+// throughout this file, except here the visible effect is on
+
+// margin instead of position: the browser calculates where
+
+// `.cards-progress`'s line content can render as max(margin-
+
+// derived nominal position, float-clearing position), and since
+
+// the nominal position (90px) is far less than the float's bottom
+
+// edge (706px), the render position is capped at 706px and the
+
+// margin-top is entirely swallowed -- identical mechanism to the
+
+// `.menu-bottom` clearance-absorption bug fixed in the header pass
+
+// (see that entry for the full explanation of why a real float's
+
+// margin adds on top of the clearing position but a cleared/
+
+// unfloated block's margin gets absorbed into it instead).
+
+// Confirmed live: reverting to float:left (matching the original,
+
+// same one-off exception as `.menu-bottom`) reproduces production
+
+// exactly -- .cards-progress lands at relative y=796 in both, and
+
+// the whole section's height, previously 90px short, now matches.
+
+//
+
+// CORRECTION 2026-09-10 (post-push verification on staging): this
+
+// override never actually took effect. fix-float-none-display.js
+
+// collects every single-class float:none declaration (including the
+
+// one above) into one bulk-generated `float:none;display:block`
+
+// rule appended near the end of the build. That bulk rule has the
+
+// exact same specificity as this plain `.cards-progress` override
+
+// and comes later in the compiled file, so it silently won the
+
+// cascade and the live site never changed -- confirmed by fetching
+
+// the deployed main-nofooter.min.css directly and finding
+
+// `.cards-progress{float:left}` (this rule) followed later by
+
+// `body.dev-float-refactor .cards-progress,...{float:none;
+
+// display:block}` (the bulk one) winning by source order. Same
+
+// specificity-vs-build-order trap documented elsewhere in this file
+
+// for span/a elements; fixed the same way, with a self-doubled class
+
+// to guarantee this wins regardless of build order, without
+
+// !important.
+
+.cards-progress.cards-progress.cards-progress.cards-progress {
+        float: left;
+    }
+
+// line 379
+
+section.experience-module.experience-module {
+                .container.container {
+                        .experience-title-container.experience-title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 397
+
+section.experience-module.experience-module {
+                .container.container {
+                        .experience-title-container.experience-title-container {
+                                .column.column.one-half.one-half {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 405
+
+section.experience-module.experience-module {
+                .container.container {
+                        .experience-container.experience-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 417
+
+section.experience-module.experience-module {
+                .container.container {
+                        .experience-container.experience-container {
+                                .experience-text-column.experience-text-column {
+                                        .experience-text-container.experience-text-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 561
+
+section.experience-module.experience-module {
+                .container.container {
+                        .experience-container.experience-container {
+                                .experience-image-container.experience-image-container {
+                                        @media (max-width:767px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 569
+
+section.experience-module.experience-module {
+                .container.container {
+                        .experience-container.experience-container {
+                                .experience-image-container.experience-image-container {
+                                        .experience-image-inner.experience-image-inner {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 620
+
+section.experience-module.experience-module {
+                .container.container {
+                        .experience-container.experience-container {
+                                .experience-image-container.experience-image-container {
+                                        .experience-image-inner.experience-image-inner {
+                                                .experience-image.experience-image {
+                                                        .image-container.image-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+section.roundtable-card-slider-module.roundtable-card-slider-module .roundtable-card-slider.roundtable-card-slider .slide.slide .slide-inner.slide-inner .slide-image-container.slide-image-container {
+        display: flex !important;
+    }

@@ -4744,3 +4744,2582 @@ section.three-column-video.filter-listing {
     }
 }
 
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 2
+
+section.animated-text.animated-text {
+                float: none;
+        }
+
+// line 77
+
+section.video-module.video-module {
+                float: none;
+        }
+
+// line 126
+
+section.video-module.video-module {
+                .container.container {
+                        .image-video-container.image-video-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 131
+
+section.video-module.video-module {
+                .container.container {
+                        .image-video-container.image-video-container {
+                                .video-image-inner.video-image-inner {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 137
+
+section.video-module.video-module {
+                .container.container {
+                        .image-video-container.image-video-container {
+                                .video-image-inner.video-image-inner {
+                                        .image-container.image-container,
+                .video-container.video-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 179
+
+section.two-column-image-text-events.two-column-image-text-events {
+                float: none;
+        }
+
+// line 189
+
+section.two-column-image-text-events.two-column-image-text-events {
+                .container.container {
+                        > h2 {
+                                float: none;
+                        }
+                }
+        }
+
+// line 195
+
+section.two-column-image-text-events.two-column-image-text-events {
+                .container.container {
+                        .two-column-image-text-outer.two-column-image-text-outer {
+                                float: none;
+                        }
+                }
+        }
+
+// line 297
+
+section.two-column-image-text-events.two-column-image-text-events {
+                .container.container {
+                        .two-column-image-text-outer.two-column-image-text-outer {
+                                .text-column.text-column {
+                                        h2,
+                h4 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 326
+
+section.two-column-image-text-events.two-column-image-text-events {
+                .container.container {
+                        .two-column-image-text-outer.two-column-image-text-outer {
+                                .text-column.text-column {
+                                        .text.text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 338
+
+section.two-column-image-text-events.two-column-image-text-events {
+                .container.container {
+                        .two-column-image-text-outer.two-column-image-text-outer {
+                                .text-column.text-column {
+                                        .list-container.list-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 347
+
+section.two-column-image-text-events.two-column-image-text-events {
+                .container.container {
+                        .two-column-image-text-outer.two-column-image-text-outer {
+                                .text-column.text-column {
+                                        .list-container.list-container {
+                                                .list-item.list-item {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 375
+
+section.two-column-image-text-events.two-column-image-text-events {
+                .container.container {
+                        .two-column-image-text-outer.two-column-image-text-outer {
+                                .text-column.text-column {
+                                        .button-container.button-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 381
+
+section.two-column-image-text-events.two-column-image-text-events {
+                .container.container {
+                        .two-column-image-text-outer.two-column-image-text-outer {
+                                .text-column.text-column {
+                                        .button-container.button-container {
+                                                @media (max-width: 767px) {
+                                                        a {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 569
+
+section.events-title-block.events-title-block {
+                float: none;
+        }
+
+// line 579
+
+section.events-title-block.events-title-block {
+                .container.container {
+                        .content-container.content-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 613
+
+section.events-title-block.events-title-block {
+                .container.container {
+                        .content-container.content-container {
+                                .pre-title.pre-title {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 630
+
+section.events-title-block.events-title-block {
+                .container.container {
+                        .content-container.content-container {
+                                .button-container.button-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 646
+
+section.events-title-block.events-title-block {
+                .container.container {
+                        .content-container.content-container {
+                                .button-container.button-container {
+                                        a {
+                                                @media (max-width:767px) {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 701
+
+section.events-title-block.events-title-block {
+                &.events-title-block-background.events-title-block-background {
+                        .container.container {
+                                .content-container.content-container {
+                                        .button-container.button-container {
+                                                a {
+                                                        @media (max-width:767px) {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 718
+
+section.events-title-block.events-title-block {
+                &.events-title-block-left.events-title-block-left {
+                        .container.container {
+                                .content-container.content-container {
+                                        .title.title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 734
+
+section.events-title-block.events-title-block {
+                &.events-title-block-left.events-title-block-left {
+                        .container.container {
+                                .content-container.content-container {
+                                        .line.line {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 746
+
+section.events-title-block.events-title-block {
+                &.events-title-block-left.events-title-block-left {
+                        .container.container {
+                                .content-container.content-container {
+                                        .text.text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 758
+
+section.events-title-block.events-title-block {
+                &.events-title-block-left.events-title-block-left {
+                        .container.container {
+                                .content-container.content-container {
+                                        .button-container.button-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 772
+
+section.events-title-block.events-title-block {
+                &.events-title-block-left.events-title-block-left {
+                        &.roundtable-title-block.roundtable-title-block {
+                                .container.container {
+                                        .content-container.content-container {
+                                                .pre-title.pre-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 795
+
+section.events-title-block.events-title-block {
+                &.events-title-block-left.events-title-block-left {
+                        &.roundtable-title-block.roundtable-title-block {
+                                .container.container {
+                                        .content-container.content-container {
+                                                .bottom-text.bottom-text {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 814
+
+section.events-title-block.events-title-block {
+                &.events-title-block-left.events-title-block-left {
+                        &.roundtable-title-block.roundtable-title-block {
+                                .container.container {
+                                        .content-container.content-container {
+                                                .bottom-text.bottom-text {
+                                                        .text.text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 840
+
+section.events-title-block.events-title-block {
+                &.events-title-block-left.events-title-block-left {
+                        &.roundtable-title-block.roundtable-title-block {
+                                .container.container {
+                                        .content-container.content-container {
+                                                .bottom-text.bottom-text {
+                                                        .text-link-container.text-link-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 865
+
+section.events-logos-block.events-logos-block {
+                .container.container {
+                        .logo-container.logo-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 898
+
+section.events-logos-block.events-logos-block {
+                .container.container {
+                        .logo-container.logo-container {
+                                .logo-column.logo-column {
+                                        .image-container.image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 982
+
+section.cards-module.cards-module {
+                .container.container {
+                        .top-content.top-content {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 992
+
+section.cards-module.cards-module {
+                .container.container {
+                        .top-content.top-content {
+                                span {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1004
+
+section.cards-module.cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1068
+
+section.cards-module.cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                .card.card {
+                                        .icon-container.icon-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1098
+
+section.cards-module.cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                .card.card {
+                                        .content-container.content-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1131
+
+section.cards-module.cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                .card.card {
+                                        .content-container.content-container {
+                                                .content-container-inner.content-container-inner {
+                                                        h4 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1147
+
+section.cards-module.cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                .card.card {
+                                        .content-container.content-container {
+                                                .content-container-inner.content-container-inner {
+                                                        .card-text.card-text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1646
+
+.keynote-progress.keynote-progress {
+                float: none;
+        }
+
+// BUGFIX 2026-09-10: same margin-clearance-absorption bug as
+
+// .cards-progress (roundtable-card-slider-module) and .menu-bottom
+
+// (header) elsewhere in this file -- `.keynote-progress` (the thin
+
+// scroll-progress bar under section.keynote-slider-module's slider,
+
+// /edge-events/) is real/ungated `float:left; width:100%;
+
+// margin-top:90px` (source/scss/templates/_events.scss:1645-1648).
+
+// With float:none above, it becomes a normal block sibling right
+
+// after the still-floated slider, and its 90px margin-top gets
+
+// absorbed into the float's clearance instead of adding on top of
+
+// it, leaving the section 90px short (1058.1875px in production vs
+
+// 968.1875px under ?dev=true). Confirmed live: reverting to
+
+// float:left (matching production, same one-off exception as
+
+// .cards-progress/.menu-bottom) reproduces production exactly.
+
+// Self-doubled class from the start this time -- .cards-progress
+
+// shipped as a plain single-class override first and silently lost
+
+// to fix-float-none-display.js's bulk-generated float:none rule at
+
+// the same specificity until caught and corrected; no reason to
+
+// repeat that mistake here.
+
+.keynote-progress.keynote-progress.keynote-progress.keynote-progress {
+        float: left;
+    }
+
+// line 1671
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-title-container.sneak-title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1685
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-title-container.sneak-title-container {
+                                .column.column.one-half.one-half {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1706
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-title-container.sneak-title-container {
+                                .column.column.one-half.one-half {
+                                        .arrow-container.arrow-container {
+                                                .image-container.image-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1725
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-peak-container.sneak-peak-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1744
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-peak-container.sneak-peak-container {
+                                .sneak-text-container.sneak-text-container {
+                                        .sneak-peak-text-continer.sneak-peak-text-continer {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1760
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-peak-container.sneak-peak-container {
+                                .sneak-text-container.sneak-text-container {
+                                        .sneak-title.sneak-title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1785
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-peak-container.sneak-peak-container {
+                                .sneak-text-container.sneak-text-container {
+                                        .sneak-peak-text.sneak-peak-text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1794
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-peak-container.sneak-peak-container {
+                                .sneak-text-container.sneak-text-container {
+                                        .sneak-peak-text.sneak-peak-text {
+                                                .sneak-image-mobile.sneak-image-mobile {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1802
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-peak-container.sneak-peak-container {
+                                .sneak-text-container.sneak-text-container {
+                                        .sneak-peak-text.sneak-peak-text {
+                                                .sneak-image-mobile.sneak-image-mobile {
+                                                        .image-container.image-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1813
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-peak-container.sneak-peak-container {
+                                .sneak-text-container.sneak-text-container {
+                                        .sneak-peak-text.sneak-peak-text {
+                                                .text-inner.text-inner {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1838
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-peak-container.sneak-peak-container {
+                                .sneak-image-container.sneak-image-container {
+                                        @media (max-width:767px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1843
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-peak-container.sneak-peak-container {
+                                .sneak-image-container.sneak-image-container {
+                                        .sneak-image-inner.sneak-image-inner {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1869
+
+section.sneak-peak-module.sneak-peak-module {
+                .container.container {
+                        .sneak-peak-container.sneak-peak-container {
+                                .sneak-image-container.sneak-image-container {
+                                        .sneak-image-inner.sneak-image-inner {
+                                                .sneak-image.sneak-image {
+                                                        .image-container.image-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1898
+
+section.ticker-tape.ticker-tape {
+                .container.container {
+                        .introduction-container.introduction-container {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1905
+
+section.ticker-tape.ticker-tape {
+                .container.container {
+                        .introduction-container.introduction-container {
+                                span.tickertape-intro-text.tickertape-intro-text {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1924
+
+section.ticker-tape.ticker-tape {
+                .band-container-forwards.band-container-forwards {
+                        float: none;
+                }
+        }
+
+// line 1968
+
+section.ticker-tape.ticker-tape {
+                .band-container-backwards.band-container-backwards {
+                        float: none;
+                }
+        }
+
+// line 2188
+
+section.events-listing-module.events-listing-module {
+                .container.container {
+                        .events-listing-top.events-listing-top {
+                                float: none;
+                        }
+                }
+        }
+
+// line 2193
+
+section.events-listing-module.events-listing-module {
+                .container.container {
+                        .events-listing-top.events-listing-top {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2204
+
+section.events-listing-module.events-listing-module {
+                .container.container {
+                        .events-listing-top.events-listing-top {
+                                .year-button-container.year-button-container {
+                                        .year-button-sticky.year-button-sticky {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2336
+
+section.events-listing-module.events-listing-module {
+                .container.container {
+                        .events-listing-top.events-listing-top {
+                                .year-button-container.year-button-container {
+                                        .year-container.year-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2369
+
+section.events-listing-module.events-listing-module {
+                .container.container {
+                        .events-listing-top.events-listing-top {
+                                .button-container.button-container {
+                                        @media (max-width: 1023px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2413
+
+section.events-listing-module.events-listing-module {
+                .container.container {
+                        .events-listing-top.events-listing-top {
+                                .button-container.button-container {
+                                        @media (max-width: 1023px) {
+                                                .download-button-container.download-button-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2434
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        float: none;
+                }
+        }
+
+// line 2438
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                float: none;
+                        }
+                }
+        }
+
+// line 2461
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .date-content-container.date-content-container {
+                                        @media (max-width: 767px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2470
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .mobile-link-container.mobile-link-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2497
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .content-delegate-container.content-delegate-container {
+                                        @media (max-width: 767px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2512
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .content-delegate-container.content-delegate-container {
+                                        .item-content.item-content {
+                                                @media (max-width: 767px) {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2518
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .content-delegate-container.content-delegate-container {
+                                        .item-content.item-content {
+                                                .content-inner.content-inner {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2531
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .content-delegate-container.content-delegate-container {
+                                        .item-content.item-content {
+                                                .content-inner.content-inner {
+                                                        .title.title {
+                                                                @media (max-width: 767px) {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2579
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .content-delegate-container.content-delegate-container {
+                                        .item-content.item-content {
+                                                .content-inner.content-inner {
+                                                        .location.location {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2587
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .content-delegate-container.content-delegate-container {
+                                        .item-content.item-content {
+                                                .content-inner.content-inner {
+                                                        .excerpt.excerpt {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2614
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .content-delegate-container.content-delegate-container {
+                                        .delegate-tags.delegate-tags {
+                                                .labelMedium.labelMedium {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2620
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .content-delegate-container.content-delegate-container {
+                                        .delegate-tags.delegate-tags {
+                                                .tags-container.tags-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2658
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .press-date-container.press-date-container {
+                                        .date-inner.date-inner {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2670
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .press-date-container.press-date-container {
+                                        .date-inner.date-inner {
+                                                .date-day.date-day {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2686
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .press-date-container.press-date-container {
+                                        .date-inner.date-inner {
+                                                .date-month.date-month,
+                    .date-year.date-year {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2696
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .press-date-container.press-date-container {
+                                        .date-inner.date-inner {
+                                                .mobile-container.mobile-container {
+                                                        @media (max-width: 767px) {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2724
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .item-content-container.item-content-container {
+                                        .content-inner.content-inner {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2744
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .item-content-container.item-content-container {
+                                        .content-inner.content-inner {
+                                                .location.location, .excerpt.excerpt {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2757
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .item-content-container.item-content-container {
+                                        .content-inner.content-inner {
+                                                .location.location {
+                                                        @media (max-width: 767px) {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2782
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .item-content-container.item-content-container {
+                                        .content-inner.content-inner {
+                                                .title.title {
+                                                        @media (max-width: 767px) {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2842
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .event-image-container.event-image-container {
+                                        @media (max-width: 767px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2847
+
+section.events-listing-module.events-listing-module {
+                .events-listing.events-listing {
+                        .item.item.event-item.event-item {
+                                .event-image-container.event-image-container {
+                                        .image-container.image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3034
+
+section.red-cta.red-cta {
+                float: none;
+        }
+
+// line 3056
+
+section.red-cta.red-cta {
+                .cta-container-outer.cta-container-outer {
+                        float: none;
+                }
+        }
+
+// line 3078
+
+section.red-cta.red-cta {
+                .cta-container-outer.cta-container-outer {
+                        .container.container {
+                                .cta-container-inner.cta-container-inner {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3087
+
+section.red-cta.red-cta {
+                .cta-container-outer.cta-container-outer {
+                        .container.container {
+                                .cta-container-inner.cta-container-inner {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3094
+
+section.red-cta.red-cta {
+                .cta-container-outer.cta-container-outer {
+                        .container.container {
+                                .cta-container-inner.cta-container-inner {
+                                        .link-container.link-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3107
+
+section.events-logos-text-block.events-logos-text-block {
+                float: none;
+        }
+
+// line 3112
+
+section.events-logos-text-block.events-logos-text-block {
+                .events-logos-text-block-outer.events-logos-text-block-outer {
+                        float: none;
+                }
+        }
+
+// line 3125
+
+section.events-logos-text-block.events-logos-text-block {
+                .events-logos-text-block-outer.events-logos-text-block-outer {
+                        .container.container {
+                                .logo-container.logo-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3186
+
+section.events-logos-text-block.events-logos-text-block {
+                .events-logos-text-block-outer.events-logos-text-block-outer {
+                        .container.container {
+                                .text-content-container.text-content-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3207
+
+section.events-logos-text-block.events-logos-text-block {
+                .events-logos-text-block-outer.events-logos-text-block-outer {
+                        .container.container {
+                                .text-content-container.text-content-container {
+                                        .text-inner.text-inner {
+                                                .icon-container.icon-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3228
+
+section.events-logos-text-block.events-logos-text-block {
+                .events-logos-text-block-outer.events-logos-text-block-outer {
+                        .container.container {
+                                .text-content-container.text-content-container {
+                                        .text-inner.text-inner {
+                                                .text.text {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3272
+
+section.partners-cards-module.partners-cards-module {
+                .container.container {
+                        .top-content.top-content {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3279
+
+section.partners-cards-module.partners-cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3304
+
+section.partners-cards-module.partners-cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                .card.card {
+                                        @media (max-width:1023px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3313
+
+section.partners-cards-module.partners-cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                .card.card {
+                                        .icon-container.icon-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3347
+
+section.partners-cards-module.partners-cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                .card.card {
+                                        .content-container.content-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3353
+
+section.partners-cards-module.partners-cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                .card.card {
+                                        .content-container.content-container {
+                                                .content-container-inner.content-container-inner {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3357
+
+section.partners-cards-module.partners-cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                .card.card {
+                                        .content-container.content-container {
+                                                .content-container-inner.content-container-inner {
+                                                        h4 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3371
+
+section.partners-cards-module.partners-cards-module {
+                .container.container {
+                        .card-container.card-container {
+                                .card.card {
+                                        .content-container.content-container {
+                                                .content-container-inner.content-container-inner {
+                                                        .card-text.card-text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3424
+
+section.partners-cards-module.partners-cards-module {
+                .container.container {
+                        .button-container.button-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3433
+
+section.partners-cards-module.partners-cards-module {
+                .container.container {
+                        .button-container.button-container {
+                                @media (max-width:767px) {
+                                        a {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3496
+
+section.partner-form.partner-form {
+                float: none;
+        }
+
+// line 3513
+
+section.partner-form.partner-form {
+                .container.container {
+                        .form-text-container.form-text-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3546
+
+section.partner-form.partner-form {
+                .container.container {
+                        .form-text-container.form-text-container {
+                                .column.column {
+                                        &.text-content-column.text-content-column {
+                                                .form-module-title.form-module-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3562
+
+section.partner-form.partner-form {
+                .container.container {
+                        .form-text-container.form-text-container {
+                                .column.column {
+                                        &.text-content-column.text-content-column {
+                                                .text.text {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3574
+
+section.partner-form.partner-form {
+                .container.container {
+                        .form-text-container.form-text-container {
+                                .column.column {
+                                        &.text-content-column.text-content-column {
+                                                .image-arrow-container.image-arrow-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3585
+
+section.partner-form.partner-form {
+                .container.container {
+                        .form-text-container.form-text-container {
+                                .column.column {
+                                        &.text-content-column.text-content-column {
+                                                .image-arrow-container.image-arrow-container {
+                                                        .image-container.image-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3622
+
+section.partner-form.partner-form {
+                .container.container {
+                        .form-text-container.form-text-container {
+                                .column.column {
+                                        &.text-content-column.text-content-column {
+                                                .bottom-container.bottom-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3634
+
+section.partner-form.partner-form {
+                .container.container {
+                        .form-text-container.form-text-container {
+                                .column.column {
+                                        &.text-content-column.text-content-column {
+                                                .bottom-container.bottom-container {
+                                                        .fast-track-text.fast-track-text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3680
+
+section.partner-form.partner-form {
+                .container.container {
+                        .form-text-container.form-text-container {
+                                .column.column {
+                                        &.text-content-column.text-content-column {
+                                                .bottom-container.bottom-container {
+                                                        .form-popup-button-container.form-popup-button-container {
+                                                                @media (max-width: 767px) {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3685
+
+section.partner-form.partner-form {
+                .container.container {
+                        .form-text-container.form-text-container {
+                                .column.column {
+                                        &.text-content-column.text-content-column {
+                                                .bottom-container.bottom-container {
+                                                        .form-popup-button-container.form-popup-button-container {
+                                                                @media (max-width: 767px) {
+                                                                        a {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3712
+
+section.partner-form.partner-form {
+                .container.container {
+                        .form-text-container.form-text-container {
+                                .column.column {
+                                        &.form-column.form-column {
+                                                .form-container.form-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3726
+
+section.stats.stats {
+                float: none;
+        }
+
+// line 3744
+
+section.stats.stats {
+                .container.container {
+                        .stats-inner.stats-inner {
+                                .stats-container.stats-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3792
+
+section.stats.stats {
+                .container.container {
+                        .stats-inner.stats-inner {
+                                .stats-container.stats-container {
+                                        .stat.stat {
+                                                h2 {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3803
+
+section.stats.stats {
+                .container.container {
+                        .stats-inner.stats-inner {
+                                .stats-container.stats-container {
+                                        .stat.stat {
+                                                span.text.text {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3822
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .top-container.top-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3840
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .top-container.top-container {
+                                .inner.inner {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3860
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .top-container.top-container {
+                                .inner.inner {
+                                        span.text.text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3883
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .flip-card-container.flip-card-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3964
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .flip-card-container.flip-card-container {
+                                .one-quarter.one-quarter {
+                                        @media (max-width: 767px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3989
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .flip-card-container.flip-card-container {
+                                .one-quarter.one-quarter {
+                                        &.flip-card.flip-card {
+                                                .flip-card-front.flip-card-front {
+                                                        .logo-container.logo-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3993
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .flip-card-container.flip-card-container {
+                                .one-quarter.one-quarter {
+                                        &.flip-card.flip-card {
+                                                .flip-card-front.flip-card-front {
+                                                        .logo-container.logo-container {
+                                                                .image-container.image-container {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4062
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .flip-card-container.flip-card-container {
+                                .one-quarter.one-quarter {
+                                        &.flip-card.flip-card {
+                                                .flip-card-back.flip-card-back {
+                                                        .flip-content.flip-content {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4067
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .flip-card-container.flip-card-container {
+                                .one-quarter.one-quarter {
+                                        &.flip-card.flip-card {
+                                                .flip-card-back.flip-card-back {
+                                                        .flip-content.flip-content {
+                                                                .flip-card-title.flip-card-title {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4073
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .flip-card-container.flip-card-container {
+                                .one-quarter.one-quarter {
+                                        &.flip-card.flip-card {
+                                                .flip-card-back.flip-card-back {
+                                                        .flip-content.flip-content {
+                                                                .tag-container.tag-container {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4141
+
+section.flip-card-module.flip-card-module {
+                .container.container {
+                        .flip-card-container.flip-card-container {
+                                .one-quarter.one-quarter {
+                                        &.link-card.link-card {
+                                                .link-card-inner.link-card-inner {
+                                                        h4 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4171
+
+section.vendors.vendors {
+                .container.container {
+                        h2 {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4197
+
+section.vendors.vendors {
+                .container.container {
+                        .vendor-container.vendor-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4241
+
+section.two-column-icon-text.two-column-icon-text {
+                .container.container {
+                        .icon-text-column-container.icon-text-column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4341
+
+section.two-column-icon-text.two-column-icon-text {
+                .container.container {
+                        .icon-text-column-container.icon-text-column-container {
+                                .column.column {
+                                        .text-container.text-container {
+                                                span {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4371
+
+section.customise-cards.customise-cards {
+                .container.container {
+                        .cards-container.cards-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4406
+
+section.customise-cards.customise-cards {
+                .container.container {
+                        .cards-container.cards-container {
+                                .card.card {
+                                        &.title-card.title-card {
+                                                .card-content.card-content {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4412
+
+section.customise-cards.customise-cards {
+                .container.container {
+                        .cards-container.cards-container {
+                                .card.card {
+                                        &.title-card.title-card {
+                                                .card-content.card-content {
+                                                        @media (max-width: 1100px) {
+                                                                a {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4421
+
+section.customise-cards.customise-cards {
+                .container.container {
+                        .cards-container.cards-container {
+                                .card.card {
+                                        &.title-card.title-card {
+                                                .card-content.card-content {
+                                                        .card-text.card-text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4427
+
+section.customise-cards.customise-cards {
+                .container.container {
+                        .cards-container.cards-container {
+                                .card.card {
+                                        &.title-card.title-card {
+                                                .card-content.card-content {
+                                                        .card-text.card-text {
+                                                                p {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4450
+
+section.customise-cards.customise-cards {
+                .container.container {
+                        .cards-container.cards-container {
+                                .card.card {
+                                        &.content-card.content-card {
+                                                .card-top-image.card-top-image {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4470
+
+section.customise-cards.customise-cards {
+                .container.container {
+                        .cards-container.cards-container {
+                                .card.card {
+                                        &.content-card.content-card {
+                                                .card-text-container.card-text-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4476
+
+section.customise-cards.customise-cards {
+                .container.container {
+                        .cards-container.cards-container {
+                                .card.card {
+                                        &.content-card.content-card {
+                                                .card-text-container.card-text-container {
+                                                        .title.title {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4487
+
+section.customise-cards.customise-cards {
+                .container.container {
+                        .cards-container.cards-container {
+                                .card.card {
+                                        &.content-card.content-card {
+                                                .card-text-container.card-text-container {
+                                                        .text.text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4530
+
+section.community-block.community-block {
+                float: none;
+        }
+
+// line 4540
+
+section.community-block.community-block {
+                .container.container {
+                        .column-container.column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4577
+
+section.community-block.community-block {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        &.one-half.one-half {
+                                                &.title-column.title-column {
+                                                        h2 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4600
+
+section.community-block.community-block {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        &.one-half.one-half {
+                                                &.text-column.text-column {
+                                                        .text.text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4671
+
+section.community-block.community-block {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        &.one-third.one-third {
+                                                .image-one.image-one {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4677
+
+section.community-block.community-block {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        &.one-third.one-third {
+                                                .image-one.image-one {
+                                                        img {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4692
+
+section.community-block.community-block {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        &.one-third.one-third {
+                                                .image-two.image-two,
+                    .image-large.image-large {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4697
+
+section.community-block.community-block {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        &.one-third.one-third {
+                                                .image-two.image-two,
+                    .image-large.image-large {
+                                                        img {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4736
+
+section.three-column-video.three-column-video.filter-listing.filter-listing {
+                .container.container {
+                        h2 {
+                                float: none;
+                        }
+                }
+        }
+
+// line 2301
+
+section.events-listing-module.events-listing-module {
+                .container.container {
+                        .events-listing-top.events-listing-top {
+                                .year-button-container.year-button-container {
+                                        &.sticky.sticky {
+                                                .year-button-sticky.year-button-sticky {
+                                                        @media (max-width: 1023px) {
+                                                                .download-button-container-mobile-sticky.download-button-container-mobile-sticky {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2310
+
+section.events-listing-module.events-listing-module {
+                .container.container {
+                        .events-listing-top.events-listing-top {
+                                .year-button-container.year-button-container {
+                                        &.sticky.sticky {
+                                                .year-button-sticky.year-button-sticky {
+                                                        @media (max-width: 1023px) {
+                                                                .back-top-mobile-sticky.back-top-mobile-sticky {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+@media (max-width: 767px) {
+        section.events-listing-module.events-listing-module .events-listing.events-listing .item.item.event-item.event-item .date-content-container.date-content-container {
+            float: left;
+        }
+
+        // BUGFIX 2026-09-08 (found during live re-verification of the fix
+        // above): the same "real ambiguity, skipped" row group documented
+        // just above also has `.event-image-container` -- a separate
+        // earlier mechanical batch (line ~8052) wrongly set
+        // `float: none` on it at this same max-width:767px context.
+        // Confirmed live (?dev=true vs production, /edge-events/, 375px):
+        // production keeps `.event-image-container` float:left at mobile
+        // (sits beside `.date-content-container`, same row), while dev
+        // had float:none -- this was shrinking `.date-content-container`'s
+        // available width and causing its text to wrap differently
+        // (16px shorter per card). Restoring float:left overrides the
+        // erroneous line-~8052 rule (same selector, same media context,
+        // later in the cascade wins).
+        section.events-listing-module.events-listing-module .events-listing.events-listing .item.item.event-item.event-item .event-image-container.event-image-container {
+            float: left;
+        }
+    }
+
+// section.community-block: .column is a Category A child (parent
+
+// .column-container is already display:flex itself).
+
+section.community-block.community-block .container.container .column-container.column-container .column.column {
+        float: none;
+    }
+
+// section.events-listing-module: .mobile-link-container is
+
+// display:none by default (shown only ≤767px, where the whole card
+
+// stacks regardless); its .text-link is a sole child, safe
+
+// regardless of the skipped row group above -- it's not part of
+
+// that nesting chain.
+
+section.events-listing-module.events-listing-module .events-listing.events-listing .item.item.event-item.event-item .mobile-link-container.mobile-link-container .text-link.text-link {
+        float: none;
+    }
+
+// .year-button-container (40%) and .button-container (60%,
+
+// float:right) are a genuine still-live side-by-side pair with no
+
+// flex parent of their own yet; flex-wrap is needed because
+
+// .button-container's own ≤1023px override (already mechanically
+
+// covered) switches it to width:100%, which needs to wrap to a new
+
+// line exactly like the float version did.
+
+section.events-listing-module.events-listing-module .container.container .events-listing-top.events-listing-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.events-listing-module.events-listing-module .container.container .events-listing-top.events-listing-top .year-button-container.year-button-container,
+    section.events-listing-module.events-listing-module .container.container .events-listing-top.events-listing-top .button-container.button-container {
+        float: none;
+    }
+
+// a.year-button: width:auto pill buttons with margin-right gutters
+
+// -- natural inline flow (anchors are inline by default) reproduces
+
+// the wrapping row, no flex parent needed.
+
+section.events-listing-module.events-listing-module .container.container .events-listing-top.events-listing-top .year-button-container.year-button-container .year-container.year-container a.year-button.year-button {
+        float: none;
+    }
+
+// section.events-title-block: .text-link is a sole child, safe.
+
+// .button-container a: width:auto anchor buttons with margin-right
+
+// gutters -- same natural-inline-flow reasoning as a.year-button.
+
+section.events-title-block.events-title-block.events-title-block-left.events-title-block-left.roundtable-title-block.roundtable-title-block .container.container .content-container.content-container .bottom-text.bottom-text .text-link-container.text-link-container .text-link.text-link {
+        float: none;
+    }
+
+section.events-title-block.events-title-block .container.container .content-container.content-container .button-container.button-container a {
+        float: none;
+    }
+
+// section.events-logos-block: sole section-level block.
+
+section.events-logos-block.events-logos-block {
+        float: none;
+    }
+
+// section.events-logos-text-block: .icon-container img is a sole
+
+// child, only floated in its own ≤767px override.
+
+@media (max-width: 767px) {
+        section.events-logos-text-block.events-logos-text-block .events-logos-text-block-outer.events-logos-text-block-outer .container.container .text-content-container.text-content-container .text-inner.text-inner .icon-container.icon-container img {
+            float: none;
+        }
+    }
+
+// section.keynote-slider-module: .top-content/.title are sole/
+
+// stacked siblings of the confirmed-Slick .keynote-slider (not
+
+// nested inside it).
+
+section.keynote-slider-module.keynote-slider-module .container.container .top-content.top-content,
+    section.keynote-slider-module.keynote-slider-module .container.container .top-content.top-content .title.title {
+        float: none;
+    }
+
+// section.sneak-peak-module: .column.one-half is the sole child of
+
+// .sneak-title-container despite the "one-half" name (confirmed via
+
+// _sneak-peak.php -- only one is ever rendered).
+
+section.sneak-peak-module.sneak-peak-module .container.container .sneak-title-container.sneak-title-container .column.column.one-half.one-half {
+        float: none;
+    }
+
+// .sneak-text-container (550px) and .sneak-image-container
+
+// (calc(100% - 550px), float:right) are a genuine still-live pair
+
+// with no flex parent of their own yet. DOM order is image-then-
+
+// text (confirmed via _sneak-peak.php) but the visual is text-left/
+
+// image-right (float:right pulls it there regardless of source
+
+// order) -- flex-direction:row-reverse on the parent reproduces
+
+// that without touching DOM order or widths, same technique as
+
+// Section 6's .subscribe-sidebar-form icon+content split.
+
+section.sneak-peak-module.sneak-peak-module .container.container .sneak-peak-container.sneak-peak-container {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: flex-start;
+    }
+
+section.sneak-peak-module.sneak-peak-module .container.container .sneak-peak-container.sneak-peak-container .sneak-text-container.sneak-text-container,
+    section.sneak-peak-module.sneak-peak-module .container.container .sneak-peak-container.sneak-peak-container .sneak-image-container.sneak-image-container {
+        float: none;
+    }
+
+// section.quote-slider (this file's own, distinct from customer-
+
+// events' quote slider): .quote-slider-title and the .progress-
+
+// container timer bar are siblings of the confirmed-Slick .quote-
+
+// slider-module and .quote-slider-thumbnails (not nested inside
+
+// either).
+
+//
+
+// BUGFIX 2026-09-08: .progress-container immediately follows
+
+// .quote-slider-module in the DOM, which stays float:left on
+
+// purpose (Slick-managed, see the exclusion note above). The
+
+// mechanical fixer correctly auto-added display:block here (a pure
+
+// float:none rule), but a non-floated block that follows a still-
+
+// floating full-width sibling doesn't clear it -- its box's top
+
+// edge lines up with the top of the float instead of starting below
+
+// it, so it visually overlaps .quote-slider-module instead of
+
+// stacking under it. Confirmed live (?dev=true, 375px):
+
+// .progress-container's rendered rect was 237px tall (220px
+
+// .quote-slider-module height + 17px of its own real content,
+
+// i.e. it was drawing on top of the float, not clearing it), and
+
+// the overlap left section.quote-slider net 58px SHORTER overall
+
+// (424px dev vs 482px production) since content was overlapping
+
+// instead of stacking. clear:both fixes it -- same pattern already
+
+// used for .social-links in the footer fix above.
+
+//
+
+// Side effect of adding clear:both: this rule is no longer a "pure"
+
+// float:none-only declaration, so fix-float-none-display.js's
+
+// isPureFloatNone check no longer auto-adds display:block for it
+
+// (same mechanism as the .social-links regression earlier this
+
+// session) -- adding display:block explicitly to compensate.
+
+section.quote-slider.quote-slider .container.container .quote-slider-title.quote-slider-title {
+        float: none;
+    }
+
+section.quote-slider.quote-slider .container.container .progress-container.progress-container {
+        float: none;
+        clear: both;
+        display: block;
+    }
+
+section.quote-slider.quote-slider .container.container .progress-container.progress-container .progress-bar.progress-bar {
+        float: none;
+    }
+
+section.quote-slider.quote-slider .container.container .progress-container.progress-container .progress-bar.progress-bar .progress-inner.progress-inner {
+        float: none;
+    }
+
+// section.stats: .stat is a Category A child (parent .stats-
+
+// container is already display:flex itself).
+
+section.stats.stats .container.container .stats-inner.stats-inner .stats-container.stats-container .stat.stat {
+        float: none;
+    }
+
+// section.flip-card-module: .link-card-inner is a sole child of the
+
+// .one-quarter.link-card variant, declared separately from the
+
+// confirmed-Slick .mobile block -- plain content layout, safe
+
+// regardless of which container (desktop grid or mobile carousel)
+
+// renders this specific card variant.
+
+section.flip-card-module.flip-card-module .container.container .flip-card-container.flip-card-container .one-quarter.one-quarter.link-card.link-card .link-card-inner.link-card-inner {
+        float: none;
+    }
+
+// section.customise-cards: .card is a Category A child (parent
+
+// .cards-container is already display:flex itself).
+
+section.customise-cards.customise-cards .container.container .cards-container.cards-container .card.card {
+        float: none;
+    }
+
+// section.two-column-icon-text: .icon-container (80px) and
+
+// .text-container (calc(100% - 80px)) are a genuine still-live pair
+
+// with no flex parent of their own yet -- .column itself needs
+
+// display:flex added (currently just float:left;width:50%, a plain
+
+// grid item of the already-flex .icon-text-column-container).
+
+//
+
+// BUGFIX 2026-09-08: same gap as switcher-module's identical pattern
+
+// above -- .text-container's real CSS is
+
+// @media(max-width:767px){width:100%;margin-top:24px}, meant to
+
+// overflow-wrap below the 80px icon at mobile (icon+text sums to
+
+// 180% there). A nowrap flex row instead squeezes them into the same
+
+// row. flex-wrap:wrap restores the real mobile stack without
+
+// affecting the ≥768px side-by-side layout (100% sum there).
+
+section.two-column-icon-text.two-column-icon-text .container.container .icon-text-column-container.icon-text-column-container .column.column {
+        display: flex;
+        flex-wrap: wrap;
+        float: none;
+    }
+
+section.two-column-icon-text.two-column-icon-text .container.container .icon-text-column-container.icon-text-column-container .column.column .icon-container.icon-container,
+    section.two-column-icon-text.two-column-icon-text .container.container .icon-text-column-container.icon-text-column-container .column.column .text-container.text-container {
+        float: none;
+    }
+
+section.flip-card-module.flip-card-module .container.container .top-container.top-container {
+        float: none;
+
+        .inner.inner h2,
+        .inner.inner span.text.text {
+            float: none;
+        }
+    }
+
+section.flip-card-module.flip-card-module .container.container .flip-card-container.flip-card-container {
+        float: none;
+    }
+
+section.flip-card-module.flip-card-module .container.container .top-container.top-container .inner.inner span.text.text.mobile.mobile.mobile.mobile {
+        display: none;
+    }
+
+section.events-logos-text-block.events-logos-text-block {
+        padding: unset;
+    }
+
+@media (max-width: 767px) {
+        section.partner-form.partner-form .container.container .form-text-container.form-text-container .column.column.text-content-column.text-content-column .bottom-container.bottom-container .form-popup-button-container.form-popup-button-container a {
+            display: block;
+        }
+        section.events-title-block.events-title-block .container.container .content-container.content-container .button-container.button-container a {
+            display: block;
+        }
+        section.events-title-block.events-title-block.events-title-block-background.events-title-block-background .container.container .content-container.content-container .button-container.button-container a {
+            display: block;
+        }
+        section.partners-cards-module.partners-cards-module .container.container .button-container.button-container a {
+            display: block;
+        }
+        section.two-column-image-text-events.two-column-image-text-events .container.container .two-column-image-text-outer.two-column-image-text-outer .text-column.text-column .button-container.button-container a {
+            display: block;
+        }
+    }
+
+@media (max-width: 767px) {
+        section.events-listing-module.events-listing-module .events-listing.events-listing.partners-events-listing.partners-events-listing .item.item .container.container {
+            display: block;
+        }
+    }
+
+@media (min-width: 768px) {
+        section.partner-form.partner-form .container.container .form-text-container.form-text-container .column.column.text-content-column.text-content-column .bottom-container.bottom-container .fast-track-text.fast-track-text {
+            display: block;
+        }
+    }
+
+@media (min-width: 1024px) {
+        section.events-listing-module.events-listing-module .container.container .events-listing-top.events-listing-top .year-button-container.year-button-container .year-button-sticky.year-button-sticky {
+            display: block;
+        }
+    }
+
+section.events-title-block.events-title-block .container.container .content-container.content-container .button-container.button-container a {
+        display: block;
+    }

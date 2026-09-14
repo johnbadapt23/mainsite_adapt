@@ -595,3 +595,284 @@ section.faq-block {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 2
+
+section.thank-you-banner.thank-you-banner {
+                float: none;
+        }
+
+// line 124
+
+section.thank-you-banner.thank-you-banner {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .text-inner.text-inner {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 136
+
+section.thank-you-banner.thank-you-banner {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        h3 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 153
+
+section.thank-you-banner.thank-you-banner {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 163
+
+section.thank-you-banner.thank-you-banner {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .button-container.button-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 174
+
+section.information-blocks.information-blocks {
+                float: none;
+        }
+
+// line 185
+
+section.information-blocks.information-blocks {
+                .container.container {
+                        .column-container.column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 204
+
+section.information-blocks.information-blocks {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column.information-column.information-column {
+                                        h3 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 217
+
+section.information-blocks.information-blocks {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column.information-column.information-column {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 233
+
+section.information-blocks.information-blocks {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column.information-column.information-column {
+                                        span.text.text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 255
+
+section.information-blocks.information-blocks {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column.information-column.information-column {
+                                        .button-container.button-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 265
+
+section.information-blocks.information-blocks {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column.information-column.information-column {
+                                        .button-container.button-container {
+                                                .tooltip-container.tooltip-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 337
+
+section.cta-block.cta-block {
+                float: none;
+        }
+
+// line 346
+
+section.cta-block.cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                float: none;
+                        }
+                }
+        }
+
+// line 380
+
+section.cta-block.cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                .cta-inner.cta-inner {
+                                        .cta-title.cta-title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 425
+
+section.cta-block.cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                .cta-inner.cta-inner {
+                                        .button-container.button-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 432
+
+section.cta-block.cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                .cta-inner.cta-inner {
+                                        .bottom-image-container.bottom-image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 443
+
+section.cta-block.cta-block {
+                .container.container {
+                        .cta-content.cta-content {
+                                .cta-inner.cta-inner {
+                                        .bottom-image-container.bottom-image-container {
+                                                img {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 456
+
+section.faq-block.faq-block {
+                float: none;
+        }
+
+// line 507
+
+section.faq-block.faq-block {
+                .container.container {
+                        .faq-column.faq-column {
+                                .faq-item.faq-item {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 522
+
+section.faq-block.faq-block {
+                .container.container {
+                        .faq-column.faq-column {
+                                .faq-item.faq-item {
+                                        .question.question {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 573
+
+section.faq-block.faq-block {
+                .container.container {
+                        .faq-column.faq-column {
+                                .faq-item.faq-item {
+                                        .answer.answer {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }

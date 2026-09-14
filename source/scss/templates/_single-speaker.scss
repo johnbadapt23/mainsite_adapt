@@ -228,3 +228,93 @@ section.speakerProfile {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 62
+
+section.speakerProfile.speakerProfile {
+                .speakerLeft.speakerLeft {
+                        .imageContainer.imageContainer {
+                                float: none;
+                        }
+                }
+        }
+
+// line 115
+
+section.speakerProfile.speakerProfile {
+                .speakerLeft.speakerLeft {
+                        .textBlock.textBlock {
+                                float: none;
+                        }
+                }
+        }
+
+// line 125
+
+section.speakerProfile.speakerProfile {
+                .speakerLeft.speakerLeft {
+                        .textBlock.textBlock {
+                                .quoteBlock.quoteBlock {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 152
+
+section.speakerProfile.speakerProfile {
+                .speakerLeft.speakerLeft {
+                        .textBlock.textBlock {
+                                .quoteAuthor.quoteAuthor {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 197
+
+section.speakerProfile.speakerProfile {
+                .speakerRight.speakerRight {
+                        .logoWrapper.logoWrapper {
+                                float: none;
+                        }
+                }
+        }
+
+// line 226
+
+section.speakerProfile.speakerProfile {
+                .speakerRight.speakerRight {
+                        .textBlock.textBlock {
+                                float: none;
+                        }
+                }
+        }
+
+section.speakerProfile.speakerProfile .container.container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.speakerProfile.speakerProfile .speakerLeft.speakerLeft,
+    section.speakerProfile.speakerProfile .speakerRight.speakerRight {
+        float: none;
+    }
+
+section.speakerProfile.speakerProfile .speakerRight.speakerRight .logoWrapper.logoWrapper .logoContainer.logoContainer {
+        float: none;
+    }

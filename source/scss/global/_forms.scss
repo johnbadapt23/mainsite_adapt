@@ -1993,3 +1993,324 @@ input.hs-input {
 		}
 	}
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 163
+
+.nf-form-cont.nf-form-cont {
+                float: none;
+        }
+
+// line 173
+
+.nf-fu-progress.nf-fu-progress {
+                float: none;
+        }
+
+// line 264
+
+@include responsive(767) {
+                li.nf-previous-item.nf-previous-item,
+	li.nf-next-item.nf-next-item {
+                        float: none;
+                }
+        }
+
+// line 291
+
+.files_uploaded.files_uploaded {
+                float: none;
+        }
+
+// line 480
+
+/*.field-wrap > div input {
+                float: none;
+        }
+    // line 500
+        */
+
+.field-wrap.field-wrap input[type="button"],
+.field-wrap.field-wrap input[type="submit"] {
+                float: none;
+        }
+
+// line 569
+
+footer {
+                .form.form {
+                        .nf-response-msg.nf-response-msg {
+                                float: none;
+                        }
+                }
+        }
+
+// line 590
+
+.formPopup.formPopup {
+                .nf-response-msg.nf-response-msg {
+                        float: none;
+                }
+        }
+
+// line 614
+
+.formWrapper.formWrapper.register.register {
+                .email-wrap.email-wrap {
+                        float: none;
+                }
+        }
+
+// line 1108
+
+.hbspt-form.hbspt-form, .hs-form-html.hs-form-html {
+                .hsfc-RichText.hsfc-RichText {
+                        >span {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1123
+
+.hbspt-form.hbspt-form, .hs-form-html.hs-form-html {
+                .hsfc-RichText.hsfc-RichText {
+                        p {
+                                >span {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1135
+
+.hbspt-form.hbspt-form, .hs-form-html.hs-form-html {
+                .hs-main-font-element.hs-main-font-element.hs-richtext.hs-richtext {
+                        float: none;
+                }
+        }
+
+// line 1182
+
+.hbspt-form.hbspt-form, .hs-form-html.hs-form-html {
+                label {
+                        float: none;
+                }
+        }
+
+// line 1217
+
+.hbspt-form.hbspt-form, .hs-form-html.hs-form-html {
+                .hs_home_office_delivery_address.hs_home_office_delivery_address,
+	.hs_dietary_requirements_.hs_dietary_requirements_,
+	.hs_dietary_requirements.hs_dietary_requirements {
+                        float: none;
+                }
+        }
+
+// line 1253
+
+.hbspt-form.hbspt-form, .hs-form-html.hs-form-html {
+                .hs-fieldtype-checkbox.hs-fieldtype-checkbox,
+	.hs-fieldtype-radio.hs-fieldtype-radio,
+	.hs-fieldtype-textarea.hs-fieldtype-textarea,
+	.hs-fieldtype-booleancheckbox.hs-fieldtype-booleancheckbox {
+                        float: none;
+                }
+        }
+
+// line 1276
+
+.hbspt-form.hbspt-form, .hs-form-html.hs-form-html {
+                .hs-fieldtype-checkbox.hs-fieldtype-checkbox,
+	.hs-fieldtype-radio.hs-fieldtype-radio,
+	.hs-fieldtype-textarea.hs-fieldtype-textarea,
+	.hs-fieldtype-booleancheckbox.hs-fieldtype-booleancheckbox {
+                        legend {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1292
+
+.hbspt-form.hbspt-form, .hs-form-html.hs-form-html {
+                .hs-fieldtype-checkbox.hs-fieldtype-checkbox,
+	.hs-fieldtype-radio.hs-fieldtype-radio,
+	.hs-fieldtype-textarea.hs-fieldtype-textarea,
+	.hs-fieldtype-booleancheckbox.hs-fieldtype-booleancheckbox {
+                        div.input.input {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1298
+
+.hbspt-form.hbspt-form, .hs-form-html.hs-form-html {
+                .hs-fieldtype-checkbox.hs-fieldtype-checkbox,
+	.hs-fieldtype-radio.hs-fieldtype-radio,
+	.hs-fieldtype-textarea.hs-fieldtype-textarea,
+	.hs-fieldtype-booleancheckbox.hs-fieldtype-booleancheckbox {
+                        div.input.input {
+                                ul[role="checkbox"],
+			ul.inputs-list.inputs-list {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1486
+
+.hbspt-form.hbspt-form, .hs-form-html.hs-form-html {
+                .hs-fieldtype-checkbox.hs-fieldtype-checkbox,
+	.hs-fieldtype-radio.hs-fieldtype-radio,
+	.hs-fieldtype-textarea.hs-fieldtype-textarea,
+	.hs-fieldtype-booleancheckbox.hs-fieldtype-booleancheckbox {
+                        div.input.input {
+                                textarea {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1671
+
+.hbspt-form.hbspt-form span.select2.select2 {
+                float: none;
+        }
+
+// line 1796
+
+.mfp-registration.mfp-registration {
+                .mfp-content.mfp-content {
+                        .requestFormContainer.requestFormContainer {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1803
+
+.mfp-registration.mfp-registration {
+                .mfp-content.mfp-content {
+                        .requestFormContainer.requestFormContainer {
+                                .container.container {
+                                        .form-container.form-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1808
+
+.mfp-registration.mfp-registration {
+                .mfp-content.mfp-content {
+                        .requestFormContainer.requestFormContainer {
+                                .container.container {
+                                        .form-container.form-container {
+                                                .hbspt-form.hbspt-form,
+                    .hs-form.hs-form {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1833
+
+.webinar-register-form.webinar-register-form {
+                .form-container.form-container {
+                        float: none;
+                }
+        }
+
+// line 1840
+
+.webinar-register-form.webinar-register-form {
+                .form-container.form-container {
+                        .hbspt-form.hbspt-form {
+                                .submitted-message.submitted-message {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1856
+
+.webinar-register-form.webinar-register-form {
+                .hbspt-form.hbspt-form .hs-main-font-element.hs-main-font-element.hs-richtext.hs-richtext {
+                        ul {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1867
+
+.webinar-register-form.webinar-register-form {
+                .hbspt-form.hbspt-form .hs-main-font-element.hs-main-font-element.hs-richtext.hs-richtext {
+                        ul {
+                                li {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1872
+
+.webinar-register-form.webinar-register-form {
+                .hbspt-form.hbspt-form .hs-main-font-element.hs-main-font-element.hs-richtext.hs-richtext {
+                        ul {
+                                li {
+                                        span {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1917
+
+.hbspt-form.hbspt-form {
+                float: none;
+        }
+
+// line 1980
+
+.hsfc-CheckboxFieldGroup.hsfc-CheckboxFieldGroup,
+.hsfc-RadioFieldGroup.hsfc-RadioFieldGroup {
+                .hsfc-FieldDescription.hsfc-FieldDescription {
+                        float: none;
+                }
+        }
+
+// line 323
+
+.field-wrap.field-wrap {
+                h2 {
+                        &:after {
+                                float: none;
+                        }
+                }
+        }

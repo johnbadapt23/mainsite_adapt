@@ -3420,3 +3420,1862 @@ section.featured-module.best-practices-featured .container {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 13
+
+.subscribe-sidebar-form.subscribe-sidebar-form {
+                .subscribe-form-container.subscribe-form-container {
+                        float: none;
+                }
+        }
+
+// line 24
+
+.subscribe-sidebar-form.subscribe-sidebar-form {
+                .icon-container.icon-container {
+                        float: none;
+                }
+        }
+
+// line 30
+
+.subscribe-sidebar-form.subscribe-sidebar-form {
+                .icon-container.icon-container {
+                        .icon-inner.icon-inner {
+                                float: none;
+                        }
+                }
+        }
+
+// line 34
+
+.subscribe-sidebar-form.subscribe-sidebar-form {
+                .icon-container.icon-container {
+                        .icon-inner.icon-inner {
+                                img {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 42
+
+.topic-filter.topic-filter {
+                float: none;
+        }
+
+// line 63
+
+a.label-XXLarge.label-XXLarge {
+                float: none;
+        }
+
+// line 77
+
+section.filter-title-block.filter-title-block {
+                float: none;
+        }
+
+// line 92
+
+section.filter-title-block.filter-title-block {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 102
+
+section.filter-title-block.filter-title-block {
+                .container.container {
+                        .title-container.title-container {
+                                h1 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 113
+
+section.filter-title-block.filter-title-block {
+                .container.container {
+                        .title-container.title-container {
+                                p.type-description.type-description {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 183
+
+section.filter-title-block.filter-title-block {
+                .container.container {
+                        .topic-button-container-outer.topic-button-container-outer {
+                                float: none;
+                        }
+                }
+        }
+
+// line 193
+
+section.filter-title-block.filter-title-block {
+                .container.container {
+                        .topic-button-container-outer.topic-button-container-outer {
+                                .topic-button-container.topic-button-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 294
+
+section.filter-listing.filter-listing {
+                float: none;
+        }
+
+// line 299
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                float: none;
+                        }
+                }
+        }
+
+// line 305
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                // Peer Insights
+
+            .peer-insights-container-side-bar.peer-insights-container-side-bar {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 324
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                // Peer Insights
+
+            .peer-insights-container-side-bar.peer-insights-container-side-bar {
+                                        .sidebar.sidebar {
+                                                .subscribe-sidebar-form.subscribe-sidebar-form {
+                                                        @media (max-width: 767px) {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 333
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .peer-insights-full-container.peer-insights-full-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 374
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                // Market trend styling
+
+            .market-trend-reports-container-side-bar.market-trend-reports-container-side-bar {
+                                        @include responsive(1023) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 382
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                // Market trend styling
+
+            .market-trend-reports-container-side-bar.market-trend-reports-container-side-bar {
+                                        @include responsive(767) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 507
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                // Market trend styling
+
+            .market-trend-reports-container-side-bar.market-trend-reports-container-side-bar {
+                                        .item.item {
+                                                &.market-trend-reports.market-trend-reports {
+                                                        .item-content-container.item-content-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 546
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .market-trend-reports-container-full-width.market-trend-reports-container-full-width {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 671
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .market-trend-reports-container-full-width.market-trend-reports-container-full-width {
+                                        .item.item {
+                                                &.market-trend-reports.market-trend-reports {
+                                                        .item-content-container.item-content-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 748
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.one-third.one-third {
+                                                &.peer-insights-item.peer-insights-item {
+                                                        .video-container.video-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 790
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.one-third.one-third {
+                                                &.peer-insights-item.peer-insights-item {
+                                                        .item-content-container.item-content-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 794
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.one-third.one-third {
+                                                &.peer-insights-item.peer-insights-item {
+                                                        .item-content-container.item-content-container {
+                                                                .topic-filter.topic-filter {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 824
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.one-third.one-third {
+                                                &.best-practice-item.best-practice-item {
+                                                        .image-container.image-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 862
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.one-third.one-third {
+                                                &.best-practice-item.best-practice-item {
+                                                        .content-container-absolute.content-container-absolute {
+                                                                .topic-filter.topic-filter {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 965
+
+section.filter-listing.filter-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.market-trend-reports.market-trend-reports.filtered.filtered {
+                                                .item-content-container.item-content-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 993
+
+section.filter-listing.filter-listing.in-the-news-listing.in-the-news-listing {
+                float: none;
+        }
+
+// line 1005
+
+section.filter-listing.filter-listing.in-the-news-listing.in-the-news-listing {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1019
+
+section.filter-listing.filter-listing.in-the-news-listing.in-the-news-listing {
+                .container.container {
+                        .title-container.title-container {
+                                h1 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1030
+
+section.filter-listing.filter-listing.in-the-news-listing.in-the-news-listing {
+                .container.container {
+                        .title-container.title-container {
+                                span.type-description.type-description {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1073
+
+section.filter-listing.filter-listing.in-the-news-listing.in-the-news-listing {
+                .container.container {
+                        .sidebar-container.sidebar-container {
+                                @media (max-width: 767px) {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1080
+
+section.filter-listing.filter-listing.in-the-news-listing.in-the-news-listing {
+                .container.container {
+                        .sidebar-container.sidebar-container {
+                                .media-enquiries-container.media-enquiries-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1087
+
+section.filter-listing.filter-listing.in-the-news-listing.in-the-news-listing {
+                .container.container {
+                        .sidebar-container.sidebar-container {
+                                .media-enquiries-container.media-enquiries-container {
+                                        .media-contact-title.media-contact-title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1100
+
+section.filter-listing.filter-listing.in-the-news-listing.in-the-news-listing {
+                .container.container {
+                        .media-contact.media-contact {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1105
+
+section.filter-listing.filter-listing.in-the-news-listing.in-the-news-listing {
+                .container.container {
+                        .press-listing-container.press-listing-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1113
+
+.item.item.press-release-item.press-release-item {
+                float: none;
+        }
+
+// line 1142
+
+.item.item.press-release-item.press-release-item {
+                .press-date-container.press-date-container {
+                        .date-inner.date-inner {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1150
+
+.item.item.press-release-item.press-release-item {
+                .press-date-container.press-date-container {
+                        .date-inner.date-inner {
+                                .date-day.date-day {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1159
+
+.item.item.press-release-item.press-release-item {
+                .press-date-container.press-date-container {
+                        .date-inner.date-inner {
+                                .date-month.date-month,
+            .date-year.date-year {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1176
+
+.item.item.press-release-item.press-release-item {
+                .item-content-container.item-content-container {
+                        .content-inner.content-inner {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1181
+
+.item.item.press-release-item.press-release-item {
+                .item-content-container.item-content-container {
+                        .content-inner.content-inner {
+                                .title.title {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1199
+
+.item.item.press-release-item.press-release-item {
+                .item-content-container.item-content-container {
+                        .content-inner.content-inner {
+                                .published-date.published-date {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1225
+
+.item.item.press-release-item.press-release-item {
+                .read-more-container.read-more-container {
+                        @media (max-width: 767px) {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1287
+
+.item.item.press-release-item.press-release-item.external-press-release.external-press-release {
+                .item-content-container.item-content-container {
+                        .content-inner.content-inner {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1292
+
+.item.item.press-release-item.press-release-item.external-press-release.external-press-release {
+                .item-content-container.item-content-container {
+                        .content-inner.content-inner {
+                                .tag-container.tag-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1310
+
+.item.item.press-release-item.press-release-item.external-press-release.external-press-release {
+                .item-content-container.item-content-container {
+                        .content-inner.content-inner {
+                                .title.title {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1317
+
+.item.item.press-release-item.press-release-item.external-press-release.external-press-release {
+                .item-content-container.item-content-container {
+                        .content-inner.content-inner {
+                                .published-date.published-date {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1342
+
+.item.item.press-release-item.press-release-item.external-press-release.external-press-release {
+                .read-more-container.read-more-container {
+                        @media (max-width: 767px) {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1394
+
+// Featured modules
+
+section.featured-module.featured-module {
+                float: none;
+        }
+
+// line 1499
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1529
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .title-container.title-container {
+                                .introduction-column.introduction-column {
+                                        h2,
+                p {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1641
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .one-half.one-half {
+                                &.side-bar-column.side-bar-column {
+                                        .recent-sidebar.recent-sidebar {
+                                                .resources-side-posts.resources-side-posts {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1652
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .one-half.one-half {
+                                &.side-bar-column.side-bar-column {
+                                        .recent-sidebar.recent-sidebar {
+                                                .resources-side-posts.resources-side-posts {
+                                                        .resources-side-posts-inner.resources-side-posts-inner {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1726
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                @include responsive(767) {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1849
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.market-trend-reports.market-trend-reports {
+                                                .item-content-container.item-content-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1933
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.one-third.one-third {
+                                                &.peer-insights-item.peer-insights-item {
+                                                        .video-container.video-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1975
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.one-third.one-third {
+                                                &.peer-insights-item.peer-insights-item {
+                                                        .item-content-container.item-content-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1979
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.one-third.one-third {
+                                                &.peer-insights-item.peer-insights-item {
+                                                        .item-content-container.item-content-container {
+                                                                .topic-filter.topic-filter {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2008
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.one-third.one-third {
+                                                &.best-practice-item.best-practice-item {
+                                                        .image-container.image-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2046
+
+// Featured modules
+
+section.featured-module.featured-module {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.one-third.one-third {
+                                                &.best-practice-item.best-practice-item {
+                                                        .content-container-absolute.content-container-absolute {
+                                                                .topic-filter.topic-filter {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2476
+
+// Featured modules
+
+section.featured-module.featured-module {
+                &.featured-home.featured-home {
+                        .post-list-container.post-list-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 2551
+
+// Featured modules
+
+section.featured-module.featured-module {
+                &.featured-home.featured-home {
+                        .post-list-container.post-list-container {
+                                .side-bar-column.side-bar-column {
+                                        .recent-sidebar.recent-sidebar {
+                                                .resources-side-posts.resources-side-posts {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2566
+
+// Featured modules
+
+section.featured-module.featured-module {
+                &.featured-home.featured-home {
+                        .post-list-container.post-list-container {
+                                .side-bar-column.side-bar-column {
+                                        .recent-sidebar.recent-sidebar {
+                                                .resources-side-posts.resources-side-posts {
+                                                        .resources-side-posts-inner.resources-side-posts-inner {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2666
+
+section.featured-module.featured-module.type-two-column.type-two-column {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        .video-container.video-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2790
+
+section.featured-module.featured-module.type-two-column.type-two-column {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .item.item {
+                                        &.market-trend-reports.market-trend-reports {
+                                                .item-content-container.item-content-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2879
+
+section.resources-featured.resources-featured {
+                .container.container {
+                        .item.item {
+                                &.market-trend-reports.market-trend-reports,
+            &.full-width.full-width {
+                                        .item-column.item-column.one-half.one-half {
+                                                .item-content-container.item-content-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2901
+
+section.resources-featured.resources-featured {
+                .container.container {
+                        .item.item {
+                                &.market-trend-reports.market-trend-reports,
+            &.full-width.full-width {
+                                        .item-column.item-column.one-half.one-half {
+                                                .item-content-container.item-content-container {
+                                                        .excerpt.excerpt {
+                                                                @media (max-width: 1023px) {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2954
+
+section.articles-featured.articles-featured.featured-module.featured-module {
+                .container.container .grid-wrapper.grid-wrapper {
+                        .item.item.full-width.full-width {
+                                .item-column.item-column.one-half.one-half {
+                                        .item-content-container.item-content-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2972
+
+section.articles-featured.articles-featured.featured-module.featured-module {
+                .container.container .grid-wrapper.grid-wrapper {
+                        .item.item.full-width.full-width {
+                                .item-column.item-column.one-half.one-half {
+                                        .item-content-container.item-content-container {
+                                                .excerpt.excerpt {
+                                                        @media (max-width: 1023px) {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3002
+
+.wp-pagenavi.wp-pagenavi {
+                float: none;
+        }
+
+// line 3102
+
+section.filter-listing.filter-listing.background-black.background-black.in-the-news-listing.in-the-news-listing {
+                .page-navi-container.page-navi-container {
+                        float: none;
+                }
+        }
+
+// line 3107
+
+section.filter-listing.filter-listing.background-black.background-black.in-the-news-listing.in-the-news-listing {
+                .wp-pagenavi.wp-pagenavi {
+                        float: none;
+                }
+        }
+
+// line 3175
+
+section.filter-listing.filter-listing.search-listing.search-listing {
+                float: none;
+        }
+
+// line 3180
+
+section.filter-listing.filter-listing.search-listing.search-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3184
+
+section.filter-listing.filter-listing.search-listing.search-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .total.total {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3192
+
+section.filter-listing.filter-listing.search-listing.search-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .search-results.search-results {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3196
+
+section.filter-listing.filter-listing.search-listing.search-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .search-results.search-results {
+                                        .item.item {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3252
+
+section.filter-listing.filter-listing.search-listing.search-listing {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                .search-results.search-results {
+                                        .item.item {
+                                                .item-column.item-column {
+                                                        &.text-column.text-column {
+                                                                .excerpt.excerpt {
+                                                                        @media (max-width:1023px) {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3287
+
+.market-trend-reports-container-three-post.market-trend-reports-container-three-post,
+.article-container-three-post.article-container-three-post {
+                float: none;
+        }
+
+// line 3299
+
+.market-trend-reports-container-three-post.market-trend-reports-container-three-post,
+.article-container-three-post.article-container-three-post {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                float: none;
+                        }
+                }
+        }
+
+// .subscribe-sidebar-form's base rule (used standalone as a sidebar
+
+// widget in several contexts) -- the two float:right contexts below
+
+// (peer-insights .sidebar, market-trend-reports-sidebar) are each
+
+// confirmed via the PHP loop to render this widget exactly once, as
+
+// the sole child of its wrapper, not interleaved per-item -- so both
+
+// are safe as bare float:none once their own wrapper is handled.
+
+.subscribe-sidebar-form.subscribe-sidebar-form {
+        float: none;
+    }
+
+// section.filter-title-block: .topic-button-container is already
+
+// display:flex in the live CSS, so a.filter-button's float is
+
+// already inert.
+
+section.filter-title-block.filter-title-block .container.container .topic-button-container-outer.topic-button-container-outer .topic-button-container.topic-button-container a.filter-button.filter-button {
+        float: none;
+    }
+
+// section.filter-listing .grid-wrapper: direct children are
+
+// .peer-insights-container-side-bar, .peer-insights-full-container,
+
+// .market-trend-reports-container-side-bar, .market-trend-reports-
+
+// sidebar, .market-trend-reports-container-full-width (each either
+
+// 100% or summing to 100% with market-trend-reports-sidebar), plus
+
+// occasional direct .item.market-trend-reports.filtered nodes --
+
+// flex-wrap handles all of them regardless of which are present.
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .peer-insights-container-side-bar.peer-insights-container-side-bar {
+        float: none;
+        // Confirmed via template-resource-type.php: this wraps 2 real
+        // .item.one-third.peer-insights-item cards + a .sidebar ad
+        // widget as its only children, rendered once (not repeated),
+        // so it's also its own flex parent for that small row.
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .peer-insights-container-side-bar.peer-insights-container-side-bar .item.item.one-third.one-third {
+        float: none;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .peer-insights-container-side-bar.peer-insights-container-side-bar .sidebar.sidebar .subscribe-sidebar-form.subscribe-sidebar-form {
+        float: none;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .peer-insights-full-container.peer-insights-full-container {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .peer-insights-full-container.peer-insights-full-container .item.item.one-third.one-third {
+        float: none;
+    }
+
+// Confirmed via template-resource-type.php: opens exactly once
+
+// (postCounter == 1), holds every market-trend-reports item in a
+
+// real 2-up grid (nth-child(2n+1){clear:left}), then closes once --
+
+// not a per-item interleave, so safe to treat as a normal flex-wrap
+
+// grid the same as any other N-up section.
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .market-trend-reports-container-side-bar.market-trend-reports-container-side-bar {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .market-trend-reports-container-side-bar.market-trend-reports-container-side-bar .item.item.market-trend-reports.market-trend-reports {
+        float: none;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .market-trend-reports-sidebar.market-trend-reports-sidebar {
+        float: none;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .market-trend-reports-sidebar.market-trend-reports-sidebar .subscribe-sidebar-form.subscribe-sidebar-form {
+        float: none;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .market-trend-reports-container-full-width.market-trend-reports-container-full-width {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .market-trend-reports-container-full-width.market-trend-reports-container-full-width .item.item.market-trend-reports.market-trend-reports {
+        float: none;
+    }
+
+section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wrapper .item.item.market-trend-reports.market-trend-reports.filtered.filtered {
+        float: none;
+    }
+
+// .item.press-release-item: .container is display:inline-block in
+
+// the live CSS; overriding to flex lays out the real 3-column row
+
+// (date | content | read-more) confirmed via the .column class
+
+// already present on each of these in every template that uses
+
+// this component (e.g. _press-related.php, _media-related.php).
+
+.item.item.press-release-item.press-release-item .container.container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+.item.item.press-release-item.press-release-item .press-date-container.press-date-container {
+        float: none;
+    }
+
+.item.item.press-release-item.press-release-item .item-content-container.item-content-container {
+        float: none;
+    }
+
+.item.item.press-release-item.press-release-item .read-more-container.read-more-container {
+        float: none;
+    }
+
+// .external-press-release variant: same .container, but only 2
+
+// columns (no .press-date-container in this variant's markup).
+
+.item.item.press-release-item.press-release-item.external-press-release.external-press-release .container.container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+.item.item.press-release-item.press-release-item.external-press-release.external-press-release .item-content-container.item-content-container {
+        float: none;
+    }
+
+.item.item.press-release-item.press-release-item.external-press-release.external-press-release .item-content-container.item-content-container .content-inner.content-inner .tag-container.tag-container .tag.tag {
+        float: none;
+    }
+
+.item.item.press-release-item.press-release-item.external-press-release.external-press-release .read-more-container.read-more-container {
+        float: none;
+    }
+
+// section.featured-module .container .title-container: 66.66%
+
+// .introduction-column + 33.34% .link-container, no flex parent of
+
+// its own yet.
+
+//
+
+// BUGFIX 2026-09-08: display:flex was unscoped, but this is a
+
+// desktop-only side-by-side split -- both .introduction-column and
+
+// .link-container have @include responsive(767){width:100%} in
+
+// their real CSS, stacking to a single column via floats on mobile.
+
+// Flex ignores float, so on mobile both width:100% flex items
+
+// flex-shrank to ~50% each (168px/168px measured live at 375px)
+
+// instead of stacking, and their content re-wrapped into the
+
+// narrower columns (visibly: "Client-Exclusive Research" title
+
+// wrapped to 3 lines with "All Resources" squeezed onto the same
+
+// row instead of its own line below). Scoping to min-width:768px
+
+// (complementing the real max-width:767px stack) fixes it -- same
+
+// pattern as the .post-list-container fix above.
+
+@media (min-width: 768px) {
+        section.featured-module.featured-module .container.container .title-container.title-container {
+            display: flex;
+            align-items: flex-start;
+        }
+    }
+
+section.featured-module.featured-module .container.container .title-container.title-container .introduction-column.introduction-column {
+        float: none;
+    }
+
+section.featured-module.featured-module .container.container .title-container.title-container .link-container.link-container {
+        float: none;
+    }
+
+// section.featured-module.resources-featured .container: confirmed
+
+// via _resources-featured-block.php this element's ONLY children are
+
+// .slider-column.one-half and .side-bar-column.one-half -- safe to
+
+// make it a flex parent directly (unlike the shared generic
+
+// .container used elsewhere in this file, which also holds
+
+// .title-container/.grid-wrapper and is NOT touched here).
+
+//
+
+// BUGFIX 2026-09-03: the homepage's featured-posts block
+
+// (_featured-posts.php) renders with BOTH "resources-featured" AND
+
+// "featured-home" classes on the same <section> (confirmed live:
+
+// section.resources-featured.featured-module.featured-home), so
+
+// this selector was also matching ITS .container -- whose real
+
+// children are .title-container + .post-list-container, not
+
+// .slider-column.one-half/.side-bar-column.one-half. Turning that
+
+// .container into a flex row put .title-container and
+
+// .post-list-container side by side as two ~50% flex items,
+
+// collapsing .post-list-container (and everything under it --
+
+// .first-post-column, .side-bar-column, the sidebar thumbnail
+
+// images) to roughly half width. Found via structural gated-vs-
+
+// ungated rect diff + live DOM inspection on the homepage. Scoping
+
+// this rule to :not(.featured-home) restores it to only the
+
+// intended standalone resources-featured component.
+
+//
+
+// BUGFIX 2026-09-10 (found live on /resource-type/market-trend-
+
+// reports/, user-adjacent verification pass): `section.resources-
+
+// featured` has a THIRD variant beyond the standalone component and
+
+// the homepage's `.featured-home` -- `template-resource-type.php`
+
+// (and its old-template/pre-media/podcast siblings) render `section
+
+// class="resources-featured featured-module filter-featured-post
+
+// <resourceType>"`, whose `.container` wraps a single `.item
+
+// <slug> full-width` (real CSS: block-level, `float: none`,
+
+// `width: 100%` by simple default -- never floated at all, so it
+
+// doesn't need or want the flex conversion). Its own inner two-
+
+// column split uses `.item-column.one-half` -- a different class
+
+// from the sidebar variant's `.one-half.side-bar-column`/
+
+// `.one-half.slider-column` -- so it was never the intended target
+
+// of this rule either. flex-ifying its `.container` shrank the
+
+// single `.item` child to ~49% width (browser's flex-basis:auto
+
+// content-based sizing instead of the real block-level 100%).
+
+// Confirmed live: `.item.market-trend-reports.full-width` was
+
+// 640.17px instead of production's 1300px. `:not(.filter-featured-
+
+// post)` added alongside the existing `:not(.featured-home)`
+
+// exclusion, verified safe via a full-repo grep confirming every
+
+// `section.resources-featured` usage falls into exactly one of
+
+// these three variants (plain/sidebar, .featured-home, or
+
+// .filter-featured-post) -- no fourth combination exists.
+
+section.featured-module.featured-module.resources-featured.resources-featured:not(.featured-home.featured-home):not(.filter-featured-post.filter-featured-post) .container.container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+section.featured-module.featured-module.resources-featured.resources-featured .container.container .one-half.one-half {
+        float: none;
+    }
+
+section.featured-module.featured-module.resources-featured.resources-featured .container.container .one-half.one-half.side-bar-column.side-bar-column .recent-sidebar.recent-sidebar .resources-side-posts.resources-side-posts .resources-side-posts-inner.resources-side-posts-inner {
+        display: flex;
+        align-items: flex-start;
+    }
+
+section.featured-module.featured-module.resources-featured.resources-featured .container.container .one-half.one-half.side-bar-column.side-bar-column .recent-sidebar.recent-sidebar .resources-side-posts.resources-side-posts .resources-side-posts-inner.resources-side-posts-inner .post-content-container.post-content-container {
+        float: none;
+    }
+
+// BUGFIX 2026-09-03: video posts wrap .video-container in an <a>
+
+// (image-only posts have .image-container as the direct sibling of
+
+// .post-content-container instead -- only the video case adds this
+
+// extra level). .video-container's real width:32.7% is a percentage
+
+// of its containing block; once .resources-side-posts-inner is
+
+// display:flex, that containing block becomes the unstyled <a>
+
+// itself, which as a flex item with no width of its own sizes to
+
+// near-zero (shrink-to-fit with no content-based minimum), collapsing
+
+// the thumbnail to a few px. Give the <a> the real 32.7%+margin
+
+// directly and let .video-container fill it at 100% so the two
+
+// percentages don't compound.
+
+section.featured-module.featured-module.resources-featured.resources-featured .container.container .one-half.one-half.side-bar-column.side-bar-column .recent-sidebar.recent-sidebar .resources-side-posts.resources-side-posts .resources-side-posts-inner.resources-side-posts-inner > a {
+        flex: 0 0 32.7%;
+        margin-right: 18px;
+    }
+
+section.featured-module.featured-module.resources-featured.resources-featured .container.container .one-half.one-half.side-bar-column.side-bar-column .recent-sidebar.recent-sidebar .resources-side-posts.resources-side-posts .resources-side-posts-inner.resources-side-posts-inner > a .video-container.video-container {
+        width: 100%;
+        // BUGFIX 2026-09-10: the width:100% fix above (2026-09-03) solved
+        // the collapsed-width problem but introduced a new collapsed-HEIGHT
+        // problem it didn't account for: .video-container's real padding-
+        // top:22.8% (source/scss/templates/_resources-types.scss:2573) is
+        // ALSO a percentage of the same containing block as width -- which
+        // this very rule just changed from .resources-side-posts-inner to
+        // the <a>. Since the <a> is only 32.7% as wide, the un-rescaled
+        // 22.8% now resolves to 22.8% of a 32.7%-wide box instead of a
+        // 100%-wide box, collapsing the thumbnail height from ~96px to
+        // ~31px (confirmed live on /all-resources/, all 3 video cards in
+        // the sidebar). Rescaling so the effective ratio survives the
+        // narrower containing block: 22.8% / 32.7% = 69.7248%. Confirmed
+        // live: this restores all 3 sidebar video-container rects to an
+        // exact match with production (134.88 x 96.03).
+        padding-top: 69.7248%;
+    }
+
+// section.featured-module.featured-home: the homepage variant
+
+// (_featured-posts.php) -- a real static 2-column layout (NOT a
+
+// carousel: no Slick classes/init anywhere in this template, unlike
+
+// the plain "resources-featured" component above). This is what the
+
+// user was looking at when reporting "resources-featured
+
+// featured-module featured-home -- most elements are float here".
+
+// .post-list-container is already gated float:none from an earlier
+
+// session; adding display:flex here for its .first-post-column
+
+// (57%) + .side-bar-column (43%) pair.
+
+//
+
+// BUGFIX 2026-09-08: this was left unscoped by media query, but the
+
+// 57%/43% split is a DESKTOP-only layout -- .first-post-column and
+
+// .side-bar-column both also carry the global .one-half class, whose
+
+// real (non-gated) CSS is `.one-half{width:50%;float:left}` with
+
+// `@media(max-width:767px){.one-half{width:100%}}` collapsing them
+
+// to a single stacked column on mobile via the "two full-width
+
+// floats" pattern. display:flex with no media query turned them into
+
+// flex items at ALL widths, which ignores float entirely -- so on
+
+// mobile the two width:100% flex items just flex-shrank to ~50%
+
+// each (168px/168px measured live at 375px), squeezing a 2-column
+
+// row into mobile instead of stacking. Confirmed via live rect diff
+
+// (?dev=true vs production, 375x812): section height 1519px vs
+
+// 1358px, post-list-container flex-direction:row with 168px-wide
+
+// children vs production's float:left, 335px-wide (100%) children.
+
+// Scoping to min-width:768px (complementing the real max-width:767px
+
+// breakpoint) restores the mobile single-column stack.
+
+@media (min-width: 768px) {
+        section.featured-module.featured-module.featured-home.featured-home .post-list-container.post-list-container {
+            display: flex;
+            align-items: flex-start;
+        }
+    }
+
+section.featured-module.featured-module.featured-home.featured-home .post-list-container.post-list-container .first-post-column.first-post-column .resources-featured-slide.resources-featured-slide {
+        float: none;
+    }
+
+section.featured-module.featured-module.featured-home.featured-home .post-list-container.post-list-container .first-post-column.first-post-column .resources-featured-slide.resources-featured-slide .resources-slide-inner.resources-slide-inner {
+        float: none;
+    }
+
+section.featured-module.featured-module.featured-home.featured-home .post-list-container.post-list-container .first-post-column.first-post-column .resources-featured-slide.resources-featured-slide .resources-slide-inner.resources-slide-inner .post-content-container.post-content-container {
+        float: none;
+    }
+
+section.featured-module.featured-module.featured-home.featured-home .post-list-container.post-list-container .first-post-column.first-post-column .resources-featured-slide.resources-featured-slide .resources-slide-inner.resources-slide-inner .post-content-container.post-content-container .title.title {
+        float: none;
+    }
+
+// Same image+content row pattern as the non-featured-home sidebar
+
+// widget above -- .image-container/.video-container here aren't
+
+// floated themselves, only .post-content-container is, so making the
+
+// wrapper flex handles both regardless.
+
+section.featured-module.featured-module.featured-home.featured-home .post-list-container.post-list-container .side-bar-column.side-bar-column .recent-sidebar.recent-sidebar .resources-side-posts.resources-side-posts .resources-side-posts-inner.resources-side-posts-inner {
+        display: flex;
+        align-items: flex-start;
+    }
+
+section.featured-module.featured-module.featured-home.featured-home .post-list-container.post-list-container .side-bar-column.side-bar-column .recent-sidebar.recent-sidebar .resources-side-posts.resources-side-posts .resources-side-posts-inner.resources-side-posts-inner .post-content-container.post-content-container {
+        float: none;
+    }
+
+// BUGFIX 2026-09-03: same <a>-wraps-.video-container percentage-
+
+// collapse as the plain resources-featured sidebar above -- see
+
+// that block's comment for the full explanation. Confirmed live
+
+// (this exact featured-home sidebar, homepage) collapsed to ~7x7px.
+
+section.featured-module.featured-module.featured-home.featured-home .post-list-container.post-list-container .side-bar-column.side-bar-column .recent-sidebar.recent-sidebar .resources-side-posts.resources-side-posts .resources-side-posts-inner.resources-side-posts-inner > a {
+        flex: 0 0 32.7%;
+        margin-right: 18px;
+    }
+
+section.featured-module.featured-module.featured-home.featured-home .post-list-container.post-list-container .side-bar-column.side-bar-column .recent-sidebar.recent-sidebar .resources-side-posts.resources-side-posts .resources-side-posts-inner.resources-side-posts-inner > a .video-container.video-container {
+        width: 100%;
+        // BUGFIX 2026-09-10: same padding-top percentage-base shift as the
+        // plain resources-featured sidebar fix above -- see that block's
+        // comment for the full explanation. Same source rule (22.8% /
+        // 32.7% = 69.7248%), same fix.
+        padding-top: 69.7248%;
+    }
+
+// section.featured-module.type-two-column: plain 2-up grid
+
+// (nth-child(2n+1){margin-left:0}), no flex parent of its own yet.
+
+section.featured-module.featured-module.type-two-column.type-two-column .container.container .grid-wrapper.grid-wrapper .item.item {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.featured-module.featured-module.type-two-column.type-two-column .container.container .grid-wrapper.grid-wrapper .item.item {
+        float: none;
+    }
+
+section.featured-module.featured-module.type-two-column.type-two-column .container.container .grid-wrapper.grid-wrapper .item.item.market-trend-reports.market-trend-reports {
+        float: none;
+    }
+
+// BUGFIX 2026-09-10 (self-found during the filter-featured-post
+
+// container re-verification above, /resource-type/market-trend-
+
+// reports/): the two blocks below (originally: flex-ify
+
+// .item.market-trend-reports/.item.full-width and float:none their
+
+// .item-column.one-half children) were REMOVED, not just re-scoped.
+
+// Root cause is JS, not CSS: main.js runs `$('.item.market-trend-
+
+// reports .item-column').matchHeight();` and `$('.item.full-width
+
+// .item-column').matchHeight();` (jQuery matchHeight plugin) on
+
+// these exact elements. matchHeight predates flexbox and is well
+
+// documented (upstream) as unreliable when applied to flex children
+
+// -- confirmed live: under the gate (item-column un-floated into a
+
+// flex row via the removed rules), matchHeight measured the image
+
+// column's natural height as 171px instead of its real 356.9375px
+
+// (padding-top:56.3% aspect-ratio box) and locked BOTH columns to
+
+// the wrong 171px via inline `style="height: ...px"`, causing the
+
+// two columns' text to visibly overlap (confirmed via screenshot,
+
+// reproduced with a real scroll interaction, not just forced script
+
+// injection -- ruled out as a testing artifact). Production never
+
+// hits this because `.item-column.one-half` stays real/ungated
+
+// `float: left; width: 50%;` there (confirmed live: production's
+
+// own matchHeight call correctly measures 356.938px and applies it
+
+// to both columns) -- matchHeight was written for exactly this
+
+// float-based 2-column pattern. There was no BFC-containment or
+
+// other reason these needed un-floating in the first place (this
+
+// nested 2-column float pair is self-contained; it doesn't interact
+
+// with the outer section-level `float:none` compensation elsewhere
+
+// in this file) -- it was swept up mechanically along with every
+
+// other sitewide float:left by the original generator pass. Safest
+
+// fix: leave `.item-column.one-half` floated under the gate too,
+
+// identically to production, for both the section.resources-
+
+// featured usage (market-trend-reports/full-width filter-listing
+
+// items) and the section.articles-featured.featured-module.item
+
+// .full-width usage (same matchHeight selectors are global -- not
+
+// scoped by ancestor section -- so any `.item.full-width` anywhere
+
+// is equally at risk of the identical bug).
+
+// .market-trend-reports-container-three-post / .article-container-
+
+// three-post: plain 3-up grid (nth-child(3n+1){clear:left}) --
+
+// .grid-wrapper below correctly wraps the .item cards into a
+
+// flex row, but each .item's OWN internal row (.image-container/
+
+// .video-container beside .item-content-container,
+
+// source/scss/templates/_resources-types.scss:3306-3377) never got a
+
+// flex parent of its own. RESOLVED, 2026-09-09 (found while verifying
+
+// the unrelated Section 17 market-featured fix, see below): confirmed
+
+// live on /all-resources/ under ?dev=true that this collapsed the row
+
+// into a vertical stack (item height 197px vs production's 110px).
+
+// templates/resources-components/_articles-featured-block.php:87-100
+
+// confirms `.image-container`/`.video-container` are direct children
+
+// of `.item` here (not wrapped in an `<a>` the way Section 17's
+
+// market-featured `.item` is) -- flex-shrink:0 goes directly on them.
+
+// No row-reversal needed (DOM order matches visual order at every
+
+// breakpoint; percentages sum to 100% at both the base 32.7%/67.3%
+
+// split and the <=767px 35.8%/64.2% split, so this applies
+
+// unconditionally rather than inside a media query).
+
+.market-trend-reports-container-three-post.market-trend-reports-container-three-post .container.container .grid-wrapper.grid-wrapper,
+    .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+.market-trend-reports-container-three-post.market-trend-reports-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item,
+    .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item {
+        float: none;
+        display: flex;
+        align-items: flex-start;
+    }
+
+.market-trend-reports-container-three-post.market-trend-reports-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item .image-container.image-container,
+    .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item .image-container.image-container,
+    .market-trend-reports-container-three-post.market-trend-reports-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item .video-container.video-container,
+    .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item .video-container.video-container {
+        flex-shrink: 0;
+    }
+
+.market-trend-reports-container-three-post.market-trend-reports-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item .item-content-container.item-content-container,
+    .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item .item-content-container.item-content-container {
+        float: none;
+    }
+
+// BUGFIX 2026-09-03: .article-container-three-post is ALSO reused,
+
+// unscoped, as the wrapper for the homepage's section.featured-types
+
+// block (templates/components/_featured-types.php) -- but THAT
+
+// instance has its own, completely different real (ungated) CSS in
+
+// _flexible.scss: .item/.item-content-container are already
+
+// `display:flex` there, not float:left, so the generic float:none
+
+// fix above (intended for the real float-based 3-up grid used on
+
+// market-trend-reports/resource-type/topic/podcast/thank-you pages)
+
+// unintentionally also matches it. Tried scoping the rules above
+
+// with `:not(section.featured-types .article-container-three-post)`
+
+// instead of this override, but clean-css's level 2 minifier
+
+// collapses the descendant-combinator space inside :not() into a
+
+// compound selector (`section.featured-types.article-container-
+
+// three-post`, which never matches anything, since those two
+
+// classes are never on the same element) -- silently turning the
+
+// :not() into a no-op. Verified directly: `new
+
+// CleanCSS({level:2}).minify(...)` on that exact selector reproduces
+
+// the space-stripping. Using a higher-specificity override instead
+
+// (extra `section.featured-types` ancestor in the selector beats the
+
+// generic rule regardless of cascade order or minifier selector
+
+// rewrites) re-asserts the correct flex layout for this instance
+
+// only, leaving every other .article-container-three-post usage
+
+// fixed as before.
+
+section.featured-types.featured-types .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item {
+        display: flex;
+    }
+
+section.featured-types.featured-types .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item .item-content-container.item-content-container {
+        display: flex;
+        align-items: center;
+    }
+
+// Same higher-specificity-override technique as the BUGFIX above,
+
+// needed again for the new generic .article-container-three-post
+
+// .item fix (2026-09-09, see comment above that block): that fix adds
+
+// `align-items: flex-start` and `flex-shrink: 0` on
+
+// `.image-container`/`.video-container`, which would otherwise leak
+
+// into this already-correct, already-`display:flex` featured-types
+
+// instance too (same selector, matched by both rules) and change its
+
+// computed `align-items` from the flex default (`stretch`, since
+
+// _flexible.scss's `.item { display: flex; }` above never sets
+
+// align-items) to `flex-start`, and its image/video-container's
+
+// `flex-shrink` from the flex default (`1`) to `0` -- neither of
+
+// which this already-working instance needs or was verified against.
+
+// Restoring both to their un-gated defaults here keeps this instance
+
+// byte-for-byte identical to before, regardless of the new generic fix.
+
+section.featured-types.featured-types .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item {
+        align-items: stretch;
+    }
+
+section.featured-types.featured-types .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item .image-container.image-container,
+    section.featured-types.featured-types .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item .video-container.video-container {
+        flex-shrink: 1;
+    }
+
+.article-container-three-post.article-container-three-post.article-container-three-post.article-container-three-post,
+    .market-trend-reports-container-three-post.market-trend-reports-container-three-post.market-trend-reports-container-three-post.market-trend-reports-container-three-post {
+        float: left;
+        margin-top: 62px;
+    }
+
+// The homepage instance must stay excluded from the float+margin
+
+// restore above (it intentionally stays non-floated with padding
+
+// instead, per the existing fix two rules up).
+
+section.featured-types.featured-types .article-container-three-post.article-container-three-post.article-container-three-post.article-container-three-post {
+        float: none;
+        margin-top: 0;
+    }
+
+section.articles-featured.articles-featured.articles-featured.articles-featured {
+        display: flow-root;
+    }
+
+.article-container-three-post.article-container-three-post,
+    .market-trend-reports-container-three-post.market-trend-reports-container-three-post {
+        margin: unset;
+    }
+
+@media (min-width: 768px) {
+        .item.item.press-release-item.press-release-item .press-date-container.press-date-container {
+            display: block;
+        }
+    }
+
+section.filter-title-block.filter-title-block .container.container .title-container.title-container {
+        display: block;
+    }
+
+section.filter-listing.filter-listing.in-the-news-listing.in-the-news-listing .container.container .title-container.title-container {
+        display: block;
+    }

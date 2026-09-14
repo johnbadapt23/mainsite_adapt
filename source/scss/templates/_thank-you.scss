@@ -380,3 +380,277 @@ section.two-column-thank-you-module {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 2
+
+section.thank-you-pink-introduction.thank-you-pink-introduction {
+                float: none;
+        }
+
+// line 26
+
+section.thank-you-pink-introduction.thank-you-pink-introduction {
+                .container.container {
+                        .thank-you-inner.thank-you-inner {
+                                .animation-icon-container.animation-icon-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 46
+
+section.thank-you-pink-introduction.thank-you-pink-introduction {
+                .container.container {
+                        .thank-you-inner.thank-you-inner {
+                                .title-container.title-container {
+                                        h1 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 57
+
+section.thank-you-pink-introduction.thank-you-pink-introduction {
+                .container.container {
+                        .thank-you-inner.thank-you-inner {
+                                .title-container.title-container {
+                                        .text.text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 77
+
+section.thank-you-featured.thank-you-featured {
+                .container.container {
+                        .thank-you-post-introduction-container.thank-you-post-introduction-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 167
+
+section.next-steps-block.next-steps-block.partners-cards-module.partners-cards-module {
+                .card-container.card-container {
+                        .card.card {
+                                .content-container.content-container {
+                                        .counter-title-container.counter-title-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 213
+
+section.next-steps-block.next-steps-block.partners-cards-module.partners-cards-module {
+                .card-container.card-container {
+                        .card.card {
+                                .content-container.content-container {
+                                        h4 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 229
+
+section.next-steps-block.next-steps-block.partners-cards-module.partners-cards-module {
+                .card-container.card-container {
+                        .card.card {
+                                .content-container.content-container {
+                                        .content-container-bottom.content-container-bottom {
+                                                @media (max-width: 1023px) {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 267
+
+section.two-column-thank-you-module.two-column-thank-you-module {
+                .container.container {
+                        .column-container.column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 303
+
+section.two-column-thank-you-module.two-column-thank-you-module {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        &.image-column.image-column {
+                                                img {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 308
+
+section.two-column-thank-you-module.two-column-thank-you-module {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 314
+
+section.two-column-thank-you-module.two-column-thank-you-module {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        .text.text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 326
+
+section.two-column-thank-you-module.two-column-thank-you-module {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        .mobile-image.mobile-image {
+                                                @media (max-width:767px) {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 333
+
+section.two-column-thank-you-module.two-column-thank-you-module {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        .list-container.list-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 338
+
+section.two-column-thank-you-module.two-column-thank-you-module {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        .list-container.list-container {
+                                                .list-item.list-item {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 365
+
+section.two-column-thank-you-module.two-column-thank-you-module {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        .list-container.list-container {
+                                                .button-container.button-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 373
+
+section.two-column-thank-you-module.two-column-thank-you-module {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        .list-container.list-container {
+                                                .button-container.button-container {
+                                                        a {
+                                                                @media (max-width:767px) {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+section.thank-you-featured.thank-you-featured .container.container .thank-you-post-introduction-container.thank-you-post-introduction-container .introduction-column.introduction-column h3 {
+        float: none;
+    }
+
+section.next-steps-block.next-steps-block.partners-cards-module.partners-cards-module .card-container.card-container .card.card .content-container.content-container .counter-title-container.counter-title-container .counter-circle-outer.counter-circle-outer,
+    section.next-steps-block.next-steps-block.partners-cards-module.partners-cards-module .card-container.card-container .card.card .content-container.content-container .counter-title-container.counter-title-container .counter-circle-outer.counter-circle-outer .counter.counter {
+        float: none;
+    }
+
+section.two-column-thank-you-module.two-column-thank-you-module .container.container .column-container.column-container .column.column {
+        float: none;
+    }
+
+section.two-column-thank-you-module.two-column-thank-you-module .container.container .column-container.column-container .column.column .list-container.list-container .button-container.button-container a {
+        float: none;
+    }
+
+@media (max-width: 767px) {
+        section.two-column-thank-you-module.two-column-thank-you-module .container.container .column-container.column-container .column.column .list-container.list-container .button-container.button-container a {
+            display: block;
+        }
+    }
+
+section.two-column-thank-you-module.two-column-thank-you-module .container.container .column-container.column-container .column.column .list-container.list-container .button-container.button-container a {
+        display: block;
+    }

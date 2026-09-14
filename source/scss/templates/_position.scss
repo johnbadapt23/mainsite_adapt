@@ -1013,3 +1013,402 @@ section.open-positions {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 45
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 58
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .position-title-column.position-title-column {
+                                        @media (max-width: 1023px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 68
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .position-title-column.position-title-column {
+                                        .back-container.back-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 133
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .position-title-column.position-title-column {
+                                        .title-tag-container.title-tag-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 142
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .position-title-column.position-title-column {
+                                        .title-tag-container.title-tag-container {
+                                                h1 {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 149
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .position-title-column.position-title-column {
+                                        .team-container.team-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 153
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .position-title-column.position-title-column {
+                                        .team-container.team-container {
+                                                .labelMedium.labelMedium {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 159
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .position-title-column.position-title-column {
+                                        .team-container.team-container {
+                                                .team-image-container.team-image-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 285
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .position-title-column.position-title-column {
+                                        .apply-container.apply-container {
+                                                .copy-link.copy-link,
+                    .email-link.email-link {
+                                                        a {
+                                                                .job-link-text.job-link-text {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 306
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .position-title-column.position-title-column {
+                                        .apply-container.apply-container {
+                                                .share-button.share-button {
+                                                        .job-link-text.job-link-text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 346
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .position-title-column.position-title-column {
+                                        .apply-container.apply-container {
+                                                .back-top-link.back-top-link {
+                                                        a,
+                        .back-to-top.back-to-top {
+                                                                .job-link-text.job-link-text {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 398
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .overview-column.overview-column {
+                                        @media (max-width: 1023px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 403
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .overview-column.overview-column {
+                                        .overview-text.overview-text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 407
+
+section.position-information.position-information {
+                .container.container {
+                        .position-column-container.position-column-container {
+                                .overview-column.overview-column {
+                                        .overview-text.overview-text {
+                                                li {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 618
+
+section.text-title-list.text-title-list {
+                float: none;
+        }
+
+// line 636
+
+section.text-title-list.text-title-list {
+                .container.container {
+                        .text-title-list-container.text-title-list-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 653
+
+section.text-title-list.text-title-list {
+                .container.container {
+                        .text-title-list-container.text-title-list-container {
+                                .text-title-list-inner.text-title-list-inner {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 716
+
+section.text-title-list.text-title-list {
+                .container.container {
+                        .text-title-list-container.text-title-list-container {
+                                .text-title-list-inner.text-title-list-inner {
+                                        .list-column.list-column {
+                                                .list-item.list-item {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 781
+
+section.text-title-list.text-title-list.two-column-list.two-column-list {
+                .container.container {
+                        .text-title-list-container.text-title-list-container {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 825
+
+section.text-title-list.text-title-list.two-column-list.two-column-list {
+                .container.container {
+                        .text-title-list-container.text-title-list-container {
+                                .text-title-list-inner.text-title-list-inner {
+                                        .list-column.list-column {
+                                                .list-item.list-item {
+                                                        .title.title {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 832
+
+section.text-title-list.text-title-list.two-column-list.two-column-list {
+                .container.container {
+                        .text-title-list-container.text-title-list-container {
+                                .text-title-list-inner.text-title-list-inner {
+                                        .list-column.list-column {
+                                                .list-item.list-item {
+                                                        .text.text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 869
+
+section.open-positions.open-positions {
+                .container.container {
+                        .title-column.title-column {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 908
+
+section.open-positions.open-positions {
+                .container.container {
+                        .positions-column.positions-column {
+                                .item.item.position-item.position-item {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 945
+
+section.open-positions.open-positions {
+                .container.container {
+                        .positions-column.positions-column {
+                                .item.item.position-item.position-item {
+                                        .labelXLarge.labelXLarge {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 970
+
+section.open-positions.open-positions {
+                .container.container {
+                        .positions-column.positions-column {
+                                .other-roles-container.other-roles-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 983
+
+section.open-positions.open-positions {
+                .container.container {
+                        .positions-column.positions-column {
+                                .other-roles-container.other-roles-container {
+                                        .labelXLarge.labelXLarge {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 989
+
+section.open-positions.open-positions {
+                .container.container {
+                        .positions-column.positions-column {
+                                .other-roles-container.other-roles-container {
+                                        p {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }

@@ -605,3 +605,106 @@ section.imageGridBlock.logos {
         z-index: 5;
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 47
+
+section.banner.banner {
+                .videoLink.videoLink {
+                        float: none;
+                }
+        }
+
+// line 87
+
+section.navigation.navigation {
+                float: none;
+        }
+
+// line 103
+
+section.navigation.navigation {
+                ul {
+                        float: none;
+                }
+        }
+
+// line 336
+
+section.agendaHighlightsBlock.agendaHighlightsBlock {
+                float: none;
+        }
+
+// line 346
+
+section.agendaHighlightsBlock.agendaHighlightsBlock {
+                .agendaBlock.agendaBlock {
+                        float: none;
+                }
+        }
+
+// line 350
+
+section.agendaHighlightsBlock.agendaHighlightsBlock {
+                .agendaBlock.agendaBlock {
+                        .item.item {
+                                float: none;
+                        }
+                }
+        }
+
+// line 439
+
+section.agendaHighlightsBlock.agendaHighlightsBlock {
+                .seeMore.seeMore {
+                        float: none;
+                }
+        }
+
+// line 459
+
+section.imageGridBlock.imageGridBlock.logos.logos {
+                .titleBlock.titleBlock {
+                        float: none;
+                }
+        }
+
+// line 483
+
+section.imageGridBlock.imageGridBlock.logos.logos {
+                .logoGroup.logoGroup {
+                        float: none;
+                }
+        }
+
+// line 488
+
+section.imageGridBlock.imageGridBlock.logos.logos {
+                .logoGroup.logoGroup {
+                        .title.title {
+                                float: none;
+                        }
+                }
+        }
+
+// line 562
+
+section.imageGridBlock.imageGridBlock.logos.logos {
+                .item.item {
+                        &:last-child {
+                                .yourLogoHere.yourLogoHere {
+                                        float: none;
+                                }
+                        }
+                }
+        }

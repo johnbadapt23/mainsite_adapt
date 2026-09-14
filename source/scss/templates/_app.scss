@@ -456,3 +456,117 @@ section.app-block {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 17
+
+section.app-introduction.app-introduction {
+                float: none;
+        }
+
+// line 36
+
+section.app-introduction.app-introduction {
+                .container.container {
+                        .app-inner-container.app-inner-container {
+                                .title.title {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 68
+
+section.app-introduction.app-introduction {
+                .container.container {
+                        .app-inner-container.app-inner-container {
+                                .bottom-icon-container.bottom-icon-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 83
+
+section.app-block.app-block {
+                float: none;
+        }
+
+// line 90
+
+section.app-block.app-block {
+                .container.container {
+                        .main-image-column-container.main-image-column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 289
+
+section.app-block.app-block {
+                .container.container {
+                        .main-image-column-container.main-image-column-container {
+                                .bottom-container.bottom-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 308
+
+section.app-block.app-block {
+                .container.container {
+                        .main-image-column-container.main-image-column-container {
+                                .bottom-container.bottom-container {
+                                        .text-container.text-container {
+                                                &:nth-child(1) {
+                                                        p {
+                                                                @media only screen and (max-width:1023px) {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 333
+
+section.app-block.app-block {
+                .container.container {
+                        .main-image-column-container.main-image-column-container {
+                                .bottom-container.bottom-container {
+                                        .text-container.text-container {
+                                                &:nth-child(2) {
+                                                        p {
+                                                                @media only screen and (max-width:1023px) {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+section.app-block.app-block .container.container .main-image-column-container.main-image-column-container .bottom-container.bottom-container .text-container.text-container:nth-child(1) p,
+    section.app-block.app-block .container.container .main-image-column-container.main-image-column-container .bottom-container.bottom-container .text-container.text-container:nth-child(2) p {
+        float: none;
+    }

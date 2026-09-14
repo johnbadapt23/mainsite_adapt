@@ -831,3 +831,117 @@ section.accordion-with-image {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 17
+
+body.template-market-buyer.template-market-buyer {
+                section.video-module.video-module {
+                        float: none;
+                }
+        }
+
+// line 28
+
+body.template-market-buyer.template-market-buyer {
+                section.video-module.video-module {
+                        .image-video-container.image-video-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 33
+
+body.template-market-buyer.template-market-buyer {
+                section.video-module.video-module {
+                        .image-video-container.image-video-container {
+                                .video-image-inner.video-image-inner {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 39
+
+body.template-market-buyer.template-market-buyer {
+                section.video-module.video-module {
+                        .image-video-container.image-video-container {
+                                .video-image-inner.video-image-inner {
+                                        .image-container.image-container,
+                .video-container.video-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 232
+
+body.template-market-buyer.template-market-buyer {
+                section.market-sticky-cards.market-sticky-cards {
+                        .market-sticky-cards-container.market-sticky-cards-container {
+                                .side-bar-navigation.side-bar-navigation {
+                                        ul {
+                                                li {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 710
+
+section.accordion-with-image.accordion-with-image {
+                .column-container.column-container {
+                        .column.column {
+                                &.accordion-block.accordion-block {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 774
+
+section.accordion-with-image.accordion-with-image {
+                .column-container.column-container {
+                        .column.column {
+                                &.accordion-block.accordion-block {
+                                        .faq-item.faq-item {
+                                                .answer.answer {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 808
+
+section.accordion-with-image.accordion-with-image {
+                .column-container.column-container {
+                        .column.column {
+                                &.image-block.image-block {
+                                        .image-container.image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }

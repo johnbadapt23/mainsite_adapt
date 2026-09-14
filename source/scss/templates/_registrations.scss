@@ -2646,3 +2646,1778 @@ section.location-block {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 207
+
+section.webinarBanner.webinarBanner {
+                .imageSizeContainer.imageSizeContainer {
+                        .bannerBreadcrumbs.bannerBreadcrumbs {
+                                float: none;
+                        }
+                }
+        }
+
+// line 237
+
+section.webinarBanner.webinarBanner {
+                .imageSizeContainer.imageSizeContainer {
+                        h1 {
+                                float: none;
+                        }
+                }
+        }
+
+// line 256
+
+section.webinarBanner.webinarBanner {
+                .imageSizeContainer.imageSizeContainer {
+                        p {
+                                float: none;
+                        }
+                }
+        }
+
+// line 301
+
+section.webinarBanner.webinarBanner {
+                .container.container {
+                        .column.column {
+                                .banner-sub-title.banner-sub-title {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 356
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.first-column.first-column {
+                                        .webinar-subtitle.webinar-subtitle {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 366
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.first-column.first-column {
+                                        .content.content {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 376
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.first-column.first-column {
+                                        .takeaways-container.takeaways-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 386
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.first-column.first-column {
+                                        .takeaways-container.takeaways-container {
+                                                .takeaway.takeaway {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 418
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .register-container.register-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 445
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .register-container.register-container {
+                                                .sticky-container.sticky-container {
+                                                        .upper-container.upper-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 505
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .register-container.register-container {
+                                                .sticky-container.sticky-container {
+                                                        .upper-container.upper-container {
+                                                                .small-text-grey.small-text-grey,
+                            .text-black.text-black {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 516
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .register-container.register-container {
+                                                .sticky-container.sticky-container {
+                                                        .bottom-container.bottom-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 571
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .register-container.register-container {
+                                                .sticky-container.sticky-container {
+                                                        .bottom-container.bottom-container {
+                                                                .title.title {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 581
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .register-container.register-container {
+                                                .sticky-container.sticky-container {
+                                                        .bottom-container.bottom-container {
+                                                                .registerButton.registerButton {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 582
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .register-container.register-container {
+                                                .sticky-container.sticky-container {
+                                                        .bottom-container.bottom-container {
+                                                                .registerButton.registerButton {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 620
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 629
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                .speaker-subtitle.speaker-subtitle {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 643
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                .description.description {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 648
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                .description.description {
+                                                        .speaker-name.speaker-name {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 659
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                .description.description {
+                                                        .speaker-role.speaker-role {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 667
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                .textBlock.textBlock {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 698
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .column-image-container.column-image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 702
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                &.second-column.second-column {
+                                        .column-image-container.column-image-container {
+                                                img {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 751
+
+section.webinar-faq.webinar-faq {
+                .container.container {
+                        .faq-item.faq-item {
+                                .faq-title.faq-title {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 793
+
+section.webinar-faq.webinar-faq {
+                .container.container {
+                        .faq-item.faq-item {
+                                .faq-content.faq-content {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 805
+
+section.webinar-faq.webinar-faq {
+                .container.container {
+                        .faq-item.faq-item {
+                                .faq-content.faq-content {
+                                        p {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 815
+
+section.webinar-faq.webinar-faq {
+                .container.container {
+                        .overlay-image-container.overlay-image-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 823
+
+section.webinar-faq.webinar-faq {
+                .container.container {
+                        .overlay-image-container.overlay-image-container {
+                                img {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 851
+
+section.webinar-speaker-block.webinar-speaker-block {
+                .container.container {
+                        .webinar-subtitle.webinar-subtitle {
+                                float: none;
+                        }
+                }
+        }
+
+// line 860
+
+section.webinar-speaker-block.webinar-speaker-block {
+                .container.container {
+                        .speaker-container.speaker-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 865
+
+section.webinar-speaker-block.webinar-speaker-block {
+                .container.container {
+                        .speaker-container.speaker-container {
+                                .column.column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 875
+
+section.webinar-speaker-block.webinar-speaker-block {
+                .container.container {
+                        .speaker-container.speaker-container {
+                                .column.column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                .description.description {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 884
+
+section.webinar-speaker-block.webinar-speaker-block {
+                .container.container {
+                        .speaker-container.speaker-container {
+                                .column.column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                .description.description {
+                                                        .speaker-name.speaker-name {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 895
+
+section.webinar-speaker-block.webinar-speaker-block {
+                .container.container {
+                        .speaker-container.speaker-container {
+                                .column.column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                .description.description {
+                                                        .speaker-role.speaker-role {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 903
+
+section.webinar-speaker-block.webinar-speaker-block {
+                .container.container {
+                        .speaker-container.speaker-container {
+                                .column.column {
+                                        .speaker-container-inner.speaker-container-inner {
+                                                .textBlock.textBlock {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 972
+
+section.register-listing.register-listing {
+                .registerButton.registerButton {
+                        float: none;
+                }
+        }
+
+// line 1021
+
+section.register-listing.register-listing {
+                .container.container {
+                        .register-filter.register-filter {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1056
+
+section.register-listing.register-listing {
+                .container.container {
+                        .register-listing-container.register-listing-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1117
+
+section.register-listing.register-listing {
+                .container.container {
+                        .register-listing-container.register-listing-container {
+                                .upcoming-listing.upcoming-listing {
+                                        .item.item.one-third.one-third {
+                                                .item-container.item-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1121
+
+section.register-listing.register-listing {
+                .container.container {
+                        .register-listing-container.register-listing-container {
+                                .upcoming-listing.upcoming-listing {
+                                        .item.item.one-third.one-third {
+                                                .item-container.item-container {
+                                                        .item-top.item-top {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1130
+
+section.register-listing.register-listing {
+                .container.container {
+                        .register-listing-container.register-listing-container {
+                                .upcoming-listing.upcoming-listing {
+                                        .item.item.one-third.one-third {
+                                                .item-container.item-container {
+                                                        .item-top.item-top {
+                                                                .listing-date.listing-date {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1140
+
+section.register-listing.register-listing {
+                .container.container {
+                        .register-listing-container.register-listing-container {
+                                .upcoming-listing.upcoming-listing {
+                                        .item.item.one-third.one-third {
+                                                .item-container.item-container {
+                                                        .item-top.item-top {
+                                                                h3 {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1157
+
+section.register-listing.register-listing {
+                .container.container {
+                        .register-listing-container.register-listing-container {
+                                .upcoming-listing.upcoming-listing {
+                                        .item.item.one-third.one-third {
+                                                .item-container.item-container {
+                                                        .item-top.item-top {
+                                                                span.item-excerpt.item-excerpt {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1178
+
+section.register-listing.register-listing {
+                .container.container {
+                        .register-listing-container.register-listing-container {
+                                .upcoming-listing.upcoming-listing {
+                                        .item.item.one-third.one-third {
+                                                .item-container.item-container {
+                                                        .bottom-bar.bottom-bar {
+                                                                &.past-item-bottom.past-item-bottom {
+                                                                        .replay-button.replay-button {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1255
+
+section.researchArticleTextHeader.researchArticleTextHeader.replayArticleHeader.replayArticleHeader {
+                .container.container {
+                        .item.item {
+                                .textContainer.textContainer {
+                                        @include responsive(1023) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1266
+
+section.researchArticleTextHeader.researchArticleTextHeader.replayArticleHeader.replayArticleHeader {
+                .container.container {
+                        .item.item {
+                                .textContainer.textContainer {
+                                        .title.title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1274
+
+section.researchArticleTextHeader.researchArticleTextHeader.replayArticleHeader.replayArticleHeader {
+                .container.container {
+                        .item.item {
+                                .textContainer.textContainer {
+                                        .dateReadTime.dateReadTime {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1281
+
+section.researchArticleTextHeader.researchArticleTextHeader.replayArticleHeader.replayArticleHeader {
+                .container.container {
+                        .item.item {
+                                .textContainer.textContainer {
+                                        .item-excerpt.item-excerpt {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1294
+
+section.researchArticleTextHeader.researchArticleTextHeader.replayArticleHeader.replayArticleHeader {
+                .container.container {
+                        .item.item {
+                                .textContainer.textContainer {
+                                        .replay-button-container.replay-button-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1302
+
+section.researchArticleTextHeader.researchArticleTextHeader.replayArticleHeader.replayArticleHeader {
+                .container.container {
+                        .item.item {
+                                .textContainer.textContainer {
+                                        .replay-button-container.replay-button-container {
+                                                .replay-button.replay-button {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1346
+
+section.researchArticleTextHeader.researchArticleTextHeader.replayArticleHeader.replayArticleHeader {
+                .container.container {
+                        .item.item {
+                                .imageSizeContainer.imageSizeContainer {
+                                        @include responsive(1023) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1415
+
+section.researchArticleTextHeader.researchArticleTextHeader.replayArticleHeader.replayArticleHeader {
+                .container.container {
+                        .item.item {
+                                .imageSizeContainer.imageSizeContainer {
+                                        .replay-button-container.replay-button-container.mobile.mobile {
+                                                .replay-button.replay-button {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1466
+
+.mfp-registration.mfp-registration {
+                .mfp-content.mfp-content {
+                        .webinar-register-form.webinar-register-form {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1473
+
+.mfp-registration.mfp-registration {
+                .mfp-content.mfp-content {
+                        .webinar-register-form.webinar-register-form {
+                                .container.container {
+                                        .webinar-subtitle.webinar-subtitle {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1482
+
+.mfp-registration.mfp-registration {
+                .mfp-content.mfp-content {
+                        .webinar-register-form.webinar-register-form {
+                                .container.container {
+                                        .form-container.form-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1487
+
+.mfp-registration.mfp-registration {
+                .mfp-content.mfp-content {
+                        .webinar-register-form.webinar-register-form {
+                                .container.container {
+                                        .form-container.form-container {
+                                                .hbspt-form.hbspt-form,
+                    .hs-form.hs-form {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1602
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                .speakers-block.speakers-block {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1619
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                .speakers-block.speakers-block {
+                                        .speaker-title.speaker-title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1630
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                .speakers-block.speakers-block {
+                                        .speaker-container.speaker-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1651
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                .speakers-block.speakers-block {
+                                        .speaker-container.speaker-container {
+                                                .speaker.speaker {
+                                                        .speaker-container-inner.speaker-container-inner {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1688
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                .speakers-block.speakers-block {
+                                        .speaker-container.speaker-container {
+                                                .speaker.speaker {
+                                                        .speaker-container-inner.speaker-container-inner {
+                                                                .description.description {
+                                                                        .speaker-name.speaker-name {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1698
+
+section.webinar-article.webinar-article {
+                .container.container {
+                        .column.column {
+                                .speakers-block.speakers-block {
+                                        .speaker-container.speaker-container {
+                                                .speaker.speaker {
+                                                        .speaker-container-inner.speaker-container-inner {
+                                                                .description.description {
+                                                                        .speaker-role.speaker-role {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1743
+
+section.topicBanner.topicBanner.webinarBanner.webinarBanner {
+                .container.container {
+                        .column.column {
+                                .banner-icon.banner-icon {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1821
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .agenda-container.agenda-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1827
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .agenda-container.agenda-container {
+                                        .agenda-title.agenda-title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1845
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .agenda-container.agenda-container {
+                                        .agenda-item-container.agenda-item-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1855
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .agenda-container.agenda-container {
+                                        .agenda-item-container.agenda-item-container {
+                                                .agenda-item.agenda-item {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1865
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .agenda-container.agenda-container {
+                                        .agenda-item-container.agenda-item-container {
+                                                .agenda-item.agenda-item {
+                                                        .time.time {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1876
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .agenda-container.agenda-container {
+                                        .agenda-item-container.agenda-item-container {
+                                                .agenda-item.agenda-item {
+                                                        .agenda-item-title.agenda-item-title {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1887
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .agenda-container.agenda-container {
+                                        .agenda-item-container.agenda-item-container {
+                                                .agenda-item.agenda-item {
+                                                        .agenda-item-text.agenda-item-text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1899
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .agenda-container.agenda-container {
+                                        .fine-print.fine-print {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1923
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .resources-container.resources-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1927
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .resources-container.resources-container {
+                                        .resources-title.resources-title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1944
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .resources-container.resources-container {
+                                        .resources-item.resources-item {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1949
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .resources-container.resources-container {
+                                        .resources-item.resources-item {
+                                                .icon-container.icon-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1955
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .resources-container.resources-container {
+                                        .resources-item.resources-item {
+                                                .resources-item-title.resources-item-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1966
+
+section.registration-agenda-block.registration-agenda-block {
+                .container.container {
+                        .column.column {
+                                .resources-container.resources-container {
+                                        .resources-item.resources-item {
+                                                .resources-item-text.resources-item-text {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2004
+
+section.registration-two-column-block.registration-two-column-block {
+                .container.container {
+                        .column.column {
+                                .sub-column-title.sub-column-title {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2073
+
+section.registration-two-column-block.registration-two-column-block {
+                .container.container {
+                        .column.column {
+                                .logo-container.logo-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2086
+
+section.registration-two-column-block.registration-two-column-block {
+                .container.container {
+                        .column.column {
+                                .text-container.text-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2148
+
+section.location-block.location-block {
+                float: none;
+        }
+
+// line 2168
+
+section.location-block.location-block {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .location-container.location-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2181
+
+section.location-block.location-block {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .location-container.location-container {
+                                                h2 {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2191
+
+section.location-block.location-block {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .location-container.location-container {
+                                                .location-title.location-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2221
+
+section.location-block.location-block {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .location-container.location-container {
+                                                a.web-link.web-link,
+                    a.phone-number.phone-number {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2324
+
+section.location-block.location-block {
+                .container.container {
+                        .column.column {
+                                &.image-column.image-column {
+                                        .portrait-image-container.portrait-image-container {
+                                                .image-container.image-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2347
+
+section.location-block.location-block {
+                .container.container {
+                        .column.column {
+                                &.image-column.image-column {
+                                        .square-image-container.square-image-container {
+                                                .image-container.image-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2440
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 2492
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.image-column.image-column {
+                                                h3.title.title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2512
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.image-column.image-column {
+                                                p {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2524
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.image-column.image-column {
+                                                .company-logo.company-logo {
+                                                        img {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2549
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .agenda-content-title.agenda-content-title,
+                    .about-title.about-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2559
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .agenda-items.agenda-items {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2566
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .agenda-items.agenda-items {
+                                                        .agenda-item.agenda-item {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2570
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .agenda-items.agenda-items {
+                                                        .agenda-item.agenda-item {
+                                                                .time.time {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2583
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .agenda-items.agenda-items {
+                                                        .agenda-item.agenda-item {
+                                                                .agenda-title.agenda-title {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2619
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .about.about {
+                                                        .about-text.about-text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2637
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery,
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .about.about {
+                                                        .about-text.about-text {
+                                                                p {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// --- shared .column / .second-column.right-column row, 6 section roots ---
+
+section.registration-agenda-block.registration-agenda-block .container.container .column.column,
+    section.webinar-article.webinar-article .container.container .column.column,
+    section.webinar-faq.webinar-faq .container.container .column.column,
+    section.webinar-speaker-block.webinar-speaker-block .container.container .column.column,
+    section.webinarBanner.webinarBanner .container.container .column.column,
+    section.webinar-register-form.webinar-register-form .container.container .column.column {
+        float: none;
+    }
+
+section.registration-agenda-block.registration-agenda-block .container.container .column.column.second-column.second-column.right-column.right-column,
+    section.webinar-article.webinar-article .container.container .column.column.second-column.second-column.right-column.right-column,
+    section.webinar-faq.webinar-faq .container.container .column.column.second-column.second-column.right-column.right-column,
+    section.webinar-speaker-block.webinar-speaker-block .container.container .column.column.second-column.second-column.right-column.right-column,
+    section.webinarBanner.webinarBanner .container.container .column.column.second-column.second-column.right-column.right-column,
+    section.webinar-register-form.webinar-register-form .container.container .column.column.second-column.second-column.right-column.right-column {
+        float: none;
+    }
+
+@media only screen and (max-width: 767px) {
+        section.registration-agenda-block.registration-agenda-block .container.container .column.column.second-column.second-column.right-column.right-column,
+        section.webinar-article.webinar-article .container.container .column.column.second-column.second-column.right-column.right-column,
+        section.webinar-faq.webinar-faq .container.container .column.column.second-column.second-column.right-column.right-column,
+        section.webinar-speaker-block.webinar-speaker-block .container.container .column.column.second-column.second-column.right-column.right-column,
+        section.webinarBanner.webinarBanner .container.container .column.column.second-column.second-column.right-column.right-column,
+        section.webinar-register-form.webinar-register-form .container.container .column.column.second-column.second-column.right-column.right-column {
+            float: none;
+        }
+    }
+
+// Confirmed genuine first-column/second-column pairs -- see header
+
+// comment for why only these two of the six get a flex parent.
+
+section.webinar-article.webinar-article .container.container {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.registration-agenda-block.registration-agenda-block .container.container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+// --- section.webinar-article: .second-column's OTHER speaker-
+
+// container-inner (genuinely stacked, .description is 100% wide,
+
+// not a reduced calc()) ---
+
+section.webinar-article.webinar-article .container.container .column.column.second-column.second-column .speaker-container-inner.speaker-container-inner .speaker-image.speaker-image {
+        float: none;
+    }
+
+// --- section.webinar-article: .speakers-block (inside .first-
+
+// column) -- .speaker is a genuine 2-up grid needing a flex parent;
+
+// its own .speaker-image/.description are Category A via the
+
+// existing &.flex-container modifier, see header comment.
+
+section.webinar-article.webinar-article .container.container .column.column .speakers-block.speakers-block .speaker-container.speaker-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.webinar-article.webinar-article .container.container .column.column .speakers-block.speakers-block .speaker-container.speaker-container .speaker.speaker {
+        float: none;
+    }
+
+section.webinar-article.webinar-article .container.container .column.column .speakers-block.speakers-block .speaker-container.speaker-container .speaker.speaker .speaker-container-inner.speaker-container-inner .speaker-image.speaker-image,
+    section.webinar-article.webinar-article .container.container .column.column .speakers-block.speakers-block .speaker-container.speaker-container .speaker.speaker .speaker-container-inner.speaker-container-inner .description.description {
+        float: none;
+    }
+
+// --- section.webinar-speaker-block: its own speaker-container-
+
+// inner is a genuine still-live row (.description is calc(100% -
+
+// 125px), no flex-container modifier here) -- needs display:flex
+
+// added. Its .container itself deliberately isn't touched, see
+
+// header comment (would break the separate .one-half grid).
+
+section.webinar-speaker-block.webinar-speaker-block .container.container .speaker-container.speaker-container .column.column .speaker-container-inner.speaker-container-inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.webinar-speaker-block.webinar-speaker-block .container.container .speaker-container.speaker-container .column.column .speaker-container-inner.speaker-container-inner .speaker-image.speaker-image {
+        float: none;
+    }
+
+// --- section.webinar-faq: sole/stacked card wrapper ---
+
+section.webinar-faq.webinar-faq .container.container .faq-item.faq-item {
+        float: none;
+    }
+
+// --- section.register-listing ---
+
+// .past-sessions-button/.upcoming-button/.register-toggle are all
+
+// <span> tags (confirmed via template-registration.php) -- natural
+
+// inline flow reproduces their adjacency, no flex parent needed.
+
+section.register-listing.register-listing .past-sessions-button.past-sessions-button,
+    section.register-listing.register-listing .upcoming-button.upcoming-button,
+    section.register-listing.register-listing .container.container .register-filter.register-filter .register-toggle.register-toggle {
+        float: none;
+    }
+
+// .upcoming-listing: genuine 3-up floated grid (nth-child(3n+1)
+
+// clearing), no flex parent of its own yet.
+
+section.register-listing.register-listing .container.container .register-listing-container.register-listing-container .upcoming-listing.upcoming-listing {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        float: none;
+    }
+
+section.register-listing.register-listing .container.container .register-listing-container.register-listing-container .upcoming-listing.upcoming-listing .item.item.one-third.one-third {
+        float: none;
+    }
+
+// --- .webinar-mobile-sticky-footer: only ever visible ≤767px
+
+// (display:none by default, display:block in its own ≤767px
+
+// override) -- the flex fix has to live in that same media context,
+
+// otherwise it'd override the desktop display:none and make the
+
+// sticky footer permanently visible. .title/.registerButton are a
+
+// genuine still-live row with no flex parent of their own yet.
+
+@media only screen and (max-width: 767px) {
+        .webinar-mobile-sticky-footer.webinar-mobile-sticky-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+
+.webinar-mobile-sticky-footer.webinar-mobile-sticky-footer .title.title,
+    .webinar-mobile-sticky-footer.webinar-mobile-sticky-footer .registerButton.registerButton {
+        float: none;
+    }
+
+// --- section.topicBanner.webinarBanner: sole/stacked children ---
+
+section.topicBanner.topicBanner.webinarBanner.webinarBanner .container.container .column.column .roundtable.roundtable,
+    section.topicBanner.topicBanner.webinarBanner.webinarBanner .container.container .column.column .banner-icon.banner-icon img {
+        float: none;
+    }
+
+// --- section.registration-two-column-block ---
+
+// .column is Category A (parent .column-container is already
+
+// display:flex itself). .logo-container img/.read-more are sole/
+
+// standalone, safe.
+
+section.registration-two-column-block.registration-two-column-block .container.container .column.column {
+        float: none;
+    }
+
+section.registration-two-column-block.registration-two-column-block .container.container .column.column .logo-container.logo-container img,
+    section.registration-two-column-block.registration-two-column-block .container.container .column.column .text-container.text-container .read-more.read-more {
+        float: none;
+    }
+
+// --- section.location-block: .text-column/.image-column, see
+
+// header comment for the width-inheritance and float-reordering
+
+// reasoning. .directions-link/.portrait-image-container are sole
+
+// children within each column, safe.
+
+section.location-block.location-block .container.container {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.location-block.location-block .container.container .column.column.text-column.text-column,
+    section.location-block.location-block .container.container .column.column.image-column.image-column {
+        float: none;
+    }
+
+section.location-block.location-block .container.container .column.column.text-column.text-column .location-container.location-container a.directions-link.directions-link {
+        float: none;
+    }
+
+section.location-block.location-block .container.container .column.column.image-column.image-column .portrait-image-container.portrait-image-container {
+        float: none;
+    }
+
+// --- .mfp-wrap.mfp-speakers (speaker popup modal): .column is
+
+// Category A (parent .speaker-popup-container is already
+
+// display:flex itself). .company-logo/.image-container/.about are
+
+// sole/standalone within their own column, safe.
+
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.image-column.image-column .company-logo.company-logo,
+    .mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.image-column.image-column .image-container.image-container,
+    .mfp-wrap.mfp-wrap.mfp-speakers.mfp-speakers .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.about-column.about-column .about.about {
+        float: none;
+    }
+
+@media (max-width: 767px) {
+        section.registration-two-column-block.registration-two-column-block .container.container .column-container.column-container {
+            display: block;
+        }
+    }
+
+@media (min-width: 768px) {
+        section.register-listing.register-listing .container.container .register-listing-container.register-listing-container .upcoming-listing.upcoming-listing .item.item.one-third.one-third .item-container.item-container .item-top.item-top span.item-excerpt.item-excerpt {
+            display: block;
+        }
+    }

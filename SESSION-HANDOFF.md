@@ -4623,3 +4623,330 @@ that the scope gap doesn't carry the correctness risk it looked like it
 did. Full reasoning and the user's answer, once given, belongs in the
 next entry before the gate is actually flipped.
 
+## §38 -- 2026-09-14 (cont.): user's answer on §37's open question --
+scope `.title-container` to match production; fixed, rebuilt, verified
+
+### The decision
+
+User's answer to §37's flagged question: scope `section.filter-title-
+block .container .title-container` to render the same as production --
+i.e. revert the ad hoc Section 19 flex tweak for this one selector
+specifically (the other two Section-19 selectors,
+`.roundtable-card-slider-module ... .slide-image-container` and
+`.two-column-services ... .icon-text-column .service`, are unaffected --
+both were already confirmed-safe in §11 and stay as-is).
+
+### Fix
+
+`source/scss/sections/_dev-float-refactor.scss`: removed `section.
+filter-title-block .container .title-container` from the Section-19
+`display:flex!important` selector group (was joined with the other two
+via a comma; now just the two). No replacement rule needed --
+`.title-container`/`h1`/`p.type-description` already have their own
+`float:none` from the original mechanical Batch 1/2 pass, and `.title-
+container` already gets `display:block` restored by the pre-existing
+"~24 unrelated sections" leaf-compound-side-effect compensation block
+(§10/§11's bugfix mechanism) a few hundred lines later in the same file.
+Updated the Section 19 header comment to document the revert and why.
+
+### Build (cloud sandbox, `device_bash` to the user's machine still down
+this session -- same blocker as §35/§37)
+
+Recreated the scratch-dir workflow from §35: staged `package.json`/
+`package-lock.json`/`gulpfile.js`, all of `source/gulp/`, all 48 files
+under `source/scss/` (this time via a full recursive directory listing
+rather than guessing which templates matter, to be sure nothing was
+missed), and the 8 vendored component CSS files `mainNoFooterSrc` needs.
+`npm ci --ignore-scripts` (clean, no image-binary postinstall failures
+this time -- nothing in this change touches `build:images`), then `npx
+gulp build:styles-main-nofooter build:styles-footer`.
+
+`footer.min.css`: byte-identical (md5 match) to the previously-committed
+copy, as expected (`footer-only.scss` doesn't import `_dev-float-
+refactor.scss`). `main-nofooter.min.css`: 79 bytes smaller.
+
+### Verification
+
+Same selector-level postcss diff script as §35 (`css-diff.js`,
+decomposes every rule's comma-selector-list into individual
+`(selector, normalized declarations)` pairs so clean-css's
+`restructureRules` reshuffling can't hide or fake a diff), run against
+the previously-committed compiled file: **exactly 1 selector changed**,
+`body.dev-float-refactor section.filter-title-block .container .title-
+container`, from `display:block;display:flex!important;float:none` to
+`display:block;float:none` -- precisely the intended change, nothing
+else in the file's 12,455 distinct selectors touched.
+
+**Live confirmation** on `/resource-type/market-trend-reports/` (the
+only live page found using `section.filter-title-block`), 1440px:
+- Currently-deployed (still-buggy) `?dev=true`: `.title-container`
+  `display:flex`, `h1` and `p.type-description` side by side (h1 0-650px,
+  p 650-1300px), container height 68px.
+- Production: `display:block`, `h1` full-width (1300px) then `p.type-
+  description` full-width below it (y:240→300 then 308→339), container
+  height 99px.
+- Simulated the fix live (CSS injection overriding the old deployed
+  rule, same isolated-reconstruction technique used throughout this
+  file) rather than waiting for a push/deploy to confirm it: resulting
+  `.title-container`/`h1`/`p.type-description` rects **matched
+  production exactly** -- same y/height/width on all three, container
+  height 99px both.
+
+### Status
+
+Fixed, rebuilt, diffed clean, and live-simulation-verified. Superseded
+by §39 below (the gate was flipped the same pass) -- the "not yet
+committed to git" note originally here now covers both this fix and
+§39's PHP change together, see §39's Status.
+
+## §39 -- 2026-09-14 (cont.): gate flipped to default-on for every
+visitor, per explicit user go-ahead ("just flip it")
+
+### Change
+
+`functions.php` -> `adapt_dev_gate_body_class()`: was `if ($_GET['dev']
+=== 'true') add the class`; now adds `dev-float-refactor` to every
+`<body>` unconditionally, with `?dev=false` kept as a quick rollback
+lever back to the original untouched float CSS for any real visitor
+(not just staging) if something turns up that this whole engagement's
+verification missed. `php -l` clean (PHP CLI happened to be available in
+this session's own cloud sandbox, an easier check than the php-parser
+workaround §7/§18 used when it wasn't).
+
+This is the culmination of the whole gated float->flexbox refactor
+documented from §2 through §38 -- the override rules in `source/scss/
+sections/_dev-float-refactor.scss` (originally ~18,500+ lines, grown
+since) now apply sitewide by default instead of only behind `?dev=true`.
+
+### Why this was judged safe to do now
+
+Summarizing the case built across §28/§29/§37/§38 rather than repeating
+it: every previously-flagged pixel-parity gap that got re-checked this
+session (roundtable-card-slider-module, resources-featured, the header's
+804-element desktop+mobile audit in §29, search dropdown, the
+Section-19 `.title-container` tweak per the user's own decision) came
+back an exact match to production. The one meaningfully open item (the
+~16-of-30 template SCSS files never individually reviewed for the
+riskier float categories) was re-derived in §37 to be a scope gap, not a
+correctness one -- their risky declarations were deliberately never
+given override rules, so they still render with their real, original,
+untouched floats today, unaffected by this flip. `?dev=false` is the
+explicit safety net for anything this reasoning missed.
+
+### Status -- NOT yet pushed, this is the important part
+
+Three changes now sit on disk on the user's machine, all via the
+file-staging bridge only (`device_bash` has been unavailable to this
+session the entire pass, §35/§37/§38's recurring blocker) -- **none of
+them committed to git yet**:
+1. `source/scss/sections/_dev-float-refactor.scss` (§38's revert)
+2. `assets/css/main-nofooter.min.css` (§38's rebuild)
+3. `functions.php` (§39's gate flip)
+
+Until these are committed and pushed, staging is still running the OLD
+behavior (gate still `?dev=true`-only, `.title-container` still has the
+old bug) -- **the flip described in this entry is not live yet.**
+Whoever picks this up next (or the user themselves): `git add
+source/scss/sections/_dev-float-refactor.scss assets/css/main-
+nofooter.min.css functions.php && git commit -m "Flip float-refactor
+gate to default-on; scope .title-container to match production" && git
+push`, then verify the Actions deploy goes green, then load the site
+WITHOUT `?dev=true` and confirm `dev-float-refactor` is now present on
+`<body>` (e.g. via devtools or `document.body.className`) as the real,
+final live confirmation this actually took effect for anonymous
+visitors -- everything in §38/§39 up to this point is disk-state and
+simulated/pre-deploy verification only.
+
+---
+
+## §40 -- 2026-09-14 (cont.): gate mechanism removed entirely -- the
+36 gated rules physically merged into the real per-template SCSS, the
+class/toggle deleted for good
+
+### Why
+
+User's answer to §37's "clean way to make the updates global" question
+was explicit: not just flip the gate to default-on (that was §39), but
+**remove the class/gate mechanism entirely** -- no `dev-float-refactor`
+body class, no `?dev=true`/`?dev=false` toggle, no separate gate file.
+The float->flexbox modernization becomes the only CSS; there's nothing
+left to gate.
+
+### What changed
+
+`source/scss/sections/_dev-float-refactor.scss` (63 `body.dev-float-
+refactor { ... }` blocks, ~22,700 lines) was parsed with `postcss-scss`
+and every block's rules moved into the real target file they belong to
+-- 35 files total: `global/_base.scss`, `global/_forms.scss`, `global/
+_styles.scss`, `partials/_header.scss`, `partials/_footer.scss`, and 30
+`templates/*.scss` files. 57 of 63 blocks mapped to a single target file
+mechanically (via the file's own `// === Section N ===` header
+comments); 6 blocks (0, 52, 60, 62, plus the two largest) needed manual
+splitting across multiple target files because they bundled rules for
+several unrelated components together -- each split is backed by a
+`.find()`/count-assertion in the merge script (`merge-transform.js`,
+not part of the repo -- a one-off tool run from this session's cloud
+sandbox) that throws if a selector doesn't match exactly once, so the
+mapping couldn't silently misfire. Every one of the 63 blocks is
+accounted for (`if (!handledBlocks.has(i)) throw`) and every rule
+inside the largest/most complex block (62, ~66 flagged selectors) is
+individually routed with a hand-built lookup table, not a blind
+copy-through.
+
+The gate file was then deleted, and `functions.php`'s
+`adapt_dev_gate_body_class()` filter (added `dev-float-refactor` to
+`body_class`) was deleted along with its `add_filter()` call -- see the
+new comment left in its place. There is no more toggle.
+
+### The real risk this surfaced: losing the class prefix loses the
+cascade guarantee
+
+The gate class wasn't just a toggle -- it was also what made every
+override selector MORE SPECIFIC than the production rule it was meant
+to beat (`body.dev-float-refactor header .foo` always outranks `header
+.foo`, regardless of source order). Bare-merging the same rules into the
+real files, unprefixed, makes them exactly as specific as the rules they
+override -- correctness then depends entirely on file/import order.
+That's unsafe in this build: `clean-css`'s `restructureRules`
+optimization merges rules that share identical declaration content
+*across the whole compiled file* (e.g. every unrelated selector that
+just sets `float: none`) into one combined rule, which can relocate a
+merged override's effective position earlier than the production rule
+it needs to beat -- silently losing the override. Confirmed empirically,
+not theoretically, via a concrete reproducible case
+(`.hbspt-form .hs-fieldtype-checkbox`) before any fix was applied: true
+mismatch rate was 235/2054 checked declarations with naive bare-merging.
+
+**Fix: double every class in each merged selector's own chain.** One
+extra specificity point, applied uniformly and cumulatively down through
+every nested rule inside the same merged entry (`.foo.foo .bar.bar`,
+same technique already used by hand in the original gate file for one
+rule), is enough to always outrank the plain production selector,
+independent of source order or `clean-css`'s reshuffling -- since
+redundant classes don't change what a selector matches. `!important` on
+every declaration was tried first as a simpler alternative and made
+things WORSE (27 regressions instead of 3): it flattens the specificity
+differences the *merged rules relied on to correctly order themselves
+against each other* (e.g. a later bugfix correcting an earlier, broader
+rule), leaving only file-import order to arbitrate ties between the
+merged file's own rules -- an order that doesn't reliably match the
+original gate file's top-to-bottom sequence once split across 35 files.
+Selectors with no class at all to double (rare -- bare tag selectors
+like `main`) fall back to `!important` individually, which is safe there
+since there's no inter-rule ordering to preserve for a selector that
+never repeats.
+
+### Companion build-tool fix: `source/gulp/fix-float-none-display.js`
+
+This existing gulp step adds `display: block` to any `float: none`-only
+rule where blockification is needed (an inline-by-default element like
+`<span>`/`<a>` that relied on the float to become a block box -- see the
+file's own header comment for the full history). Its "is this rule
+gated" detection was hard-keyed to the `body.dev-float-refactor` prefix,
+so once the prefix was gone it silently stopped firing for the merged
+rules -- ~150+ elements lost their `display: block` and collapsed back
+to inline. Fixed by generalizing the script to evaluate every
+`float: none`-only rule uniformly, gated or not (3 edits, all removing
+the old `isGated` branch and using `rule.selectors` directly -- the
+selector-matching/context-sensitivity logic itself, the interesting
+part, needed no changes). Full reasoning trail is in the file's own
+2026-09-14 header comment addition.
+
+One case this generalized script's own (documented, intentional)
+false-negative trade-off couldn't catch: `header .resources-sticky-menu
+{ float: none }` (a leftover no-op from the original mechanical
+Category A/B float-neutralization pass -- `.resources-sticky-menu`'s
+real base rule is already `float: left; width: 100%`, and a 100%-width
+floated block renders identically to a non-floated one) sits right next
+to `.resources-sticky-menu`'s *actual* display toggle, which lives under
+a completely different selector prefix (`body.post/.search-results/
+.template-resources .resources-sticky-menu { display: block }` --
+that's how the sticky bar is hidden by default and shown only on
+specific templates). The script's context-sensitivity check (exact
+selector text, or leaf-compound = last two selector segments) can't
+connect `header .resources-sticky-menu` to `body.post
+.resources-sticky-menu` -- they share a leaf class but neither the full
+string nor the 2-token leaf matches -- so it mechanically added
+`display: block` to the merged rule, which would have un-hidden the
+sticky bar site-wide instead of just on its intended templates. Since
+the rule accomplishes nothing when kept (see above), the fix was to
+simply not emit it -- `merge-transform.js` now has one targeted,
+commented removal for this exact rule rather than trying to teach the
+mechanical fixer a cross-prefix case that would reopen the "343 false
+positives" noise problem its own header comment already documents
+rejecting once (the "fourth fix" entry).
+
+### Verification methodology
+
+Raw selector-text diffing (this project's `css-diff.js`) is the wrong
+tool here, since the selector text itself changes (the class prefix is
+gone) -- comparing "did this exact selector's rule change" no longer
+answers "does the browser render this element the same way". Built a
+headless-Chromium (Playwright) computed-style comparison instead: for
+every one of the ~2,100 selector occurrences the gate file targeted,
+construct a synthetic DOM tree matching the selector chain, load the OLD
+compiled CSS (with `dev-float-refactor` added to `<body>`) and the NEW
+compiled CSS (bare, merged) in two pages at an appropriate viewport
+width per media condition, and diff `getComputedStyle()` for every
+declared property. Caught two real bugs before they could ship: an
+`instantiate()` bug in the harness itself that was checking the wrong
+(outermost, irrelevant) synthetic element and silently masking ~1920 of
+2054 real comparisons; and a missing `footer.min.css` in the test load
+order (some overrides apply to elements whose base rule lives in the
+separately-compiled footer bundle, per this theme's deferred-footer-CSS
+split -- see the `functions.php` comment near `my_enqueue_scripts()`).
+
+**Final result: 2053 of 2054 checked declarations match exactly.** The
+one non-match is the `header .resources-sticky-menu` no-op described
+above -- its own `float` value now reads the untouched production
+`left` instead of the gate's forced `none`, which is the *expected,
+understood, and visually inert* consequence of deliberately not
+emitting that rule (confirmed directly: `.resources-sticky-menu` stays
+`display: none` by default and `.sticky-menu-right`'s `margin-left`
+still resolves to `auto` identically in both old and new, i.e. the
+actual visual behavior this rule sat next to is unaffected).
+
+### Status -- written to disk on the user's machine, NOT yet committed
+
+`device_bash` was unavailable this entire session (same Windows-update
+issue as §35/§37/§38/§39) -- all writes went through the file-staging
+bridge (`device_stage_files`/`device_commit_files`), which cannot
+delete files. The following are on disk on the user's machine as of
+this entry:
+
+**Written/overwritten (39 files):**
+- `functions.php` (gate filter + `add_filter` call deleted)
+- `assets/css/main-nofooter.min.css`, `assets/css/footer.min.css`
+  (rebuilt from the merged SCSS)
+- `source/gulp/fix-float-none-display.js` (generalized off the gate)
+- 35 SCSS files: `source/scss/global/_base.scss`, `_forms.scss`,
+  `_styles.scss`; `source/scss/partials/_header.scss`, `_footer.scss`;
+  and all 30 `source/scss/templates/*.scss` files that received merged
+  content (see the file list in this commit's diff -- every template
+  file that had gated rules was touched, several templates that never
+  had any were not).
+
+**STILL ON DISK, NEEDS MANUAL DELETION:**
+- `source/scss/sections/_dev-float-refactor.scss` -- the old gate file
+  itself. Its content has been fully merged into the 35 files above and
+  it is no longer imported by anything meaningful to keep, but it could
+  not be deleted this session (no `device_bash`, and the file-staging
+  bridge has no delete operation). **Whoever picks this up next (or the
+  user themselves) needs to `git rm source/scss/sections/_dev-float-
+  refactor.scss` (or delete it in an editor/Explorer) before
+  committing** -- leaving it in place is harmless to the compiled
+  output (it's no longer imported/gated by anything that fires), but it
+  is 22,700+ lines of dead weight that will confuse the next person who
+  finds it.
+
+Once that deletion is done, the full commit is: the 39 files listed
+above, plus the `_dev-float-refactor.scss` deletion. Suggested message:
+`git rm source/scss/sections/_dev-float-refactor.scss && git add -A &&
+git commit -m "Merge float->flexbox refactor into real SCSS; remove
+dev-float-refactor gate mechanism entirely" && git push`, then verify
+the Actions deploy goes green, then spot-check the live site (the
+`.resources-sticky-menu` sticky bar in particular, given the one
+understood non-match above, though it should be visually identical) --
+as with §38/§39, everything above this line is disk-state and
+simulated/pre-deploy (headless-browser) verification only until pushed.
+
