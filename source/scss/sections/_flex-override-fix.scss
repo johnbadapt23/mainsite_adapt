@@ -196,3 +196,25 @@ section.post-article-container .container .post-content .meta-tag-container {
 body #cookie-notice .cookie-notice-container {
     display: block;
 }
+
+// Not the same case as the two documented .featured-home/.filter-featured-post
+// exclusions on the shared resources-featured flex rule
+// (source/scss/templates/_resources-types.scss:4823) -- those were written
+// because a DIFFERENT filter-featured-post sub-variant (market-trend-reports,
+// articles: confirmed live, both render a single full-width .item child)
+// breaks if its .container is flexed. This "insights" sub-variant
+// (/resource-type/peer-insights, section class "...filter-featured-post
+// insights") is structurally different: confirmed live, its .container has
+// two real children -- .column.one-half.insights-featured-column and
+// .side-bar-column.one-half -- same shape as the plain/sidebar variant, and
+// production CSS already gives them explicit split widths
+// (.insights-featured-column{width:57.3%!important},
+// .side-bar-column{width:42.7%!important}) that only make sense as a flex
+// row. No existing rule sets display for this selector (checked), so this
+// is a genuine gap, not an override fight -- plain rule, no !important, and
+// scoped to .insights specifically so market-trend-reports/articles (which
+// still need :not(.filter-featured-post) to exclude them) are untouched.
+section.featured-module.resources-featured.filter-featured-post.insights .container {
+    display: flex;
+    align-items: flex-start;
+}
