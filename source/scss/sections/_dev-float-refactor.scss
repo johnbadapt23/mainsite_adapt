@@ -21728,8 +21728,6 @@ body.dev-float-refactor {
 // so they can be checked on staging with ?dev=true before folding
 // into the real files.
 //
-// - section.filter-title-block .container .title-container
-//   (source/scss/templates/_resources-types.scss)
 // - section.roundtable-card-slider-module .roundtable-card-slider
 //   .slide .slide-inner .slide-image-container
 //   (source/scss/templates/_roundtable.scss)
@@ -21739,9 +21737,25 @@ body.dev-float-refactor {
 //   and .text-container (calc(100% - 80px)) are real DOM children of
 //   .service (confirmed via templates/components/_two-column-services.php),
 //   so this makes the icon+text row a real flex row.
-// All three keep their own base float:left (that governs how each
-// sits among ITS siblings) -- display:flex only changes how each
-// lays out ITS OWN children.
+// Both keep their own base float:left (that governs how each sits
+// among ITS siblings) -- display:flex only changes how each lays out
+// ITS OWN children.
+//
+// - REVERTED 2026-09-14: section.filter-title-block .container
+//   .title-container's display:flex!important (originally also part
+//   of this group) squeezed its h1 + p.type-description into a row at
+//   EVERY width -- real/ungated CSS (_resources-types.scss:91-123) has
+//   both children as float:left;width:100% each (a plain vertical
+//   stack, h1 above p.type-description, no row at any breakpoint).
+//   §11/§37 flagged this as the one Section-19 tweak that wasn't
+//   confirmed-safe pixel-parity, just an unconfirmed experimental ask
+//   -- user decision 2026-09-14: revert it, make it match production.
+//   No replacement rule needed: .title-container/h1/p.type-description
+//   already have their own float:none (mechanical Batch 1/2, see the
+//   per-selector list earlier in this file) and .title-container
+//   already gets display:block restored at the "BUGFIX 2026-09-08...
+//   ~24 unrelated sections" block below -- removing this selector from
+//   the flex group is sufficient on its own.
 //
 // - section.two-column-services .container .services-column-container
 //   .column.text-column .text-content-inner .links-container
@@ -21762,7 +21776,6 @@ body.dev-float-refactor {
 //   .home-content-slider (float:left;width:100%) with nothing to
 //   clear it.
 body.dev-float-refactor {
-    section.filter-title-block .container .title-container,
     section.roundtable-card-slider-module .roundtable-card-slider .slide .slide-inner .slide-image-container,
     section.two-column-services .container .services-column-container .column.icon-text-column .service {
         display: flex !important;

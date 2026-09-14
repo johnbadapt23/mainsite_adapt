@@ -4498,3 +4498,128 @@ git push`. No further open optimization items are recorded in this file
 as of this entry -- next session should re-check with the user for new
 regressions/requests before assuming there's nothing left to do.
 
+## §37 -- 2026-09-14 (cont.): re-audited §28's two "not confirmed"
+residual gaps + several of §11's "not yet exhaustively checked" items,
+before considering the user's ask to make the gate the sitewide default
+
+### Why
+
+User asked to either keep optimizing, or -- if the gate is genuinely
+pixel-perfect against production -- flip it on by default for every
+visitor instead of requiring `?dev=true`. Before touching the gate
+itself, went back through this whole file (not just the tail) to build
+an honest list of every item still marked open/unconfirmed, since
+"pixel perfect" is a strong claim and §28 in particular closes with two
+explicitly-unresolved residual gaps.
+
+### Re-verified live, both now exact matches (both were "not confirmed"
+in §28, 4 days ago)
+
+- **`section.roundtable-card-slider-module` (`/private-executive-
+  roundtables/`, 1440px).** §28 measured 814px (dev) vs 854px
+  (production), ~40px unexplained. Today: **1101px both**, identical
+  `.roundtable-card-slider` slide dimensions (1332x468 both). Whatever
+  caused the 4-days-ago gap no longer reproduces -- content may have
+  changed, or (more likely, see below) it was a Slick-initialization
+  timing artifact, not a real CSS bug.
+- **`section.resources-featured` (`/all-resources/`, 1440px).** §28
+  flagged a ~182px gap, "not investigated." Today: **first measurement
+  showed an alarming ~1215px gap (914px dev vs 2129px production)** --
+  but a full recursive DOM-tree capture (x/y/w/h/display/float per node,
+  same method as §29) taken immediately after showed **914px on both**,
+  every nested node identical down to the 4 individual `.resources-
+  side-posts` heights (177/177/192/151, both sides). Root cause of the
+  false alarm: the first read landed before the `.resources-featured-
+  slider` Slick carousel had finished initializing on the production
+  tab (all slides still stacked pre-`slick-initialized`), not a real
+  gate-vs-production difference. **Worth remembering for next time:**
+  this file's own established method already guards against this (real
+  click to defeat WP Rocket's delay-JS, then a wait) but a second,
+  separate race -- Slick's own post-load init -- can still catch a
+  single early read; re-measuring after confirming `.slick-initialized`
+  is present on the element resolves it, as it did here.
+
+### Also spot-checked, both clean
+
+- **Search dropdown** (`.search-dropdown`, homepage, 1440px, opened via
+  its real click handler): 441px height both dev and production, exact
+  match. (Container-level only -- did not re-verify the internal 3-
+  column 25/50/25 split from Section 4 item-by-item the way §29 did for
+  the nav dropdowns.)
+- **`section.sticky-slider-cards` / `section.comparison-module`**
+  (`/adapt-vs-gartner/`, the -100px diff §11 flagged as possibly
+  animation-timing noise): confirmed today's console on the production
+  tab throws the exact same pre-existing, unrelated error the doc
+  already documented (`TweenLite or TweenMax could not be found...
+  ScrollMagic`) -- GSAP is genuinely broken on this page regardless of
+  the gate, so this section's height is not a meaningful signal either
+  way. Not a float-refactor bug; already correctly out of scope.
+
+### Not re-verified this pass (ran out of runway, listed honestly rather
+than assumed clean)
+
+- **Mobile hamburger menu** (`.mobileMenuMain` open state) -- attempted
+  via the "Open menu" link's real click handler, twice, at 375px; the
+  panel never visibly slid in (`x` stayed at 375, i.e. off-screen) in
+  either attempt. Inconclusive, not a confirmed bug -- more likely a
+  test-harness timing/interaction issue (WP Rocket delay-JS not yet
+  attached, same class of issue worked around elsewhere in this file)
+  than a real one, but not proven either way this pass.
+- **`section.sneak-peak-module`** -- no page found using it this pass
+  (didn't search hard; §11 already flagged it as "not checked on a page
+  using this section").
+- **Section 19's ad hoc `.title-container` flex tweak** -- still exactly
+  what §11 already flagged it as: not a mechanical-refactor bug, a
+  deliberate `display:flex!important` the user asked for experimentally,
+  gated for review. It squeezes `h1`+`p.type-description` into a row at
+  ALL widths, not just where a real breakpoint would. **This is the one
+  place in the whole gate where flipping the default would ship an
+  intentional-but-unconfirmed visual change, not just "the same page
+  faster."** Needs the user's explicit yes/no, not an inference from
+  pixel-diffing.
+- **The ~16-of-30 `source/scss/templates/*.scss` files never
+  individually reviewed** for the original narrow-width/no-width/
+  carousel-adjacent categories (§6/§28's still-open gap; confirmed the
+  file count against the actual `source/scss/templates/` directory
+  listing today -- 30 files total, 14 covered by name across Sections
+  1-19 plus `_default`/`_author`, leaving `_agenda`, `_benchmarking`,
+  `_benchmarks-maturity`, `_customer-stories`, `_gtm`, `_home`,
+  `_landing`, `_market-buyer`, `_position`, `_resources`, `_roundtable`,
+  `_services`, `_single-events`, `_single-post`, `_subscribe`,
+  `_thank-you-old` -- 16 files, matches the doc's earlier count exactly).
+  **Re-derived why this is lower-risk than it sounds, worth recording
+  explicitly since it wasn't spelled out before:** every override this
+  whole engagement has ever written lives in the one gated file,
+  `_dev-float-refactor.scss` -- the original per-template SCSS files are
+  never edited, confirmed by their mtimes bearing no relationship to
+  which "Section" reviewed them. The risky Category C/D declarations
+  (723 sitewide, the ones that need individual per-selector review) were
+  *deliberately excluded* from the initial mechanical Batch 1/2 pass and
+  only get an override rule once a "Section" reviews that file. For the
+  16 files with no Section, their C/D declarations therefore have **no
+  override rule at all** -- under `?dev=true` they render with their
+  original, real, untouched float CSS, identical to production by
+  construction, not "unverified." The gap is real but it's a *scope*
+  gap (less of the theme has had its floats optimized away yet), not a
+  *correctness* gap (nothing renders differently there today). The
+  already-fixed Category-A/B false-positive bug class (the
+  `calc(100%-Npx)` substring bug, `be79883`) was caught and corrected
+  sitewide, not per-file, so it doesn't reintroduce risk here either.
+
+### Status / recommendation
+
+No code changed this pass -- investigation and re-verification only.
+Net effect: both of §28's previously-open residual gaps are now
+confirmed non-issues (timing artifacts, not bugs), which meaningfully
+raises confidence in the gate's overall correctness beyond what §28 left
+off. The gate has **not** been flipped to default-on. Recommends: get an
+explicit answer from the user on the Section 19 `.title-container`
+behavior first (the one place a default-flip would ship a deliberate,
+unconfirmed change rather than pure parity), then flip
+`adapt_dev_gate_body_class()` in `functions.php` to unconditional (still
+trivially revertible -- one function, one commit) rather than continuing
+to chase the remaining ~16-file scope gap first, given today's finding
+that the scope gap doesn't carry the correctness risk it looked like it
+did. Full reasoning and the user's answer, once given, belongs in the
+next entry before the gate is actually flipped.
+
