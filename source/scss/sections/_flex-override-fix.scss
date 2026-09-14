@@ -44,3 +44,13 @@ section.two-column-switch-module .container .module-container .switch-module .co
 section.expanding-form-module .container .column-container .column .form-embed {
     margin-bottom: 20px;
 }
+
+// The audit override for this section doubles its classes 2 levels deep
+// (.column-container-outer.column-container-outer .column-container.column-container),
+// giving it far more specificity than a plain rule -- !important needed
+// here since there's no genuine display:flex declared for .column-container
+// under .three-column-text-image-cards to restore via selector-normalizing;
+// this is establishing new intended behaviour, not fixing a lost one.
+.three-column-text-image-cards .column-container.card-container {
+    display: flex !important;
+}
