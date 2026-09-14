@@ -218,3 +218,47 @@ section.featured-module.resources-featured.filter-featured-post.insights .contai
     display: flex;
     align-items: flex-start;
 }
+
+// Root-caused the broken "Resources" hover mega-menu the user flagged via
+// screenshots (Topics/Reports dropdown panels on the header's sticky
+// resources-nav, e.g. staging.adapt.com.au/resource-type/peer-insights):
+// each .featured-post's markup is <span class="featured-post"><a href="..">
+// <span class="post-image-container">...<span class="post-title-container">
+// ...</a></span> -- the .post-image-container/.post-title-container spans
+// already float:left correctly (genuine float:left declared directly in
+// source/scss/templates/_post.scss and _roundtable.scss, not an audit
+// float:none-only rule, so fix-float-none-display.js never touches them),
+// but the <a> wrapping both of them has NO display rule anywhere and
+// defaults to display:inline. An inline box doesn't establish a proper
+// block formatting context for its floated children, so consecutive
+// .featured-post entries' image/title pairs were overlapping and running
+// together instead of each rendering as its own row/column -- confirmed
+// live: forcing display:flex on the <a> alone (no other change) fixed the
+// stacking immediately.
+// .featured-post itself already has an existing doubled-class, pure
+// float:none-only audit override in both contexts this component appears
+// in (source/scss/partials/_header.scss:5792-5795 for the main-nav
+// megaMenu, :6167-6171 for the resources-sticky-menu variant), so
+// fix-float-none-display.js already mechanically adds display:block to it
+// -- confirmed live (computed display was already "block"). No selector-
+// chain trick needed here at all: none of these three declarations
+// (display/clear on .featured-post, display:flex on the <a>, float:none/
+// clear on the <a>'s span children) fight an existing override -- the
+// audit rules only ever set float:none, a different property, so there's
+// nothing to out-specificity and no !important needed. Scoped to the
+// shared .featured-posts-container class (not a longer chain) so the fix
+// applies in both the main-nav and sticky-nav contexts at once, matching
+// where the bug actually occurs.
+span.featured-posts-container .featured-post {
+    display: block;
+    clear: both;
+}
+
+span.featured-posts-container .featured-post a > span {
+    float: none;
+    clear: both;
+}
+
+span.featured-posts-container .featured-post a {
+    display: flex;
+}
