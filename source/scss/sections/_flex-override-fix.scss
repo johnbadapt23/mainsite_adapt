@@ -479,3 +479,41 @@ section.two-column-services.two-column-services.landing-video-intro.landing-vide
 section.about-block.about-block .container.container .about-container.about-container .column-container.column-container {
     display: flex;
 }
+
+// Follow-up after the user asked "are you sure all sections/pages are
+// identical -- no broken layout from the float->flex upgrade?": the sweep
+// above only tested a 1440px viewport. Re-checking the same
+// .links-container.desktop/.mobile pair at 768px and 375px against
+// production turned up the mirror image of fix (2) above, invisible at
+// desktop width:
+//
+// 4) .links-container.desktop should switch to `display:none` under the
+// max-width:767px media query (_landing.scss:238, `&.desktop{display:none}`
+// inside that query) but the SAME unconditional, no-media
+// `.links-container.links-container{display:block}` pipeline rule from fix
+// (2)'s writeup also wins here (equal specificity, later in cascade) --
+// showing the desktop button row on mobile alongside the mobile one.
+// Confirmed live at 375px: production has .desktop display:none/0px;
+// staging had display:block/112px, overlapping the correct mobile version.
+// Restoring display:none for .desktop specifically under max-width:767px
+// (doubling .desktop.desktop like the min-width:768px fix above doubles
+// .mobile.mobile) wins on specificity alone.
+//
+// 5) .links-container.mobile never got its own float:left restored --
+// fix (1) above only doubled-and-restored it for .desktop, but the base
+// rule floats .links-container (both variants) so it can contain its own
+// floated .std-button/.video-popup children. At mobile widths .mobile is
+// the one actually visible, and it was collapsing to 0 height exactly like
+// .desktop did at desktop widths. Confirmed live at 375px: production
+// .mobile height 148.4px; staging 0px, its buttons invisible. Unlike (4)
+// this one needs no media scoping -- float only matters while the element
+// is displayed, so restoring it unconditionally is safe at every width.
+@media (max-width: 767px) {
+    section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column .links-container.links-container.desktop.desktop {
+        display: none;
+    }
+}
+
+section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column .links-container.links-container.mobile.mobile {
+    float: left;
+}
