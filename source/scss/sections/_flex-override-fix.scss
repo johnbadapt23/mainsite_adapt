@@ -326,3 +326,42 @@ section.resources-featured.resources-featured .container.container .item.item.ma
 section.open-positions {
     display: flow-root;
 }
+
+// User asked to compare .text-title-list.two-column-list.background-pink
+// ("Why work with us", /careers/) against production and confirmed it's
+// broken. Pixel comparison found the individual list items themselves
+// render identically (their .title/.text/checkmark-icon layout doesn't
+// actually depend on float here -- confirmed both floated and unfloated
+// render the same rect), but the OUTER container chain collapses: staging
+// section height 354px / .text-title-list-inner height 2px vs production's
+// 785px / 433px. Same root cause and remedy as section.open-positions
+// above, one level deeper: source/scss/templates/_position.scss:617-806
+// floats this component's wrapper chain for real (`section.text-title-list
+// {float:left}` at :618, `.text-title-list-container` at :636,
+// `.text-title-list-inner` at :653 -- each one a BFC-establishing float
+// specifically so it contains its own floated children), and each level
+// has its own doubled-class audit override neutralizing it to float:none
+// (:1248, :1254-1260, :1264-1272) -- .text-title-list-inner isn't a
+// <section> so the sitewide `section{float:none!important}` reset doesn't
+// independently apply to it, but the specific doubled overrides still
+// catch all three levels. display:flow-root on each level reproduces the
+// self-containing effect without floating any of them (so nothing after
+// this section needs clearing either), matched to the same doubled-class
+// specificity as the competing overrides -- no !important. Scoped to the
+// bare `section.text-title-list` (not the `.two-column-list.background-
+// pink` variant alone) since the collapsing overrides target every
+// variant of this component the same way, not just this page's. Confirmed
+// live: section height 354->785px and .text-title-list-inner 2->433px,
+// an exact match with production, and the following section still lands
+// directly below with no gap or overlap.
+section.text-title-list.text-title-list {
+    display: flow-root;
+}
+
+section.text-title-list.text-title-list .container.container .text-title-list-container.text-title-list-container {
+    display: flow-root;
+}
+
+section.text-title-list.text-title-list .container.container .text-title-list-container.text-title-list-container .text-title-list-inner.text-title-list-inner {
+    display: flow-root;
+}
