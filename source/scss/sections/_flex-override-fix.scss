@@ -55,6 +55,61 @@ section.expanding-form-module .container .column-container .column .form-embed {
     display: flex !important;
 }
 
+// Same situation as .three-column-text-image-cards directly above (sitewide
+// sweep found this on /executive-advisors/, template-ecosystem-advisors):
+// section.two-column-text-image-cards .container .column-container-outer
+// .column-container.card-container has the same "card grid" pattern -- no
+// genuine display:flex declared anywhere for .column-container scoped to
+// THIS section to restore via selector-normalizing (the only display:flex
+// rule that matches it live is a merged, unrelated .column-container base
+// rule for other sections entirely -- confirmed by checking whether its
+// selector text actually names two-column-text-image-cards: it doesn't).
+// float-wrap:wrap is already correctly computed (each .column.one-half is
+// already 524px = 50% width) so only display is missing. Confirmed live vs
+// production: 4 cards should render as 2 flex rows of 2, each row's cards
+// height-matched (455/455px then 483/483px); without display:flex they
+// were 4 stacked floats, mismatched heights within each intended row.
+// Establishing new intended behaviour like the sibling section above, so
+// !important is needed here too.
+.two-column-text-image-cards .column-container.card-container {
+    display: flex !important;
+}
+
+// Sitewide sweep found /benchmark-maturity-assessment/cloud-compute-
+// finops-maturity/ (template-benchmarking, section.quote-slider.customer-
+// events-slider -- shared by every quote-slider variant across the site,
+// not just benchmarking pages) collapsing its quote block: base rule
+// `section.quote-slider.customer-events-slider .container
+// .quote-slider-outer { float: left; }` is genuine (it self-contains its
+// floated .quote-module child), but the doubled-class audit override
+// (`.quote-slider-outer.quote-slider-outer { float: none; }`) neutralizes
+// it. Confirmed live vs production: production is 576px tall (containing
+// its 496px .quote-module child); staging collapsed to 80px, with the
+// quote text/image spilling ~390px below the visible section background.
+// display:flow-root reproduces the self-containing effect without
+// re-floating the element (avoiding any risk of pulling a following
+// sibling up beside it, same reasoning as section.open-positions above),
+// matched to the same doubled-class specificity as the competing
+// override -- no !important.
+section.quote-slider.quote-slider.customer-events-slider.customer-events-slider .container.container .quote-slider-outer.quote-slider-outer {
+    display: flow-root;
+}
+
+// Sitewide sweep found /private-executive-roundtables/ (template-
+// executive-roundtables) with the same collapse pattern on
+// section.experience-module's title container: base rule
+// `section.experience-module .container .experience-title-container` is
+// genuinely `float:left` (containing its floated .column.one-half
+// children), neutralized by the doubled-class override
+// `.experience-title-container.experience-title-container { float: none; }`.
+// Confirmed live vs production: production height 228px; staging collapsed
+// to 0px. display:flow-root (verified live, exact 228px match) restores
+// containment without re-floating the element -- same reasoning and no
+// !important needed as the other flow-root fixes above.
+section.experience-module.experience-module .container.container .experience-title-container.experience-title-container {
+    display: flow-root;
+}
+
 .events-title-block span.button-container {
     display: flex !important;
 }
@@ -364,4 +419,63 @@ section.text-title-list.text-title-list .container.container .text-title-list-co
 
 section.text-title-list.text-title-list .container.container .text-title-list-container.text-title-list-container .text-title-list-inner.text-title-list-inner {
     display: flow-root;
+}
+
+// Sitewide sweep (/become-a-partner/, template-landing) found three
+// distinct regressions in the "landing-video-intro" two-column intro block
+// and the "about-block" section below it, all traced to
+// source/scss/templates/_landing.scss.
+//
+// 1) .links-container.desktop (the button/video-link row under the intro
+// text) is genuinely `float:left` in the base rule (_landing.scss:234) so
+// it can contain its own floated .std-button/.text-link children, but the
+// doubled-class audit override at _landing.scss:1766
+// (`.links-container.links-container{float:none}`) neutralizes it,
+// collapsing it to 0 height -- confirmed live vs production (height
+// 61.6px, float:left there; 0px/float:none on staging).
+//
+// 2) .links-container.mobile is supposed to stay `display:none` on desktop
+// (_landing.scss:236) and only switch to `display:block` under the
+// max-width:767px media query (_landing.scss:242) -- but the auto-generated
+// fix-float-none-display.js pipeline output (main.min.css, no media query)
+// also targets the undoubled `.links-container.links-container` selector
+// with `display:block` to compensate for the SAME float:none override in
+// (1) above. Its matcher didn't know `.links-container` has two modifier
+// variants (.desktop/.mobile) with opposite intended display values, so it
+// mechanically restored `display:block` for both -- which happens to be
+// correct for .desktop but incorrectly un-hides .mobile's button row on
+// desktop viewports too. Confirmed live: production shows
+// .links-container.mobile as `display:none` on a 1440px viewport; staging
+// showed `display:block`, a real visible desktop-only defect (a mobile
+// button appearing on desktop). Fixed by restoring `display:none` for the
+// desktop breakpoint specifically (scoped under min-width:768px so the
+// existing max-width:767px mobile behavior is untouched), doubling one
+// more class pair (.mobile.mobile) than the offending unconditional rule
+// so it wins on specificity alone -- no !important, no cascade-order
+// reliance.
+//
+// 3) .column-container (the two-column split inside .about-block) is
+// genuinely `float:left` in its base rule (_landing.scss:413) and gets the
+// same float:none treatment via the doubled-class override at
+// _landing.scss:1819 -- but unlike a typical collapse fix, production
+// actually renders this container as `display:flex` (not float at all),
+// stretching both .column.one-half children to equal height (both 284px).
+// Confirmed live: staging's floated children are NOT height-matched (284px
+// and 176px, since float never equalizes row heights) -- a visible
+// misalignment between the two columns that flow-root would not fix
+// (flow-root only restores containment, not the flex stretch behavior).
+// Restoring the genuine display:flex instead exactly reproduces
+// production's stretched, equal-height columns.
+section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column .links-container.links-container.desktop.desktop {
+    float: left;
+}
+
+@media (min-width: 768px) {
+    section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column .links-container.links-container.mobile.mobile {
+        display: none;
+    }
+}
+
+section.about-block.about-block .container.container .about-container.about-container .column-container.column-container {
+    display: flex;
 }
