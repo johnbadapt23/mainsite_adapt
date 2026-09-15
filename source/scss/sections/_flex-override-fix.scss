@@ -519,10 +519,10 @@ section.two-column-services.two-column-services.landing-video-intro.landing-vide
 }
 
 // Extending the sweep to previously-unchecked templates (individual article/
-// resource posts, per the "go please" mandate) turned up the same pattern a
+// resource posts) turned up the same doubled-class-audit-override pattern a
 // third time: source/scss/templates/_post.scss floats `.sidebar-container`
-// (the byline block under the title, and the "subscribe" sidebar column
-// further down the article) for real, in two different sections --
+// (the byline block under the title, and the "subscribe" sidebar further
+// down the article) for real, in two different sections --
 // `section.post-title-block .container .sidebar-container` and
 // `section.post-article-container .container .sidebar-container` -- each
 // declared `float: left`, both neutralized by the usual sitewide
@@ -531,11 +531,10 @@ section.two-column-services.two-column-services.landing-video-intro.landing-vide
 // /resources/add-to-media-section/meet-adapts-new-research-director-archie-reed/:
 // the post-title-block byline box was 288px on staging vs 338px on
 // production (float:none vs float:left), and the post-article-container
-// subscribe sidebar was 282.9px vs 343.6px, same cause. Restoring float:left
-// with the same doubled-selector convention fixes both; verified live via
-// injected <style> that float recovers on both instances (the two
-// containers' exact heights can still differ slightly from production's
-// because of unrelated per-page sidebar content, not a symptom of this bug).
+// subscribe sidebar was 282.9px vs 343.6px, same cause -- confirmed at both
+// 1440px and 375px, production floats both identically at every width, so
+// no media scoping is needed. Restoring float:left with the same
+// doubled-selector convention fixes both.
 section.post-title-block.post-title-block .container.container .sidebar-container.sidebar-container {
     float: left;
 }
