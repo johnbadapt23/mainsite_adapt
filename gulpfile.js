@@ -29,12 +29,18 @@ gulp.task('_build', gulp.parallel(
     'build:icons',
     'build:images',
     'build:scripts',
-    'build:styles',
     // Produces the actually-enqueued split CSS (main-nofooter.min.css +
     // footer.min.css, see source/gulp/tasks/build/styles-split.js and
-    // functions.php's my_enqueue_scripts()). build:styles above still
-    // runs too and produces main.min.css, kept as an unused rollback
-    // artifact.
+    // functions.php's my_enqueue_scripts()). 'build:styles' (main.min.css,
+    // an unused rollback artifact -- functions.php never enqueues it) was
+    // dropped from here 2026-09-15: it added a real ~1.2min of serial
+    // build time to every CI deploy for a file nothing reads, and the
+    // float-refactor pipeline it was a safety net for has since been
+    // stress-tested across 25+ sitewide fixes without needing it. The
+    // task itself is untouched (source/gulp/tasks/build/styles.js) and
+    // still wired into 'watch' for local dev live-reload -- only dropped
+    // from the production build list. Run `npx gulp build:styles`
+    // directly if main.min.css is ever needed again.
     'build:styles-split',
     'build:php'
 ));

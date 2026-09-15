@@ -700,3 +700,50 @@ section.events-listing-module.events-listing-module .events-listing.events-listi
         display: flow-root;
     }
 }
+
+// /get-in-touch/ (section.contact-module) -- user-reported: "still see
+// .desktop and .mobile that are overridden by the long selector giving
+// display:block;float:none". Confirmed live: `.contact-image-container.
+// desktop` and `.contact-image-container.mobile` (the responsive-swap
+// image pair under .title-details-column) render SIMULTANEOUSLY at every
+// width, instead of one-or-the-other -- the exact same "unconditional
+// doubled override beats a media-scoped genuine display rule" pattern as
+// the .links-container.desktop/.mobile fixes above, just for a different
+// component this time. The real breakpoint (confirmed live on production
+// via binary search, not assumed): max-width:1023px shows .mobile only,
+// min-width:1024px shows .desktop only -- NOT the usual 767/768 split
+// used elsewhere in this file, so don't copy that breakpoint by habit.
+//
+// Two genuine rules exist and are correct on their own:
+// `.contact-image-container.desktop{display:none}` @media max-width:1023px
+// (hides desktop on mobile) and `.contact-image-container.mobile
+// {display:block}` @media max-width:1023px (shows mobile on mobile,
+// paired with an unconditional `{display:none}` base rule that's supposed
+// to hide it everywhere else). Both are beaten by the unconditional,
+// doubled-class audit override `section.contact-module.contact-module
+// .container.container .contact-innner.contact-innner .column.column
+// .title-details-column.title-details-column .contact-image-container.
+// contact-image-container{float:none;display:block}` (12 class-selectors,
+// no media query) -- it forces display:block on BOTH variants at every
+// width, since it's more specific than the desktop-hide rule (7 classes)
+// and applies unconditionally where the mobile show/hide split is media-
+// scoped.
+//
+// Fixed with the same media-scoped, specificity-exceeding pattern as the
+// landing-video-intro fixes above: one rule per breakpoint, doubling one
+// more level (14 classes each) than the 12-class override, each scoped to
+// only the media range where it needs to act. Confirmed live via direct
+// element.style testing at 1023px and 1024px: hiding the wrong variant at
+// each width leaves the correct one showing at its exact production
+// height (193.1875px mobile, 294.390625px desktop).
+@media (max-width: 1023px) {
+    section.contact-module.contact-module .container.container .contact-innner.contact-innner .column.column.title-details-column.title-details-column .contact-image-container.contact-image-container.desktop.desktop {
+        display: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    section.contact-module.contact-module .container.container .contact-innner.contact-innner .column.column.title-details-column.title-details-column .contact-image-container.contact-image-container.mobile.mobile {
+        display: none;
+    }
+}
