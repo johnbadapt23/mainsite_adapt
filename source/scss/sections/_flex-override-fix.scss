@@ -294,3 +294,35 @@ section.resources-featured.resources-featured .container.container .item.item.fu
 section.resources-featured.resources-featured .container.container .item.item.market-trend-reports.market-trend-reports .item-column.item-column.one-half.one-half {
     float: left;
 }
+
+// Found while sweeping /careers/ for other floated-section fallout (user
+// asked to check that page after the articles fix above): section.open-
+// positions ("Open Positions" block near the bottom) was rendering as a
+// ~180px sliver with its "Sales Associate"/etc. job links effectively
+// invisible -- confirmed live, the following <footer> was rendering at the
+// SAME top offset as this section instead of below it, i.e. the section's
+// own box had collapsed to ~0 height around its floated children.
+// Root cause: source/scss/templates/_position.scss:842 declares
+// `section.open-positions { float: left; ... }` for real -- deliberately,
+// so the section forms its own block-formatting context and contains its
+// two floated columns (.title-column/.positions-column) without needing a
+// separate clearfix. But there's a SITEWIDE reset (confirmed live via the
+// browser's own matched-rules list) of `section { float: none !important;
+// display: block; }`, which beats this specific section's genuine
+// float:left regardless of selector specificity, since !important always
+// wins over specificity. Restoring float:left here would need matching
+// !important, and would ALSO float the section itself back into normal
+// flow -- which pulled the footer up beside it in testing (floated
+// elements are skipped by follow-on block siblings unless cleared), so
+// simply matching the !important would trade one layout bug for another.
+// display:flow-root achieves the same thing float:left did here (forms a
+// new block-formatting context, so the section auto-sizes to contain its
+// floated children) WITHOUT floating the section itself -- so siblings
+// after it still flow normally underneath. It also isn't touched by the
+// sitewide reset at all (that rule only sets float and display:block, and
+// display:block/flow-root are unrelated -- normal specificity, no
+// !important needed). Confirmed live: section height went from ~0 to
+// 740px and the footer moved to directly below it.
+section.open-positions {
+    display: flow-root;
+}
