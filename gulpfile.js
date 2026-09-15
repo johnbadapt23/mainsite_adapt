@@ -29,6 +29,12 @@ gulp.task('_build', gulp.parallel(
     'build:icons',
     'build:images',
     'build:scripts',
+    // ScrollMagic + its GSAP plugin, split out of build:scripts 2026-09-15
+    // into their own conditionally-enqueued bundle -- see
+    // source/gulp/tasks/build/scripts-scrollmagic.js for the full
+    // rationale and functions.php's adapt_page_needs_gsap()/
+    // my_enqueue_scripts() for the enqueue side.
+    'build:scripts-scrollmagic',
     // Produces the actually-enqueued split CSS (main-nofooter.min.css +
     // footer.min.css, see source/gulp/tasks/build/styles-split.js and
     // functions.php's my_enqueue_scripts()). 'build:styles' (main.min.css,

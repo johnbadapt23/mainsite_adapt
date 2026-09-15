@@ -366,6 +366,26 @@ function my_enqueue_scripts() {
     if ( adapt_page_needs_gsap() ) {
         wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js', array(), null, true);
         wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js', array(), null, true);
+        // ScrollMagic + its GSAP plugin (main.js's fixed-scroller /
+        // sticky-slider-cards animations) -- split out of main.min.js into
+        // this own bundle 2026-09-15, same reasoning as the gsap-js/
+        // scrolltrigger-js gating just above: it was previously baked into
+        // every page's main.min.js unconditionally even though only these
+        // 8 templates ever use it, spamming "TweenLite or TweenMax could
+        // not be found" to the console on every other page (harmless --
+        // main.js's own usage is guarded behind element-presence checks --
+        // but pure dead weight). See
+        // source/gulp/tasks/build/scripts-scrollmagic.js for the build
+        // side. Explicit gsap-js/scrolltrigger-js dependency guarantees
+        // load order ahead of main-js's own TweenLite/TimelineMax/
+        // ScrollMagic usage below.
+        wp_enqueue_script(
+            'scrollmagic-js',
+            get_template_directory_uri() . '/assets/js/scrollmagic.min.js',
+            array( 'gsap-js', 'scrolltrigger-js' ),
+            filemtime(get_template_directory(). '/assets/js/scrollmagic.min.js'),
+            true
+        );
     }
 
     // Previously loaded as raw <script> tags in header.php ahead of wp_head().
@@ -399,10 +419,21 @@ function my_enqueue_scripts() {
         true
     );
 
+    // main-js's own ScrollMagic usage is guarded behind element-presence
+    // checks at runtime (see source/js/main.js), so it's safe to enqueue
+    // main-js on every page regardless -- but on the pages where that code
+    // DOES run, it needs scrollmagic-js (and transitively gsap-js/
+    // scrolltrigger-js) to already be loaded. Declaring it as a dependency
+    // here (rather than relying on enqueue-call order, as before
+    // 2026-09-15's ScrollMagic bundle split) guarantees that ordering.
+    $main_js_deps = array( 'jquery' );
+    if ( adapt_page_needs_gsap() ) {
+        $main_js_deps[] = 'scrollmagic-js';
+    }
     wp_enqueue_script(
         'main-js',
         get_template_directory_uri() . '/assets/js/main.min.js',
-        array('jquery'),
+        $main_js_deps,
         filemtime(get_template_directory(). '/assets/js/main.min.js'),
         true
     );

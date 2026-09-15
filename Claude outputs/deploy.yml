@@ -5,13 +5,18 @@ name: Build and Deploy Theme
 #      (build:styles-split compiles source/scss, minus the footer partial,
 #       into the two files actually enqueued -- assets/css/main-nofooter.min.css
 #       and assets/css/footer.min.css; build:scripts bundles source/js +
-#       vendor libs -> assets/js/main.min.js). build:styles (produces
-#       assets/css/main.min.css, an unused rollback artifact -- functions.php
-#       never enqueues it) was dropped from this step 2026-09-15: with gulp's
-#       CLI running multiple task names in series, it was adding a real
-#       ~1.2min of serial build time to every deploy for a file nothing
-#       reads. The task itself still exists (source/gulp/tasks/build/styles.js)
-#       if main.min.css is ever needed again -- just not run here.
+#       vendor libs -> assets/js/main.min.js; build:scripts-scrollmagic
+#       bundles ScrollMagic + its GSAP plugin -> assets/js/scrollmagic.min.js,
+#       conditionally enqueued only on the 8 templates that use it -- see
+#       source/gulp/tasks/build/scripts-scrollmagic.js and functions.php's
+#       adapt_page_needs_gsap(); split out of build:scripts 2026-09-15).
+#       build:styles (produces assets/css/main.min.css, an unused rollback
+#       artifact -- functions.php never enqueues it) was dropped from this
+#       step 2026-09-15: with gulp's CLI running multiple task names in
+#       series, it was adding a real ~1.2min of serial build time to every
+#       deploy for a file nothing reads. The task itself still exists
+#       (source/gulp/tasks/build/styles.js) if main.min.css is ever needed
+#       again -- just not run here.
 #   2. Uploads the theme to the server over SFTP.
 #
 # Uses the "staging" GitHub environment (Settings -> Environments -> staging),
@@ -88,7 +93,7 @@ jobs:
       # so loading the task registry for build:styles/build:scripts no longer
       # transitively requires it. See that file for the full explanation.
       - name: Compile CSS and JS
-        run: npx gulp build:styles-split build:scripts
+        run: npx gulp build:styles-split build:scripts build:scripts-scrollmagic
 
       # Two prior deploy approaches were tried and ruled out here:
       #  1. wlixcc/SFTP-Deploy-Action (original) -- always does a full,
@@ -124,18 +129,18 @@ jobs:
       #    as a literal filesystem path by this particular syntax form and
       #    breaks; verified locally against this repo's real git history).
       #
-      #  - assets/css/main-nofooter.min.css, assets/css/footer.min.css, and
-      #    assets/js/main.min.js are all committed to git, but only ever
-      #    *regenerated* by the "Compile CSS and JS" step above -- they
-      #    don't get re-committed by CI. That means a plain git-diff-based
-      #    delta would only pick them up as "changed" on commits where
-      #    someone manually rebuilt and committed them -- NOT on commits
-      #    that only touch source/scss or source/js, since source/ is
-      #    excluded from deploy and the compiled output isn't re-committed
-      #    to reflect it. Left alone, that would silently deploy stale
-      #    compiled CSS/JS whenever only the source changed.
-      #    sync-delta-includes forces these three files into every deploy
-      #    regardless of what git diff reports, closing that gap.
+      #  - assets/css/main-nofooter.min.css, assets/css/footer.min.css,
+      #    assets/js/main.min.js, and assets/js/scrollmagic.min.js are all
+      #    committed to git, but only ever *regenerated* by the "Compile CSS
+      #    and JS" step above -- they don't get re-committed by CI. That
+      #    means a plain git-diff-based delta would only pick them up as
+      #    "changed" on commits where someone manually rebuilt and
+      #    committed them -- NOT on commits that only touch source/scss or
+      #    source/js, since source/ is excluded from deploy and the compiled
+      #    output isn't re-committed to reflect it. Left alone, that would
+      #    silently deploy stale compiled CSS/JS whenever only the source
+      #    changed. sync-delta-includes forces these four files into every
+      #    deploy regardless of what git diff reports, closing that gap.
       #    (assets/css/main.min.css was dropped from this list 2026-09-15
       #    alongside build:styles above: it's an unused rollback artifact
       #    -- functions.php never enqueues it -- and now that it's no
@@ -143,7 +148,9 @@ jobs:
       #    just re-upload an increasingly stale, dead file on every
       #    deploy. Its last-built copy stays on the server harmlessly
       #    unreferenced; delete it manually there if it's ever worth the
-      #    trip.)
+      #    trip. assets/js/scrollmagic.min.js was added the same day, once
+      #    it became a real, regenerated-by-CI enqueued file -- see the
+      #    ScrollMagic bundle split noted above.)
       - name: Deploy over SFTP
         uses: milanmk/actions-file-deployer@master
         with:
@@ -181,4 +188,4 @@ jobs:
             :!/faviconData.json
             :!/README.md
             :!/tools
-          sync-delta-includes: 'assets/css/main-nofooter.min.css,assets/css/footer.min.css,assets/js/main.min.js'
+          sync-delta-includes: 'assets/css/main-nofooter.min.css,assets/css/footer.min.css,assets/js/main.min.js,assets/js/scrollmagic.min.js'
