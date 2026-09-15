@@ -518,27 +518,185 @@ section.two-column-services.two-column-services.landing-video-intro.landing-vide
     float: left;
 }
 
-// Extending the sweep to previously-unchecked templates (individual article/
-// resource posts) turned up the same doubled-class-audit-override pattern a
-// third time: source/scss/templates/_post.scss floats `.sidebar-container`
-// (the byline block under the title, and the "subscribe" sidebar further
-// down the article) for real, in two different sections --
-// `section.post-title-block .container .sidebar-container` and
-// `section.post-article-container .container .sidebar-container` -- each
-// declared `float: left`, both neutralized by the usual sitewide
-// doubled-class reset (`....sidebar-container.sidebar-container{float:none}`)
-// at equal specificity, later in the cascade. Confirmed live on
-// /resources/add-to-media-section/meet-adapts-new-research-director-archie-reed/:
-// the post-title-block byline box was 288px on staging vs 338px on
-// production (float:none vs float:left), and the post-article-container
-// subscribe sidebar was 282.9px vs 343.6px, same cause -- confirmed at both
-// 1440px and 375px, production floats both identically at every width, so
-// no media scoping is needed. Restoring float:left with the same
-// doubled-selector convention fixes both.
-section.post-title-block.post-title-block .container.container .sidebar-container.sidebar-container {
-    float: left;
+// /about-us/'s "two-column-image-text-events" section .two-column-image-
+// text-outer. IMPORTANT CORRECTION (caught via re-verification at proper
+// device widths after an earlier version of this fix was written using the
+// Browser pane's own ambient/default width, which is neither a real mobile
+// nor a real desktop breakpoint -- see lesson at top of file if one gets
+// added): this component is responsive with a real behavioural split at
+// the site's standard 768px breakpoint, confirmed live on PRODUCTION itself
+// at 375/767/768/1440px:
+//   <768px (mobile):  display:block; float:left  (self-contains its
+//                      floated .image-column/.text-column children)
+//   >=768px (tablet+): display:flex                 (children become flex
+//                      items, float irrelevant)
+// Checked staging at >=768px WITHOUT any fix: it already matches production
+// exactly (display:flex, heights identical at both 768px and 1440px) --
+// the genuine display:flex rule for this breakpoint is apparently untouched
+// by the audit override there, so no fix is needed or wanted for tablet/
+// desktop. The bug is real but confined to <768px: staging collapses to
+// float:none/display:block/height:0 there (production: float:left/
+// height:701px at 375px), traced to the same doubled-class audit override
+// (`.two-column-image-text-outer.two-column-image-text-outer{float:none}`)
+// fighting the genuine mobile float:left. A first attempt at this fix
+// (unconditional display:flex, no media scoping) was WRONG: confirmed live
+// it forces the mobile children into a squeezed flex row (123px/211px wide
+// side-by-side boxes) instead of production's full-width stacked columns
+// -- a real visual regression this fix would have introduced. Corrected to
+// scope the fix to max-width:767px only, and to use display:flow-root
+// (not float:left) so it reproduces the containment (confirmed live: exact
+// same resulting height as float:left, 685px vs production's 701px -- the
+// small remaining ~16px gap is isolated to .text-column's own height, not
+// the container, and unrelated to float/display) without fighting the
+// float property itself at equal specificity (the same cascade-reordering
+// risk documented elsewhere in this file for .sidebar-container).
+@media (max-width: 767px) {
+    section.two-column-image-text-events.two-column-image-text-events .container.container .two-column-image-text-outer.two-column-image-text-outer {
+        display: flow-root;
+    }
 }
 
-section.post-article-container.post-article-container .container.container .sidebar-container.sidebar-container {
-    float: left;
+// /all-resources/ (and any other section.featured-module page using this
+// shared "articles-featured" component): .post-container.grid-wrapper
+// collapses from production's 569.422px to 0px on staging. Two genuine,
+// undoubled `section.featured-module .container .grid-wrapper` rules exist
+// (a "with sidebar" variant setting float:left/width:calc(100% - 301px),
+// and a later "full width" variant setting float:right/width:100% -- this
+// page uses the latter), both fought by a single doubled-class audit
+// override `section.featured-module.featured-module .container.container
+// .grid-wrapper.grid-wrapper { float: none; }`. Unlike the sidebar's own
+// .grid-wrapper (a sibling element, already correctly display:flex from an
+// unrelated rule and NOT broken), this element's collapse is purely a BFC-
+// containment problem: its floated grandchildren (two levels down, through
+// an intermediate 0-height wrapper) escape it once float:none applies.
+// Restoring float itself would mean fighting the SAME property (float) at
+// matched specificity against the override, which is exactly the
+// cascade-reordering coin-flip that made the .sidebar-container fix
+// silently dead code elsewhere in this file -- so display:flow-root is
+// used instead, since it establishes the same block-formatting context
+// (containing all descendant floats regardless of the container's own
+// float value) without touching the float property the override already
+// controls, sidestepping the collision entirely. Confirmed live via direct
+// element.style testing (not an injected <style> tag): applying ONLY
+// display:flow-root (float left untouched at its neutralized `none`) takes
+// the container from 0px to exactly 569.421875px, an exact match with
+// production. Scoped to the doubled-class selector with an added
+// `.post-container` qualifier so it applies only to this specific
+// collapsing instance, not the sidebar's already-working .grid-wrapper.
+section.featured-module.featured-module .container.container .post-container.post-container.grid-wrapper.grid-wrapper {
+    display: flow-root;
+}
+
+// /edgeplus-app/ (template-app, section.app-block): span.bottom-container
+// (under .main-image-column-container) collapses from production's 204px
+// to 0px on staging. Genuine rule `section.app-block .container
+// .main-image-column-container .bottom-container { float: left; width:
+// 100%; }` self-contains its two floated `.text-container.column.one-half`
+// children, but the doubled-class audit override neutralizes it to
+// `float:none`. Same fix pattern as the other BFC-collapse cases in this
+// file: display:flow-root reproduces the containment without re-floating
+// the element (and without fighting the float property itself, avoiding
+// any cascade-reordering risk). Confirmed live via direct element.style
+// testing: applying only display:flow-root takes the container from 0px
+// to exactly 204px, an exact match with production.
+section.app-block.app-block .container.container .main-image-column-container.main-image-column-container .bottom-container.bottom-container {
+    display: flow-root;
+}
+
+// /private-events-sponsorship/ (and any other page using section.two-
+// column-services.landing-video-intro -- shares components with the
+// .links-container fixes above): two more elements in this component
+// collapse the same way as .links-container.desktop did, but were missed
+// by that earlier sweep because they don't carry a visible symptom at
+// every width the way .links-container's mobile-button-appearing-on-
+// desktop bug did.
+//
+// .buttons-container (the intro's CTA row) collapses to 0px at EVERY
+// width tested (375/768/1440px) -- confirmed live vs production, which is
+// consistently float:left/block at all three widths (144px/144px/73px).
+// Its competing override (`...landing-video-intro-columns.landing-video-
+// intro-columns .column.column .buttons-container.buttons-container
+// {float:none;display:block}`) is unconditional (no media query), and is
+// 10 class-selectors deep; tripling the leaf class here (11 deep) beats it
+// on specificity alone, not cascade order.
+section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column .buttons-container.buttons-container.buttons-container {
+    display: flow-root;
+}
+
+// .column.one-half.video-column.image-column collapses ONLY at <768px --
+// confirmed live: 768px and 1440px already match production exactly
+// without any fix (200px/365px), only 375px is broken (0px vs
+// production's 188px). Traced to the SAME `.column.column{float:none;
+// display:block}` override used by the sibling .links-container fixes
+// above, but that override is itself `@media (max-width:767px)`-scoped
+// here (a different rule from the unconditional .buttons-container one
+// above) -- matching where the live breakage actually is. Scoped
+// selector adds .one-half/.video-column/.image-column so it targets only
+// this specific column (not its .text-column sibling, which isn't
+// broken), giving it 12 class-selectors vs the override's 8 -- wins on
+// specificity, and the media scoping means it's a no-op at >=768px
+// anyway (nothing to lose by matching the override's own media query).
+@media (max-width: 767px) {
+    section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column.column.one-half.video-column.image-column {
+        display: flow-root;
+    }
+}
+
+// /event-partner/edge-event-partnership/ (section.events-listing-module,
+// shared by every events-listing page): span.tags-container (the event
+// tag pills under each event-item's byline) collapses to 0px at every
+// width tested (375/768/1440px) -- confirmed live vs production, which is
+// consistently float:left/width:100%/block at every width (a range of
+// real heights, 84-294px, since each event has a different number of
+// tags). Genuine base rule `section.events-listing-module .events-listing
+// .item.event-item .content-delegate-container .delegate-tags
+// .tags-container { float:left; width:100%; }` self-contains its
+// floated tag pills, neutralized by the usual doubled-class audit
+// override. display:flow-root reproduces the containment at every width
+// tested (confirmed live: exact height match against production at
+// 375px for all 3 instances present on this page; verified as a real fix
+// -- not a no-op -- at 768px too).
+section.events-listing-module.events-listing-module .events-listing.events-listing .item.item.event-item.event-item .content-delegate-container.content-delegate-container .delegate-tags.delegate-tags .tags-container.tags-container {
+    display: flow-root;
+}
+
+// /analyst-presentations/become-a-partner/ (template-landing, section.two-
+// column-services.landing-video-intro): a SECOND variant of this component
+// missed by the earlier .video-column.image-column sweep above -- this
+// page's `.column.one-half.video-column` doesn't carry the `.image-column`
+// class, so the earlier fix's selector (which requires it) doesn't match
+// here. Same collapse, same cause (the shared `.column.column{float:none;
+// display:block}` override, @media max-width:767px), same fix -- confirmed
+// live at 375px: 0px -> 602.3125px, exact match with production. Not
+// merged into the earlier rule (kept separate, both media-scoped) to avoid
+// touching a selector that's already confirmed working live.
+@media (max-width: 767px) {
+    section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column.column.one-half.video-column {
+        display: flow-root;
+    }
+}
+
+// Same page, section.video-quote-block: .video-quote-container collapses
+// to 0px ONLY below 768px (confirmed live: >=768px already matches
+// production exactly without any fix -- 345.375px at 768px, since the
+// genuine base rule is display:flex there and float becomes irrelevant
+// once flex applies, same pattern as .two-column-image-text-outer above).
+// Below 768px, a SEPARATE genuine, undoubled, already-uncontested rule
+// (`section.video-quote-block .container .video-quote-container` @media
+// max-width:767px) correctly sets display:block for mobile -- it's not
+// being fought by anything, so the only missing piece is the containment
+// that `float:left` (from the unconditional base rule) would have
+// provided, neutralized by the unconditional doubled-class override
+// (`.video-quote-container.video-quote-container{float:none}`, no media).
+// display:flow-root inside the SAME max-width:767px media query
+// reproduces that containment without conflicting with the genuine
+// display:block already set there (this rule needs to win the `display`
+// property against that existing undoubled 3-class rule, hence doubled
+// here to 6 classes) and without touching float or display at >=768px,
+// where flex already works correctly. Confirmed live: 0px -> 595.75px at
+// 375px, matching production's 595.75px exactly.
+@media (max-width: 767px) {
+    section.video-quote-block.video-quote-block .container.container .video-quote-container.video-quote-container {
+        display: flow-root;
+    }
 }
