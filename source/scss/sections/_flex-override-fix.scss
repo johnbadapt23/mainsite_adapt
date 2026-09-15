@@ -262,3 +262,35 @@ span.featured-posts-container .featured-post a > span {
 span.featured-posts-container .featured-post a {
     display: flex;
 }
+
+// Requested fix was `section.resources-featured .container .item.full-width
+// { display: flex; }` (reported broken on /resource-type/articles/) -- did
+// NOT add that literally. Confirmed live (desktop viewport) the .item-column
+// .one-half children (.image-column/.text-column) were stacking vertically
+// instead of sitting side by side, both at the correct 650px/50% width but
+// with float:none. Traced to source/scss/templates/_resources-types.scss's
+// doubled-class `section.featured-module.featured-module.resources-featured
+// .resources-featured .container.container .one-half.one-half { float:
+// none; }` -- a genuine, intentionally-authored production rule (not an
+// audit-generated one) added to support the FLEXED sidebar variant's
+// `.one-half.side-bar-column`/`.one-half.slider-column` children. Its
+// selector only checks the bare `.one-half` class, so it ALSO catches
+// `.item-column.one-half` inside the full-width/market-trend-reports
+// variant -- which a 2026-09-10 fix (same file, ~line 5019) deliberately
+// left real-floated, because that variant's .container is explicitly NOT
+// flexed (excluded via :not(.filter-featured-post)/:not(.featured-home))
+// and because flexing .item.full-width itself previously broke jQuery's
+// matchHeight plugin (`$('.item.full-width .item-column').matchHeight()`
+// in main.js) -- matchHeight measured flex children's height wrong,
+// collapsing the image column and making the two columns' text visibly
+// overlap. Flexing .item.full-width now would reintroduce exactly that
+// regression. Root-cause fix instead: restore float:left on the
+// item-columns themselves (floats aren't flex items, so matchHeight stays
+// happy, matching how production actually does it), using the same
+// selector-doubling convention as the competing rule so this reliably
+// wins on specificity -- no !important. Confirmed live: columns render
+// side by side at the correct widths after this change.
+section.resources-featured.resources-featured .container.container .item.item.full-width.full-width .item-column.item-column.one-half.one-half,
+section.resources-featured.resources-featured .container.container .item.item.market-trend-reports.market-trend-reports .item-column.item-column.one-half.one-half {
+    float: left;
+}
