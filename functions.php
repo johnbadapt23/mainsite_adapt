@@ -1141,7 +1141,8 @@ remove_all_actions('wp_mail_failed');
 
 
 /**
- * Exclude specific JS files from WP Rocket Delay JS only on the homepage.
+ * Exclude specific JS files from WP Rocket Delay JS on the homepage, and
+ * (2026-09-15) on the 8 GSAP templates too -- see below.
  */
 add_filter( 'rocket_delay_js_exclusions', function( $exclusions ) {
 
@@ -1156,6 +1157,34 @@ add_filter( 'rocket_delay_js_exclusions', function( $exclusions ) {
         // this keeps matching main.min.js correctly if the theme folder is
         // ever renamed (e.g. a parallel "adapt_optimize" deploy folder used
         // for testing before switching the active theme).
+        $exclusions[] = '/themes/' . get_template() . '/assets/js/main.min.js';
+    }
+
+    // 2026-09-15: found live on staging (only visible on an actual WP Rocket
+    // cached page load -- ?nocache-style query strings used to verify the
+    // ScrollMagic bundle split earlier today bypass the cache entirely and
+    // hid this). WP Rocket's Delay JS execution was, for whatever internal
+    // reason, delaying gsap-js/scrolltrigger-js/main-js on the 8
+    // adapt_page_needs_gsap() templates (deferred to first user interaction)
+    // while leaving the newly-split scrollmagic-js completely undelayed --
+    // so on a real cached page load, scrollmagic.min.js (and its bundled
+    // animation.gsap.js) ran immediately, before GSAP existed on the page.
+    // animation.gsap.js's GSAP-detection (whether TweenLite/TweenMax/gsap is
+    // present) runs exactly once, at parse time, and permanently closures
+    // over the result -- it doesn't just log a cosmetic warning when GSAP
+    // isn't there yet, it can permanently mis-detect the GSAP major version
+    // for that page load. Rather than depend on guessing why WP Rocket
+    // treated this one script differently (no wp-admin access from here to
+    // inspect its Delay JS settings/exclusion list directly), this forces
+    // gsap-js, scrolltrigger-js, scrollmagic-js and main-js to all stay
+    // ungated by Delay JS together on exactly the pages that enqueue them --
+    // guaranteeing they execute in their real enqueue order every time,
+    // same fix shape as the pre-existing homepage exclusion above (which
+    // presumably exists for the same class of problem).
+    if ( adapt_page_needs_gsap() ) {
+        $exclusions[] = 'gsap.min.js';
+        $exclusions[] = 'ScrollTrigger.min.js';
+        $exclusions[] = '/themes/' . get_template() . '/assets/js/scrollmagic.min.js';
         $exclusions[] = '/themes/' . get_template() . '/assets/js/main.min.js';
     }
 
