@@ -88,7 +88,7 @@ jobs:
       # so loading the task registry for build:styles/build:scripts no longer
       # transitively requires it. See that file for the full explanation.
       - name: Compile CSS and JS
-        run: npx gulp build:styles-split build:scripts
+        run: npx gulp build:styles-split build:scripts build:scripts-scrollmagic
 
       # Two prior deploy approaches were tried and ruled out here:
       #  1. wlixcc/SFTP-Deploy-Action (original) -- always does a full,
@@ -181,4 +181,4 @@ jobs:
             :!/faviconData.json
             :!/README.md
             :!/tools
-          sync-delta-includes: 'assets/css/main-nofooter.min.css,assets/css/footer.min.css,assets/js/main.min.js'
+          sync-delta-includes: 'assets/css/main-nofooter.min.css,assets/css/footer.min.css,assets/js/main.min.js,assets/js/scrollmagic.min.js'

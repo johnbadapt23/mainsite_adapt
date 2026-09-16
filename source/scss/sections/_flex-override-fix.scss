@@ -747,3 +747,9 @@ section.events-listing-module.events-listing-module .events-listing.events-listi
         display: none;
     }
 }
+
+// User-requested fix (2026-09-16): .two-column .list-container.
+.two-column .list-container {
+    display: flex !important;
+    flex-direction: column;
+}
