@@ -2,7 +2,17 @@
 
 All changes are committed to your device on `dev`. Nothing pushed or touched on `main` — as always, that's your call.
 
-## Round 2 of the ScrollMagic fix (needs push + deploy + cache clear, again)
+## Round 3 of the ScrollMagic fix — Round 2's fix didn't actually work, found the real cause (needs push + deploy + cache clear, again)
+
+After the last deploy + cache clear, I re-checked `/ecosystem-consulting-partners/` on a real cached load and the console error was **still firing**. Looked at the raw page HTML directly (not just the DOM) and found the Round 2 fix (`script_loader_tag` stripping `defer`/`async`) had no effect at all: `gsap-js`, `scrolltrigger-js`, and `main-js` were still rendering with `data-rocket-defer defer` in the actual response HTML.
+
+**Why it didn't work:** WP Rocket's "Load JavaScript deferred" feature doesn't add the `defer` attribute through WordPress's `script_loader_tag` filter chain — it's applied afterward, by WP Rocket's own HTML output-buffer rewriting (same architecture as its Delay JS feature). No `script_loader_tag` filter, however late its priority, can intercept that — WP Rocket's rewrite happens *after* that filter has already finished.
+
+**The actual fix:** WP Rocket exposes a dedicated filter for exactly this — `rocket_exclude_defer_js` — confirmed by reading WP Rocket's own official helper plugin source on GitHub (`wp-media/wp-rocket-helpers`). It's the direct Load-JS-deferred equivalent of the `rocket_delay_js_exclusions` filter already used elsewhere in this file, and takes the same kind of array (src-URL path fragments, not script handles). Replaced the broken `script_loader_tag` filter with this one, excluding `gsap.min.js`, `ScrollTrigger.min.js`, `scrollmagic.min.js`, and `main.min.js` together on the 8 GSAP-gated templates — so WP Rocket itself skips adding `defer` to any of them, rather than me trying to undo its output after the fact.
+
+Committed to your device, PHP syntax-checked clean. Needs the same cycle again: push, deploy, then a WP Rocket cache clear, then I'll do a full re-verification (real cached page load, checking both the console and the raw response HTML this time, not just the live DOM).
+
+## Round 2 of the ScrollMagic fix (superseded by Round 3 above — did not work as deployed)
 
 After you cleared the cache, I re-checked with fresh page loads (no `?nocache` bypass) and the delay-JS fix from round 1 partly worked — `gsap-js`/`scrolltrigger-js`/`scrollmagic-js`/`main-js` are no longer being fully delayed — but the console error was still firing. Found a second, related bug: WP Rocket's separate "Load JavaScript deferred" optimization adds a `defer` attribute to `gsap-js`/`scrolltrigger-js`/`main-js` but not to `scrollmagic-js` (same unexplained asymmetry as before — `scrollmagic-js` is the one brand-new script handle in the mix). A `defer`red script only runs after the whole page finishes parsing; a plain script runs immediately, the instant the parser reaches it — so `scrollmagic-js` was still running before GSAP existed, regardless of its position in the HTML.
 
@@ -102,4 +112,4 @@ Re-verified `/all-resources/` after deploy #189 to confirm removing `build:style
 
 The `.sidebar-container` dead-code removal from earlier in this engagement reappeared on disk at one point mid-session without me re-adding it, then disappeared again on a later re-stage — consistent with another/parallel session also editing this same file concurrently. Current committed state does **not** contain those dead rules. Worth a quick look on your end if you see anything unexpected in `git diff` around that area.
 
-## Status: everything in this summary is deployed and verified live on staging. No outstanding work from this session.
+## Status: Round 3 fix above needs push + deploy + cache clear + re-verification. Everything else in this summary is deployed and verified live on staging.

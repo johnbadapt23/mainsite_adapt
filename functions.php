@@ -366,26 +366,6 @@ function my_enqueue_scripts() {
     if ( adapt_page_needs_gsap() ) {
         wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js', array(), null, true);
         wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js', array(), null, true);
-        // ScrollMagic + its GSAP plugin (main.js's fixed-scroller /
-        // sticky-slider-cards animations) -- split out of main.min.js into
-        // this own bundle 2026-09-15, same reasoning as the gsap-js/
-        // scrolltrigger-js gating just above: it was previously baked into
-        // every page's main.min.js unconditionally even though only these
-        // 8 templates ever use it, spamming "TweenLite or TweenMax could
-        // not be found" to the console on every other page (harmless --
-        // main.js's own usage is guarded behind element-presence checks --
-        // but pure dead weight). See
-        // source/gulp/tasks/build/scripts-scrollmagic.js for the build
-        // side. Explicit gsap-js/scrolltrigger-js dependency guarantees
-        // load order ahead of main-js's own TweenLite/TimelineMax/
-        // ScrollMagic usage below.
-        wp_enqueue_script(
-            'scrollmagic-js',
-            get_template_directory_uri() . '/assets/js/scrollmagic.min.js',
-            array( 'gsap-js', 'scrolltrigger-js' ),
-            filemtime(get_template_directory(). '/assets/js/scrollmagic.min.js'),
-            true
-        );
     }
 
     // Previously loaded as raw <script> tags in header.php ahead of wp_head().
@@ -419,21 +399,10 @@ function my_enqueue_scripts() {
         true
     );
 
-    // main-js's own ScrollMagic usage is guarded behind element-presence
-    // checks at runtime (see source/js/main.js), so it's safe to enqueue
-    // main-js on every page regardless -- but on the pages where that code
-    // DOES run, it needs scrollmagic-js (and transitively gsap-js/
-    // scrolltrigger-js) to already be loaded. Declaring it as a dependency
-    // here (rather than relying on enqueue-call order, as before
-    // 2026-09-15's ScrollMagic bundle split) guarantees that ordering.
-    $main_js_deps = array( 'jquery' );
-    if ( adapt_page_needs_gsap() ) {
-        $main_js_deps[] = 'scrollmagic-js';
-    }
     wp_enqueue_script(
         'main-js',
         get_template_directory_uri() . '/assets/js/main.min.js',
-        $main_js_deps,
+        array('jquery'),
         filemtime(get_template_directory(). '/assets/js/main.min.js'),
         true
     );
@@ -557,15 +526,23 @@ function adapt_webp_poster_url( $url ) {
     return $url;
 }
 
-// Sitewide float->flexbox modernization pass: the ?dev=true/dev=false gate
-// and its `dev-float-refactor` body class have been removed entirely
-// (2026-09-14). The gated rules in source/scss/sections/_dev-float-
-// refactor.scss were merged permanently into the real per-template SCSS
-// files after a full pixel-parity verification pass (SESSION-HANDOFF.md
-// §10 onward, closed out §28/§29/§37/§38, final merge+verification §40) --
-// see §40 for the merge mechanics and the computed-style cascade
-// verification that confirmed no visual regressions. There is no more
-// toggle: the modernized flexbox rules are just the CSS now.
+// Sitewide float->flexbox modernization pass. Promoted to the default for
+// every visitor on 2026-09-14, after the pixel-parity verification pass
+// documented in SESSION-HANDOFF.md (§10 onward, closed out §28/§29/§37/
+// §38) found the gated rules in source/scss/sections/_dev-float-
+// refactor.scss render identically to the original float-based CSS.
+// ?dev=false is kept as a quick rollback lever back to the untouched
+// original CSS, in case a real visitor turns up something this pass
+// missed -- remove this filter entirely (and fold the gated file's rules
+// into the real per-template SCSS for good) once that's no longer needed.
+function adapt_dev_gate_body_class( $classes ) {
+    if ( isset( $_GET['dev'] ) && $_GET['dev'] === 'false' ) {
+        return $classes;
+    }
+    $classes[] = 'dev-float-refactor';
+    return $classes;
+}
+add_filter( 'body_class', 'adapt_dev_gate_body_class' );
 
 // Shared helpers for the 3 AJAX filter callbacks below (speakers,
 // partners, edge partners). Their query-building and HTML render loops
@@ -1141,8 +1118,7 @@ remove_all_actions('wp_mail_failed');
 
 
 /**
- * Exclude specific JS files from WP Rocket Delay JS on the homepage, and
- * (2026-09-15) on the 8 GSAP templates too -- see below.
+ * Exclude specific JS files from WP Rocket Delay JS only on the homepage.
  */
 add_filter( 'rocket_delay_js_exclusions', function( $exclusions ) {
 
@@ -1160,76 +1136,8 @@ add_filter( 'rocket_delay_js_exclusions', function( $exclusions ) {
         $exclusions[] = '/themes/' . get_template() . '/assets/js/main.min.js';
     }
 
-    // 2026-09-15: found live on staging (only visible on an actual WP Rocket
-    // cached page load -- ?nocache-style query strings used to verify the
-    // ScrollMagic bundle split earlier today bypass the cache entirely and
-    // hid this). WP Rocket's Delay JS execution was, for whatever internal
-    // reason, delaying gsap-js/scrolltrigger-js/main-js on the 8
-    // adapt_page_needs_gsap() templates (deferred to first user interaction)
-    // while leaving the newly-split scrollmagic-js completely undelayed --
-    // so on a real cached page load, scrollmagic.min.js (and its bundled
-    // animation.gsap.js) ran immediately, before GSAP existed on the page.
-    // animation.gsap.js's GSAP-detection (whether TweenLite/TweenMax/gsap is
-    // present) runs exactly once, at parse time, and permanently closures
-    // over the result -- it doesn't just log a cosmetic warning when GSAP
-    // isn't there yet, it can permanently mis-detect the GSAP major version
-    // for that page load. Rather than depend on guessing why WP Rocket
-    // treated this one script differently (no wp-admin access from here to
-    // inspect its Delay JS settings/exclusion list directly), this forces
-    // gsap-js, scrolltrigger-js, scrollmagic-js and main-js to all stay
-    // ungated by Delay JS together on exactly the pages that enqueue them --
-    // guaranteeing they execute in their real enqueue order every time,
-    // same fix shape as the pre-existing homepage exclusion above (which
-    // presumably exists for the same class of problem).
-    if ( adapt_page_needs_gsap() ) {
-        $exclusions[] = 'gsap.min.js';
-        $exclusions[] = 'ScrollTrigger.min.js';
-        $exclusions[] = '/themes/' . get_template() . '/assets/js/scrollmagic.min.js';
-        $exclusions[] = '/themes/' . get_template() . '/assets/js/main.min.js';
-    }
-
     return $exclusions;
 } );
-
-// 2026-09-15, same investigation as directly above: excluding these 4 scripts
-// from Delay JS was necessary but not sufficient. After a cache clear, all 4
-// stopped being fully delayed, but the "TweenLite or TweenMax could not be
-// found" console error was STILL firing -- because WP Rocket's separate
-// "Load JavaScript deferred" optimization adds a `defer` attribute to
-// gsap-js/scrolltrigger-js/main-js but NOT to scrollmagic-js (same
-// unexplained asymmetry as the Delay JS issue above -- scrollmagic-js is a
-// brand new handle as of today's deploy, everything else here pre-dates it,
-// and no wp-admin access from here to inspect why WP Rocket treats it
-// differently). `defer` scripts only run after the document finishes
-// parsing, in their relative document order -- but a script WITHOUT defer
-// runs immediately, synchronously, the moment the parser reaches its <script>
-// tag, regardless of where later deferred scripts sit in the HTML. So the
-// real execution order was: scrollmagic-js (no defer, runs immediately) --
-// THEN, after the whole page finishes parsing -- gsap-js, scrolltrigger-js,
-// main-js (all deferred). scrollmagic-js's bundled animation.gsap.js was
-// still parsing before GSAP existed, every time.
-//
-// Rather than chase whatever makes WP Rocket single this one script out (and
-// risk it changing again on a future cache regen), this stops depending on
-// WP Rocket's per-script defer/delay classification being consistent at
-// all: it strips any `defer`/`async` WP Rocket or WP core adds to these 4
-// specific handles on the pages that enqueue them, forcing them back to
-// plain synchronous <script src> tags. Plain scripts execute strictly in
-// HTML document order, which already matches the real dependency chain
-// (gsap -> scrolltrigger -> scrollmagic -> main, per the enqueue order and
-// explicit dependency arrays in my_enqueue_scripts() above) -- so this
-// guarantees correct order from the document structure itself, with no
-// reliance on any optimization plugin's behavior.
-add_filter( 'script_loader_tag', function( $tag, $handle ) {
-    $gsap_script_handles = array( 'gsap-js', 'scrolltrigger-js', 'scrollmagic-js', 'main-js' );
-    if ( in_array( $handle, $gsap_script_handles, true ) && adapt_page_needs_gsap() ) {
-        $tag = str_replace( ' defer', '', $tag );
-        $tag = str_replace( ' async', '', $tag );
-    }
-    return $tag;
-}, 999, 2 ); // deliberately late priority: must run after WP Rocket's own
-             // script_loader_tag filter (which is what adds the defer
-             // attribute this strips) or there's nothing to strip yet.
 
 
 add_filter( 'pre_get_rocket_option_remove_unused_css', function( $value ) {
