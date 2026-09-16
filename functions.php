@@ -1181,6 +1181,7 @@ add_filter( 'rocket_delay_js_exclusions', function( $exclusions ) {
     // same fix shape as the pre-existing homepage exclusion above (which
     // presumably exists for the same class of problem).
     if ( adapt_page_needs_gsap() ) {
+        $exclusions[] = 'jquery.min.js';
         $exclusions[] = 'gsap.min.js';
         $exclusions[] = 'ScrollTrigger.min.js';
         $exclusions[] = '/themes/' . get_template() . '/assets/js/scrollmagic.min.js';
@@ -1208,6 +1209,21 @@ add_filter( 'rocket_delay_js_exclusions', function( $exclusions ) {
 // matched the same way (src-URL path fragments, not script handles).
 add_filter( 'rocket_exclude_defer_js', function( $exclusions ) {
     if ( adapt_page_needs_gsap() ) {
+        // 2026-09-16: found live immediately after the fix above deployed --
+        // excluding gsap-js/scrolltrigger-js/scrollmagic-js/main-js from
+        // WP Rocket's defer WITHOUT also excluding jquery.min.js broke
+        // main-js outright ("$ is not defined", thrown at main.min.js's very
+        // first line). Reason: jQuery was still being deferred by WP Rocket
+        // (untouched by this filter), so its <script> tag -- though it
+        // appears FIRST in the HTML thanks to the wp_enqueue_script
+        // dependency order -- only actually executes after the whole
+        // document finishes parsing. main-js, now non-deferred, runs
+        // synchronously the instant its own tag is reached, which is BEFORE
+        // that point. Excluding jquery.min.js here too keeps it plain/
+        // synchronous alongside the other 4, so real document order (jquery
+        // -> gsap -> scrolltrigger -> scrollmagic -> main, matching the
+        // wp_enqueue_script dependency chain) is what actually executes.
+        $exclusions[] = 'jquery.min.js';
         $exclusions[] = 'gsap.min.js';
         $exclusions[] = 'ScrollTrigger.min.js';
         $exclusions[] = '/themes/' . get_template() . '/assets/js/scrollmagic.min.js';

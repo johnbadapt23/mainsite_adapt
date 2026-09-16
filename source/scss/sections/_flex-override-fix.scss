@@ -753,3 +753,9 @@ section.events-listing-module.events-listing-module .events-listing.events-listi
     display: flex !important;
     flex-direction: column;
 }
+
+// User-requested fix (2026-09-16): .full-image-text .text-container-inner
+// reported as not applying / getting overridden.
+.full-image-text .text-container-inner {
+    display: inline-block !important;
+}
