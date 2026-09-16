@@ -1,45 +1,5 @@
 <?php global $displayed_posts;
 $displayed_posts = array ();
-
-?>
-
-<?php
-
-$q = get_queried_object();
-$resourceType = get_field( 'type', $q );
-$keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : '';
-$filterTopic = isset( $_GET['filter-topic'] ) ? sanitize_text_field( $_GET['filter-topic'] ) : '';
-
-if($keyword != '') {
-    $args = array(
-        'post_type' => 'post',
-        'posts_per_page' => -1,
-        's' => $keyword,
-        'paged'=> $paged,
-        'tax_query' => array(
-            'relation' => 'AND',
-            array (
-                'taxonomy' => 'resource-type',
-                'field' => 'slug',
-                'terms'    => $q->slug
-            )
-        )
-    );
-} else {
-    $args = array(
-        'post_type' => 'post',
-        'posts_per_page' => -1,
-        'paged'=> $paged,
-        'tax_query' => array(
-            'relation' => 'AND',
-            array (
-                'taxonomy' => 'resource-type',
-                'field' => 'slug',
-                'terms'    => $q->slug
-            )
-        )
-    );
-}
 ?>
 <section class="filter-listing in-the-news-listing background-black">
     <div class="container">
@@ -77,7 +37,7 @@ if($keyword != '') {
         <div class="container">
             <?php wp_pagenavi( array( 'query' => $posts ) ); ?>
             <?php wp_reset_postdata(); ?>
-            <?php wp_reset_query(); ?>
+            <?php wp_reset_postdata(); ?>
         </div>
     </div>
 </section>

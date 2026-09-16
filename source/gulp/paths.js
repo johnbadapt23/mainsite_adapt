@@ -17,9 +17,6 @@ module.exports = {
             'source/components/slick-carousel/slick/slick.min.js',
             'source/components/jquery.scrollTo/jquery.scrollTo.js',
             'source/components/jquery.localScroll/jquery.localScroll.js',
-            'source/components/scrollmagic/scrollmagic/uncompressed/ScrollMagic.js',
-            'source/components/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js',
-            'source/components/scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators.js',
             'source/components/aos/dist/aos.js',
             'source/components/js-cookie/src/js.cookie.js',
             'source/components/jquery.scrollbar-master/jquery.scrollbar.js',
@@ -30,6 +27,17 @@ module.exports = {
             // Modernizr isn't used anywhere else and isn't in the live JS
             // bundle either, so the reference is just removed.
             'source/js/main.js',
+        ],
+        // ScrollMagic + its GSAP plugin, split out of scripts above
+        // 2026-09-15 -- see source/gulp/tasks/build/scripts-scrollmagic.js
+        // for the full rationale. debug.addIndicators.js (the third file
+        // previously bundled alongside these two) is dropped entirely, not
+        // moved here: it's ScrollMagic's dev-only visual debug overlay, and
+        // grepping main.js confirms `.addIndicators(` is never called --
+        // it was 23KB of pure dead code in every build, including this one.
+        scriptsScrollmagic: [
+            'source/components/scrollmagic/scrollmagic/uncompressed/ScrollMagic.js',
+            'source/components/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js',
         ],
         styles: [
             'source/components/aos/dist/aos.css',

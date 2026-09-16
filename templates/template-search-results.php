@@ -8,14 +8,21 @@ get_header();
 ?>
 <?php global $displayed_posts;
 $displayed_posts = array ();
-$keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : '';
-$filterType = isset( $_GET['filter-type'] ) ? sanitize_text_field( $_GET['filter-type'] ) : '';
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
+$filterType = sanitize_text_field( $_GET['filter-type'] ?? '' );
 
 if($keyword != '') {
     $args = array(
         'ep_integrate'   => true,
         'post_type' => 'post',
         'posts_per_page' => -1,
+        'no_found_rows' => true,
+        // Only used below to collect which top-level resource-type
+        // terms are in use among the matched posts (filter buttons) --
+        // never displayed itself, so fields=>ids skips fetching
+        // post_content/postmeta for every match instead of full post
+        // objects.
+        'fields' => 'ids',
         's' => $keyword,
         'paged'=> $paged
     );
@@ -24,6 +31,8 @@ if($keyword != '') {
         'ep_integrate'   => true,
         'post_type' => 'post',
         'posts_per_page' => -1,
+        'no_found_rows' => true,
+        'fields' => 'ids',
         'paged'=> $paged
     );
 }
@@ -39,11 +48,23 @@ if($keyword != '') {
                 <div class="topic-button-container filter-button-container">
                     <a href="/search-results?searchWords=<?php echo urlencode( $keyword ); ?>&sentence=1"class="filter-button<?php if($filterType == '') { ?> selected<?php }?>">All</a>
 
-                    <?php $terms = array(); ?>
-                    <?php $loop = new WP_Query( $args ); ?>
-                    <?php if ( $loop->have_posts() ) : ?>
-                        <?php while ( $loop->have_posts() ) : $loop->the_post();
-                            $topics = get_the_terms( $post->ID, 'resource-type' );
+                    <?php
+                    // BUGFIX/PERF 2026-09-09: this used to run a full
+                    // posts_per_page=>-1 WP_Query (every matched post,
+                    // every column, every meta join) purely to walk its
+                    // results and collect distinct top-level
+                    // resource-type terms for the filter buttons below --
+                    // the posts themselves were never displayed.
+                    // fields=>ids (set above) makes the query only fetch
+                    // the ID column; get_the_terms() per ID is unchanged
+                    // (still one cached lookup per matched post), so the
+                    // collected $terms set and its order are identical to
+                    // before, just without the full post-object overhead.
+                    $terms = array();
+                    $loop = new WP_Query( $args );
+                    if ( $loop->posts ) :
+                        foreach ( $loop->posts as $result_post_id ) :
+                            $topics = get_the_terms( $result_post_id, 'resource-type' );
                             if($topics){
                                 foreach( $topics as $topic ){
                                     if($topic-> parent == 0){
@@ -53,11 +74,9 @@ if($keyword != '') {
                                     }
                                 }
                             }
-                        ?>
-                        <?php endwhile; ?>
-                    <?php else : ?>
-                    <?php endif; ?>
-                    <?php wp_reset_query(); ?>
+                        endforeach;
+                    endif;
+                    ?>
                     <?php foreach($terms as $term) { ?>
                         <a href="/search-results?searchWords=<?php echo urlencode( $keyword ); ?>&sentence=1&filter-type=<?php echo $term -> slug; ?>"class="filter-button<?php if($filterType == '') { } else { if ($term -> slug == $filterType ) { ?> selected<?php }}?><?php if ($term->slug == 'peer-insights'){ ?> peer-insights<?php } ?>"><?php echo $term -> name; ?></a>
                     <?php } ?>
@@ -101,48 +120,17 @@ if($keyword != '') {
                     }
                 }
 
-                $counterargs = array(
-                    'post_type' => 'post',
-                    'posts_per_page' => -1,
-                    's' => $keyword,
-                    'paged'=> $paged,
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'category',
-                            'field' => 'slug',
-                            'terms' => 'private-post',
-                            'operator' => 'NOT IN',
-                        ),
-                        'relation' => 'AND',
-                    )
-                );
-
-                if($filterType != '') {
-                    if(empty($filterType)){
-
-                    } else {
-                        // print_r($filterType);
-                        array_push($counterargs['tax_query'],array(
-                                'taxonomy' => 'resource-type',
-                                'field' => 'slug',
-                                'terms' => $filterType,
-                                'operator' => 'IN'
-                            )
-                        );
-                    }
-                }
-                $loop = new WP_Query( $counterargs );
-                    if ( $loop->have_posts() ) :
-                        $counterResults = 0;
-                        while ( $loop->have_posts() ) : $loop->the_post();
-                            $counterResults++;
-                        endwhile;
-                    endif;
-
-                    wp_reset_query(); ?>
+                // Was a full second WP_Query (posts_per_page => -1, same
+                // post_type/s/tax_query as $args below) run only to loop
+                // through every matching post in PHP and count them --
+                // $args itself doesn't set no_found_rows, so WordPress
+                // already computes the correct total via
+                // SQL_CALC_FOUND_ROWS for the real, paginated query below;
+                // $posts->found_posts gives the identical number for free.
+                ?>
                 <?php $posts = new WP_Query( $args );
                 if( $posts->have_posts() ): ?>
-                    <span class="total"><span class="text-medium-grey">Showing: </span><span class="text-black"><?php echo $counterResults; ?> results</span></span>
+                    <span class="total"><span class="text-medium-grey">Showing: </span><span class="text-black"><?php echo $posts->found_posts; ?> results</span></span>
                     <div class="search-results">
                         <?php while( $posts->have_posts() ) : $posts->the_post(); ?>
                             <div class="item full-width">
@@ -253,7 +241,7 @@ if($keyword != '') {
             <div class="container">
                 <?php wp_pagenavi( array( 'query' => $posts ) ); ?>
                     <?php wp_reset_postdata(); ?>
-                <?php wp_reset_query(); ?>
+                <?php wp_reset_postdata(); ?>
             </div>
         </div>
     </section>

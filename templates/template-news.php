@@ -1,25 +1,5 @@
 <?php global $displayed_posts;
 $displayed_posts = array ();
-
-?>
-<?php
-
-$keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : '';
-
-if($keyword != '') {
-    $args = array(
-        'post_type' => 'news',
-        'posts_per_page' => -1,
-        's' => $keyword,
-        'paged'=> $paged
-     );
-} else {
-    $args = array(
-        'post_type' => 'news',
-        'posts_per_page' => -1,
-        'paged'=> $paged
-    );
-}
 ?>
 
 <section class="filter-listing in-the-news-listing background-secondary-light-grey">
@@ -99,7 +79,7 @@ if($keyword != '') {
         <div class="container">
             <?php wp_pagenavi( array( 'query' => $newsPosts ) ); ?>
                 <?php wp_reset_postdata(); ?>
-            <?php wp_reset_query(); ?>
+            <?php wp_reset_postdata(); ?>
         </div>
     </div> 
 </section>

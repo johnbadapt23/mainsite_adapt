@@ -1,0 +1,15 @@
+{
+  "name": "adapt-visual-regression",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sitemap-wide, zero-tolerance pixel-diff gate for the adapt theme. Isolated from the theme's own build (package.json at repo root) -- Playwright and its browser binary are only ever needed in CI, never deployed. Never referenced by gulpfile.js or the theme's own package.json.",
+  "type": "module",
+  "scripts": {
+    "capture": "node capture-and-diff.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.47.0",
+    "pixelmatch": "^5.3.0",
+    "pngjs": "^7.0.0"
+  }
+}

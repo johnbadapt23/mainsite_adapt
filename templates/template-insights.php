@@ -9,11 +9,11 @@ get_header();
 <main id="main" role="main" class="events">
 <?php
 $filterTopics = isset( $_GET['topics'] ) ? array_map( 'sanitize_text_field', (array) $_GET['topics'] ) : '';
-$filterType = isset( $_GET['filterType'] ) ? sanitize_text_field( $_GET['filterType'] ) : '';
-$keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : '';
-$sortBy = isset( $_GET['orderby'] ) ? sanitize_text_field( $_GET['orderby'] ) : '';
-$sort = isset( $_GET['order'] ) ? sanitize_text_field( $_GET['order'] ) : '';
-$sortPosts = isset( $_GET['sortPost'] ) ? sanitize_text_field( $_GET['sortPost'] ) : '';
+$filterType = sanitize_text_field( $_GET['filterType'] ?? '' );
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
+$sortBy = sanitize_text_field( $_GET['orderby'] ?? '' );
+$sort = sanitize_text_field( $_GET['order'] ?? '' );
+$sortPosts = sanitize_text_field( $_GET['sortPost'] ?? '' );
 
 $filterBy = array();
 ?>
@@ -104,6 +104,7 @@ $filterBy = array();
                 'post_type' => 'post',
                 's' => $keyword,
                 'posts_per_page' => 9,
+                'no_found_rows' => true,
                 'paged'=> $paged,
                 'tax_query' => array(
                     'relation' => 'AND',
@@ -131,6 +132,7 @@ $filterBy = array();
             $args = array(
                 'post_type' => 'post',
                 'posts_per_page' => 9,
+                'no_found_rows' => true,
                 'paged'=> $paged,
                 'orderby'   => $orderBy,
                 'order' => $order,
@@ -160,6 +162,7 @@ $filterBy = array();
                 'post_type' => 'post',
                 's' => $keyword,
                 'posts_per_page' => 9,
+                'no_found_rows' => true,
                 'paged'=> $paged,
                 'tax_query' => array(
                     array(
@@ -177,6 +180,7 @@ $filterBy = array();
             $args = array(
                 'post_type' => 'post',
                 'posts_per_page' => 9,
+                'no_found_rows' => true,
                 'paged'=> $paged,
                 'tax_query' => array(
                     array(
@@ -250,6 +254,35 @@ $filterBy = array();
                 );
             }
         }
+    }
+
+    // Was duplicated verbatim further down (once for the desktop
+    // #filterBy dropdown, once for the mobile .filter-by-mobile one) --
+    // both ran the exact same WP_Query($args) + get_the_terms() loop (or
+    // the exact same get_terms() call in the no-filter/no-keyword branch)
+    // to build the identical list of "filter-types" terms actually used
+    // by the current result set. Computed once here and reused by both
+    // markup blocks below instead of running it twice per page load.
+    if ( $filterTopics != '' || $keyword != '' ) {
+        $filterTypeTerms = array();
+        $loop = new WP_Query( $args );
+        if ( $loop->have_posts() ) :
+            while ( $loop->have_posts() ) : $loop->the_post();
+                $types = get_the_terms( $post->ID, 'filter-types' );
+                if ( $types ) {
+                    foreach ( $types as $type ) {
+                        if ( ! in_array( $type, $filterTypeTerms ) ) {
+                            $filterTypeTerms[] = $type;
+                        }
+                    }
+                }
+            endwhile;
+        endif;
+        wp_reset_postdata();
+    } else {
+        $filterTypeTerms = get_terms( 'filter-types', array(
+            'hide_empty' => true,
+        ) );
     }
 ?>
     <section class="postHeader">
@@ -365,36 +398,7 @@ $filterBy = array();
                     <div id="filterBy">
                         <span class="select-label">Filter By:</span>
                         <select class="dropdown-class" name="filter-posts" id="filterBox" onchange="document.location.href=location.href+this.options[this.selectedIndex].value;">
-                             <?php if($filterTopics != '' || $keyword != '') { ?>
-                                <?php $terms = array(); ?>
-                                <?php $loop = new WP_Query( $args ); ?>
-                                <?php if ( $loop->have_posts() ) : ?>
-                                   <?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
-                                       <?php
-                                           $types = get_the_terms( $post->ID, 'filter-types' );
-                                           if($types){
-                                               foreach( $types as $type ){
-                                                   if( ! in_array( $type, $terms )){
-                                                       $terms[] = $type;
-                                                   }
-                                               }
-                                           }
-                                       ?>
-                                   <?php endwhile; ?>
-                                    <?php else : ?>
-                                   <?php endif; ?>
-                                   <?php wp_reset_query();
-                                   ?>
-                               <?php } else { ?>
-                                    <?php
-                                    $term_m = 'filter-types';
-                                    ?>
-                                    <?php
-                                    $terms = get_terms( $term_m, array(
-                                     'hide_empty' => true,
-                                    ) );
-                                    ?>
-                               <?php }  ?>
+                             <?php $terms = $filterTypeTerms; // computed once above, reused here and by the mobile dropdown below ?>
 
                             <option value="<?php if ($filterTopics != '' || $sortBy != '' || $filterType != '' || $keyword != '' ) { ?>&<?php } else if (isset($keyword)) { ?>&<?php } else { ?>?<?php } ?>filterType=all">All</option>
                             <?php foreach($terms as $term) { ?>
@@ -450,36 +454,7 @@ $filterBy = array();
                             <div class="filter-by-mobile" id="filterBy">
                                 <span class="title select-label">Filter By: <span class="current-value"><?php if($filterType == '') {?>All<?php } else { if ($filterType == 'all') { ?>All<?php } else {?><?php echo esc_html( $filterType ); ?><?php } } ?></span></span>
                                 <span class="mobile-filter-container mobile">
-                                    <?php if($filterTopics != '' || $keyword != '') { ?>
-                                       <?php $terms = array(); ?>
-                                       <?php $loop = new WP_Query( $args ); ?>
-                                       <?php if ( $loop->have_posts() ) : ?>
-                                          <?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
-                                              <?php
-                                                  $types = get_the_terms( $post->ID, 'filter-types' );
-                                                  if($types){
-                                                      foreach( $types as $type ){
-                                                          if( ! in_array( $type, $terms )){
-                                                              $terms[] = $type;
-                                                          }
-                                                      }
-                                                  }
-                                              ?>
-                                          <?php endwhile; ?>
-                                           <?php else : ?>
-                                          <?php endif; ?>
-                                          <?php wp_reset_query();
-                                          ?>
-                                      <?php } else { ?>
-                                           <?php
-                                           $term_m = 'filter-types';
-                                           ?>
-                                           <?php
-                                           $terms = get_terms( $term_m, array(
-                                            'hide_empty' => true,
-                                           ) );
-                                           ?>
-                                      <?php }  ?>
+                                    <?php $terms = $filterTypeTerms; // same list computed once above the desktop dropdown ?>
                                       <span class="checkboxButton filterItemMobile">
                                           <label>
                                             <input type="checkbox" name="filterType" <?php if($filterType == '') { } else { if ($filterType == 'all') { ?> checked <?php }}?> value="all"><span class="checkbox-text">All</span>
@@ -588,6 +563,14 @@ $filterBy = array();
                             'post_type' => 'post',
                             's' => $keyword,
                             'posts_per_page' => -1,
+                            'no_found_rows' => true,
+                            // Only used below to tally per-term counts
+                            // for the filter-type dropdown (get_the_terms
+                            // per matched post ID) -- the posts themselves
+                            // are never displayed, so fields=>ids skips
+                            // fetching post_content/postmeta for every
+                            // match instead of full post objects.
+                            'fields' => 'ids',
                             'paged'=> $paged,
                             'tax_query' => array(
                                 'relation' => 'AND',
@@ -613,6 +596,8 @@ $filterBy = array();
                         $args = array(
                             'post_type' => 'post',
                             'posts_per_page' => -1,
+                            'no_found_rows' => true,
+                            'fields' => 'ids',
                             'paged'=> $paged,
                             'tax_query' => array(
                                 'relation' => 'AND',
@@ -692,13 +677,24 @@ $filterBy = array();
                             }
                         }
                     }
+                    // BUGFIX/PERF 2026-09-09: this used to run a full
+                    // posts_per_page=>-1 WP_Query (every matched post,
+                    // every column, every meta join) purely to walk its
+                    // results and tally per-term counts for the
+                    // filter-type dropdown -- the posts themselves were
+                    // never displayed. fields=>ids (set above) makes the
+                    // query only fetch the ID column; get_the_terms() per
+                    // ID is unchanged (still one cached lookup per
+                    // matched post), so $filterTypesResults and
+                    // $counterResults come out identical to before, just
+                    // without the full post-object overhead.
                     $loop = new WP_Query( $args );
 
-                    if ( $loop->have_posts() ) : ?>
+                    if ( $loop->posts ) : ?>
                     <?php $counterResults = 0; ?>
-                    <?php while ( $loop->have_posts() ) : $loop->the_post(); ?>
+                    <?php foreach ( $loop->posts as $insight_post_id ) : ?>
                             <?php
-                                $terms = get_the_terms( $post->ID, 'filter-types' );
+                                $terms = get_the_terms( $insight_post_id, 'filter-types' );
                             ?>
 
                             <?php if ( $terms ) { ?>
@@ -710,7 +706,7 @@ $filterBy = array();
                                 <?php } ?>
                             <?php } ?>
                             <?php $counterResults++; ?>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
 
                     <?php
 
@@ -721,7 +717,18 @@ $filterBy = array();
                     // find out the QueryString:
                     $queryString = $_SERVER['QUERY_STRING'];
                     // put it all together:
-                    $queryURL = "/blog?" . $queryString; ?>
+                    // SECURITY 2026-09-09: $_SERVER['QUERY_STRING'] is raw,
+                    // attacker-controlled request data. $queryURL built from
+                    // it used to be echoed unescaped into 3 href attributes
+                    // below (lines ~738/1033/1134) -- a crafted query string
+                    // like `?"><script>...` would break out of the
+                    // attribute (reflected XSS). esc_url() here, once at
+                    // the source, makes every echo of $queryURL below safe
+                    // without touching each call site individually; it's
+                    // the standard WP function for exactly this (URL going
+                    // into an href), so legitimate query strings render
+                    // identically.
+                    $queryURL = esc_url( "/blog?" . $queryString ); ?>
 
                     <?php
                         $totalTypes = count($filterTypesResults); ?>
@@ -748,7 +755,7 @@ $filterBy = array();
 
                     <?php else : ?>
                         <?php endif; ?>
-                        <?php wp_reset_query(); ?>
+                        <?php wp_reset_postdata(); ?>
                 <?php } ?>
 
                 <?php $counter = -1; ?>
@@ -1174,7 +1181,7 @@ $filterBy = array();
                     <h3 role="heading" aria-level="2"><?php esc_html_e( 'Sorry, no results found.' ); ?></h3>
                 <?php endif; ?>
                 <?php wp_pagenavi( array( 'query' => $loop ) ); ?>
-                <?php wp_reset_query(); ?>
+                <?php wp_reset_postdata(); ?>
                 </div>
 
             <div class="formTrigger">

@@ -265,3 +265,122 @@ a {
 img{
 	height: auto;
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 85
+
+main {
+                float: none !important;
+        }
+
+// line 117
+
+main {
+                &.notFound.notFound {
+                        section.default.default {
+                                .not-found-inner.not-found-inner {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 122
+
+main {
+                &.notFound.notFound {
+                        section.default.default {
+                                .not-found-inner.not-found-inner {
+                                        .pre-title-text.pre-title-text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 133
+
+main {
+                &.notFound.notFound {
+                        section.default.default {
+                                .not-found-inner.not-found-inner {
+                                        .not-found-title.not-found-title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 145
+
+main {
+                &.notFound.notFound {
+                        section.default.default {
+                                .not-found-inner.not-found-inner {
+                                        .not-found-image-container.not-found-image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 151
+
+main {
+                &.notFound.notFound {
+                        section.default.default {
+                                .not-found-inner.not-found-inner {
+                                        .not-found-button-container.not-found-button-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 157
+
+main {
+                &.notFound.notFound {
+                        section.default.default {
+                                .not-found-inner.not-found-inner {
+                                        .pre-link-text.pre-link-text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 169
+
+main {
+                &.notFound.notFound {
+                        section.default.default {
+                                .not-found-inner.not-found-inner {
+                                        .not-found-link-container.not-found-link-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 251
+
+.imageContainer.imageContainer {
+                float: none;
+        }

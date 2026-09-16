@@ -26,6 +26,7 @@
 			$today = date('Ymd');
 			$args = array(
 				'post_type' => 'registration',
+				'no_found_rows' => true,
 				'meta_key'  => 'event_date',
 			    'orderby'   => 'meta_value_num',
 			    'order'     => 'ASC',
@@ -95,6 +96,7 @@
 				$today = date('Ymd');
 				$args = array(
 					'post_type' => 'registration',
+					'no_found_rows' => true,
 					'meta_key'  => 'event_date',
 				    'orderby'   => 'meta_value_num',
 				    'order'     => 'ASC',
@@ -164,6 +166,7 @@
 			$today = date('Ymd');
 			$args = array(
 				'post_type' => 'post',
+				'no_found_rows' => true,
 				'meta_key'  => 'replay_event_date',
 			    'orderby'   => 'meta_value_num',
 			    'order'     => 'ASC',

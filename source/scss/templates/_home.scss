@@ -583,3 +583,230 @@ span.dark-overlay {
     background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=0 ); /* IE6-9 */
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 22
+
+.loading.loading {
+                float: none;
+        }
+
+// line 56
+
+#main {
+                float: none !important;
+        }
+
+// line 68
+
+#main {
+                section.banner.banner {
+                        ul {
+                                float: none;
+                        }
+                }
+        }
+
+// line 173
+
+#main {
+                section.banner.banner {
+                        ul {
+                                li {
+                                        .container.container {
+                                                .baseButtons.baseButtons {
+                                                        a {
+                                                                span.text.text {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 189
+
+#main {
+                section.banner.banner {
+                        ul {
+                                li {
+                                        .container.container {
+                                                .baseButtons.baseButtons {
+                                                        a {
+                                                                span.title.title {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 246
+
+#main {
+                section.banner.banner {
+                        ul {
+                                li {
+                                        .container.container {
+                                                .content.content {
+                                                        span.title.title {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 261
+
+#main {
+                section.banner.banner {
+                        ul {
+                                li {
+                                        .container.container {
+                                                .content.content {
+                                                        span.text.text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 270
+
+#main {
+                section.banner.banner {
+                        ul {
+                                li {
+                                        .container.container {
+                                                .content.content {
+                                                        span.buttonBlock.buttonBlock {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 289
+
+#main {
+                section.banner.banner {
+                        ul {
+                                li {
+                                        .container.container {
+                                                .content.content {
+                                                        span.videoLink.videoLink {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 383
+
+section.logoGrid.logoGrid {
+                .titleBlock.titleBlock {
+                        float: none;
+                }
+        }
+
+// line 404
+
+section.logoGrid.logoGrid {
+                .titleBlock.titleBlock {
+                        .title.title {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 447
+
+section.logoGrid.logoGrid {
+                .titleBlock.titleBlock {
+                        .description.description {
+                                &.right.right {
+                                        @include responsive(640) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 463
+
+section.logoGrid.logoGrid {
+                .logoBlock.logoBlock {
+                        float: none;
+                }
+        }
+
+// line 479
+
+section.logoGrid.logoGrid {
+                .logoBlock.logoBlock {
+                        .logo.logo {
+                                .logoContainer.logoContainer {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 503
+
+section.logoGrid.logoGrid {
+                .logoBlock.logoBlock {
+                        .logo.logo {
+                                .logoTitle.logoTitle {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 99
+
+#main {
+                section.banner.banner {
+                        ul {
+                                li {
+                                        .container.container {
+                                                .baseButtons.baseButtons {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }

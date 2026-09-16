@@ -483,7 +483,14 @@ section.logo-ticker-tape .band-container-backwards:after {
                                         <p class="p-xsmall medium-grey "><?php echo get_sub_field( 'popup_form_text' ); ?></p>
                                     </span>
                                     <span class="form">
-                                        <?php echo get_sub_field('form_embed'); ?>
+                                        <?php // The HubSpot embed snippet (script tag + hbspt.forms.create() call)
+                                              // is placed inside an inert <template> rather than the live DOM, so
+                                              // the browser parses it but never fetches/executes it on page load.
+                                              // main.js's adaptActivateEmbeddedTemplate() clones it into this span
+                                              // and re-runs its scripts the first time this popup is actually
+                                              // opened -- see the comment there for why HubSpot's form embed was
+                                              // one of the biggest contributors to this page's JS execution time. ?>
+                                        <template id="animationFormEmbed"><?php echo get_sub_field('form_embed'); ?></template>
                                     </span>
                                 </span> 
                                 <span class="thank-you-message background-red" style="display: none;">

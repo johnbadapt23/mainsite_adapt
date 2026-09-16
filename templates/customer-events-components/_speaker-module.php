@@ -15,13 +15,26 @@
         </div>
         <div class="speakers-container-outer">
             <div class="filter-container-outer">
-                <?php $expertise_ids = get_sub_field( 'expertise' ); ?>
+                <?php
+                    $expertise_ids = get_sub_field( 'expertise' );
+                    // BUGFIX 2026-09-03: kept alongside $expertise_ids so the
+                    // #speakers-container query below (which used to gate on
+                    // $expertise_ids) can check "did this module have any
+                    // expertise configured at all" using the value as
+                    // originally set by ACF -- not the value further down
+                    // the page, after the .expertise-group checkbox block
+                    // has already destructively stripped 15788/15789
+                    // (adapt-analysts/adapt-advisors) out of it via
+                    // array_diff(). See the query below for why that
+                    // mattered.
+                    $expertise_ids_original = $expertise_ids;
+                ?>
                 <div class="position-sticky filter-container sticky-filter-container">
                     
                     <div>
                         <form id="speakerFilter">
                             <?php if( in_array(15788,$expertise_ids) || in_array(15789,$expertise_ids)) : ?>
-                            <div style="padding-bottom: 20px;">
+                            <div class="analyst-advisor-checkboxes" style="padding-bottom: 20px;">
                                     <?php
                                         if ( $expertise_ids && ! empty( $expertise_ids ) ) {
                                             // Get terms for the selected expertise IDs
@@ -41,11 +54,18 @@
                                                     </div>
                                                     <?php
                                                 }
-                                            } 
-                                        } 
+                                            }
+                                        }
                                     ?>
-                            </div> 
+                            </div>
                             <?php endif; ?>
+                            <?php
+                                // Wrapped together (title + mobile trigger + the checkboxes
+                                // themselves) so main.js can show/hide the whole "Expertise"
+                                // group as one unit when an ADAPT Analysts/Advisors checkbox
+                                // (above) is toggled -- see the #speakerFilter change handler.
+                            ?>
+                            <div class="expertise-group">
                             <span class="expertise-title">Expertise</span>
                             <span class="mobile-trigger">Filter by expertise</span>
                             <?php
@@ -56,7 +76,7 @@
                                         $expertise_ids = array_diff($expertise_ids, [15788, 15789]);
                                         $expertise_ids = array_values($expertise_ids);
                                     }
-                                    
+
                                     $expertise_terms = get_terms( array(
                                         'taxonomy' => 'expertise',
                                         'hide_empty' => false,
@@ -73,9 +93,10 @@
                                             </div>
                                             <?php
                                         }
-                                    } 
-                                } 
+                                    }
+                                }
                             ?>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -85,8 +106,34 @@
                     <?php
                         $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
                         $posts_per_page = 12; // Number of posts per page
-                        $offset = ($paged - 1) * $posts_per_page; 
-                        if ( $expertise_ids ) {
+                        $offset = ($paged - 1) * $posts_per_page;
+                        // BUGFIX 2026-09-03: this used to be `if ( $expertise_ids )`,
+                        // gating the entire query (and the #speakers-container
+                        // markup) on whether this module had any expertise
+                        // configured. Two problems: (1) by this point in the
+                        // page, $expertise_ids had already been mutated by the
+                        // .expertise-group checkbox block above (array_diff()
+                        // strips out 15788/15789), so a module configured with
+                        // ONLY adapt-analysts/adapt-advisors and no other
+                        // expertise term saw $expertise_ids become an empty
+                        // array here and rendered zero speakers on initial
+                        // load -- even though speakers existed. (2) even where
+                        // it didn't trip, gating the query at all didn't match
+                        // filter_speakers_callback() in functions.php, whose
+                        // own "safety net" branch is explicitly designed to
+                        // never skip the query, just fall back to filtering on
+                        // adapt-analysts/adapt-advisors alone -- see its
+                        // comment ("no slugs at all ... still exclude untagged
+                        // posts rather than skipping tax_query entirely").
+                        // Gating on $expertise_ids_original instead (the
+                        // value as ACF originally set it, just confirming
+                        // this module has *some* expertise configured at
+                        // all) fixes case (1) -- a module can no longer lose
+                        // its speakers just because its only configured
+                        // expertise happened to be 15788/15789 -- while
+                        // leaving case (2)'s "not configured at all" instances
+                        // rendering nothing, same as before.
+                        if ( $expertise_ids_original ) {
                             // Set up the query arguments
                             $args = array(
                                 'post_type'      => 'speaker',
@@ -95,14 +142,19 @@
                                 'paged'         => isset($_POST['paged']) ? intval($_POST['paged']) : 1,
                                 'tax_query'      => array(
                                     'relation' => 'AND',
+                                    // array(
+                                    //     'taxonomy' => 'expertise',
+                                    //     'field'    => 'term_id',
+                                    //     'terms'    => $expertise_ids,
+                                    //     'operator' => 'IN',
+                                    // ),
                                     array(
                                         'taxonomy' => 'expertise',
                                         'field'    => 'term_id',
-                                        'terms'    => $expertise_ids,
+                                        'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
                                         'operator' => 'IN',
                                     ),
                                 ),
-                                'ignore_custom_sort' => true,
                                 // Replaced by the expertise tax_query exclusion above.
                                 // 'meta_query'     => array(
                                 //     'relation' => 'OR',
@@ -116,8 +168,27 @@
                                 //     ),
                                 //
                                 // ),
-                                'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),
                             );
+                            // BUGFIX 2026-09-03 (round 3): round 2 removed
+                            // 'ignore_custom_sort' => true so Advanced Post Types
+                            // Order's Auto Apply Sort would actually run again, but
+                            // the live order still didn't match wp-admin's
+                            // drag-and-drop list -- some pairs matched, the full
+                            // sequence didn't, which pointed at *a* real order being
+                            // applied, just not the plugin's. Its "Advanced" tier can
+                            // store the manually-dragged order somewhere other than a
+                            // plain wp_posts.menu_order write (see apto_get_order_list()
+                            // used in functions.php for the resource-type case, which
+                            // returns an explicit ID list from the plugin's own
+                            // storage), so keeping an explicit 'orderby' => 'menu_order'
+                            // here may have read as "the caller already wants a
+                            // specific order" and pre-empted the plugin's own
+                            // posts_orderby/pre_get_posts injection. Only set it
+                            // ourselves when the plugin's API isn't available, so its
+                            // own hook has an unclaimed orderby to fill in when it is.
+                            if ( ! function_exists( 'apto_get_order_list' ) ) {
+                                $args['orderby'] = array( 'menu_order' => 'ASC' );
+                            }
 
                             // Run the query
                             $speakers_query = new WP_Query( $args );
@@ -134,8 +205,10 @@
                                         <a class="slide-out-bio" href="#<?php echo $post_slug; ?>" id="<?php echo $post_slug; ?>">
                                             <span class="image-container">
                                                 <span class="bg-container">
-                                                    <?php $team_member_image = get_field( 'speaker_image' ); ?>
-                                                    <img src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
+                                                    <?php
+                                                    $team_member_image = get_field( 'speaker_image' );
+                                                    echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                                                    ?>
                                                 </span>
                                                 <span class="text-container mobile-hide">
                                                     <h5><?php the_title(); ?></h5>
@@ -155,8 +228,10 @@
                                                 <span class="bio-top">
                                                     <span class="image-container">
                                                         <span class="bg-container">
-                                                            <?php $team_member_image = get_field( 'speaker_image' ); ?>
-                                                            <img loading="lazy" src="<?php echo $team_member_image; ?>" alt="<?php the_title(); ?>" />
+                                                            <?php
+                                                            $team_member_image = get_field( 'speaker_image' );
+                                                            echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title(), 'loading' => 'lazy' ) );
+                                                            ?>
                                                         </span>
                                                         <span class="border-offset"></span>
                                                     </span>
@@ -171,8 +246,42 @@
                                                 </span>                                               
                                             </div>
                                             <span class="speaker-button-container">
-                                                <span class="std-button form-popup-button-container red-button"><?php echo get_field( 'speaker_form_button', 'options' ); ?></span>
-                                                <span style="display:none"><?php echo get_field( 'speaker_form_script', 'options' ); ?></span>
+                                                <?php
+                                                    // Switched from the hosted hsforms.com share-link (iframe popup)
+                                                    // to the real HubSpot JS embed, so it renders natively in the page
+                                                    // (no cross-origin iframe) and matches the styling of other
+                                                    // embeds on the site. The <script> loader is centralised once in
+                                                    // functions.php (adapt_page_needs_hubspot_forms_embed()) rather
+                                                    // than repeated per speaker/advisor card.
+                                                    //
+                                                    // The div is wrapped in a <template> so it isn't inserted (and
+                                                    // doesn't get rendered by the embed script) until the popup is
+                                                    // actually opened -- see .formPopupHubspot's callbacks.open in
+                                                    // main.js, which also fills in the hidden "which advisors are you
+                                                    // interested in meeting" field from data-prefill-title once the
+                                                    // embed script finishes rendering the real form fields.
+                                                    $speaker_form_id = 'speakerFormEmbed' . get_the_ID();
+                                                ?>
+                                                <span class="std-button form-popup-button-container red-button" style="padding: 0;">
+                                                    <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
+                                                        <a class="formPopupHubspot" href="#<?= $speaker_form_id; ?>" data-embed-template="<?= $speaker_form_id; ?>Tpl" data-prefill-title="<?= esc_attr( get_the_title() ); ?>">Submit an Analyst Enquiry</a>
+                                                    <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
+                                                        <a class="formPopupHubspot" href="#<?= $speaker_form_id; ?>" data-embed-template="<?= $speaker_form_id; ?>Tpl" data-prefill-title="<?= esc_attr( get_the_title() ); ?>">Submit an Advisor Enquiry</a>
+                                                    <?php endif; ?>
+                                                </span>
+                                                <div style="display:none">
+                                                    <div id="<?= $speaker_form_id; ?>">
+                                                        <span class="form">
+                                                            <template id="<?= $speaker_form_id; ?>Tpl">
+                                                                <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
+                                                                    <?php echo get_field( 'speaker_form_script', 'options' ); ?>
+                                                                <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
+                                                                    <?php echo get_field( 'speaker_form_script_advisor', 'options' ); ?>
+                                                                <?php endif; ?>
+                                                            </template>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </span>
                                         </div>
                                         <div class="click-overlay"></div>
@@ -195,7 +304,7 @@
                             'next_text' => 'Next',     // Set custom text for "Next" link
                         )); ?>
                         <?php wp_reset_postdata(); ?>
-                        <?php wp_reset_query(); ?>
+                        <?php wp_reset_postdata(); ?>
                     </div>
                 </div>
             </div>

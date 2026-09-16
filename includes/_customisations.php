@@ -40,6 +40,17 @@ function custom_excerpt_length( $length ) {
 	return 34;
 }
 
+// custom_show_admin_bar_admins_only
+function custom_show_admin_bar_admins_only( $show ) {
+	if ( ! is_user_logged_in() ) {
+		return false;
+	}
+
+	$user = wp_get_current_user();
+
+	return in_array( 'administrator', (array) $user->roles, true );
+}
+
 // remove_style_type
 function custom_remove_style_type($tag) {
     return preg_replace('~\s+type=["\'][^"\']++["\']~', '', $tag);
@@ -116,10 +127,18 @@ function custom_body_classs($classes) {
 		array_push($classes, $post->post_type);
 		array_push($classes, sanitize_html_class($post->post_name));
 		//array_push($classes, 'single-post');
+		// This filter replaces $classes wholesale, discarding the
+		// page-id-{ID}/postid-{ID} classes WP core's body_class() would
+		// otherwise add -- re-added here (as a single consistent
+		// "page-id-{ID}" for any singular content, matching the format
+		// requested) so individual pages/posts can still be targeted in
+		// CSS/JS without needing a page template or slug-based hook.
+		array_push($classes, 'page-id-' . $post->ID);
     } else {
 		if($post) {
 			array_push($classes, $post->post_type);
 			array_push($classes, sanitize_html_class($post->post_name));
+			array_push($classes, 'page-id-' . $post->ID);
 			$page_template = get_post_meta( $post->ID, '_wp_page_template', true );
 			if ( strstr($page_template, '/') && !is_singular( 'post' ) ) {
 
@@ -132,6 +151,15 @@ function custom_body_classs($classes) {
 			}
 		}
     }
+
+	// This filter replaces $classes wholesale (see note above), which also
+	// discards WP core's own 'admin-bar' class before anything else gets a
+	// chance to see it -- re-added here the same way page-id-{ID} is, so
+	// admin-bar-aware CSS (see source/scss/partials/_header.scss) still
+	// works for administrators.
+	if ( is_admin_bar_showing() ) {
+		array_push( $classes, 'admin-bar' );
+	}
 
     return $classes;
 }

@@ -50,6 +50,7 @@
                 'name' => $slug,
                 'post_type' => ['team_member', 'post_author'],
                 'posts_per_page' => 1,
+                'no_found_rows' => true,
             ]);
 
             if ($contributor_query->have_posts()) :
@@ -60,6 +61,7 @@
                 $args = [
                     'post_type' => 'post',
                     'posts_per_page' => -1, // Fetch all posts
+                    'no_found_rows' => true,
                     'meta_query' => [
                         [
                             'key' => 'contributors_$_contributor',
@@ -211,6 +213,7 @@ if ($author_terms && !is_wp_error($author_terms)) {
         'post_type' => 'event',
         'meta_key'  => 'date',
         'posts_per_page' => -1,
+        'no_found_rows' => true,
         'orderby'   => 'meta_value_num',
         'order'     => 'ASC',
         'meta_query' => array(
@@ -233,7 +236,6 @@ if ($author_terms && !is_wp_error($author_terms)) {
 
     $path_segments = explode('/', trim($parsed_path, '/')); // Split path into segments
     $event_slug = end($path_segments); // Get the last segment
-    print_r($event_slug); // Debugging output
 
     // Check if the event_slug matches exactly with any author_slug
     foreach ($author_term_slugs as $author_slug) {
@@ -334,6 +336,7 @@ endwhile; ?>
                 'name' => $slug,
                 'post_type' => 'speaker',
                 'posts_per_page' => 1,
+                'no_found_rows' => true,
             ]);
 
             if ($contributor_query->have_posts()) :
@@ -345,6 +348,7 @@ endwhile; ?>
                 $args = [
                     'post_type' => 'registration',  // We're looking in the 'registration' post type
                     'posts_per_page' => -1,
+                    'no_found_rows' => true,
                     'meta_key'  => 'event_date',
                     'orderby'   => 'meta_value_num',
                     'order'     => 'ASC',

@@ -30,6 +30,14 @@ header {
         @include transition(all, 300ms, ease);
     }
 
+    body.admin-bar & {
+        top: 32px !important;
+
+        @media (max-width: 782px) {
+            top: 46px !important;
+        }
+    }
+
 
     @media (max-width: 1250px) {
         height: 60px;
@@ -2323,6 +2331,27 @@ body.template-resources {
     }
 }
 
+// BUGFIX 2026-09-10 (user-reported, real/production bug -- not part of
+// the ?dev=true float-refactor work): header.resources-sticky
+// .resources-sticky-menu is given `position: fixed; top: 0;` above
+// (body.post/body.search-results/body.template-resources block), but
+// unlike the main `header` element (which has its own `body.admin-bar
+// & { top: 32px !important; }` compensation at the top of this file),
+// nothing here accounts for the 32px (46px on mobile, per WP core's
+// own admin-bar breakpoint) the wp-admin toolbar adds to the top of
+// the viewport when a logged-in user with the bar enabled is viewing
+// the page. Without this, the fixed sticky menu sits underneath/
+// behind the admin bar instead of just below it. Mirrors the existing
+// body.admin-bar pattern for the main header.
+body.post.admin-bar header.resources-sticky .resources-sticky-menu,
+body.search-results.admin-bar header.resources-sticky .resources-sticky-menu,
+body.template-resources.admin-bar header.resources-sticky .resources-sticky-menu {
+    top: 32px !important;
+
+    @media (max-width: 782px) {
+        top: 46px !important;
+    }
+}
 
 .search-dropdown {
     position: fixed;
@@ -4386,3 +4415,3511 @@ body.position {
         height: 24px;
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+header .container.container .header-inner.header-inner {
+        display: flex;
+        align-items: flex-start;
+    }
+
+header .container.container .header-inner.header-inner .logo-container.logo-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+header .container.container .header-inner.header-inner .logo-container.logo-container .logo.logo {
+        float: none;
+    }
+
+header .container.container .header-inner.header-inner .headerRight.headerRight {
+        float: none;
+        flex-shrink: 0;
+    }
+
+header .container.container .header-inner.header-inner .headerRight.headerRight {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+header .container.container .header-inner.header-inner .headerRight.headerRight .menu.menu {
+        float: none;
+    }
+
+header .container.container .header-inner.header-inner .headerRight.headerRight .menu-buttons.menu-buttons {
+        float: none;
+    }
+
+header .container.container .header-inner.header-inner .headerRight.headerRight .menu.menu .main-nav.main-nav {
+        float: none;
+    }
+
+header .container.container .header-inner.header-inner .headerRight.headerRight .menu.menu .main-nav.main-nav ul {
+        float: none;
+        display: flex;
+    }
+
+header .container.container .header-inner.header-inner .headerRight.headerRight .menu.menu .main-nav.main-nav ul li {
+        float: none;
+    }
+
+// BUGFIX 2026-09-09: user-reported "gap differences between header
+
+// menu items on hover" -- root cause found via full pixel-by-pixel
+
+// capture of every element under header.header, dev vs production,
+
+// with all 5 top-level dropdowns forced open on both. All 5 nav
+
+// <li> (Our Services, Events, Resources, For Customers, About
+
+// Adapt) measured 44px tall under ?dev=true vs 48px on production
+
+// -- a consistent 4px shift affecting every item's hover hitbox and
+
+// the dropdown-arrow/active-state position beneath it, exactly
+
+// matching what the user could see but a container-level check
+
+// missed.
+
+//
+
+// Cause: `.main-nav ul` above got `float:none; display:flex;` (the
+
+// deliberate nav->flexbox conversion from an earlier session) with
+
+// no explicit height on the `li` itself. `ul` has an explicit
+
+// `height: 48px` (real/ungated rule, source/scss/partials/
+
+// _header.scss:146) plus `padding-top: 4px`, and everything here
+
+// is `box-sizing: border-box` (sitewide reset), so the UL's
+
+// *content* box -- what flex children stretch to fill via the
+
+// default `align-items: normal` (= stretch) -- is only
+
+// 48 - 4 = 44px. On production `li` is a plain float (not a flex
+
+// item), so it never stretches to the UL's box at all; its height
+
+// comes purely from its own child `>a`'s `line-height: 48px`
+
+// (_header.scss:163), giving the full 48px regardless of the UL's
+
+// padding. Fix: pin `li`'s height explicitly so flex stretch has
+
+// nothing left to shrink. Scoped to `.main-nav > ul > li` (direct
+
+// children only) rather than the plain `ul li` above -- the first
+
+// attempt at this used `ul li` and it also matched every nested
+
+// <li> inside the mega-menu dropdowns (events list, resources
+
+// list, adapt list, etc.), forcing THEM to 48px too and badly
+
+// breaking their layout. Verified live: all 5 top-level items now
+
+// measure 48px tall, at the exact same x/y as production, with no
+
+// regression on the nested dropdown lists.
+
+header .container.container .header-inner.header-inner .headerRight.headerRight .menu.menu .main-nav.main-nav > ul > li {
+        height: 48px;
+    }
+
+header .resources-sticky-menu.resources-sticky-menu .container.container .resources-sticky-inner.resources-sticky-inner {
+        display: flex;
+        align-items: flex-start;
+    }
+
+header .resources-sticky-menu.resources-sticky-menu .container.container .resources-sticky-inner.resources-sticky-inner .scroll-image-container.scroll-image-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+header .resources-sticky-menu.resources-sticky-menu .container.container .resources-sticky-inner.resources-sticky-inner .resources-nav.resources-nav {
+        float: none;
+        flex-shrink: 0;
+    }
+
+header .resources-sticky-menu.resources-sticky-menu .container.container .resources-sticky-inner.resources-sticky-inner .sticky-menu-right.sticky-menu-right {
+        float: none;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+
+header .resources-sticky-menu.resources-sticky-menu .container.container .resources-sticky-inner.resources-sticky-inner .scroll-image-container.scroll-image-container .logo.logo {
+        float: none;
+        display: flex;
+        align-items: flex-start;
+    }
+
+header .resources-sticky-menu.resources-sticky-menu .container.container .resources-sticky-inner.resources-sticky-inner .scroll-image-container.scroll-image-container .logo.logo img {
+        float: none;
+    }
+
+// BUGFIX 2026-09-10 (user-reported, screenshot showing both logo
+
+// variants stacked): the bulk-generated leaf display:block restore
+
+// rule for the un-floated img above
+
+// (`body.dev-float-refactor header .resources-sticky-menu .container
+
+// .resources-sticky-inner .scroll-image-container .logo img { float:
+
+// none; display: block; }`, specificity (0,6,3) -- 6 classes) beats
+
+// the real `header .resources-sticky-menu .container
+
+// .scroll-image-container .logo img.light { display: none; }` rule
+
+// (_header.scss, specificity (0,5,2) -- only 5 classes, one fewer
+
+// than the bulk rule since it doesn't include the intermediate
+
+// `.resources-sticky-inner` class) on the class column alone,
+
+// regardless of element count -- permanently forcing the light-logo
+
+// variant to display:block alongside the dark one. Same bug class as
+
+// the flip-card-module `span.text.mobile` fix elsewhere in this file:
+
+// the bulk leaf-restorer doesn't know some floated leaves are
+
+// *supposed* to stay display:none (toggle-pair elements like
+
+// .dark/.light), it just restores block unconditionally. Fixed with
+
+// a self-doubled `.light` class (8 classes total, beats the bulk
+
+// rule's 6 outright).
+
+header .resources-sticky-menu.resources-sticky-menu .container.container .resources-sticky-inner.resources-sticky-inner .scroll-image-container.scroll-image-container .logo.logo img.light.light.light.light {
+        display: none;
+    }
+
+header .resources-sticky-menu.resources-sticky-menu .container.container .resources-sticky-inner.resources-sticky-inner .scroll-image-container.scroll-image-container .logo.logo .resources-link-mobile.resources-link-mobile {
+        float: none;
+    }
+
+header .resources-sticky-menu.resources-sticky-menu .container.container .resources-sticky-inner.resources-sticky-inner .resources-nav.resources-nav ul {
+        float: none;
+        display: flex;
+    }
+
+header .resources-sticky-menu.resources-sticky-menu .container.container .resources-sticky-inner.resources-sticky-inner .resources-nav.resources-nav ul li {
+        float: none;
+    }
+
+.search-dropdown.search-dropdown .container.container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+.search-dropdown.search-dropdown .container.container .column.column.logo-column.logo-column {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.search-dropdown.search-dropdown .container.container .column.column.search-link.search-link {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.search-dropdown.search-dropdown .container.container .close-clear-container.close-clear-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.search-dropdown.search-dropdown .container.container .column.column.logo-column.logo-column .logo-title-container.logo-title-container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+.search-dropdown.search-dropdown .container.container .column.column.logo-column.logo-column .logo-title-container.logo-title-container .logo.logo {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.search-dropdown.search-dropdown .container.container .column.column.logo-column.logo-column .logo-title-container.logo-title-container .logo.logo img {
+        float: none;
+    }
+
+.search-dropdown.search-dropdown .container.container .column.column.logo-column.logo-column .logo-title-container.logo-title-container .search-title.search-title {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.search-dropdown.search-dropdown .container.container .column.column.search-link.search-link .search-column-container.search-column-container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+.search-dropdown.search-dropdown .container.container .column.column.search-link.search-link .search-column-container.search-column-container .column.column.search-link-column.search-link-column {
+        float: none;
+        flex-shrink: 0;
+    }
+
+// line 53
+
+header {
+                .container.container {
+                        .header-inner.header-inner {
+                                float: none;
+                        }
+                }
+        }
+
+// line 115
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                float: none;
+                        }
+                }
+        }
+
+// line 239
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        &.servicesMenu.servicesMenu {
+                                                                                .container.container {
+                                                                                        .column.column.title-column.title-column {
+                                                                                                .services-hover.services-hover {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 253
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        &.servicesMenu.servicesMenu {
+                                                                                .container.container {
+                                                                                        .column.column.title-column.title-column {
+                                                                                                .services-hover.services-hover {
+                                                                                                        .icon-container.icon-container {
+                                                                                                                img {
+                                                                                                                        float: none;
+                                                                                                                }
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 280
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        &.servicesMenu.servicesMenu {
+                                                                                .container.container {
+                                                                                        .column.column.title-column.title-column {
+                                                                                                .services-hover.services-hover {
+                                                                                                        .switch-text.switch-text {
+                                                                                                                float: none;
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 306
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        &.servicesMenu.servicesMenu {
+                                                                                .container.container {
+                                                                                        .column.column.content-column.content-column {
+                                                                                                .services-content-inner.services-content-inner {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// BUGFIX 2026-09-09: found during the same header pixel-by-pixel
+
+// audit as the nav-item-height fix above. .services-content-inner
+
+// (and its child .it-content.services-content, which switches
+
+// between the "IT Leaders"/"Tech Vendors" panels on hover) is a
+
+// <div>, originally `float:left;width:100%` (_header.scss:313/320)
+
+// wrapping still-floated descendants (.overview-container,
+
+// .links-container, both float:left). With float:none applied
+
+// above and no compensating containment, both collapsed to
+
+// height:0 under ?dev=true (visually: the entire right-hand panel
+
+// of the Services mega menu disappeared), vs 408.5px on
+
+// production. display:flow-root on both restores containment
+
+// without reintroducing float positioning -- same pattern as the
+
+// .dropDownSection fix below. Verified live: both now measure
+
+// 671x408.5 at the same position as production.
+
+header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu.servicesMenu.servicesMenu .container.container .column.column.content-column.content-column .services-content-inner.services-content-inner {
+        display: flow-root;
+    }
+
+// BUGFIX 2026-09-14: the rule above was originally hardcoded to
+// `.it-content.it-content.services-content.services-content` --
+// i.e. it only ever targeted the "IT Leaders" panel, unconditionally,
+// regardless of whether that panel was the active one. .services-content
+// is `display:none` by default and only `display:block` via `&.active`
+// (see partials/_header.scss:320); because this selector's specificity
+// (4 doubled classes deep in the same long chain) beats that plain
+// `.active` rule, .it-content stayed permanently visible (flow-root)
+// even when a *different* panel (e.g. .tech-content) was the one
+// actually toggled active -- and since .tech-content never got the
+// flow-root containment fix, ITS floated children collapsed to 0
+// height instead. Net effect: both panels visible/broken at once,
+// looking like "items only meant to show on hover are always shown".
+// Fix: match `.active` instead of a specific panel's class, so flow-root
+// (and its containment fix) only ever applies to whichever panel is
+// currently the active one -- works for .it-content, .tech-content, or
+// any future variant, and the inactive panel's own `display:none` is
+// no longer beaten by this rule at all.
+header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu.servicesMenu.servicesMenu .container.container .column.column.content-column.content-column .services-content-inner.services-content-inner .services-content.services-content.active.active {
+        display: flow-root;
+    }
+
+// line 314
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        &.servicesMenu.servicesMenu {
+                                                                                .container.container {
+                                                                                        .column.column.content-column.content-column {
+                                                                                                .services-content.services-content {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 331
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        &.servicesMenu.servicesMenu {
+                                                                                .container.container {
+                                                                                        .column.column.content-column.content-column {
+                                                                                                .services-content.services-content {
+                                                                                                        .overview-container.overview-container {
+                                                                                                                .overview-image.overview-image {
+                                                                                                                        float: none;
+                                                                                                                }
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 345
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        &.servicesMenu.servicesMenu {
+                                                                                .container.container {
+                                                                                        .column.column.content-column.content-column {
+                                                                                                .services-content.services-content {
+                                                                                                        .overview-container.overview-container {
+                                                                                                                .overview-content.overview-content {
+                                                                                                                        float: none;
+                                                                                                                }
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 349
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        &.servicesMenu.servicesMenu {
+                                                                                .container.container {
+                                                                                        .column.column.content-column.content-column {
+                                                                                                .services-content.services-content {
+                                                                                                        .overview-container.overview-container {
+                                                                                                                .overview-content.overview-content {
+                                                                                                                        .labelLarge.labelLarge {
+                                                                                                                                float: none;
+                                                                                                                        }
+                                                                                                                }
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 355
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        &.servicesMenu.servicesMenu {
+                                                                                .container.container {
+                                                                                        .column.column.content-column.content-column {
+                                                                                                .services-content.services-content {
+                                                                                                        .overview-container.overview-container {
+                                                                                                                .overview-content.overview-content {
+                                                                                                                        .labelSmall.labelSmall {
+                                                                                                                                float: none;
+                                                                                                                        }
+                                                                                                                }
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 378
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        &.servicesMenu.servicesMenu {
+                                                                                .container.container {
+                                                                                        .column.column.content-column.content-column {
+                                                                                                .dropDownSection.dropDownSection {
+                                                                                                        &.compare.compare {
+                                                                                                                .compare-text.compare-text {
+                                                                                                                        float: none;
+                                                                                                                }
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 471
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .mobile-menu-title.mobile-menu-title {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 511
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .menu-bottom.menu-bottom {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// BUGFIX 2026-09-09: found during the header pixel-by-pixel audit.
+
+// .menu-bottom (only present in .eventsMenu -- the "view all
+
+// events" footer strip) is a <div>, originally
+
+// `float:left;width:100%;margin-top:32px` (_header.scss:518-522).
+
+// With float:none above and no explicit `clear`, its own top
+
+// border edge is computed as if the still-floated two-column
+
+// layout above it (.container's .column.one-half x2, height
+
+// 515px) didn't exist, landing right after the empty (height:0)
+
+// .container instead. Adding `clear:both` alone gets the box down
+
+// to the right Y (667px, the floats' bottom edge) but the
+
+// margin-top:32px then gets absorbed into the clearance
+
+// calculation per spec instead of adding on top of it -- CSS
+
+// clearance is defined as max(0, floatBottom - normalFlowPosition),
+
+// which already accounts for the margin, so a cleared block's
+
+// final position is capped at floatBottom regardless of how large
+
+// its margin-top is. A real float doesn't have this cap: a new
+
+// same-width float that can't fit beside prior floats drops below
+
+// them AND still applies its own margin-top on top of that,
+
+// landing at 667+32=699 -- matching production exactly. Simplest
+
+// fix that reproduces this is to just leave it floated (this is
+
+// the one rule in this specific chain where reverting the gate's
+
+// float:none, rather than compensating for it, is the right call
+
+// -- verified live against production down to the pixel: menu-
+
+// bottom, its text, and its "view all events" link all landed at
+
+// the exact same x/y/w/h as production).
+
+header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu.eventsMenu.eventsMenu .menu-bottom.menu-bottom.menu-bottom.menu-bottom {
+        float: left;
+    }
+
+// line 517
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .menu-bottom.menu-bottom {
+                                                                                .menu-bottom-inner.menu-bottom-inner {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 523
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .menu-bottom.menu-bottom {
+                                                                                .menu-bottom-inner.menu-bottom-inner {
+                                                                                        .events-bottom-text.events-bottom-text {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 550
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .dropDownSection.dropDownSection {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// BUGFIX 2026-09-09: header pixel-by-pixel audit (user-reported
+
+// "gap differences between header menu items on hover"). This is
+
+// the main finding: .dropDownSection (the repeating "title +
+
+// description" block used across the Events/Resources/Customer/
+
+// Adapt mega-menu columns) is a <span>, originally
+
+// `float:left;width:100%;margin-bottom:40px` (_header.scss:557),
+
+// whose floated children (.columnText, .all-link-container, the
+
+// list-based variant's `ul`, all float:left in the real CSS) it
+
+// used to contain via its own float-generated BFC. With float:none
+
+// above and no compensating containment, those children escape the
+
+// (now content-box-only) parent -- e.g. on eventsMenu, dropDown-
+
+// Section's own reported height collapsed to 20px (just its
+
+// .columnTitle) while the still-floated .columnText hung 24px
+
+// below it uncounted, so the NEXT dropDownSection started only
+
+// 20+40=60px later instead of the real ~96px -- a directly visible
+
+// per-item spacing shrink on hover, matching exactly what the user
+
+// described. display:flow-root restores containment without
+
+// reintroducing float positioning (same technique already used for
+
+// the mobile Resources-dropdown fix in an earlier session).
+
+// Self-doubled class (`.dropDownSection.dropDownSection`) for
+
+// specificity: this selector chain is otherwise IDENTICAL to the
+
+// one above it, and .dropDownSection is a <span> -- originally
+
+// floated, so it also gets a `display:block` compensating rule
+
+// from the automated fix-float-none-display.js pass (same
+
+// mechanism documented for .links-container/.text-link and
+
+// section.sponsor-block elsewhere in this file). That generated
+
+// rule is appended after everything in this source file at build
+
+// time, so on equal specificity it would silently win and put
+
+// display:block back, discarding the BFC. The extra class beats it
+
+// regardless of source order. Verified live against production,
+
+// matched exactly: eventsMenu's 3 dropDownSections (56px, 56px,
+
+// 72px tall, starting at y=152/248/344), all 5 megaMenu columns'
+
+// .all-link-container and list positions, and adaptMenu's UL.
+
+header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu .column.column .dropDownSection.dropDownSection.dropDownSection.dropDownSection {
+        display: flow-root;
+    }
+
+// Companion fix: once dropDownSection contains its floats again,
+
+// a *repeated* group inside the SAME dropDownSection (customerMenu
+
+// packs 3 title-link+columnTitle+columnText groups in one shared
+
+// dropDownSection, not one each) still has a layout bug -- each
+
+// subsequent .columnTitle (itself un-floated by the rule below,
+
+// now a plain block) positions ignoring the PRECEDING group's
+
+// still-floated .columnText sibling (per spec, a non-floated
+
+// block's own top edge is computed as if prior floats don't exist;
+
+// only its inline content wraps around them), so its box overlaps
+
+// the float and its line content gets squeezed, inflating its own
+
+// height. Confirmed live: customerMenu's 2nd/3rd columnTitle
+
+// landed at y=176/272 with height 92 instead of y=248/344 height
+
+// 20. `clear:both` on .columnTitle (a no-op on the FIRST group in
+
+// each dropDownSection, since nothing floated precedes it there)
+
+// and on .all-link-container (which follows the last group's
+
+// float the same way) fixes both. Same specificity note as above
+
+// applies -- self-doubled for safety.
+
+header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu .column.column .dropDownSection.dropDownSection .columnTitle.columnTitle.columnTitle.columnTitle,
+    header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu .column.column .dropDownSection.dropDownSection .all-link-container.all-link-container.all-link-container.all-link-container {
+        clear: both;
+    }
+
+// Companion fix: the list-based dropDownSection variant (resources-
+
+// Menu's link list, adaptMenu's link list) has the same issue for
+
+// its `ul` -- a plain block now, following the still-floated
+
+// .columnText sibling above it, positioned overlapping it instead
+
+// of below it. Confirmed live: adaptMenu's UL landed at y=176
+
+// (overlapping .columnText) instead of y=232; resourcesMenu's
+
+// subTitle .columnTitle (already fixed by the clear:both above,
+
+// since it's also a .columnTitle) confirmed no double-fix needed.
+
+header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu .column.column .dropDownSection.dropDownSection > ul {
+        clear: both;
+    }
+
+// line 559
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .dropDownSection.dropDownSection {
+                                                                                        .columnTitle.columnTitle {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 643
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .dropDownSection.dropDownSection {
+                                                                                        ul {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 655
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .dropDownSection.dropDownSection {
+                                                                                        ul {
+                                                                                                li {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 664
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .dropDownSection.dropDownSection {
+                                                                                        ul {
+                                                                                                li {
+                                                                                                        a {
+                                                                                                                float: none;
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// BUGFIX 2026-09-09: header pixel-by-pixel audit. eventsMenu's
+
+// second column (the plain event-date list, not the description
+
+// list) uses `a.external-link-event`, real/ungated CSS
+
+// (_header.scss:685-687) overrides the general `ul li a` float:
+
+// left;width:100% with `width:auto` so the link shrinks to fit its
+
+// own text, leaving room for the sibling .event-month badge to sit
+
+// on the same line at a position that varies with each link's text
+
+// length -- that's why production's link widths/positions are all
+
+// different per row. On a FLOATED element `width:auto` shrink-
+
+// wraps (the shrink-to-fit algorithm); the `float:none` two blocks
+
+// up plus the automated display:block compensating fix (a <a> is
+
+// originally inline, same un-blockify mechanism noted throughout
+
+// this file) turns it into a plain block instead, where `width:
+
+// auto` means "fill the container" -- so under ?dev=true every
+
+// link rendered the full 231.5px column width regardless of text.
+
+// Confirmed live: dev showed a uniform 231.5px for all 10 links vs
+
+// production's 159.38/224.03/143.77/163.56/121.72/116.2/148.86/
+
+// 117.09/168.45/168.23px.
+
+//
+
+// Fix: keep it a real float (matching production) rather than
+
+// faking shrink-to-fit with inline-block -- inline-block was tried
+
+// first and got the widths right but introduced a ~5-40px
+
+// cumulative vertical drift down the list (mixing an inline-block
+
+// element with the sibling inline .event-month in the same line
+
+// box inflates the parent <li>'s height beyond the intended 21px,
+
+// compounding with every row). Re-floating needs its parent <li>
+
+// to regain BFC containment (flow-root, same pattern as every
+
+// other fix in this file) since the <li> itself was also converted
+
+// to float:none with nothing to contain the now-floated <a>.
+
+// Verified live: all 10 links' x/y/width/height and the "view all
+
+// events" menu-bottom position that depends on this column's total
+
+// height now match production exactly.
+
+header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu .column.column .dropDownSection.dropDownSection ul li a.external-link-event.external-link-event {
+        float: left;
+        display: block;
+    }
+
+header .container.container .headerRight.headerRight .menu.menu .main-nav.main-nav ul li .megaMenu.megaMenu .column.column .dropDownSection.dropDownSection ul li.events-links-container.events-links-container.events-links-container.events-links-container {
+        display: flow-root;
+    }
+
+// line 699
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .dropDownSection.dropDownSection {
+                                                                                        .all-link-container.all-link-container {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 745
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .dropDownSection.dropDownSection {
+                                                                                        .logo-link-column-container.logo-link-column-container {
+                                                                                                .column.column {
+                                                                                                        &.link-text-column.link-text-column {
+                                                                                                                a.title-link.title-link {
+                                                                                                                        float: none;
+                                                                                                                }
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 777
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .column-title.column-title {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 822
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .menu-link.menu-link {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 831
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .menu-link.menu-link {
+                                                                                        .title.title {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 847
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .menu-link.menu-link {
+                                                                                        .text.text {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 865
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .menu-link.menu-link {
+                                                                                        .link.link {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 906
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .menu-link.menu-link {
+                                                                                        .half-links.half-links {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 939
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .featured-posts-container.featured-posts-container {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 943
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .featured-posts-container.featured-posts-container {
+                                                                                        .featured-post.featured-post {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 964
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        .column.column {
+                                                                                .featured-posts-container.featured-posts-container {
+                                                                                        .featured-post.featured-post {
+                                                                                                .post-title-container.post-title-container {
+                                                                                                        .featured-title.featured-title {
+                                                                                                                float: none;
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1210
+
+// line 1233
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-sticky-inner.resources-sticky-inner {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1593
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .mobile-menu-title.mobile-menu-title {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1638
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .dropDownSection.dropDownSection {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1649
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .dropDownSection.dropDownSection {
+                                                                                .columnTitle.columnTitle {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1663
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .dropDownSection.dropDownSection {
+                                                                                ul {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1675
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .dropDownSection.dropDownSection {
+                                                                                ul {
+                                                                                        li {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1684
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .dropDownSection.dropDownSection {
+                                                                                ul {
+                                                                                        li {
+                                                                                                a {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1720
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .column-title.column-title {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1761
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .menu-link.menu-link {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1770
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .menu-link.menu-link {
+                                                                                .title.title {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1792
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .menu-link.menu-link {
+                                                                                .text.text {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1818
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .menu-link.menu-link {
+                                                                                .link.link {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1864
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .menu-link.menu-link {
+                                                                                .half-links.half-links {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1905
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .featured-posts-container.featured-posts-container {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1909
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .featured-posts-container.featured-posts-container {
+                                                                                .featured-post.featured-post {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1933
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                .column.column {
+                                                                        .featured-posts-container.featured-posts-container {
+                                                                                .featured-post.featured-post {
+                                                                                        .post-title-container.post-title-container {
+                                                                                                .featured-title.featured-title {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2349
+
+.search-dropdown.search-dropdown {
+                .container.container {
+                        .column.column.logo-column.logo-column {
+                                .logo-title-container.logo-title-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2383
+
+.search-dropdown.search-dropdown {
+                .container.container {
+                        .column.column.search-link.search-link {
+                                .search-container.search-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2388
+
+.search-dropdown.search-dropdown {
+                .container.container {
+                        .column.column.search-link.search-link {
+                                .search-container.search-container {
+                                        form {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2446
+
+.search-dropdown.search-dropdown {
+                .container.container {
+                        .column.column.search-link.search-link {
+                                .search-column-container.search-column-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2456
+
+.search-dropdown.search-dropdown {
+                .container.container {
+                        .column.column.search-link.search-link {
+                                .search-column-container.search-column-container {
+                                        .column.column.search-link-column.search-link-column {
+                                                .column-title.column-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2470
+
+.search-dropdown.search-dropdown {
+                .container.container {
+                        .column.column.search-link.search-link {
+                                .search-column-container.search-column-container {
+                                        .column.column.search-link-column.search-link-column {
+                                                .search-link.search-link {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2548
+
+.resourcesMenu.resourcesMenu {
+                .subscribe-sidebar-form.subscribe-sidebar-form {
+                        .icon-container.icon-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 2554
+
+.resourcesMenu.resourcesMenu {
+                .subscribe-sidebar-form.subscribe-sidebar-form {
+                        .icon-container.icon-container {
+                                .icon-inner.icon-inner {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2558
+
+.resourcesMenu.resourcesMenu {
+                .subscribe-sidebar-form.subscribe-sidebar-form {
+                        .icon-container.icon-container {
+                                .icon-inner.icon-inner {
+                                        img {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2610
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        float: none;
+                }
+        }
+
+// line 2629
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2633
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2691
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .sub-menu-top.sub-menu-top {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2749
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .groupSection.groupSection,
+                                .dropDownSection.dropDownSection {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2754
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .groupSection.groupSection,
+                                .dropDownSection.dropDownSection {
+                                                                                .columnTitle.columnTitle {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2789
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .groupSection.groupSection,
+                                .dropDownSection.dropDownSection {
+                                                                                .columnText.columnText {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2803
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .groupSection.groupSection,
+                                .dropDownSection.dropDownSection {
+                                                                                ul {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2807
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .groupSection.groupSection,
+                                .dropDownSection.dropDownSection {
+                                                                                ul {
+                                                                                        li {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2812
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .groupSection.groupSection,
+                                .dropDownSection.dropDownSection {
+                                                                                ul {
+                                                                                        li {
+                                                                                                a {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2858
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .groupSection.groupSection,
+                                .dropDownSection.dropDownSection {
+                                                                                .all-link-container.all-link-container {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2921
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .groupSection.groupSection,
+                                .dropDownSection.dropDownSection {
+                                                                                .logo-link-column-container.logo-link-column-container {
+                                                                                        .column.column {
+                                                                                                &.link-text-column.link-text-column {
+                                                                                                        a.title-link.title-link {
+                                                                                                                float: none;
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2939
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .full-width.full-width {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2945
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .full-width.full-width {
+                                                                                >.form-container-inner.form-container-inner {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2971
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .sub-menu-bottom.sub-menu-bottom {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2977
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .sub-menu-bottom.sub-menu-bottom {
+                                                                                .menu-bottom-inner.menu-bottom-inner {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2984
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .sub-menu-bottom.sub-menu-bottom {
+                                                                                .menu-bottom-inner.menu-bottom-inner {
+                                                                                        .events-bottom-text.events-bottom-text {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2994
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                > li {
+                                                        &.main-dropdown.main-dropdown {
+                                                                .mobile-sub-menu.mobile-sub-menu {
+                                                                        .sub-menu-bottom.sub-menu-bottom {
+                                                                                .menu-bottom-inner.menu-bottom-inner {
+                                                                                        .events-bottom-link-container.events-bottom-link-container {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3017
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .mobile-services-dropdown.mobile-services-dropdown {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3049
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .overview-container.overview-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3081
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .overview-container.overview-container {
+                                                        .overview-content.overview-content {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3085
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .overview-container.overview-container {
+                                                        .overview-content.overview-content {
+                                                                .labelLarge.labelLarge {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3098
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3133
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                >a {
+                                                                        .icon-container.icon-container {
+                                                                                img {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3190
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .sub-menu-top.sub-menu-top {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3248
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .groupSection.groupSection,
+                                    .dropDownSection.dropDownSection {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3256
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .groupSection.groupSection,
+                                    .dropDownSection.dropDownSection {
+                                                                                        &.compare.compare {
+                                                                                                .compare-text.compare-text {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3277
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .groupSection.groupSection,
+                                    .dropDownSection.dropDownSection {
+                                                                                        .columnTitle.columnTitle {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3312
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .groupSection.groupSection,
+                                    .dropDownSection.dropDownSection {
+                                                                                        .columnText.columnText {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3327
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .groupSection.groupSection,
+                                    .dropDownSection.dropDownSection {
+                                                                                        ul {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3331
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .groupSection.groupSection,
+                                    .dropDownSection.dropDownSection {
+                                                                                        ul {
+                                                                                                li {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3336
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .groupSection.groupSection,
+                                    .dropDownSection.dropDownSection {
+                                                                                        ul {
+                                                                                                li {
+                                                                                                        a {
+                                                                                                                float: none;
+                                                                                                        }
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3382
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .groupSection.groupSection,
+                                    .dropDownSection.dropDownSection {
+                                                                                        .all-link-container.all-link-container {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3399
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .full-width.full-width {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3405
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .full-width.full-width {
+                                                                                        >.form-container-inner.form-container-inner {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3431
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .sub-menu-bottom.sub-menu-bottom {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3437
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .sub-menu-bottom.sub-menu-bottom {
+                                                                                        .menu-bottom-inner.menu-bottom-inner {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3444
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .sub-menu-bottom.sub-menu-bottom {
+                                                                                        .menu-bottom-inner.menu-bottom-inner {
+                                                                                                .events-bottom-text.events-bottom-text {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3454
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-inner-mobile.services-inner-mobile {
+                                                        >li {
+                                                                &.main-dropdown.main-dropdown {
+                                                                        .mobile-sub-menu.mobile-sub-menu {
+                                                                                .sub-menu-bottom.sub-menu-bottom {
+                                                                                        .menu-bottom-inner.menu-bottom-inner {
+                                                                                                .events-bottom-link-container.events-bottom-link-container {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3466
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        > .container.container {
+                                .main-nav-mobile.main-nav-mobile {
+                                        > ul {
+                                                .services-container.services-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3506
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        .menu-bottom.menu-bottom {
+                                .menu-buttons.menu-buttons {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3510
+
+.mobileMenuMain.mobileMenuMain {
+                .mobileInner.mobileInner {
+                        .menu-bottom.menu-bottom {
+                                .menu-buttons.menu-buttons {
+                                        a {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3545
+
+.mobileMenuResources.mobileMenuResources {
+                .resources-menu-top.resources-menu-top {
+                        float: none;
+                }
+        }
+
+// line 3609
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        float: none;
+                }
+        }
+
+// line 3616
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        .main-links-container.main-links-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3683
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        >.container.container {
+                                form {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3689
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        >.container.container {
+                                form {
+                                        input {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3763
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        >.container.container {
+                                .resources-nav.resources-nav {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3767
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        >.container.container {
+                                .resources-nav.resources-nav {
+                                        > ul {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3771
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        >.container.container {
+                                .resources-nav.resources-nav {
+                                        > ul {
+                                                > li {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3816
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        >.container.container {
+                                .resources-nav.resources-nav {
+                                        > ul {
+                                                > li {
+                                                        &.resource-mobile-dropdown.resource-mobile-dropdown {
+                                                                .sub-menu.sub-menu {
+                                                                        .sub-menu-inner.sub-menu-inner {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3822
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        >.container.container {
+                                .resources-nav.resources-nav {
+                                        > ul {
+                                                > li {
+                                                        &.resource-mobile-dropdown.resource-mobile-dropdown {
+                                                                .sub-menu.sub-menu {
+                                                                        .sub-menu-inner.sub-menu-inner {
+                                                                                .columnTitle.columnTitle {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3833
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        >.container.container {
+                                .resources-nav.resources-nav {
+                                        > ul {
+                                                > li {
+                                                        &.resource-mobile-dropdown.resource-mobile-dropdown {
+                                                                .sub-menu.sub-menu {
+                                                                        .sub-menu-inner.sub-menu-inner {
+                                                                                ul {
+                                                                                        float: none;
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3837
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        >.container.container {
+                                .resources-nav.resources-nav {
+                                        > ul {
+                                                > li {
+                                                        &.resource-mobile-dropdown.resource-mobile-dropdown {
+                                                                .sub-menu.sub-menu {
+                                                                        .sub-menu-inner.sub-menu-inner {
+                                                                                ul {
+                                                                                        li {
+                                                                                                float: none;
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3842
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        >.container.container {
+                                .resources-nav.resources-nav {
+                                        > ul {
+                                                > li {
+                                                        &.resource-mobile-dropdown.resource-mobile-dropdown {
+                                                                .sub-menu.sub-menu {
+                                                                        .sub-menu-inner.sub-menu-inner {
+                                                                                ul {
+                                                                                        li {
+                                                                                                a {
+                                                                                                        float: none;
+                                                                                                }
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3867
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        .menu-bottom.menu-bottom {
+                                .menu-buttons.menu-buttons {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3871
+
+.mobileMenuResources.mobileMenuResources {
+                .mobileInner.mobileInner {
+                        .menu-bottom.menu-bottom {
+                                .menu-buttons.menu-buttons {
+                                        a {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3884
+
+.single-post-sticky.single-post-sticky {
+                float: none;
+        }
+
+// line 4090
+
+.single-post-sticky.single-post-sticky {
+                .container.container {
+                        .title-container.title-container {
+                                .labelLarge.labelLarge {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 212
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                .menu.menu {
+                                        .main-nav.main-nav {
+                                                ul {
+                                                        li {
+                                                                .megaMenu.megaMenu {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1041
+
+header {
+                .container.container {
+                        .headerRight.headerRight {
+                                span.buttonWrapper.buttonWrapper {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1246
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                span.buttonWrapperResources.buttonWrapperResources {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1560
+
+header {
+                .resources-sticky-menu.resources-sticky-menu {
+                        .container.container {
+                                .resources-nav.resources-nav {
+                                        ul {
+                                                li {
+                                                        .megaMenu.megaMenu {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3929
+
+.single-post-sticky.single-post-sticky {
+                .container.container {
+                        span.buttonWrapperSingleResources.buttonWrapperSingleResources {
+                                float: none;
+                        }
+                }
+        }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .sub-menu-top.sub-menu-top .container.container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .sub-menu-top.sub-menu-top .container.container .back-container.back-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .sub-menu-top.sub-menu-top .container.container .back-container.back-container .mobile-menu-title.mobile-menu-title {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .sub-menu-top.sub-menu-top .container.container .close-container.close-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .sub-menu-top.sub-menu-top .container.container .close-container.close-container .close-menu.close-menu {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .sub-menu-top.sub-menu-top .container.container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .sub-menu-top.sub-menu-top .container.container .back-container.back-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .sub-menu-top.sub-menu-top .container.container .back-container.back-container .mobile-menu-title.mobile-menu-title {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .sub-menu-top.sub-menu-top .container.container .close-container.close-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .sub-menu-top.sub-menu-top .container.container .close-container.close-container .close-menu.close-menu {
+        float: none;
+    }
+
+.mobileMenuResources.mobileMenuResources .resources-menu-top.resources-menu-top .container.container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+.mobileMenuResources.mobileMenuResources .resources-menu-top.resources-menu-top .container.container .back-container.back-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobileMenuResources.mobileMenuResources .resources-menu-top.resources-menu-top .container.container .back-container.back-container .back.back {
+        float: none;
+    }
+
+.mobileMenuResources.mobileMenuResources .resources-menu-top.resources-menu-top .container.container .close-container.close-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobileMenuResources.mobileMenuResources .resources-menu-top.resources-menu-top .container.container .close-container.close-container .close-menu.close-menu {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .groupSection.groupSection .logo-link-column-container.logo-link-column-container .column.column {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .dropDownSection.dropDownSection .logo-link-column-container.logo-link-column-container .column.column {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .groupSection.groupSection .logo-link-column-container.logo-link-column-container .column.column.link-logo-column.link-logo-column .logo-tile.logo-tile {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .dropDownSection.dropDownSection .logo-link-column-container.logo-link-column-container .column.column.link-logo-column.link-logo-column .logo-tile.logo-tile {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .full-width.full-width .form-container-inner.form-container-inner .subscribe-sidebar-form.subscribe-sidebar-form {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .full-width.full-width .form-container-inner.form-container-inner .subscribe-sidebar-form.subscribe-sidebar-form .icon-container.icon-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .full-width.full-width .form-container-inner.form-container-inner .subscribe-sidebar-form.subscribe-sidebar-form .form-content.form-content {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .full-width.full-width .form-container-inner.form-container-inner .subscribe-sidebar-form.subscribe-sidebar-form {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .full-width.full-width .form-container-inner.form-container-inner .subscribe-sidebar-form.subscribe-sidebar-form .icon-container.icon-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .full-width.full-width .form-container-inner.form-container-inner .subscribe-sidebar-form.subscribe-sidebar-form .form-content.form-content {
+        float: none;
+    }
+
+// Third occurrence, found 2026-09-09 (see corrected comment above) --
+
+// templates/partials/_header.php's separate .mobileMenuResources
+
+// panel, scoped source/scss/partials/_header.scss:4338 as
+
+// `.mobile-menu-bottom .subscribe-sidebar-form` (`.mobile-menu-bottom`
+
+// is confirmed unique sitewide -- one PHP occurrence, one SCSS
+
+// occurrence). Identical row-reverse technique to the two
+
+// .mobileMenuMain instances above.
+
+.mobile-menu-bottom.mobile-menu-bottom .subscribe-sidebar-form.subscribe-sidebar-form {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+.mobile-menu-bottom.mobile-menu-bottom .subscribe-sidebar-form.subscribe-sidebar-form .icon-container.icon-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobile-menu-bottom.mobile-menu-bottom .subscribe-sidebar-form.subscribe-sidebar-form .form-content.form-content {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li a {
+        display: inline-flex;
+        align-items: flex-start;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li a .icon-container.icon-container {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .overview-container.overview-container .overview-container-inner.overview-container-inner .overview-image.overview-image {
+        float: none;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul .services-inner-mobile.services-inner-mobile li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .all-link.all-link {
+        float: none;
+    }
+
+// BUGFIX 2026-09-09: found live pixel-diffing the mobile "Resources"
+
+// nav dropdown (li.main-dropdown.resources-menu .mobile-sub-menu
+
+// .dropDownSection) against production at 375px -- 78px short
+
+// (509px vs production's 587px), plus its .full-width sibling
+
+// (subscribe form) 32px short. Three separate instances of the same
+
+// float-refactor bug classes already documented elsewhere in this
+
+// file, all inside this one dropdown:
+
+//
+
+// 1. .dropDownSection .all-link-container: real/ungated CSS
+
+//    (_header.scss ~2865) is `float:left`, already converted to
+
+//    float:none in an earlier mechanical batch (see the "P2 only,
+
+//    NOT .all-link-container" comment above) -- but its child
+
+//    .all-link (the "See all X" link) stays float:left (Slick-
+
+//    carousel-style still-floating-child pattern, just a plain
+
+//    link instead of a carousel). Confirmed live: collapsed from
+
+//    24px to 0px. Same flow-root fix as the carousel sections.
+
+// 2. .full-width (wraps .form-container-inner, the subscribe form):
+
+//    real CSS gives .form-container-inner a 32px margin-top: while
+
+//    .full-width was floated (production), a floated parent
+
+//    contains a child's margin inside its own box; once float:none
+
+//    (dev), that margin collapses straight through instead --
+
+//    identical mechanism to full-suite-slider-module's
+
+//    .title-container fix (§22). Confirmed live: 247px -> 279px
+
+//    with flow-root, exact match to production.
+
+// 3. .dropDownSection itself: the first child is a.title-link
+
+//    (display:inline, wraps the still-float:none-converted
+
+//    .columnTitle/.columnText), whose OWN first descendant
+
+//    (.columnTitle) carries a real margin-top:32px. With
+
+//    .dropDownSection no longer floated, that margin-top collapses
+
+//    all the way up through the inline title-link and out of
+
+//    dropDownSection's own box (same collapse mechanism as #2, just
+
+//    two levels deep). Confirmed live: 555px -> 587px with
+
+//    flow-root, exact match to production, closing the section
+
+//    completely.
+
+//
+
+// All three confirmed via live before/after height measurement on
+
+// /?dev=true injected CSS, then verified against production at the
+
+// same 375px viewport -- final numbers matched production exactly
+
+// (587px dropDownSection, 279.28px full-width). .groupSection is
+
+// the sibling class sharing the identical base rule (_header.scss
+
+// ~2755: `.groupSection, .dropDownSection { float: left; ... }`)
+
+// for a different dropdown variant not currently found live --
+
+// included defensively since flow-root can only add back
+
+// containment, never remove it, same reasoning as company-slider's
+
+// preemptive fix. Desktop's equivalent hover mega-menu (`.main-nav
+
+// > ul > li.dropdown .dropDownSection`) was checked and is already
+
+// pixel-identical to production (466.89px both) -- it has a fixed-
+
+// height container that isn't affected by this bug, no fix needed
+
+// there.
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .dropDownSection.dropDownSection,
+    .mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .groupSection.groupSection {
+        display: flow-root;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .dropDownSection.dropDownSection .all-link-container.all-link-container,
+    .mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .groupSection.groupSection .all-link-container.all-link-container {
+        display: flow-root;
+    }
+
+.mobileMenuMain.mobileMenuMain .mobileInner.mobileInner .container.container .main-nav-mobile.main-nav-mobile ul li.main-dropdown.main-dropdown .mobile-sub-menu.mobile-sub-menu .full-width.full-width {
+        display: flow-root;
+    }
+
+.mobileMenuResources.mobileMenuResources .mobileInner.mobileInner .main-links-container.main-links-container .container.container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+.mobileMenuResources.mobileMenuResources .mobileInner.mobileInner .main-links-container.main-links-container .container.container .logo.logo {
+        float: none;
+        flex-shrink: 0;
+    }
+
+.mobileMenuResources.mobileMenuResources .mobileInner.mobileInner .main-links-container.main-links-container .container.container .adapt-link-container.adapt-link-container {
+        float: none;
+        flex-shrink: 0;
+    }

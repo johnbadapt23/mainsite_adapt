@@ -6,13 +6,14 @@ $displayed_posts = array ();
 
 $q = get_queried_object();
 $resourceType = get_field( 'type', $q );
-$keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : '';
-$filterTopic = isset( $_GET['filter-topic'] ) ? sanitize_text_field( $_GET['filter-topic'] ) : '';
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
+$filterTopic = sanitize_text_field( $_GET['filter-topic'] ?? '' );
 
 if($keyword != '') {
     $args = array(
         'post_type' => 'post',
         'posts_per_page' => -1,
+        'no_found_rows' => true,
         's' => $keyword,
         'paged'=> $paged,
         'tax_query' => array(
@@ -28,6 +29,7 @@ if($keyword != '') {
     $args = array(
         'post_type' => 'post',
         'posts_per_page' => -1,
+        'no_found_rows' => true,
         'paged'=> $paged,
         'tax_query' => array(
             'relation' => 'AND',
@@ -99,7 +101,7 @@ if($keyword != '') {
                         <?php endwhile; ?>
                     <?php else : ?>
                     <?php endif; ?>
-                    <?php wp_reset_query(); ?>
+                    <?php wp_reset_postdata(); ?>
                     <?php foreach($terms as $term) { ?>
                         <a href="<?php echo get_term_link( $q );?>?filter-topic=<?php echo $term -> slug; ?>"class="filter-button<?php if($filterTopic == '') { } else { if ($term -> slug == $filterTopic ) { ?> selected<?php }}?><?php if ($q->slug == 'peer-insights'){ ?> peer-insights<?php } ?>"><?php echo $term -> name; ?></a>
                     <?php } ?>
@@ -221,7 +223,7 @@ if($keyword != '') {
             <div class="container">
                 <?php wp_pagenavi( array( 'query' => $posts ) ); ?>
                     <?php wp_reset_postdata(); ?>
-                <?php wp_reset_query(); ?>
+                <?php wp_reset_postdata(); ?>
             </div>
         </div>
         </section>
@@ -985,7 +987,7 @@ if($keyword != '') {
                 <div class="container">
                     <?php wp_pagenavi( array( 'query' => $posts ) ); ?>
                         <?php wp_reset_postdata(); ?>
-                    <?php wp_reset_query(); ?>
+                    <?php wp_reset_postdata(); ?>
                 </div>
             </div>
         </section>

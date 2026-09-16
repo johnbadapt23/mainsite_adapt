@@ -29,6 +29,24 @@ gulp.task('_build', gulp.parallel(
     'build:icons',
     'build:images',
     'build:scripts',
-    'build:styles',
+    // ScrollMagic + its GSAP plugin, split out of build:scripts 2026-09-15
+    // into their own conditionally-enqueued bundle -- see
+    // source/gulp/tasks/build/scripts-scrollmagic.js for the full
+    // rationale and functions.php's adapt_page_needs_gsap()/
+    // my_enqueue_scripts() for the enqueue side.
+    'build:scripts-scrollmagic',
+    // Produces the actually-enqueued split CSS (main-nofooter.min.css +
+    // footer.min.css, see source/gulp/tasks/build/styles-split.js and
+    // functions.php's my_enqueue_scripts()). 'build:styles' (main.min.css,
+    // an unused rollback artifact -- functions.php never enqueues it) was
+    // dropped from here 2026-09-15: it added a real ~1.2min of serial
+    // build time to every CI deploy for a file nothing reads, and the
+    // float-refactor pipeline it was a safety net for has since been
+    // stress-tested across 25+ sitewide fixes without needing it. The
+    // task itself is untouched (source/gulp/tasks/build/styles.js) and
+    // still wired into 'watch' for local dev live-reload -- only dropped
+    // from the production build list. Run `npx gulp build:styles`
+    // directly if main.min.css is ever needed again.
+    'build:styles-split',
     'build:php'
 ));

@@ -119,6 +119,19 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 			</span>
 		</div>
 		<div class="column webinar-column first-column">
+			<?php if ( get_field( 'speaker_logos' ) ) : ?>
+				<div class="speaker-logos-wrapper" style="display: flex; flex-wrap: wrap; align-items: center; gap: 15px; margin-bottom: 25px;">
+					<?php foreach ( get_field( 'speaker_logos' ) as $logo ) : ?>
+						<div class="speaker-logo-item">
+							<?= wp_get_attachment_image( $logo['ID'], 'full', false, array(
+								'alt'   => $logo['alt'],
+								'style' => 'width: auto; max-width: 200px; height: 50px; object-fit: contain;',
+							) ); ?>
+						</div>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+
 			<?php if ( have_rows( 'speakers' ) ) : ?>
 				<div class="speakers-block less-margin">
 					<?php while ( have_rows( 'speakers' ) ) : the_row(); ?>
@@ -143,7 +156,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 													<span class="speaker-container-inner flex-container">
 														<span class="speaker-image">
 															<span class="bg-image">
-																<img loading="lazy" src="<?php echo get_field('speaker_image'); ?>" alt="<?php echo the_title(); ?>"/>
+																<?php echo adapt_acf_image( get_field( 'speaker_image' ), 'full', array( 'alt' => get_the_title(), 'loading' => 'lazy' ) ); ?>
 															</span>
 														</span>
 														<span class="description">
@@ -161,7 +174,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 															<span class="bg-container">
 																<?php $speaker_image = get_field( 'speaker_image' ); ?>
 																<?php if ( $speaker_image ) { ?>
-																	<img loading="lazy" src="<?php echo $speaker_image; ?>" alt="<?php the_title(); ?>" />
+																	<?php echo adapt_acf_image( $speaker_image, 'full', array( 'alt' => get_the_title(), 'loading' => 'lazy' ) ); ?>
 																<?php } ?>
 															</span>
 															<span class="border-offset"></span>
@@ -398,7 +411,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 								<?php setup_postdata( $post ); ?>
 									<div class="speaker-container-inner">
 										<span class="speaker-image">
-											<img loading="lazy" src="<?php echo get_field('speaker_image'); ?>" alt="<?php echo the_title(); ?>"/>
+											<?php echo adapt_acf_image( get_field( 'speaker_image' ), 'full', array( 'alt' => get_the_title(), 'loading' => 'lazy' ) ); ?>
 										</span>
 										<span class="description">
 											<span class="speaker-name"><?php echo the_title(); ?></span>
@@ -512,6 +525,11 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 			                                <span class="sub-column-title">In partnership with</span>
 			                            <?php } ?>			                            
 			                        <?php } ?>
+
+									<?php if ($columnCount == 1 && get_sub_field('column_title')){ ?>
+										<span class="sub-column-title"><?php echo str_contains(get_sub_field('column_title'), '&nbsp') ? '' : get_sub_field('column_title'); ?></span>
+									<?php } ?>
+									
 									<div class="logo-container" <?php if( get_sub_field( 'logo_height' )){ ?>style="height: <?php echo get_sub_field( 'logo_height' ); ?>px;"<?php } ?>>
 										<?php $image_logo = get_sub_field( 'image_logo' ); ?>
 										<?php if ( $image_logo ) { ?>

@@ -16,7 +16,7 @@ get_header();
 ?>
 
 <main id="main" role="main" class="events">
-<?php $keyword = isset( $_GET['searchWords'] ) ? sanitize_text_field( $_GET['searchWords'] ) : ''; ?>
+<?php $keyword = sanitize_text_field( $_GET['searchWords'] ?? '' ); ?>
     <section class="postHeader post-events">
         <div class="container">
             <div class="headerWrapper">
@@ -208,7 +208,7 @@ get_header();
                 	<h3 role="heading" aria-level="2"><?php esc_html_e( 'Sorry, no results found.' ); ?></h3>
                 <?php endif; ?>
 
-                <?php wp_reset_postdata(); wp_reset_query();?>
+                <?php wp_reset_postdata();?>
 
             </div>
 

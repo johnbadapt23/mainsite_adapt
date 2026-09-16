@@ -364,7 +364,7 @@ get_header();
 </main>
 
 <section class="printContainer">
-    <div class="imageHeader"><img loading="lazy" src="<?php the_field( 'print_header' ); ?>" alt="Adapt - <?php echo the_title(); ?>"/></div>
+    <div class="imageHeader"><?php $print_header_image = get_field( 'print_header' ); echo adapt_acf_image( $print_header_image, 'full', array( 'alt' => 'Adapt - ' . get_the_title(), 'loading' => 'lazy' ) ); ?></div>
     <div class="content">
     <?php if ( have_rows( 'day' ) ) : $counter = 1; ?>
 
@@ -397,7 +397,7 @@ get_header();
                                                 <?php if ( have_rows( 'logos' ) ) : ?>
                                                     <div class="logoWrapperPrint">
                                                         <?php while ( have_rows( 'logos' ) ) : the_row(); ?>
-                                                            <img loading="lazy" src="<?php the_sub_field('logo'); ?>" width="100" alt="Adapt" />
+                                                            <?php echo adapt_acf_image( get_sub_field( 'logo' ), 'full', array( 'alt' => 'Adapt', 'width' => '100', 'loading' => 'lazy' ) ); ?>
                                                         <?php endwhile; ?>
                                                     </div>
                                                 <?php endif; ?>
@@ -490,7 +490,7 @@ get_header();
                                                                 <?php if ( have_rows( 'logos' ) ) : ?>
                                                                     <div class="logoWrapperPrint">
                                                                         <?php while ( have_rows( 'logos' ) ) : the_row(); ?>
-                                                                            <img loading="lazy" src="<?php the_sub_field('logo'); ?>" width="100" alt="Adapt" />
+                                                                            <?php echo adapt_acf_image( get_sub_field( 'logo' ), 'full', array( 'alt' => 'Adapt', 'width' => '100', 'loading' => 'lazy' ) ); ?>
                                                                         <?php endwhile; ?>
                                                                     </div>
                                                                 <?php endif; ?>
@@ -529,7 +529,7 @@ get_header();
                                                                 <?php if ( have_rows( 'logos_track_two' ) ) : ?>
                                                                     <div class="logoWrapperPrint">
                                                                         <?php while ( have_rows( 'logos_track_two' ) ) : the_row(); ?>
-                                                                            <img loading="lazy" src="<?php the_sub_field('logo'); ?>" width="100" alt="Adapt" />
+                                                                            <?php echo adapt_acf_image( get_sub_field( 'logo' ), 'full', array( 'alt' => 'Adapt', 'width' => '100', 'loading' => 'lazy' ) ); ?>
                                                                         <?php endwhile; ?>
                                                                     </div>
                                                                 <?php endif; ?>

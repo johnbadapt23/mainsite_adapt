@@ -1,44 +1,12 @@
 <?php global $displayed_posts;
 $displayed_posts = array ();
-echo 'podcast template loaded';
 ?>
 <?php
 
 $q = get_queried_object();
 $resourceType = get_field( 'type', $q );
-$keyword = isset($_GET['searchWords']) ? sanitize_text_field($_GET['searchWords']) : '';
-$filterTopic = isset($_GET['filter-topic']) ? sanitize_text_field($_GET['filter-topic']) : '';
-
-if($keyword != '') {
-    $args = array(
-        'post_type' => 'post',
-        'posts_per_page' => -1,
-        's' => $keyword,
-        'paged'=> $paged,
-        'tax_query' => array(
-            'relation' => 'AND',
-            array (
-                'taxonomy' => 'resource-type',
-                'field' => 'slug',
-                'terms'    => $q->slug
-            )
-        )
-    );
-} else {
-    $args = array(
-        'post_type' => 'post',
-        'posts_per_page' => -1,
-        'paged'=> $paged,
-        'tax_query' => array(
-            'relation' => 'AND',
-            array (
-                'taxonomy' => 'resource-type',
-                'field' => 'slug',
-                'terms'    => $q->slug
-            )
-        )
-    );
-}
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
+$filterTopic = sanitize_text_field( $_GET['filter-topic'] ?? '' );
 ?>
 <?php if ( $q->slug == 'in-the-news' || $q->slug == 'media' ){ ?>
     <section class="filter-listing in-the-news-listing <?php echo $q->slug; ?><?php if($q->slug == 'media' ){ ?> background-black<?php } else { ?> background-secondary-light-grey<?php } ?>">
@@ -115,7 +83,7 @@ if($keyword != '') {
                         <?php endwhile; ?>
                     <?php else : ?>
                     <?php endif; ?>
-                    <?php wp_reset_query(); ?>
+                    <?php wp_reset_postdata(); ?>
                     <?php wp_reset_postdata(); ?>
                     <?php foreach($terms as $term) { ?>
                         <a href="<?php echo get_term_link( $q );?>?filter-topic=<?php echo $term -> slug; ?>"class="filter-button<?php if($filterTopic == '') { } else { if ($term -> slug == $filterTopic ) { ?> selected<?php }}?><?php if ($q->slug == 'peer-insights' || $q->slug == 'expert-presentations'){ ?> peer-insights<?php } ?>"><?php echo $term -> name; ?></a>
@@ -378,7 +346,7 @@ if($keyword != '') {
             <div class="container">
                 <?php wp_pagenavi( array( 'query' => $posts ) ); ?>
                     <?php wp_reset_postdata(); ?>
-                <?php wp_reset_query(); ?>
+                <?php wp_reset_postdata(); ?>
             </div>
         </div>
         </section>
@@ -1180,7 +1148,7 @@ if($keyword != '') {
                 <div class="container">
                     <?php wp_pagenavi( array( 'query' => $posts ) ); ?>
                     <?php wp_reset_postdata(); ?>
-                    <?php wp_reset_query(); ?>
+                    <?php wp_reset_postdata(); ?>
                 </div>
             </div>
         </section>

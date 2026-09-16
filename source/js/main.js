@@ -20,6 +20,153 @@
 		};
 	}
 
+	// The homepage's HubSpot popup form (#animationForm) used to have its
+	// HubSpot embed snippet (a <script src="//js.hsforms.net/..."> plus a
+	// hbspt.forms.create() call) echoed straight into the live page HTML,
+	// so it ran synchronously during initial page parsing -- HubSpot's
+	// loader then injects ~47KB of inline CSS/JS into <head> immediately,
+	// competing with the page's actual critical-path resources. That was
+	// the dominant contributor to this page's JS execution time and
+	// forced-reflow Lighthouse findings.
+	//
+	// The embed markup is output inside an inert <template id="..."> in
+	// templates/components/_text-animation-introduction-v2.php, which the
+	// browser parses but never executes/fetches on its own. This activates
+	// it on the window 'load' event below -- i.e. still automatic, no click
+	// required, but only after every other page resource (images,
+	// stylesheets, other scripts) has already finished, so it no longer
+	// competes with anything on the critical rendering path. It's also
+	// activated immediately if the popup is opened before 'load' fires (a
+	// visitor clicking within the first moment or two of arriving), via the
+	// magnificPopup callback further down -- the data-embed-loaded guard
+	// below means whichever of the two happens first wins and the other
+	// becomes a no-op. Script tags taken from a <template> (or set via
+	// innerHTML) don't auto-execute -- that's deliberate browser behaviour
+	// -- so each one is recreated via document.createElement('script')
+	// before insertion, which does run.
+	function adaptActivateEmbeddedTemplate(templateId, targetSelector) {
+		var templateEl = document.getElementById(templateId);
+		var targetEl = document.querySelector(targetSelector);
+		if (!templateEl || !targetEl || targetEl.getAttribute('data-embed-loaded')) {
+			return;
+		}
+		targetEl.setAttribute('data-embed-loaded', '1');
+		var fragment = templateEl.content.cloneNode(true);
+		var oldScripts = fragment.querySelectorAll('script');
+		for (var i = 0; i < oldScripts.length; i++) {
+			var oldScript = oldScripts[i];
+			var newScript = document.createElement('script');
+			for (var a = 0; a < oldScript.attributes.length; a++) {
+				newScript.setAttribute(oldScript.attributes[a].name, oldScript.attributes[a].value);
+			}
+			newScript.textContent = oldScript.textContent;
+			oldScript.parentNode.replaceChild(newScript, oldScript);
+		}
+		targetEl.appendChild(fragment);
+	}
+
+	// Prefills a HubSpot embed's hidden field once the shared embed script
+	// (js.hsforms.net, enqueued once site-wide -- see
+	// adapt_page_needs_hubspot_forms_embed() in functions.php) finishes
+	// rendering the real form fields into `container`. That rendering is
+	// async and can take a moment, and HubSpot's form builder prefixes each
+	// field's `name` with its step address (e.g. "0-1/fieldName"), so this
+	// matches on a suffix and watches with a MutationObserver instead of
+	// assuming a fixed delay or an exact name.
+	function adaptPrefillHubspotField(container, fieldName, value) {
+		if (!container || !value) {
+			return;
+		}
+
+		function setField(field) {
+			var proto = Object.getPrototypeOf(field);
+			var descriptor = Object.getOwnPropertyDescriptor(proto, 'value');
+			if (descriptor && descriptor.set) {
+				descriptor.set.call(field, value);
+			} else {
+				field.value = value;
+			}
+			field.dispatchEvent(new Event('input', { bubbles: true }));
+			field.dispatchEvent(new Event('change', { bubbles: true }));
+		}
+
+		// Only fills the field while it's empty. HubSpot's form briefly
+		// resets its fields back to their internal (blank) state shortly
+		// after they first render -- confirmed live: a value set right when
+		// the field first appears gets silently wiped a moment later, but
+		// the exact same value set a few seconds later is permanently
+		// stable. Rather than guess that timing, this re-asserts the value
+		// every time the DOM changes for a few seconds, but only while the
+		// field reads empty, so it doesn't fight the visitor if they've
+		// already started typing their own answer in there.
+		function tryFill() {
+			var field = container.querySelector('[name$="/' + fieldName + '"], [name="' + fieldName + '"]');
+			if (!field) {
+				return false;
+			}
+			if (field.value === '') {
+				setField(field);
+			}
+			return true;
+		}
+
+		tryFill();
+
+		var observer = new MutationObserver(function() {
+			tryFill();
+		});
+		// HubSpot's form renderer inserts each field element first and sets
+		// its `name` attribute in a separate pass right after (confirmed via
+		// live MutationObserver inspection), so a childList-only observer
+		// sees the field arrive with no name yet, finds no match, and never
+		// gets another chance once the name is actually set. Watching
+		// attribute changes on `name` too ensures tryFill() re-runs at that
+		// point instead of silently giving up.
+		observer.observe(container, { childList: true, subtree: true, attributes: true, attributeFilter: ['name'] });
+
+		// Keep watching (and re-filling if the field goes blank again) for a
+		// while after the popup opens, rather than disconnecting on the
+		// first successful fill -- that first fill is exactly what HubSpot's
+		// reset wipes out. 10s comfortably covers the render-then-reset
+		// sequence, and also covers a popup closed before the embed ever
+		// renders (so this doesn't leave an observer running forever).
+		setTimeout(function() { observer.disconnect(); }, 10000);
+	}
+
+	// Binds the HubSpot enquiry popup to every .formPopupHubspot trigger
+	// inside `scope`. Called once at document ready for the initial page
+	// render, and again (scoped to just the new markup) after the speaker/
+	// advisor AJAX filter swaps #speakers-container's HTML -- that swap
+	// injects brand-new .formPopupHubspot anchors that were never bound at
+	// ready time, so without re-running this they silently do nothing when
+	// clicked.
+	function adaptInitFormPopupHubspot(scope) {
+		$('.formPopupHubspot', scope).each(function(){
+			$(this).magnificPopup({
+				type: 'inline',
+				mainClass: 'form-container-preview',
+				callbacks: {
+					open: function() {
+						var $trigger = this.st.el;
+						var templateId = $trigger.data('embed-template');
+						var prefillTitle = $trigger.data('prefill-title');
+
+						// Both are optional -- other .formPopupHubspot triggers
+						// (e.g. august-single-post.php's preview-CTA buttons)
+						// don't use the <template>-deferred embed or the
+						// prefill field, so this is a no-op for them.
+						if (templateId) {
+							adaptActivateEmbeddedTemplate(templateId, $trigger.attr('href') + ' .form');
+						}
+						if (prefillTitle) {
+							adaptPrefillHubspotField(this.content[0], 'which_advisors_are_you_interested_in_meeting', prefillTitle);
+						}
+					}
+				}
+			});
+		});
+	}
+
 	$(document).ready(function (){
 
 		// STANDARD
@@ -493,17 +640,17 @@
 			mainClass: 'mfp-post-img'
 		});
 
-		$('.formPopupHubspot').each(function(){
-			$(this).magnificPopup({
-				type: 'inline',
-				mainClass: 'form-container-preview'
-			});
-		});
+		adaptInitFormPopupHubspot(document);
 
 		$('.formPopupHubspotHome').each(function(){
 			$(this).magnificPopup({
 				type: 'inline',
-				mainClass: 'home-animation-popup'
+				mainClass: 'home-animation-popup',
+				callbacks: {
+					open: function() {
+						adaptActivateEmbeddedTemplate('animationFormEmbed', '#animationForm .form');
+					}
+				}
 			});
 		});
 
@@ -1139,13 +1286,43 @@
 
 		// Filter event (change event on checkboxes)
 		$('#speakerFilter').on('change', 'input[type="checkbox"]', function() {
+			var $checkbox = $(this);
+
+			// ADAPT Analysts / ADAPT Advisors are mutually exclusive. The
+			// Expertise group below is hidden (and cleared) only while
+			// ADAPT Analysts specifically is checked -- it's shown again
+			// if ADAPT Advisors is checked instead, or if neither is
+			// checked. See _speaker-module.php for the
+			// .analyst-advisor-checkboxes / .expertise-group markup this
+			// targets. Matched by label text (not slug/ID) since the
+			// checkbox values are taxonomy term slugs pulled from the DB.
+			if ($checkbox.closest('.analyst-advisor-checkboxes').length) {
+				if ($checkbox.is(':checked')) {
+					$checkbox.closest('.analyst-advisor-checkboxes')
+						.find('input[type="checkbox"]').not($checkbox).prop('checked', false);
+				}
+
+				var analystsChecked = $('#speakerFilter .analyst-advisor-checkboxes input[type="checkbox"]:checked').filter(function() {
+					return /analyst/i.test($(this).siblings('label').text());
+				}).length > 0;
+
+				if (analystsChecked) {
+					$('#speakerFilter .expertise-group')
+						.find('input[type="checkbox"]:checked').prop('checked', false);
+					$('#speakerFilter .expertise-group').hide();
+				} else {
+					$('#speakerFilter .expertise-group').show();
+				}
+			}
+
 			fetchSpeakers(1); // Fetch speakers with selected filters (starting from page 1)
 		});
 
 		// Function to get selected filters. Only looks at the checkboxes
-		// that are direct children of #speakerFilter under .expertise-checkbox
-		// -- the ADAPT Analysts/Advisors checkboxes are nested one level
-		// deeper in a wrapper div and are intentionally excluded here.
+		// inside .expertise-group under .expertise-checkbox -- the ADAPT
+		// Analysts/Advisors checkboxes live in a separate
+		// .analyst-advisor-checkboxes wrapper and are intentionally
+		// excluded here.
 		//
 		// If nothing is checked, falls back to every checkbox actually
 		// offered on this page (these are ACF-configured per module
@@ -1162,7 +1339,7 @@
 			var hasSelection = checkedExpertise.length > 0;
 			var selectedExpertise = hasSelection
 				? checkedExpertise
-				: $('#speakerFilter > .expertise-checkbox input');
+				: $('#speakerFilter .expertise-group .expertise-checkbox input');
 
 			return {
 				values: selectedExpertise.map(function() {
@@ -1195,6 +1372,13 @@
 					// Update speakers container
 					if (jsonResponse.speakers) {
 						$('#speakers-container').html(jsonResponse.speakers);
+						// Newly-injected markup includes its own
+						// .formPopupHubspot enquiry buttons (rendered by
+						// filter_speakers_callback() in functions.php) that
+						// were never bound at document-ready time -- rebind
+						// just the new content so those buttons actually
+						// open the popup.
+						adaptInitFormPopupHubspot(document.getElementById('speakers-container'));
 					} else {
 						$('#speakers-container').html('<p>No speakers found.</p>');
 					}
@@ -4060,5 +4244,12 @@ if ($('.overlapping-card-wrapper').length && $(window).width() > 767) {
         bindMobileToggles();
     });
 
+    // See the adaptActivateEmbeddedTemplate() comment near the top of this
+    // file -- this is the "automatic, no click required" activation path
+    // for the homepage's HubSpot popup form, deferred until every other
+    // page resource has finished loading.
+    $(window).on("load", function() {
+        adaptActivateEmbeddedTemplate('animationFormEmbed', '#animationForm .form');
+    });
 
 })(window.jQuery);

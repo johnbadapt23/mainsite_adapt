@@ -9,6 +9,7 @@
         $args = array(
             'post_type'      => 'speaker',
             'posts_per_page' => -1,
+            'no_found_rows' => true,
             'tax_query'      => array(
                 'relation' => 'AND',
                 array(
@@ -63,7 +64,7 @@
                         <div class="speaker-item column">
                             <span class="image-container">
                                 <span class="bg-container">
-                                    <img src="<?php echo esc_url($team_member_image); ?>" alt="<?php echo esc_attr(get_the_title($post)); ?>" />
+                                    <?php echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title( $post ) ) ); ?>
                                 </span>
                                 <span class="text-container">
                                     <h5><?php echo get_the_title($post); ?></h5>

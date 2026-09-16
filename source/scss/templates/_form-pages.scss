@@ -343,3 +343,327 @@ section.contact-module {
 .fcmodal__overlay .fc__iframe {
     height: 80vh;
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 2
+
+section.contact-module.contact-module {
+                float: none;
+        }
+
+// line 16
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                float: none;
+                        }
+                }
+        }
+
+// line 45
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                h1 {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 63
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                h2 {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 97
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .text.text {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 109
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .bottom-container.bottom-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 121
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .bottom-container.bottom-container {
+                                                        .fast-track-text.fast-track-text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 177
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .bottom-container.bottom-container {
+                                                        .form-popup-button-container.form-popup-button-container {
+                                                                @media (max-width: 1023px) {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 182
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .bottom-container.bottom-container {
+                                                        .form-popup-button-container.form-popup-button-container {
+                                                                @media (max-width: 1023px) {
+                                                                        a {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 190
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .social-links.social-links {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 225
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .contact-details.contact-details {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 238
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .contact-details.contact-details {
+                                                        @media (max-width: 1023px) {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 245
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .contact-image-container.contact-image-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 253
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .contact-image-container.contact-image-container {
+                                                        &.mobile.mobile {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 276
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.title-details-column.title-details-column {
+                                                .contact-image-container.contact-image-container {
+                                                        .image-container.image-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 302
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.sub-title-form-column.sub-title-form-column {
+                                                .form-sub-title.form-sub-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 319
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.sub-title-form-column.sub-title-form-column {
+                                                .form-container.form-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 329
+
+section.contact-module.contact-module {
+                .container.container {
+                        .contact-innner.contact-innner {
+                                .column.column {
+                                        &.sub-title-form-column.sub-title-form-column {
+                                                .form-popup-button-container.form-popup-button-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+section.contact-module.contact-module .container.container .contact-innner.contact-innner .column.column.title-details-column.title-details-column,
+    section.contact-module.contact-module .container.container .contact-innner.contact-innner .column.column.sub-title-form-column.sub-title-form-column {
+        float: none;
+    }
+
+@media (max-width: 767px) {
+        section.contact-module.contact-module .container.container .contact-innner.contact-innner .column.column.title-details-column.title-details-column .bottom-container.bottom-container .fast-track-text.fast-track-text {
+            float: none;
+        }
+    }
+
+@media (max-width: 1023px) {
+        section.contact-module.contact-module .container.container .contact-innner.contact-innner .column.column.title-details-column.title-details-column .bottom-container.bottom-container .form-popup-button-container.form-popup-button-container a {
+            display: block;
+        }
+    }
+
+@media (min-width: 768px) {
+        section.contact-module.contact-module .container.container .contact-innner.contact-innner .column.column.title-details-column.title-details-column .bottom-container.bottom-container .fast-track-text.fast-track-text {
+            display: block;
+        }
+    }

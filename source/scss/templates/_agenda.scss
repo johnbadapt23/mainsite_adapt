@@ -573,3 +573,252 @@ section.agenda-item {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 13
+
+section.agenda-title.agenda-title {
+                &.one-day.one-day {
+                        h1 {
+                                float: none;
+                        }
+                }
+        }
+
+// line 34
+
+section.agenda-title.agenda-title {
+                &.multi-day.multi-day {
+                        h1 {
+                                float: none;
+                        }
+                }
+        }
+
+// line 40
+
+section.agenda-title.agenda-title {
+                &.multi-day.multi-day {
+                        .day-switcher-outside.day-switcher-outside {
+                                float: none;
+                        }
+                }
+        }
+
+// line 51
+
+section.agenda-title.agenda-title {
+                &.multi-day.multi-day {
+                        .day-switcher-container.day-switcher-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 143
+
+section.agenda-item.agenda-item {
+                float: none;
+        }
+
+// line 207
+
+section.agenda-item.agenda-item {
+                .speaker-image-container.speaker-image-container {
+                        .speakers-images.speakers-images {
+                                float: none;
+                        }
+                }
+        }
+
+// line 217
+
+section.agenda-item.agenda-item {
+                .speaker-image-container.speaker-image-container {
+                        .speakers-images.speakers-images {
+                                .speaker-image.speaker-image {
+                                        .image-container.image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 267
+
+section.agenda-item.agenda-item {
+                .content-container.content-container {
+                        span.time.time {
+                                float: none;
+                        }
+                }
+        }
+
+// line 304
+
+section.agenda-item.agenda-item {
+                .content-container.content-container {
+                        .company-container.company-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 311
+
+section.agenda-item.agenda-item {
+                .content-container.content-container {
+                        .company-container.company-container {
+                                a.company.company {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 324
+
+section.agenda-item.agenda-item {
+                .content-container.content-container {
+                        .company-container.company-container {
+                                span.company.company {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 337
+
+section.agenda-item.agenda-item {
+                .content-container.content-container {
+                        .speakers-title-container.speakers-title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 346
+
+section.agenda-item.agenda-item {
+                .content-container.content-container {
+                        .speakers-title-container.speakers-title-container {
+                                .speaker.speaker {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 367
+
+section.agenda-item.agenda-item {
+                .content-container.content-container {
+                        .speakers-images.speakers-images.mobile.mobile {
+                                float: none;
+                        }
+                }
+        }
+
+// line 383
+
+section.agenda-item.agenda-item {
+                .content-container.content-container {
+                        .speakers-images.speakers-images.mobile.mobile {
+                                .speaker-image.speaker-image {
+                                        .image-container.image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 412
+
+section.agenda-item.agenda-item {
+                .content-container.content-container {
+                        .agenda-description.agenda-description {
+                                float: none;
+                        }
+                }
+        }
+
+// line 418
+
+section.agenda-item.agenda-item {
+                .content-container.content-container {
+                        .agenda-description.agenda-description {
+                                .text.text {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 531
+
+section.agenda-item.agenda-item {
+                .container.container {
+                        .roundtable-container.roundtable-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 542
+
+section.agenda-item.agenda-item {
+                .container.container {
+                        .roundtable-container.roundtable-container {
+                                .content-container.content-container {
+                                        .company-container.company-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 549
+
+section.agenda-item.agenda-item {
+                .container.container {
+                        .roundtable-container.roundtable-container {
+                                .content-container.content-container {
+                                        .company-container.company-container {
+                                                a.company.company {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 562
+
+section.agenda-item.agenda-item {
+                .container.container {
+                        .roundtable-container.roundtable-container {
+                                .content-container.content-container {
+                                        .company-container.company-container {
+                                                span.company.company {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }

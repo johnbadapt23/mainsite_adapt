@@ -15,6 +15,7 @@
 
                         $args = array(
                             'post_type'      => $post_type,
+                            'no_found_rows'  => true,
                             'posts_per_page' => 8,
                             'orderby'        => 'rand',
                             'tax_query'      => array(
@@ -213,6 +214,7 @@
                         }
                         $args = array(
                             'post_type'      => $post_type,
+                            'no_found_rows'  => true,
                             'posts_per_page' => 8,
                             'orderby'        => 'rand',
                             'tax_query'      => array(
@@ -411,6 +413,7 @@
                         }
                         $args = array(
                             'post_type'      => $post_type,
+                            'no_found_rows'  => true,
                             'posts_per_page' => 8,
                             'orderby'        => 'rand',
                             'tax_query'      => array(

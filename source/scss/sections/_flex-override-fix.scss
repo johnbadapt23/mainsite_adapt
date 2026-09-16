@@ -1,0 +1,761 @@
+/* This file previously carried ~150 !important overrides working around
+ * selectors that clean-css's restructureRules (source/gulp/tasks/build/
+ * styles-split.js) was merging into one giant `float:none;display:block`
+ * rule even though they actually needed `display:flex`/`display:grid`.
+ *
+ * That was root-caused and fixed properly instead: source/gulp/
+ * fix-float-none-display.js (the pipeline step that decides whether a
+ * float:none-only rule needs display:block added) was comparing selectors
+ * by exact string, so a specificity-doubled override selector (`.foo.foo`,
+ * from merge-transform.js's boosting technique) was never recognised as
+ * "the same selector" as its plain, undoubled counterpart that already had
+ * a real display:flex/grid declared elsewhere -- so it mechanically added
+ * display:block anyway, and being later/higher-specificity, it won.
+ * fix-float-none-display.js now normalizes selectors (collapses
+ * consecutive duplicate classes) before comparing, so it correctly
+ * recognises these selectors already have an explicit display and skips
+ * them -- no override CSS needed at all. See that file's "fifth fix"
+ * comment for the full explanation, and SESSION-HANDOFF.md for the
+ * write-up (search "fix-float-none-display").
+ *
+ * 2026-09-14: repurposed for a small, unrelated, explicitly-requested fix
+ * for the "Cookie Notice" plugin's button row -- its buttons were being
+ * caught by float/display cleanup elsewhere and stacking instead of
+ * sitting side by side. */
+
+body #cookie-notice .cookie-notice-container .cn-buttons-container button {
+    float: none !important;
+    clear: both !important;
+}
+
+span#cn-notice-buttons {
+    display: flex;
+}
+
+section.list-card-module .container .list-card-container .one-third.list-card .list-card-front .hover-list-container .list-container .list-item,
+section.two-column-switch-module .container .module-container .switch-module .column-container .column .list-container .list-item {
+    display: block;
+}
+
+.left-text-links .links-container {
+    margin-top: 30px;
+}
+
+section.expanding-form-module .container .column-container .column .form-embed {
+    margin-bottom: 20px;
+}
+
+// The audit override for this section doubles its classes 2 levels deep
+// (.column-container-outer.column-container-outer .column-container.column-container),
+// giving it far more specificity than a plain rule -- !important needed
+// here since there's no genuine display:flex declared for .column-container
+// under .three-column-text-image-cards to restore via selector-normalizing;
+// this is establishing new intended behaviour, not fixing a lost one.
+.three-column-text-image-cards .column-container.card-container {
+    display: flex !important;
+}
+
+// Same situation as .three-column-text-image-cards directly above (sitewide
+// sweep found this on /executive-advisors/, template-ecosystem-advisors):
+// section.two-column-text-image-cards .container .column-container-outer
+// .column-container.card-container has the same "card grid" pattern -- no
+// genuine display:flex declared anywhere for .column-container scoped to
+// THIS section to restore via selector-normalizing (the only display:flex
+// rule that matches it live is a merged, unrelated .column-container base
+// rule for other sections entirely -- confirmed by checking whether its
+// selector text actually names two-column-text-image-cards: it doesn't).
+// float-wrap:wrap is already correctly computed (each .column.one-half is
+// already 524px = 50% width) so only display is missing. Confirmed live vs
+// production: 4 cards should render as 2 flex rows of 2, each row's cards
+// height-matched (455/455px then 483/483px); without display:flex they
+// were 4 stacked floats, mismatched heights within each intended row.
+// Establishing new intended behaviour like the sibling section above, so
+// !important is needed here too.
+.two-column-text-image-cards .column-container.card-container {
+    display: flex !important;
+}
+
+// Sitewide sweep found /benchmark-maturity-assessment/cloud-compute-
+// finops-maturity/ (template-benchmarking, section.quote-slider.customer-
+// events-slider -- shared by every quote-slider variant across the site,
+// not just benchmarking pages) collapsing its quote block: base rule
+// `section.quote-slider.customer-events-slider .container
+// .quote-slider-outer { float: left; }` is genuine (it self-contains its
+// floated .quote-module child), but the doubled-class audit override
+// (`.quote-slider-outer.quote-slider-outer { float: none; }`) neutralizes
+// it. Confirmed live vs production: production is 576px tall (containing
+// its 496px .quote-module child); staging collapsed to 80px, with the
+// quote text/image spilling ~390px below the visible section background.
+// display:flow-root reproduces the self-containing effect without
+// re-floating the element (avoiding any risk of pulling a following
+// sibling up beside it, same reasoning as section.open-positions above),
+// matched to the same doubled-class specificity as the competing
+// override -- no !important.
+section.quote-slider.quote-slider.customer-events-slider.customer-events-slider .container.container .quote-slider-outer.quote-slider-outer {
+    display: flow-root;
+}
+
+// Sitewide sweep found /private-executive-roundtables/ (template-
+// executive-roundtables) with the same collapse pattern on
+// section.experience-module's title container: base rule
+// `section.experience-module .container .experience-title-container` is
+// genuinely `float:left` (containing its floated .column.one-half
+// children), neutralized by the doubled-class override
+// `.experience-title-container.experience-title-container { float: none; }`.
+// Confirmed live vs production: production height 228px; staging collapsed
+// to 0px. display:flow-root (verified live, exact 228px match) restores
+// containment without re-floating the element -- same reasoning and no
+// !important needed as the other flow-root fixes above.
+section.experience-module.experience-module .container.container .experience-title-container.experience-title-container {
+    display: flow-root;
+}
+
+.events-title-block span.button-container {
+    display: flex !important;
+}
+
+.events-listing-module span.year-container {
+    display: flex !important;
+}
+
+// Checked the compiled CSS: no rule anywhere currently declares float/display
+// for .bottom-text or .text-link-container under .events-title-block, so
+// there's no audit override fighting these -- plain rules, no !important.
+.events-title-block span.bottom-text {
+    display: block;
+}
+
+.events-title-block span.bottom-text span.text-link-container {
+    display: inline-block;
+    width: auto;
+}
+
+// .experience-container itself WAS being overridden -- traced it back to
+// source/scss/templates/_roundtable.scss:794-800, a hand-written, doubled-
+// class audit override (`section.experience-module.experience-module
+// .container.container .experience-container.experience-container { float:
+// none; }`). That's a pure float:none-only rule, so fix-float-none-display.js
+// mechanically appends display:block to it -- and my first attempt at this
+// fix used the bare class `.experience-container`, which is too short to be
+// recognised as "the same selector" by that script's normalizer (it checks
+// either an exact full-chain match or the last-two-segment leaf compound;
+// a single-token selector matches neither). Using the real full selector
+// chain here instead means fix-float-none-display.js's own selector-
+// normalizing logic recognises this as the existing display for that
+// selector and skips generating the float:none;display:block override for
+// it at all -- removing it from the giant merged selector list at the root,
+// same fix as the original "fifth fix", rather than fighting it with
+// !important.
+section.experience-module .container .experience-container {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+// .experience-text-column .experience-text-container's own float:none rule
+// (same file, line ~804-814) already matches this 2-segment selector via
+// leaf-compound, so it was never being overridden -- confirmed in the
+// compiled CSS (not present in the float:none;display:block merged list).
+.experience-text-column .experience-text-container {
+    display: flex;
+}
+
+// No float:none/display rule exists anywhere for span children of
+// .experience-text-container, so nothing to reconcile here -- plain rule.
+.experience-text-column .experience-text-container span {
+    display: block;
+    float: none;
+}
+
+// justify-content is orthogonal to the audit override on this selector
+// (section.events-title-block.events-title-block .container.container
+// .content-container.content-container .button-container.button-container
+// only sets float:none;display:block -- no justify-content anywhere), so
+// there's nothing to beat here; plain rule, no !important.
+.template-event-partner section.events-title-block .container .content-container .button-container {
+    justify-content: center;
+}
+
+// NOT something added this session -- this is a pre-existing audit-override
+// rule in source/scss/templates/_post.scss:2289-2295, a doubled-class
+// `section.post-title-block.post-title-block .container.container
+// .featured-video-container.featured-video-container { float: none; }`.
+// It's pure float:none-only, so fix-float-none-display.js mechanically
+// appended display:block to it (correctly, in isolation -- the BARE
+// `.featured-video-container` class genuinely has no display declared
+// anywhere). The bug: `.featured-video-container` is also the base class
+// of `.featured-video-container.mobile`/`.featured-video-container.desktop`
+// (same file, lines 345-366) -- two separate elements, one shown per
+// viewport width via display:none/block. Because the audit override's
+// selector is doubled (higher specificity) and matches ANY element
+// carrying the base class regardless of what other classes it also has,
+// its unconditional display:block was beating BOTH the `.mobile` and
+// `.desktop` variants' own display rules, showing/hiding neither correctly
+// (confirmed live: the merged selector list's rule for this chain read
+// `{float:none;display:block}`, and .mobile's own `{display:none}` rule,
+// undoubled, has strictly less specificity).
+// Root-cause fix, same pattern as .experience-container above: declare the
+// BARE class's real display explicitly, using the exact undoubled
+// production selector chain, so fix-float-none-display.js's normalizer
+// recognises it and skips generating the float:none;display:block override
+// for it at all. This plain rule has LESS specificity than
+// `.featured-video-container.mobile`/`.desktop` (one fewer class), so
+// those still correctly win over it -- no !important, and the responsive
+// toggle is restored.
+section.post-title-block .container .featured-video-container {
+    display: block;
+}
+
+// Same pattern again: source/scss/templates/_post.scss:2673-2681 has a
+// doubled-class, pure `float: none;`-only audit rule for the bare
+// `.meta-tag-container` class (no .mobile/.desktop collision this time --
+// just a plain "needs flex" case). Declaring the real display on the exact
+// undoubled production selector lets fix-float-none-display.js's
+// normalizer recognise it and skip the mechanical display:block for it,
+// same as .experience-container/.featured-video-container above -- so this
+// compiles as genuine display:flex with no !important needed.
+section.post-article-container .container .post-content .meta-tag-container {
+    display: flex;
+}
+
+// width:auto is orthogonal to the .tags.meta-tags audit override (that one
+// only sets float:none;display:block, no width), so nothing to beat here.
+.meta-tag-container .meta-tags {
+    width: auto;
+}
+
+// Real bug (not just an audit-override false positive): clicking "Allow
+// Cookies" (#cn-accept-cookie) correctly sets the cookie and the Cookie
+// Notice plugin correctly adds class `cookie-notice-hidden` to #cookie-notice
+// on the next load -- but the banner never visually hides. Root cause:
+// source/scss/global/_styles.scss:4362 has a doubled-class, pure
+// `float:none;`-only audit rule for `.cookie-notice-container`
+// (`body #cookie-notice .cookie-notice-container.cookie-notice-container`).
+// fix-float-none-display.js only scans the THEME's own compiled CSS, so it
+// has no visibility into the cookie-notice PLUGIN's separate stylesheet,
+// where the real conditional rule lives:
+// `#cookie-notice.cookie-notice-hidden .cookie-notice-container{display:none}`.
+// Finding no known display anywhere in the theme CSS, it mechanically added
+// display:block -- and the theme rule's `body` prefix gives it MORE
+// specificity ((1,2,1)) than the plugin's conditional rule ((1,2,0)), so it
+// always won, even when .cookie-notice-hidden was present. Confirmed live:
+// after accept + reload, #cookie-notice correctly got class
+// cookie-notice-hidden, but .cookie-notice-container still computed
+// display:block.
+// Same root-cause fix as above: declare the real default display on the
+// exact production selector chain (including the `body` prefix) so
+// fix-float-none-display.js's normalizer recognises it and skips the
+// mechanical override. This plain rule has LESS specificity ((1,1,1)) than
+// the plugin's `#cookie-notice.cookie-notice-hidden .cookie-notice-container`
+// ((1,2,0)), so the plugin's own hide rule correctly wins once accepted --
+// no !important, and the banner now actually disappears.
+body #cookie-notice .cookie-notice-container {
+    display: block;
+}
+
+// Not the same case as the two documented .featured-home/.filter-featured-post
+// exclusions on the shared resources-featured flex rule
+// (source/scss/templates/_resources-types.scss:4823) -- those were written
+// because a DIFFERENT filter-featured-post sub-variant (market-trend-reports,
+// articles: confirmed live, both render a single full-width .item child)
+// breaks if its .container is flexed. This "insights" sub-variant
+// (/resource-type/peer-insights, section class "...filter-featured-post
+// insights") is structurally different: confirmed live, its .container has
+// two real children -- .column.one-half.insights-featured-column and
+// .side-bar-column.one-half -- same shape as the plain/sidebar variant, and
+// production CSS already gives them explicit split widths
+// (.insights-featured-column{width:57.3%!important},
+// .side-bar-column{width:42.7%!important}) that only make sense as a flex
+// row. No existing rule sets display for this selector (checked), so this
+// is a genuine gap, not an override fight -- plain rule, no !important, and
+// scoped to .insights specifically so market-trend-reports/articles (which
+// still need :not(.filter-featured-post) to exclude them) are untouched.
+section.featured-module.resources-featured.filter-featured-post.insights .container {
+    display: flex;
+    align-items: flex-start;
+}
+
+// Root-caused the broken "Resources" hover mega-menu the user flagged via
+// screenshots (Topics/Reports dropdown panels on the header's sticky
+// resources-nav, e.g. staging.adapt.com.au/resource-type/peer-insights):
+// each .featured-post's markup is <span class="featured-post"><a href="..">
+// <span class="post-image-container">...<span class="post-title-container">
+// ...</a></span> -- the .post-image-container/.post-title-container spans
+// already float:left correctly (genuine float:left declared directly in
+// source/scss/templates/_post.scss and _roundtable.scss, not an audit
+// float:none-only rule, so fix-float-none-display.js never touches them),
+// but the <a> wrapping both of them has NO display rule anywhere and
+// defaults to display:inline. An inline box doesn't establish a proper
+// block formatting context for its floated children, so consecutive
+// .featured-post entries' image/title pairs were overlapping and running
+// together instead of each rendering as its own row/column -- confirmed
+// live: forcing display:flex on the <a> alone (no other change) fixed the
+// stacking immediately.
+// .featured-post itself already has an existing doubled-class, pure
+// float:none-only audit override in both contexts this component appears
+// in (source/scss/partials/_header.scss:5792-5795 for the main-nav
+// megaMenu, :6167-6171 for the resources-sticky-menu variant), so
+// fix-float-none-display.js already mechanically adds display:block to it
+// -- confirmed live (computed display was already "block"). No selector-
+// chain trick needed here at all: none of these three declarations
+// (display/clear on .featured-post, display:flex on the <a>, float:none/
+// clear on the <a>'s span children) fight an existing override -- the
+// audit rules only ever set float:none, a different property, so there's
+// nothing to out-specificity and no !important needed. Scoped to the
+// shared .featured-posts-container class (not a longer chain) so the fix
+// applies in both the main-nav and sticky-nav contexts at once, matching
+// where the bug actually occurs.
+span.featured-posts-container .featured-post {
+    display: block;
+    clear: both;
+}
+
+span.featured-posts-container .featured-post a > span {
+    float: none;
+    clear: both;
+}
+
+span.featured-posts-container .featured-post a {
+    display: flex;
+}
+
+// Requested fix was `section.resources-featured .container .item.full-width
+// { display: flex; }` (reported broken on /resource-type/articles/) -- did
+// NOT add that literally. Confirmed live (desktop viewport) the .item-column
+// .one-half children (.image-column/.text-column) were stacking vertically
+// instead of sitting side by side, both at the correct 650px/50% width but
+// with float:none. Traced to source/scss/templates/_resources-types.scss's
+// doubled-class `section.featured-module.featured-module.resources-featured
+// .resources-featured .container.container .one-half.one-half { float:
+// none; }` -- a genuine, intentionally-authored production rule (not an
+// audit-generated one) added to support the FLEXED sidebar variant's
+// `.one-half.side-bar-column`/`.one-half.slider-column` children. Its
+// selector only checks the bare `.one-half` class, so it ALSO catches
+// `.item-column.one-half` inside the full-width/market-trend-reports
+// variant -- which a 2026-09-10 fix (same file, ~line 5019) deliberately
+// left real-floated, because that variant's .container is explicitly NOT
+// flexed (excluded via :not(.filter-featured-post)/:not(.featured-home))
+// and because flexing .item.full-width itself previously broke jQuery's
+// matchHeight plugin (`$('.item.full-width .item-column').matchHeight()`
+// in main.js) -- matchHeight measured flex children's height wrong,
+// collapsing the image column and making the two columns' text visibly
+// overlap. Flexing .item.full-width now would reintroduce exactly that
+// regression. Root-cause fix instead: restore float:left on the
+// item-columns themselves (floats aren't flex items, so matchHeight stays
+// happy, matching how production actually does it), using the same
+// selector-doubling convention as the competing rule so this reliably
+// wins on specificity -- no !important. Confirmed live: columns render
+// side by side at the correct widths after this change.
+section.resources-featured.resources-featured .container.container .item.item.full-width.full-width .item-column.item-column.one-half.one-half,
+section.resources-featured.resources-featured .container.container .item.item.market-trend-reports.market-trend-reports .item-column.item-column.one-half.one-half {
+    float: left;
+}
+
+// Found while sweeping /careers/ for other floated-section fallout (user
+// asked to check that page after the articles fix above): section.open-
+// positions ("Open Positions" block near the bottom) was rendering as a
+// ~180px sliver with its "Sales Associate"/etc. job links effectively
+// invisible -- confirmed live, the following <footer> was rendering at the
+// SAME top offset as this section instead of below it, i.e. the section's
+// own box had collapsed to ~0 height around its floated children.
+// Root cause: source/scss/templates/_position.scss:842 declares
+// `section.open-positions { float: left; ... }` for real -- deliberately,
+// so the section forms its own block-formatting context and contains its
+// two floated columns (.title-column/.positions-column) without needing a
+// separate clearfix. But there's a SITEWIDE reset (confirmed live via the
+// browser's own matched-rules list) of `section { float: none !important;
+// display: block; }`, which beats this specific section's genuine
+// float:left regardless of selector specificity, since !important always
+// wins over specificity. Restoring float:left here would need matching
+// !important, and would ALSO float the section itself back into normal
+// flow -- which pulled the footer up beside it in testing (floated
+// elements are skipped by follow-on block siblings unless cleared), so
+// simply matching the !important would trade one layout bug for another.
+// display:flow-root achieves the same thing float:left did here (forms a
+// new block-formatting context, so the section auto-sizes to contain its
+// floated children) WITHOUT floating the section itself -- so siblings
+// after it still flow normally underneath. It also isn't touched by the
+// sitewide reset at all (that rule only sets float and display:block, and
+// display:block/flow-root are unrelated -- normal specificity, no
+// !important needed). Confirmed live: section height went from ~0 to
+// 740px and the footer moved to directly below it.
+section.open-positions {
+    display: flow-root;
+}
+
+// User asked to compare .text-title-list.two-column-list.background-pink
+// ("Why work with us", /careers/) against production and confirmed it's
+// broken. Pixel comparison found the individual list items themselves
+// render identically (their .title/.text/checkmark-icon layout doesn't
+// actually depend on float here -- confirmed both floated and unfloated
+// render the same rect), but the OUTER container chain collapses: staging
+// section height 354px / .text-title-list-inner height 2px vs production's
+// 785px / 433px. Same root cause and remedy as section.open-positions
+// above, one level deeper: source/scss/templates/_position.scss:617-806
+// floats this component's wrapper chain for real (`section.text-title-list
+// {float:left}` at :618, `.text-title-list-container` at :636,
+// `.text-title-list-inner` at :653 -- each one a BFC-establishing float
+// specifically so it contains its own floated children), and each level
+// has its own doubled-class audit override neutralizing it to float:none
+// (:1248, :1254-1260, :1264-1272) -- .text-title-list-inner isn't a
+// <section> so the sitewide `section{float:none!important}` reset doesn't
+// independently apply to it, but the specific doubled overrides still
+// catch all three levels. display:flow-root on each level reproduces the
+// self-containing effect without floating any of them (so nothing after
+// this section needs clearing either), matched to the same doubled-class
+// specificity as the competing overrides -- no !important. Scoped to the
+// bare `section.text-title-list` (not the `.two-column-list.background-
+// pink` variant alone) since the collapsing overrides target every
+// variant of this component the same way, not just this page's. Confirmed
+// live: section height 354->785px and .text-title-list-inner 2->433px,
+// an exact match with production, and the following section still lands
+// directly below with no gap or overlap.
+section.text-title-list.text-title-list {
+    display: flow-root;
+}
+
+section.text-title-list.text-title-list .container.container .text-title-list-container.text-title-list-container {
+    display: flow-root;
+}
+
+section.text-title-list.text-title-list .container.container .text-title-list-container.text-title-list-container .text-title-list-inner.text-title-list-inner {
+    display: flow-root;
+}
+
+// Sitewide sweep (/become-a-partner/, template-landing) found three
+// distinct regressions in the "landing-video-intro" two-column intro block
+// and the "about-block" section below it, all traced to
+// source/scss/templates/_landing.scss.
+//
+// 1) .links-container.desktop (the button/video-link row under the intro
+// text) is genuinely `float:left` in the base rule (_landing.scss:234) so
+// it can contain its own floated .std-button/.text-link children, but the
+// doubled-class audit override at _landing.scss:1766
+// (`.links-container.links-container{float:none}`) neutralizes it,
+// collapsing it to 0 height -- confirmed live vs production (height
+// 61.6px, float:left there; 0px/float:none on staging).
+//
+// 2) .links-container.mobile is supposed to stay `display:none` on desktop
+// (_landing.scss:236) and only switch to `display:block` under the
+// max-width:767px media query (_landing.scss:242) -- but the auto-generated
+// fix-float-none-display.js pipeline output (main.min.css, no media query)
+// also targets the undoubled `.links-container.links-container` selector
+// with `display:block` to compensate for the SAME float:none override in
+// (1) above. Its matcher didn't know `.links-container` has two modifier
+// variants (.desktop/.mobile) with opposite intended display values, so it
+// mechanically restored `display:block` for both -- which happens to be
+// correct for .desktop but incorrectly un-hides .mobile's button row on
+// desktop viewports too. Confirmed live: production shows
+// .links-container.mobile as `display:none` on a 1440px viewport; staging
+// showed `display:block`, a real visible desktop-only defect (a mobile
+// button appearing on desktop). Fixed by restoring `display:none` for the
+// desktop breakpoint specifically (scoped under min-width:768px so the
+// existing max-width:767px mobile behavior is untouched), doubling one
+// more class pair (.mobile.mobile) than the offending unconditional rule
+// so it wins on specificity alone -- no !important, no cascade-order
+// reliance.
+//
+// 3) .column-container (the two-column split inside .about-block) is
+// genuinely `float:left` in its base rule (_landing.scss:413) and gets the
+// same float:none treatment via the doubled-class override at
+// _landing.scss:1819 -- but unlike a typical collapse fix, production
+// actually renders this container as `display:flex` (not float at all),
+// stretching both .column.one-half children to equal height (both 284px).
+// Confirmed live: staging's floated children are NOT height-matched (284px
+// and 176px, since float never equalizes row heights) -- a visible
+// misalignment between the two columns that flow-root would not fix
+// (flow-root only restores containment, not the flex stretch behavior).
+// Restoring the genuine display:flex instead exactly reproduces
+// production's stretched, equal-height columns.
+section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column .links-container.links-container.desktop.desktop {
+    float: left;
+}
+
+@media (min-width: 768px) {
+    section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column .links-container.links-container.mobile.mobile {
+        display: none;
+    }
+}
+
+section.about-block.about-block .container.container .about-container.about-container .column-container.column-container {
+    display: flex;
+}
+
+// Follow-up after the user asked "are you sure all sections/pages are
+// identical -- no broken layout from the float->flex upgrade?": the sweep
+// above only tested a 1440px viewport. Re-checking the same
+// .links-container.desktop/.mobile pair at 768px and 375px against
+// production turned up the mirror image of fix (2) above, invisible at
+// desktop width:
+//
+// 4) .links-container.desktop should switch to `display:none` under the
+// max-width:767px media query (_landing.scss:238, `&.desktop{display:none}`
+// inside that query) but the SAME unconditional, no-media
+// `.links-container.links-container{display:block}` pipeline rule from fix
+// (2)'s writeup also wins here (equal specificity, later in cascade) --
+// showing the desktop button row on mobile alongside the mobile one.
+// Confirmed live at 375px: production has .desktop display:none/0px;
+// staging had display:block/112px, overlapping the correct mobile version.
+// Restoring display:none for .desktop specifically under max-width:767px
+// (doubling .desktop.desktop like the min-width:768px fix above doubles
+// .mobile.mobile) wins on specificity alone.
+//
+// 5) .links-container.mobile never got its own float:left restored --
+// fix (1) above only doubled-and-restored it for .desktop, but the base
+// rule floats .links-container (both variants) so it can contain its own
+// floated .std-button/.video-popup children. At mobile widths .mobile is
+// the one actually visible, and it was collapsing to 0 height exactly like
+// .desktop did at desktop widths. Confirmed live at 375px: production
+// .mobile height 148.4px; staging 0px, its buttons invisible. Unlike (4)
+// this one needs no media scoping -- float only matters while the element
+// is displayed, so restoring it unconditionally is safe at every width.
+@media (max-width: 767px) {
+    section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column .links-container.links-container.desktop.desktop {
+        display: none;
+    }
+}
+
+section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column .links-container.links-container.mobile.mobile {
+    float: left;
+}
+
+// /about-us/'s "two-column-image-text-events" section .two-column-image-
+// text-outer. IMPORTANT CORRECTION (caught via re-verification at proper
+// device widths after an earlier version of this fix was written using the
+// Browser pane's own ambient/default width, which is neither a real mobile
+// nor a real desktop breakpoint -- see lesson at top of file if one gets
+// added): this component is responsive with a real behavioural split at
+// the site's standard 768px breakpoint, confirmed live on PRODUCTION itself
+// at 375/767/768/1440px:
+//   <768px (mobile):  display:block; float:left  (self-contains its
+//                      floated .image-column/.text-column children)
+//   >=768px (tablet+): display:flex                 (children become flex
+//                      items, float irrelevant)
+// Checked staging at >=768px WITHOUT any fix: it already matches production
+// exactly (display:flex, heights identical at both 768px and 1440px) --
+// the genuine display:flex rule for this breakpoint is apparently untouched
+// by the audit override there, so no fix is needed or wanted for tablet/
+// desktop. The bug is real but confined to <768px: staging collapses to
+// float:none/display:block/height:0 there (production: float:left/
+// height:701px at 375px), traced to the same doubled-class audit override
+// (`.two-column-image-text-outer.two-column-image-text-outer{float:none}`)
+// fighting the genuine mobile float:left. A first attempt at this fix
+// (unconditional display:flex, no media scoping) was WRONG: confirmed live
+// it forces the mobile children into a squeezed flex row (123px/211px wide
+// side-by-side boxes) instead of production's full-width stacked columns
+// -- a real visual regression this fix would have introduced. Corrected to
+// scope the fix to max-width:767px only, and to use display:flow-root
+// (not float:left) so it reproduces the containment (confirmed live: exact
+// same resulting height as float:left, 685px vs production's 701px -- the
+// small remaining ~16px gap is isolated to .text-column's own height, not
+// the container, and unrelated to float/display) without fighting the
+// float property itself at equal specificity (the same cascade-reordering
+// risk documented elsewhere in this file for .sidebar-container).
+@media (max-width: 767px) {
+    section.two-column-image-text-events.two-column-image-text-events .container.container .two-column-image-text-outer.two-column-image-text-outer {
+        display: flow-root;
+    }
+}
+
+// /all-resources/ (and any other section.featured-module page using this
+// shared "articles-featured" component): .post-container.grid-wrapper
+// collapses from production's 569.422px to 0px on staging. Two genuine,
+// undoubled `section.featured-module .container .grid-wrapper` rules exist
+// (a "with sidebar" variant setting float:left/width:calc(100% - 301px),
+// and a later "full width" variant setting float:right/width:100% -- this
+// page uses the latter), both fought by a single doubled-class audit
+// override `section.featured-module.featured-module .container.container
+// .grid-wrapper.grid-wrapper { float: none; }`. Unlike the sidebar's own
+// .grid-wrapper (a sibling element, already correctly display:flex from an
+// unrelated rule and NOT broken), this element's collapse is purely a BFC-
+// containment problem: its floated grandchildren (two levels down, through
+// an intermediate 0-height wrapper) escape it once float:none applies.
+// Restoring float itself would mean fighting the SAME property (float) at
+// matched specificity against the override, which is exactly the
+// cascade-reordering coin-flip that made the .sidebar-container fix
+// silently dead code elsewhere in this file -- so display:flow-root is
+// used instead, since it establishes the same block-formatting context
+// (containing all descendant floats regardless of the container's own
+// float value) without touching the float property the override already
+// controls, sidestepping the collision entirely. Confirmed live via direct
+// element.style testing (not an injected <style> tag): applying ONLY
+// display:flow-root (float left untouched at its neutralized `none`) takes
+// the container from 0px to exactly 569.421875px, an exact match with
+// production. Scoped to the doubled-class selector with an added
+// `.post-container` qualifier so it applies only to this specific
+// collapsing instance, not the sidebar's already-working .grid-wrapper.
+section.featured-module.featured-module .container.container .post-container.post-container.grid-wrapper.grid-wrapper {
+    display: flow-root;
+}
+
+// /edgeplus-app/ (template-app, section.app-block): span.bottom-container
+// (under .main-image-column-container) collapses from production's 204px
+// to 0px on staging. Genuine rule `section.app-block .container
+// .main-image-column-container .bottom-container { float: left; width:
+// 100%; }` self-contains its two floated `.text-container.column.one-half`
+// children, but the doubled-class audit override neutralizes it to
+// `float:none`. Same fix pattern as the other BFC-collapse cases in this
+// file: display:flow-root reproduces the containment without re-floating
+// the element (and without fighting the float property itself, avoiding
+// any cascade-reordering risk). Confirmed live via direct element.style
+// testing: applying only display:flow-root takes the container from 0px
+// to exactly 204px, an exact match with production.
+section.app-block.app-block .container.container .main-image-column-container.main-image-column-container .bottom-container.bottom-container {
+    display: flow-root;
+}
+
+// /private-events-sponsorship/ (and any other page using section.two-
+// column-services.landing-video-intro -- shares components with the
+// .links-container fixes above): two more elements in this component
+// collapse the same way as .links-container.desktop did, but were missed
+// by that earlier sweep because they don't carry a visible symptom at
+// every width the way .links-container's mobile-button-appearing-on-
+// desktop bug did.
+//
+// .buttons-container (the intro's CTA row) collapses to 0px at EVERY
+// width tested (375/768/1440px) -- confirmed live vs production, which is
+// consistently float:left/block at all three widths (144px/144px/73px).
+// Its competing override (`...landing-video-intro-columns.landing-video-
+// intro-columns .column.column .buttons-container.buttons-container
+// {float:none;display:block}`) is unconditional (no media query), and is
+// 10 class-selectors deep; tripling the leaf class here (11 deep) beats it
+// on specificity alone, not cascade order.
+section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column .buttons-container.buttons-container.buttons-container {
+    display: flow-root;
+}
+
+// .column.one-half.video-column.image-column collapses ONLY at <768px --
+// confirmed live: 768px and 1440px already match production exactly
+// without any fix (200px/365px), only 375px is broken (0px vs
+// production's 188px). Traced to the SAME `.column.column{float:none;
+// display:block}` override used by the sibling .links-container fixes
+// above, but that override is itself `@media (max-width:767px)`-scoped
+// here (a different rule from the unconditional .buttons-container one
+// above) -- matching where the live breakage actually is. Scoped
+// selector adds .one-half/.video-column/.image-column so it targets only
+// this specific column (not its .text-column sibling, which isn't
+// broken), giving it 12 class-selectors vs the override's 8 -- wins on
+// specificity, and the media scoping means it's a no-op at >=768px
+// anyway (nothing to lose by matching the override's own media query).
+@media (max-width: 767px) {
+    section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column.column.one-half.video-column.image-column {
+        display: flow-root;
+    }
+}
+
+// /event-partner/edge-event-partnership/ (section.events-listing-module,
+// shared by every events-listing page): span.tags-container (the event
+// tag pills under each event-item's byline) collapses to 0px at every
+// width tested (375/768/1440px) -- confirmed live vs production, which is
+// consistently float:left/width:100%/block at every width (a range of
+// real heights, 84-294px, since each event has a different number of
+// tags). Genuine base rule `section.events-listing-module .events-listing
+// .item.event-item .content-delegate-container .delegate-tags
+// .tags-container { float:left; width:100%; }` self-contains its
+// floated tag pills, neutralized by the usual doubled-class audit
+// override. display:flow-root reproduces the containment at every width
+// tested (confirmed live: exact height match against production at
+// 375px for all 3 instances present on this page; verified as a real fix
+// -- not a no-op -- at 768px too).
+section.events-listing-module.events-listing-module .events-listing.events-listing .item.item.event-item.event-item .content-delegate-container.content-delegate-container .delegate-tags.delegate-tags .tags-container.tags-container {
+    display: flow-root;
+}
+
+// /analyst-presentations/become-a-partner/ (template-landing, section.two-
+// column-services.landing-video-intro): a SECOND variant of this component
+// missed by the earlier .video-column.image-column sweep above -- this
+// page's `.column.one-half.video-column` doesn't carry the `.image-column`
+// class, so the earlier fix's selector (which requires it) doesn't match
+// here. Same collapse, same cause (the shared `.column.column{float:none;
+// display:block}` override, @media max-width:767px), same fix -- confirmed
+// live at 375px: 0px -> 602.3125px, exact match with production. Not
+// merged into the earlier rule (kept separate, both media-scoped) to avoid
+// touching a selector that's already confirmed working live.
+@media (max-width: 767px) {
+    section.two-column-services.two-column-services.landing-video-intro.landing-video-intro .container.container .landing-video-intro-columns.landing-video-intro-columns .column.column.column.one-half.video-column {
+        display: flow-root;
+    }
+}
+
+// Same page, section.video-quote-block: .video-quote-container collapses
+// to 0px ONLY below 768px (confirmed live: >=768px already matches
+// production exactly without any fix -- 345.375px at 768px, since the
+// genuine base rule is display:flex there and float becomes irrelevant
+// once flex applies, same pattern as .two-column-image-text-outer above).
+// Below 768px, a SEPARATE genuine, undoubled, already-uncontested rule
+// (`section.video-quote-block .container .video-quote-container` @media
+// max-width:767px) correctly sets display:block for mobile -- it's not
+// being fought by anything, so the only missing piece is the containment
+// that `float:left` (from the unconditional base rule) would have
+// provided, neutralized by the unconditional doubled-class override
+// (`.video-quote-container.video-quote-container{float:none}`, no media).
+// display:flow-root inside the SAME max-width:767px media query
+// reproduces that containment without conflicting with the genuine
+// display:block already set there (this rule needs to win the `display`
+// property against that existing undoubled 3-class rule, hence doubled
+// here to 6 classes) and without touching float or display at >=768px,
+// where flex already works correctly. Confirmed live: 0px -> 595.75px at
+// 375px, matching production's 595.75px exactly.
+@media (max-width: 767px) {
+    section.video-quote-block.video-quote-block .container.container .video-quote-container.video-quote-container {
+        display: flow-root;
+    }
+}
+
+// /get-in-touch/ (section.contact-module) -- user-reported: "still see
+// .desktop and .mobile that are overridden by the long selector giving
+// display:block;float:none". Confirmed live: `.contact-image-container.
+// desktop` and `.contact-image-container.mobile` (the responsive-swap
+// image pair under .title-details-column) render SIMULTANEOUSLY at every
+// width, instead of one-or-the-other -- the exact same "unconditional
+// doubled override beats a media-scoped genuine display rule" pattern as
+// the .links-container.desktop/.mobile fixes above, just for a different
+// component this time. The real breakpoint (confirmed live on production
+// via binary search, not assumed): max-width:1023px shows .mobile only,
+// min-width:1024px shows .desktop only -- NOT the usual 767/768 split
+// used elsewhere in this file, so don't copy that breakpoint by habit.
+//
+// Two genuine rules exist and are correct on their own:
+// `.contact-image-container.desktop{display:none}` @media max-width:1023px
+// (hides desktop on mobile) and `.contact-image-container.mobile
+// {display:block}` @media max-width:1023px (shows mobile on mobile,
+// paired with an unconditional `{display:none}` base rule that's supposed
+// to hide it everywhere else). Both are beaten by the unconditional,
+// doubled-class audit override `section.contact-module.contact-module
+// .container.container .contact-innner.contact-innner .column.column
+// .title-details-column.title-details-column .contact-image-container.
+// contact-image-container{float:none;display:block}` (12 class-selectors,
+// no media query) -- it forces display:block on BOTH variants at every
+// width, since it's more specific than the desktop-hide rule (7 classes)
+// and applies unconditionally where the mobile show/hide split is media-
+// scoped.
+//
+// Fixed with the same media-scoped, specificity-exceeding pattern as the
+// landing-video-intro fixes above: one rule per breakpoint, doubling one
+// more level (14 classes each) than the 12-class override, each scoped to
+// only the media range where it needs to act. Confirmed live via direct
+// element.style testing at 1023px and 1024px: hiding the wrong variant at
+// each width leaves the correct one showing at its exact production
+// height (193.1875px mobile, 294.390625px desktop).
+@media (max-width: 1023px) {
+    section.contact-module.contact-module .container.container .contact-innner.contact-innner .column.column.title-details-column.title-details-column .contact-image-container.contact-image-container.desktop.desktop {
+        display: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    section.contact-module.contact-module .container.container .contact-innner.contact-innner .column.column.title-details-column.title-details-column .contact-image-container.contact-image-container.mobile.mobile {
+        display: none;
+    }
+}
+
+// User-requested fix (2026-09-16): .two-column .list-container.
+.two-column .list-container {
+    display: flex !important;
+    flex-direction: column;
+}
+
+// User-requested fix (2026-09-16): .full-image-text .text-container-inner
+// reported as not applying / getting overridden.
+.full-image-text .text-container-inner {
+    display: inline-block !important;
+}

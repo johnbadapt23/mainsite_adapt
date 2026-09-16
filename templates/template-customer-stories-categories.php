@@ -7,15 +7,24 @@ $displayed_posts = array ();
 
 $q = get_queried_object();
 $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
-$filterType = isset($_GET['sub-category']) ? sanitize_text_field($_GET['sub-category']) : '';
-$keyword = isset($_GET['searchWords']) ? sanitize_text_field($_GET['searchWords']) : '';
+$filterType = sanitize_text_field( $_GET['sub-category'] ?? '' );
+$keyword = sanitize_text_field( $_GET['searchWords'] ?? '' );
 
 if ($q && $q->parent != 0) {
     // Redirect child category to its parent archive
     $parent_term = get_term($q->parent, 'customer-stories-categories');
-    if ($parent_term) {
-        wp_redirect(get_term_link($parent_term), 301);
-        exit;
+    // get_term() returns WP_Error (not false) if the taxonomy itself is
+    // ever invalid/unregistered -- `if ($parent_term)` alone doesn't catch
+    // that (WP_Error is an object, always truthy). Both get_term_link()
+    // called on that WP_Error and wp_redirect() concatenating it into the
+    // Location header would otherwise fatal ("Object of class WP_Error
+    // could not be converted to string").
+    if ($parent_term && ! is_wp_error($parent_term)) {
+        $parent_term_link = get_term_link($parent_term);
+        if (! is_wp_error($parent_term_link)) {
+            wp_redirect($parent_term_link, 301);
+            exit;
+        }
     }
 }
 
@@ -276,7 +285,7 @@ if ($q && $q->parent != 0) {
                                         </a>                        
                                     </div>                                    
                                 <?php wp_reset_postdata(); ?>
-                                 <?php wp_reset_query(); ?>
+                                 <?php wp_reset_postdata(); ?>
                             <?php endif; ?>
                              <?php $featuredCounter++;?>
                         <?php endwhile; ?>
@@ -590,7 +599,7 @@ if ($q && $q->parent != 0) {
             </div>
             <div class="search-container" <?php if($keyword != '') { ?> style="display:block;"<?php } ?>>
                 <form method="get">
-					<input class="searchInputStories" type="text" name="searchWords" id="search" placeholder="Search for company or topics..." value="<?php echo isset($_GET['searchWords']) ? esc_attr($_GET['searchWords']) : ''; ?>" />
+					<input class="searchInputStories" type="text" name="searchWords" id="search" placeholder="Search for company or topics..." value="<?php echo esc_attr( $_GET['searchWords'] ?? '' ); ?>" />
 					<input type="hidden" value="1" name="sentence" />
 				</form>
             </div>            

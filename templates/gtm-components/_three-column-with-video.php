@@ -10,7 +10,7 @@
                     <div class="video-container" style="aspect-ratio: auto; padding-bottom: 56.5%;">
                         <div class="bg-container">
                             <?php $image = get_sub_field('poster_image'); ?>
-                            <video width="100%" autoplay loop muted playsinline poster="<?php echo $image['url']; ?>" style="height: 100%;">
+                            <video width="100%" autoplay loop muted playsinline poster="<?php echo esc_url( adapt_webp_poster_url( $image['url'] ) ); ?>" style="height: 100%;">
                                 <source type="video/mp4" src="<?php echo get_sub_field( 'autoplay_video' ); ?>" />
                             </video>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>                                

@@ -436,3 +436,349 @@ section.market-featured {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 2
+
+section.market-form.market-form {
+                float: none;
+        }
+
+// line 28
+
+section.market-form.market-form {
+                .container.container {
+                        .market-column-container.market-column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 48
+
+section.market-form.market-form {
+                .container.container {
+                        .market-column-container.market-column-container {
+                                .column.column {
+                                        &.content-column.content-column {
+                                                .pre-title.pre-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 57
+
+section.market-form.market-form {
+                .container.container {
+                        .market-column-container.market-column-container {
+                                .column.column {
+                                        &.content-column.content-column {
+                                                h1 {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 72
+
+section.market-form.market-form {
+                .container.container {
+                        .market-column-container.market-column-container {
+                                .column.column {
+                                        &.content-column.content-column {
+                                                .text.text {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 87
+
+section.market-form.market-form {
+                .container.container {
+                        .market-column-container.market-column-container {
+                                .column.column {
+                                        &.content-column.content-column {
+                                                .points-container.points-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 92
+
+section.market-form.market-form {
+                .container.container {
+                        .market-column-container.market-column-container {
+                                .column.column {
+                                        &.content-column.content-column {
+                                                .points-container.points-container {
+                                                        .points.points {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 108
+
+section.market-form.market-form {
+                .container.container {
+                        .market-column-container.market-column-container {
+                                .column.column {
+                                        &.content-column.content-column {
+                                                .form-popup-button-container.form-popup-button-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 124
+
+section.market-form.market-form {
+                .container.container {
+                        .market-column-container.market-column-container {
+                                .column.column {
+                                        &.content-column.content-column {
+                                                .contact-image-container.contact-image-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 133
+
+section.market-form.market-form {
+                .container.container {
+                        .market-column-container.market-column-container {
+                                .column.column {
+                                        &.content-column.content-column {
+                                                .contact-image-container.contact-image-container {
+                                                        .image-container.image-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 160
+
+section.market-form.market-form {
+                .container.container {
+                        .market-column-container.market-column-container {
+                                .column.column {
+                                        &.form-column.form-column {
+                                                .form-container.form-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 182
+
+section.market-testimonial.market-testimonial {
+                .container.container {
+                        .testimonial-container.testimonial-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 193
+
+section.market-testimonial.market-testimonial {
+                .container.container {
+                        .testimonial-container.testimonial-container {
+                                .testimonial-inner.testimonial-inner {
+                                        h4.testimonial.testimonial {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 232
+
+section.market-two-column.market-two-column {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 241
+
+section.market-two-column.market-two-column {
+                .container.container {
+                        .title-container.title-container {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 249
+
+section.market-two-column.market-two-column {
+                .container.container {
+                        .two-column-container.two-column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 340
+
+section.market-two-column.market-two-column {
+                .container.container {
+                        .two-column-container.two-column-container {
+                                .column.column {
+                                        .inner-column.inner-column {
+                                                &.text-column.text-column {
+                                                        span {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 364
+
+section.market-featured.market-featured {
+                float: none;
+        }
+
+// line 374
+
+section.market-featured.market-featured {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 383
+
+section.market-featured.market-featured {
+                .container.container {
+                        .title-container.title-container {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 390
+
+section.market-featured.market-featured {
+                .container.container {
+                        .grid-wrapper.grid-wrapper {
+                                float: none;
+                        }
+                }
+        }
+
+// line 427
+
+section.market-featured.market-featured {
+                .container.container {
+                        .button-container.button-container {
+                                float: none;
+                        }
+                }
+        }
+
+section.market-form.market-form .container.container .market-column-container.market-column-container .column.column.content-column.content-column,
+    section.market-form.market-form .container.container .market-column-container.market-column-container .column.column.form-column.form-column {
+        float: none;
+    }
+
+section.market-form.market-form .container.container .market-column-container.market-column-container .column.column.content-column.content-column .points-container.points-container .points.points img {
+        float: none;
+    }
+
+section.market-two-column.market-two-column .container.container .two-column-container.two-column-container .column.column {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.market-two-column.market-two-column .container.container .two-column-container.two-column-container .column.column .inner-column.inner-column {
+        float: none;
+    }
+
+// section.market-featured .item mobile row fix (see the corrected
+
+// "RESOLVED" comment above -- .item.one-third.articles's <a>
+
+// (image) + .item-content-container 2-item row, same-direction
+
+// floats, no reversal needed).
+
+@media (max-width: 767px) {
+        section.market-featured.market-featured .container.container .grid-wrapper.grid-wrapper .item.item {
+            display: flex;
+            align-items: flex-start;
+        }
+        section.market-featured.market-featured .container.container .grid-wrapper.grid-wrapper .item.item > a {
+            flex-shrink: 0;
+        }
+        section.market-featured.market-featured .container.container .grid-wrapper.grid-wrapper .item.item .item-content-container.item-content-container {
+            float: none;
+        }
+    }
+
+section.market-featured.market-featured .container.container .title-container.title-container {
+        display: block;
+    }
+
+section.market-two-column.market-two-column .container.container .title-container.title-container {
+        display: block;
+    }

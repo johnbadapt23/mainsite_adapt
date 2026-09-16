@@ -177,6 +177,7 @@ $positionID = $obj->ID;
 $args = array(
     'post_type' => 'position',
     'posts_per_page' => -1,
+    'no_found_rows' => true,
     'paged'=> $paged
 );
 
@@ -227,4 +228,4 @@ if( $posts->have_posts() ): ?>
     </section>
 <?php endif;?>
 <?php wp_reset_postdata(); ?>
-<?php wp_reset_query(); ?>
+<?php wp_reset_postdata(); ?>

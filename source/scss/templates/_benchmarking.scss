@@ -629,10 +629,14 @@ body.template-benchmarking {
         }
     }
 
-    section.left-text-links.advisors-centered-text-links.left-text-links-image .container .text-container { 
+    section.left-text-links.advisors-centered-text-links.left-text-links-image .container .text-container {
         h2,
         .text {
             max-width: 523px;
+        }
+
+        .text {
+            margin-left: 0;
         }
     }
 }
@@ -1302,3 +1306,164 @@ section.benchmarking-four-column {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 530
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module.benchmark-card-module.benchmark-card-module {
+                .container.container {
+                        .background-card-container.background-card-container {
+                                .card-container.card-container {
+                                        .card.card {
+                                                .content-container.content-container {
+                                                        .card-text.card-text {
+                                                                .inner-text.inner-text {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 536
+
+section.cards-module.cards-module.gtm-cards-module.gtm-cards-module.benchmark-card-module.benchmark-card-module {
+                .container.container {
+                        .background-card-container.background-card-container {
+                                .card-container.card-container {
+                                        .card.card {
+                                                .content-container.content-container {
+                                                        .card-text.card-text {
+                                                                .link-container.link-container {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 710
+
+section.left-text-links.left-text-links.advisors-centered-text-links.advisors-centered-text-links.left-text-links-image.left-text-links-image {
+                &.with-bullets.with-bullets {
+                        .container.container {
+                                .bullet-point-container.bullet-point-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 804
+
+// Sticky cards
+
+section.benchmarking-sticky-cards.benchmarking-sticky-cards {
+                .container.container {
+                        .top-content.top-content {
+                                float: none;
+                        }
+                }
+        }
+
+// line 890
+
+// Sticky cards
+
+section.benchmarking-sticky-cards.benchmarking-sticky-cards {
+                .columns-wrapper.columns-wrapper {
+                        @media (max-width: 1023px) {
+                                float: none;
+                        }
+                }
+        }
+
+// line 906
+
+// Sticky cards
+
+section.benchmarking-sticky-cards.benchmarking-sticky-cards {
+                .sticky-columns-wrapper.sticky-columns-wrapper {
+                        float: none;
+                }
+        }
+
+// line 1016
+
+section.three-column-text-image-cards.three-column-text-image-cards.benchmarking-three-column-text-image-cards.benchmarking-three-column-text-image-cards {
+                .container.container {
+                        .top-content.top-content {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1148
+
+section.benchmarking-four-column.benchmarking-four-column {
+                .container.container {
+                        .outer-container.outer-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1227
+
+section.benchmarking-four-column.benchmarking-four-column {
+                .container.container {
+                        .icon-title.icon-title {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1266
+
+section.benchmarking-four-column.benchmarking-four-column {
+                .container.container {
+                        .column-container.column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1289
+
+section.benchmarking-four-column.benchmarking-four-column {
+                .container.container {
+                        .column-container.column-container {
+                                .headerXL.headerXL {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 1299
+
+section.benchmarking-four-column.benchmarking-four-column {
+                .container.container {
+                        .column-container.column-container {
+                                .labelMedium.labelMedium {
+                                        float: none;
+                                }
+                        }
+                }
+        }

@@ -113,3 +113,158 @@ section.login-module {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 2
+
+section.login-module.login-module {
+                float: none;
+        }
+
+// line 23
+
+section.login-module.login-module {
+                .container.container {
+                        .login-inner.login-inner {
+                                h1 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 38
+
+section.login-module.login-module {
+                .container.container {
+                        .login-inner.login-inner {
+                                .column-container.column-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 65
+
+section.login-module.login-module {
+                .container.container {
+                        .login-inner.login-inner {
+                                .column-container.column-container {
+                                        .column.column {
+                                                .logo-container.logo-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 71
+
+section.login-module.login-module {
+                .container.container {
+                        .login-inner.login-inner {
+                                .column-container.column-container {
+                                        .column.column {
+                                                .logo-container.logo-container {
+                                                        .image-container.image-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 78
+
+section.login-module.login-module {
+                .container.container {
+                        .login-inner.login-inner {
+                                .column-container.column-container {
+                                        .column.column {
+                                                .content-container.content-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 87
+
+section.login-module.login-module {
+                .container.container {
+                        .login-inner.login-inner {
+                                .column-container.column-container {
+                                        .column.column {
+                                                .content-container.content-container {
+                                                        h4 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 103
+
+section.login-module.login-module {
+                .container.container {
+                        .login-inner.login-inner {
+                                .column-container.column-container {
+                                        .column.column {
+                                                .button-container.button-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 107
+
+section.login-module.login-module {
+                .container.container {
+                        .login-inner.login-inner {
+                                .column-container.column-container {
+                                        .column.column {
+                                                .button-container.button-container {
+                                                        a {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+section.login-module.login-module .container.container .login-inner.login-inner .column-container.column-container .column.column {
+        float: none;
+    }
+
+section.login-module.login-module .container.container .login-inner.login-inner .column-container.column-container .column.column .content-container.content-container span.text.text {
+        float: none;
+    }
+
+section.login-module.login-module .container.container .login-inner.login-inner .column-container.column-container .column.column .button-container.button-container a {
+        display: block;
+    }

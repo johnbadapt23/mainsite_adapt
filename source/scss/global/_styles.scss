@@ -4532,3 +4532,432 @@ body.cookies-not-set:after {
 	}
 
 }
+
+// Touch-target sizing: sitewide (used in footer, contact blocks, form
+// modules, and customer-story pages) -- social icons (.social-link) render
+// as small as 19-22px, under the 24x24px minimum. Same invisible-hit-area
+// technique as the mobile search controls in _header.scss -- expands only
+// the tappable area via a transparent ::after, the icon itself is untouched.
+// Moved out of partials/_footer.scss (2026-09-02): that file is used
+// elsewhere than just the footer (_contact-block.php, _form-module.php,
+// single-customer_stories.php, template-contact.php), so it needs to stay
+// in the always-loaded bundle rather than the footer-only deferred one.
+.social-link {
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 24px;
+		height: 24px;
+	}
+}
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 92
+
+section {
+                float: none !important;
+        }
+
+// line 112
+
+hr {
+                float: none !important;
+        }
+
+// line 173
+
+body {
+                main {
+                        float: none !important;
+                }
+        }
+
+// line 190
+
+.button-wrapper.button-wrapper {
+                float: none;
+        }
+
+// line 592
+
+section.product-section.product-section .product-information-container.product-information-container .container.container .product.product.column-container.column-container .product__info-wrapper.product__info-wrapper .product__info-container.product__info-container>*+* {
+                float: none;
+        }
+
+// line 597
+
+.accordion.accordion .summary__title.summary__title {
+                float: none;
+        }
+
+// line 1812
+
+.labelXXLarge.labelXXLarge,
+.labelXXL.labelXXL {
+                float: none;
+        }
+
+// line 1838
+
+.labelXLarge.labelXLarge,
+.label-XL.label-XL,
+.labelXL.labelXL {
+                float: none;
+        }
+
+// line 1847
+
+.labelLarge.labelLarge {
+                float: none;
+        }
+
+// line 1861
+
+.labelMedium.labelMedium {
+                float: none;
+        }
+
+// line 1870
+
+.labelSmall.labelSmall {
+                float: none;
+        }
+
+// line 1879
+
+.labelXXsmall.labelXXsmall {
+                float: none;
+        }
+
+// line 1891
+
+.labelXsmall.labelXsmall,
+.label-Xsmall.label-Xsmall,
+.label-XSmall.label-XSmall {
+                float: none;
+        }
+
+// line 2018
+
+.post-content.post-content {
+                h1,
+	h2,
+	h3,
+	h4,
+	h5 {
+                        float: none;
+                }
+        }
+
+// line 2032
+
+.post-content.post-content {
+                h6 {
+                        float: none;
+                }
+        }
+
+// line 2089
+
+.alignnone.alignnone {
+                p {
+                        float: none;
+                }
+        }
+
+// line 2418
+
+.mp_wrapper.mp_wrapper .mp-form-row.mp-form-row {
+                float: none;
+        }
+
+// line 2531
+
+.inner.inner {
+                float: none;
+        }
+
+// line 2541
+
+.fullWidth.fullWidth {
+                float: none;
+        }
+
+// line 2686
+
+.buttonBlock.buttonBlock {
+                float: none;
+        }
+
+// line 2910
+
+.hbspt-form.hbspt-form {
+                label {
+                        float: none;
+                }
+        }
+
+// line 2988
+
+.hbspt-form.hbspt-form {
+                .hs-fieldtype-checkbox.hs-fieldtype-checkbox,
+	.hs-fieldtype-radio.hs-fieldtype-radio,
+	.hs-fieldtype-textarea.hs-fieldtype-textarea,
+	.hs-fieldtype-booleancheckbox.hs-fieldtype-booleancheckbox {
+                        float: none;
+                }
+        }
+
+// line 3012
+
+.hbspt-form.hbspt-form {
+                .hs-fieldtype-checkbox.hs-fieldtype-checkbox,
+	.hs-fieldtype-radio.hs-fieldtype-radio,
+	.hs-fieldtype-textarea.hs-fieldtype-textarea,
+	.hs-fieldtype-booleancheckbox.hs-fieldtype-booleancheckbox {
+                        legend {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3022
+
+.hbspt-form.hbspt-form {
+                ul[role="checkbox"],
+	ul.inputs-list.inputs-list {
+                        float: none;
+                }
+        }
+
+// line 3205
+
+.hbspt-form.hbspt-form span.select2.select2 {
+                float: none;
+        }
+
+// line 3350
+
+.hs-form.hs-form .hs_special_requests.hs_special_requests>legend {
+                float: none;
+        }
+
+// line 3366
+
+.image-container.image-container,
+.resources-image-container.resources-image-container {
+                float: none;
+        }
+
+// line 3399
+
+.video-container.video-container {
+                float: none;
+        }
+
+// line 3503
+
+.background-light-grey.background-light-grey {
+                &.peer-insights-item.peer-insights-item {
+                        .video-container.video-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3545
+
+.background-light-grey.background-light-grey {
+                &.peer-insights-item.peer-insights-item {
+                        .item-content-container.item-content-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3549
+
+.background-light-grey.background-light-grey {
+                &.peer-insights-item.peer-insights-item {
+                        .item-content-container.item-content-container {
+                                .topic-filter.topic-filter {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3711
+
+.requestFormContainer.requestFormContainer {
+                h2 {
+                        float: none;
+                }
+        }
+
+// line 3795
+
+.hbspt-form.hbspt-form,
+.hs-form.hs-form {
+                .hs-main-font-element.hs-main-font-element.hs-richtext.hs-richtext {
+                        float: none;
+                }
+        }
+
+// line 3813
+
+.hbspt-form.hbspt-form,
+.hs-form.hs-form {
+                label {
+                        float: none;
+                }
+        }
+
+// line 3837
+
+.hbspt-form.hbspt-form,
+.hs-form.hs-form {
+                legend {
+                        float: none;
+                }
+        }
+
+// line 3921
+
+.hbspt-form.hbspt-form span.select2.select2 {
+                float: none;
+        }
+
+// line 4046
+
+.mfp-registration.mfp-registration {
+                .mfp-content.mfp-content {
+                        .requestFormContainer.requestFormContainer {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4053
+
+.mfp-registration.mfp-registration {
+                .mfp-content.mfp-content {
+                        .requestFormContainer.requestFormContainer {
+                                .container.container {
+                                        .form-container.form-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4058
+
+.mfp-registration.mfp-registration {
+                .mfp-content.mfp-content {
+                        .requestFormContainer.requestFormContainer {
+                                .container.container {
+                                        .form-container.form-container {
+                                                .hbspt-form.hbspt-form,
+                    .hs-form.hs-form {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4364
+
+body {
+                #cookie-notice {
+                        .cookie-notice-container.cookie-notice-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4371
+
+body {
+                #cookie-notice {
+                        .cookie-notice-container.cookie-notice-container {
+                                .cn-text-container.cn-text-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 4378
+
+body {
+                #cookie-notice {
+                        .cookie-notice-container.cookie-notice-container {
+                                .cn-buttons-container.cn-buttons-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 4444
+
+// locked content 
+
+.registrationOverlay.registrationOverlay {
+                float: none;
+        }
+
+// line 4488
+
+// locked content 
+
+.registrationOverlay.registrationOverlay {
+                .password-form-container.password-form-container {
+                        float: none;
+                }
+        }
+
+// line 4493
+
+// locked content 
+
+.registrationOverlay.registrationOverlay {
+                .password-form-container.password-form-container {
+                        .password-form.password-form {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4499
+
+// locked content 
+
+.registrationOverlay.registrationOverlay {
+                .password-form-container.password-form-container {
+                        .password-form.password-form {
+                                p {
+                                        float: none;
+                                }
+                        }
+                }
+        }

@@ -200,6 +200,7 @@
                     				global $post;
                     				$args=array(
                     		        	'post_type' => 'post',
+                    		        	'no_found_rows' => true,
                     		        	'post_status' => 'publish',
                     		        	'posts_per_page' => 6,
                                         'post__not_in' => array( $postID )
@@ -297,9 +298,9 @@
                                                    <span class="description">
                                                        <?php the_sub_field( 'description' ); ?>
                                                    </span>
-                                                   <?php if ( get_sub_field( 'logo') ) { ?>
+                                                   <?php $logo_image = get_sub_field( 'logo' ); if ( $logo_image ) { ?>
                                                        <div class="logoContainer">
-                                                           <img loading="lazy" src="<?php the_sub_field( 'logo' ); ?>" alt="Adapt" />
+                                                           <?php echo adapt_acf_image( $logo_image, 'full', array( 'alt' => 'Adapt', 'loading' => 'lazy' ) ); ?>
                                                        </div>
                                                    <?php } ?>
                                                </div>
@@ -347,9 +348,9 @@
                                                 <span class="description">
                                                     <?php the_sub_field( 'description' ); ?>
                                                 </span>
-                                                <?php if ( get_sub_field( 'logo') ) { ?>
+                                                <?php $logo_image = get_sub_field( 'logo' ); if ( $logo_image ) { ?>
                                                     <div class="logoContainer">
-                                                        <img loading="lazy" src="<?php the_sub_field( 'logo' ); ?>" alt="Adapt" />
+                                                        <?php echo adapt_acf_image( $logo_image, 'full', array( 'alt' => 'Adapt', 'loading' => 'lazy' ) ); ?>
                                                     </div>
                                                 <?php } ?>
                                             </div>
@@ -492,9 +493,9 @@
                                                         <span class="description">
                                                             <?php the_field( 'speaker_description' ); ?>
                                                         </span>
-                                                        <?php if ( get_field( 'logo') ) { ?>
+                                                        <?php $logo_image = get_field( 'logo' ); if ( $logo_image ) { ?>
                                                             <div class="logoContainer">
-                                                                <img loading="lazy" src="<?php the_field( 'logo' ); ?>" alt="Adapt" />
+                                                                <?php echo adapt_acf_image( $logo_image, 'full', array( 'alt' => 'Adapt', 'loading' => 'lazy' ) ); ?>
                                                             </div>
                                                         <?php } ?>
                             						<?php wp_reset_postdata(); ?>
@@ -546,9 +547,9 @@
                                                         <span class="description">
                                                             <?php the_field( 'speaker_description' ); ?>
                                                         </span>
-                                                        <?php if ( get_field( 'logo') ) { ?>
+                                                        <?php $logo_image = get_field( 'logo' ); if ( $logo_image ) { ?>
                                                             <div class="logoContainer">
-                                                                <img loading="lazy" src="<?php the_field( 'logo' ); ?>" alt="Adapt" />
+                                                                <?php echo adapt_acf_image( $logo_image, 'full', array( 'alt' => 'Adapt', 'loading' => 'lazy' ) ); ?>
                                                             </div>
                                                         <?php } ?>
                             						<?php wp_reset_postdata(); ?>

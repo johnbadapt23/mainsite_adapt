@@ -6444,3 +6444,2879 @@ section.form-popup-slider-module {
         }
     }
 }
+
+
+// =====================================================================
+// Float -> Flexbox modernization pass, folded in from the formerly
+// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
+// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
+// Pixel-parity verified against the gated build before this merge --
+// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
+// dated 2026-09-14) for the full audit trail, per-rule provenance, and
+// the isolated-build diff used to confirm this file's compiled output
+// is unchanged from the pre-merge gated build.
+// =====================================================================
+// line 44
+
+section.animation-introduction.animation-introduction {
+                .animation-underlay-container.animation-underlay-container {
+                        .container.container {
+                                .animation-container.animation-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 71
+
+section.animation-introduction.animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                h1 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 84
+
+section.animation-introduction.animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .text.text {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 99
+
+section.animation-introduction.animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .button-container.button-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 107
+
+section.animation-introduction.animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .button-container.button-container {
+                                        @media (max-width: 767px) {
+                                                a {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 113
+
+section.animation-introduction.animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .text-link-container.text-link-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 147
+
+section.flex-two-column-text.flex-two-column-text {
+                .container.container {
+                        h2 {
+                                float: none;
+                        }
+                }
+        }
+
+// line 154
+
+section.flex-two-column-text.flex-two-column-text {
+                .container.container {
+                        .column-container.column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 203
+
+section.flex-two-column-text.flex-two-column-text {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        .body-text.body-text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 214
+
+section.flex-two-column-text.flex-two-column-text {
+                .container.container {
+                        .column-container.column-container {
+                                .column.column {
+                                        .link-container.link-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 250
+
+section.four-column-stats.four-column-stats {
+                .container.container {
+                        .four-column-container.four-column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 275
+
+section.four-column-stats.four-column-stats {
+                .container.container {
+                        .four-column-container.four-column-container {
+                                .absolute-title-container.absolute-title-container {
+                                        @media (max-width: 1023px) {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 288
+
+section.four-column-stats.four-column-stats {
+                .container.container {
+                        .four-column-container.four-column-container {
+                                .absolute-title-container.absolute-title-container {
+                                        h3 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 333
+
+section.four-column-stats.four-column-stats {
+                .container.container {
+                        .four-column-container.four-column-container {
+                                .column.column {
+                                        .stat-container.stat-container {
+                                                .stat-inner.stat-inner {
+                                                        h2 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 340
+
+section.four-column-stats.four-column-stats {
+                .container.container {
+                        .four-column-container.four-column-container {
+                                .column.column {
+                                        .stat-container.stat-container {
+                                                .stat-inner.stat-inner {
+                                                        span.small-stat.small-stat {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 444
+
+section.switcher-module.switcher-module {
+                .container.container {
+                        .top-block.top-block {
+                                float: none;
+                        }
+                }
+        }
+
+// line 459
+
+section.switcher-module.switcher-module {
+                .container.container {
+                        .top-block.top-block {
+                                .title-switcher-container.title-switcher-container {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 534
+
+section.switcher-module.switcher-module {
+                .container.container {
+                        .switch-content-container.switch-content-container {
+                                .icon-text-column-container.icon-text-column-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 636
+
+section.switcher-module.switcher-module {
+                .container.container {
+                        .switch-content-container.switch-content-container {
+                                .icon-text-column-container.icon-text-column-container {
+                                        .column.column {
+                                                .text-container.text-container {
+                                                        span {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 657
+
+section.switcher-module.switcher-module {
+                .container.container {
+                        .switch-content-container.switch-content-container {
+                                .bottom-link-container.bottom-link-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 727
+
+section.meet-the-team.meet-the-team {
+                .container.container {
+                        .team-container.team-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 859
+
+section.meet-the-team.meet-the-team {
+                .container.container {
+                        .content-container.content-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 870
+
+section.meet-the-team.meet-the-team {
+                .container.container {
+                        .content-container.content-container {
+                                .content-container-inner.content-container-inner {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 886
+
+section.meet-the-team.meet-the-team {
+                .container.container {
+                        .content-container.content-container {
+                                .content-container-inner.content-container-inner {
+                                        span.text-container.text-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 901
+
+section.meet-the-team.meet-the-team {
+                .container.container {
+                        .content-container.content-container {
+                                .content-container-inner.content-container-inner {
+                                        .button-link-container.button-link-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 911
+
+section.meet-the-team.meet-the-team {
+                .container.container {
+                        .content-container.content-container {
+                                .content-container-inner.content-container-inner {
+                                        .button-link-container.button-link-container {
+                                                a {
+                                                        &.std-button.std-button {
+                                                                @media (max-width:767px) {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 937
+
+section.two-column-cta.two-column-cta {
+                .container.container {
+                        .cta-column-container.cta-column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1054
+
+section.two-column-cta.two-column-cta {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .title.title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1060
+
+section.two-column-cta.two-column-cta {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .text-container.text-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1074
+
+section.two-column-cta.two-column-cta {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .button-container.button-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1085
+
+section.two-column-cta.two-column-cta {
+                .container.container {
+                        .column.column {
+                                &.text-column.text-column {
+                                        .button-container.button-container {
+                                                @media (max-width:767px) {
+                                                        a {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1162
+
+section.two-column-cta.two-column-cta {
+                &.two-column-cta-home.two-column-cta-home {
+                        .container.container {
+                                .cta-column-container.cta-column-container {
+                                        .column.column.image-column.image-column {
+                                                .button-container.button-container.mobile.mobile {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1170
+
+section.two-column-cta.two-column-cta {
+                &.two-column-cta-home.two-column-cta-home {
+                        .container.container {
+                                .cta-column-container.cta-column-container {
+                                        .column.column.image-column.image-column {
+                                                .button-container.button-container.mobile.mobile {
+                                                        @media (max-width:767px) {
+                                                                a {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1194
+
+section.two-column-cta.two-column-cta {
+                &.two-column-cta-home.two-column-cta-home {
+                        .container.container {
+                                .cta-column-container.cta-column-container {
+                                        .column.column.image-column.image-column {
+                                                &.image-right.image-right {
+                                                        .image-inner-container.image-inner-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1203
+
+section.two-column-cta.two-column-cta {
+                &.two-column-cta-home.two-column-cta-home {
+                        .container.container {
+                                .cta-column-container.cta-column-container {
+                                        .column.column.image-column.image-column {
+                                                &.image-right.image-right {
+                                                        .image-inner-container.image-inner-container {
+                                                                img {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1214
+
+section.two-column-cta.two-column-cta {
+                &.two-column-cta-home.two-column-cta-home {
+                        .container.container {
+                                .cta-column-container.cta-column-container {
+                                        .column.column.image-column.image-column {
+                                                &.image-right.image-right {
+                                                        .image-inner-container.image-inner-container {
+                                                                .caption-text.caption-text {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1271
+
+section.basic-text-introduction-block.basic-text-introduction-block {
+                .text-container.text-container {
+                        float: none;
+                }
+        }
+
+// line 1303
+
+section.team-block.team-block {
+                .column-container.column-container {
+                        float: none;
+                }
+        }
+
+// line 1336
+
+section.team-block.team-block {
+                .column-container.column-container {
+                        .column.column {
+                                &.title-column.title-column {
+                                        h2 {
+                                                @include responsive(767) {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1535
+
+section.team-block.team-block {
+                .column-container.column-container {
+                        .column.column {
+                                &.team-column.team-column {
+                                        .column.column {
+                                                .text.text {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1553
+
+section.team-block.team-block {
+                .column-container.column-container {
+                        .column.column {
+                                &.team-column.team-column {
+                                        .column.column {
+                                                .text.text {
+                                                        h3 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1650
+
+section.team-block.team-block {
+                .full-bio.full-bio {
+                        .bio-top.bio-top {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1700
+
+section.team-block.team-block {
+                .full-bio.full-bio {
+                        .bio-top.bio-top {
+                                .text.text {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1714
+
+section.team-block.team-block {
+                .full-bio.full-bio {
+                        .bio-top.bio-top {
+                                .text.text {
+                                        h3 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 1731
+
+section.team-block.team-block {
+                .full-bio.full-bio {
+                        .bio-bottom.bio-bottom {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1929
+
+section.introduction-block.introduction-block {
+                .text-container.text-container {
+                        float: none;
+                }
+        }
+
+// line 1934
+
+section.introduction-block.introduction-block {
+                .text-container.text-container {
+                        h1 {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1941
+
+section.introduction-block.introduction-block {
+                .text-container.text-container {
+                        span.text.text {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1951
+
+section.introduction-block.introduction-block {
+                .text-container.text-container {
+                        .button-container.button-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 1974
+
+section.introduction-block.introduction-block {
+                .image-video-container.image-video-container {
+                        float: none;
+                }
+        }
+
+// line 2009
+
+section.introduction-block.introduction-block {
+                .image-video-container.image-video-container {
+                        .video-image-inner.video-image-inner {
+                                .image-container.image-container,
+            .video-container.video-container {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2059
+
+section.text-editor-content.text-editor-content {
+                .container.container {
+                        .content-inner.content-inner {
+                                .content.content {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 2065
+
+section.text-editor-content.text-editor-content {
+                .container.container {
+                        .content-inner.content-inner {
+                                .content.content {
+                                        h1,h2,h3,h4,h5,h6,p {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2072
+
+section.text-editor-content.text-editor-content {
+                .container.container {
+                        .content-inner.content-inner {
+                                .content.content {
+                                        p {
+                                                .content-image-container.content-image-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2086
+
+section.text-editor-content.text-editor-content {
+                .container.container {
+                        .content-inner.content-inner {
+                                .content.content {
+                                        p {
+                                                .content-image-container.content-image-container {
+                                                        img {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2496
+
+section.values-full-screen.values-full-screen {
+                float: none;
+        }
+
+// line 2501
+
+section.values-full-screen.values-full-screen {
+                .value.value {
+                        float: none;
+                }
+        }
+
+// line 2510
+
+section.values-full-screen.values-full-screen {
+                .value.value {
+                        h2,
+        .sub-title.sub-title {
+                                float: none;
+                        }
+                }
+        }
+
+// line 2552
+
+section.values-full-screen.values-full-screen {
+                .value.value {
+                        .container.container {
+                                .v-wrap.v-wrap {
+                                        .v-box.v-box {
+                                                .inner.inner {
+                                                        .pre-content-container.pre-content-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2558
+
+section.values-full-screen.values-full-screen {
+                .value.value {
+                        .container.container {
+                                .v-wrap.v-wrap {
+                                        .v-box.v-box {
+                                                .inner.inner {
+                                                        .pre-content-container.pre-content-container {
+                                                                h2 {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2566
+
+section.values-full-screen.values-full-screen {
+                .value.value {
+                        .container.container {
+                                .v-wrap.v-wrap {
+                                        .v-box.v-box {
+                                                .inner.inner {
+                                                        .animation-container.animation-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2590
+
+section.values-full-screen.values-full-screen {
+                .value.value {
+                        .container.container {
+                                .progress-bar-container.progress-bar-container {
+                                        .counter.counter {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 2616
+
+section.values-full-screen.values-full-screen {
+                .value.value {
+                        .container.container {
+                                .progress-bar-container.progress-bar-container {
+                                        .total-count.total-count {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3122
+
+section.title-background-block.title-background-block {
+                .text-container.text-container {
+                        h2 {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3132
+
+section.title-background-block.title-background-block {
+                .text-container.text-container {
+                        span.sub-title.sub-title {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3149
+
+section.title-background-block.title-background-block {
+                .text-container.text-container {
+                        .button-container.button-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3253
+
+section.speakers-block.speakers-block {
+                .container.container {
+                        .speakers-top.speakers-top {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3264
+
+section.speakers-block.speakers-block {
+                .container.container {
+                        .speakers-top.speakers-top {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3288
+
+section.speakers-block.speakers-block {
+                .container.container {
+                        .speakers-top.speakers-top {
+                                p {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 3315
+
+section.speakers-block.speakers-block {
+                .container.container {
+                        .speakers-bottom.speakers-bottom {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3335
+
+section.speakers-block.speakers-block {
+                .container.container {
+                        .speakers-bottom.speakers-bottom {
+                                .speaker.speaker.one-quarter.one-quarter {
+                                        .image-container.image-container {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3399
+
+section.speakers-block.speakers-block {
+                .container.container {
+                        .speakers-bottom.speakers-bottom {
+                                .speaker.speaker.one-quarter.one-quarter {
+                                        .job-title.job-title {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3475
+
+section.speakers-block.speakers-block {
+                .container.container {
+                        .button-container.button-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3569
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3622
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.image-column.image-column {
+                                                h3.title.title,
+                    h2.title.title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3648
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.image-column.image-column {
+                                                p {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3660
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.image-column.image-column {
+                                                .company-logo.company-logo {
+                                                        img {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3685
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .agenda-content-title.agenda-content-title,
+                    .about-title.about-title {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3695
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .agenda-items.agenda-items {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3702
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .agenda-items.agenda-items {
+                                                        .agenda-item.agenda-item {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3706
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .agenda-items.agenda-items {
+                                                        .agenda-item.agenda-item {
+                                                                .time.time {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3719
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .agenda-items.agenda-items {
+                                                        .agenda-item.agenda-item {
+                                                                .agenda-title.agenda-title {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3755
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .about.about {
+                                                        .about-text.about-text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3773
+
+// Speaker Popup
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery {
+                .mfp-content.mfp-content {
+                        .speaker-popup-container.speaker-popup-container {
+                                .column.column {
+                                        &.about-column.about-column {
+                                                .about.about {
+                                                        .about-text.about-text {
+                                                                p {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3821
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 3851
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .animation-text-container.animation-text-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3855
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .animation-text-container.animation-text-container {
+                                                        h1 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3867
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .animation-text-container.animation-text-container {
+                                                        span.animation-text-line.animation-text-line {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3926
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .animation-text-container.animation-text-container {
+                                                        span.animation-text-line.animation-text-line {
+                                                                .text-animation-container.text-animation-container {
+                                                                        span.rotating-outer.rotating-outer {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3964
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .animation-text-container.animation-text-container {
+                                                        .text.text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3980
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .animation-text-container.animation-text-container {
+                                                        .form-container-outer.form-container-outer {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 3984
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .animation-text-container.animation-text-container {
+                                                        .form-container-outer.form-container-outer {
+                                                                .pre-form-text.pre-form-text {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4003
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .animation-text-container.animation-text-container {
+                                                        .form-container-outer.form-container-outer {
+                                                                .form-container-inner.form-container-inner {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4088
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .animation-text-container.animation-text-container {
+                                                        .button-container.button-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4137
+
+// Home Page
+
+section.text-animation-introduction.text-animation-introduction {
+                .container.container {
+                        .introduction-content-container.introduction-content-container {
+                                .column.column {
+                                        &.image-column.image-column {
+                                                .image-container.image-container {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4430
+
+section.logo-ticker-tape.logo-ticker-tape {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4469
+
+section.logo-ticker-tape.logo-ticker-tape {
+                .band-container-backwards.band-container-backwards {
+                        float: none;
+                }
+        }
+
+// line 4550
+
+section.logo-ticker-tape.logo-ticker-tape {
+                .band-container-forwards.band-container-forwards {
+                        float: none;
+                }
+        }
+
+// line 4653
+
+// Home list cards
+
+section.list-card-module.list-card-module {
+                .container.container {
+                        .top-container.top-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4671
+
+// Home list cards
+
+section.list-card-module.list-card-module {
+                .container.container {
+                        .top-container.top-container {
+                                .inner.inner {
+                                        h2 {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4678
+
+// Home list cards
+
+section.list-card-module.list-card-module {
+                .container.container {
+                        .top-container.top-container {
+                                .inner.inner {
+                                        span.text.text {
+                                                float: none;
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4690
+
+// Home list cards
+
+section.list-card-module.list-card-module {
+                .container.container {
+                        .list-card-container.list-card-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4733
+
+// Home list cards
+
+section.list-card-module.list-card-module {
+                .container.container {
+                        .list-card-container.list-card-container {
+                                .one-third.one-third {
+                                        &.list-card.list-card {
+                                                .list-card-front.list-card-front {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4751
+
+// Home list cards
+
+section.list-card-module.list-card-module {
+                .container.container {
+                        .list-card-container.list-card-container {
+                                .one-third.one-third {
+                                        &.list-card.list-card {
+                                                .list-card-front.list-card-front {
+                                                        .title-container.title-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4799
+
+// Home list cards
+
+section.list-card-module.list-card-module {
+                .container.container {
+                        .list-card-container.list-card-container {
+                                .one-third.one-third {
+                                        &.list-card.list-card {
+                                                .list-card-front.list-card-front {
+                                                        .title-container.title-container {
+                                                                h3 {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4815
+
+// Home list cards
+
+section.list-card-module.list-card-module {
+                .container.container {
+                        .list-card-container.list-card-container {
+                                .one-third.one-third {
+                                        &.list-card.list-card {
+                                                .list-card-front.list-card-front {
+                                                        .hover-list-container.hover-list-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4823
+
+// Home list cards
+
+section.list-card-module.list-card-module {
+                .container.container {
+                        .list-card-container.list-card-container {
+                                .one-third.one-third {
+                                        &.list-card.list-card {
+                                                .list-card-front.list-card-front {
+                                                        .hover-list-container.hover-list-container {
+                                                                .list-container.list-container {
+                                                                        float: none;
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4834
+
+// Home list cards
+
+section.list-card-module.list-card-module {
+                .container.container {
+                        .list-card-container.list-card-container {
+                                .one-third.one-third {
+                                        &.list-card.list-card {
+                                                .list-card-front.list-card-front {
+                                                        .hover-list-container.hover-list-container {
+                                                                .list-container.list-container {
+                                                                        .list-item.list-item {
+                                                                                float: none;
+                                                                        }
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 4970
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .title-container.title-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 4986
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .title-container.title-container {
+                                h2 {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 4994
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .services-column-container.services-column-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 5037
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .services-column-container.services-column-container {
+                                .column.column {
+                                        &.icon-text-column.icon-text-column {
+                                                .service.service {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 5061
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .services-column-container.services-column-container {
+                                .column.column {
+                                        &.icon-text-column.icon-text-column {
+                                                .text-container.text-container {
+                                                        span {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 5102
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .services-column-container.services-column-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .text-content-inner.text-content-inner {
+                                                        float: none;
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 5111
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .services-column-container.services-column-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .text-content-inner.text-content-inner {
+                                                        .pre-title.pre-title {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 5152
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .services-column-container.services-column-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .text-content-inner.text-content-inner {
+                                                        h2 {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 5162
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .services-column-container.services-column-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .text-content-inner.text-content-inner {
+                                                        .text.text {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 5176
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .services-column-container.services-column-container {
+                                .column.column {
+                                        &.text-column.text-column {
+                                                .text-content-inner.text-content-inner {
+                                                        .links-container.links-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 5240
+
+section.two-column-services.two-column-services {
+                .container.container {
+                        .services-column-container.services-column-container {
+                                .links-container.links-container.mobile.mobile {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// line 5308
+
+section.centered-text-links.centered-text-links {
+                .text-container.text-container {
+                        h2 {
+                                float: none;
+                        }
+                }
+        }
+
+// line 5315
+
+section.centered-text-links.centered-text-links {
+                .text-container.text-container {
+                        span.text.text {
+                                float: none;
+                        }
+                }
+        }
+
+// line 5327
+
+section.centered-text-links.centered-text-links {
+                .text-container.text-container {
+                        .links-container.links-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 5718
+
+.home-component-progress.home-component-progress {
+                float: none;
+        }
+
+// line 5752
+
+section.featured-types.featured-types {
+                .article-container-three-post.article-container-three-post {
+                        float: none;
+                }
+        }
+
+// line 5784
+
+section.featured-types.featured-types {
+                .article-container-three-post.article-container-three-post {
+                        .container.container {
+                                .grid-wrapper.grid-wrapper {
+                                        .item.item {
+                                                &.all-container.all-container {
+                                                        .item-content-container.item-content-container {
+                                                                float: none;
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+
+// line 5904
+
+section.parallax-image-module.parallax-image-module {
+                float: none;
+        }
+
+// line 5908
+
+section.parallax-image-module.parallax-image-module {
+                .parallax-image-container.parallax-image-container {
+                        float: none;
+                }
+        }
+
+// line 5912
+
+section.parallax-image-module.parallax-image-module {
+                .parallax-image-container.parallax-image-container {
+                        img {
+                                float: none;
+                        }
+                }
+        }
+
+// line 6342
+
+// home popup form
+
+.mfp-wrap.mfp-wrap.home-animation-popup.home-animation-popup {
+                .mfp-content.mfp-content {
+                        .form-container.form-container {
+                                float: none;
+                        }
+                }
+        }
+
+// line 6346
+
+// home popup form
+
+.mfp-wrap.mfp-wrap.home-animation-popup.home-animation-popup {
+                .mfp-content.mfp-content {
+                        .form-container.form-container {
+                                .form-intro.form-intro {
+                                        float: none;
+                                }
+                        }
+                }
+        }
+
+// --- section.flex-two-column-text (2-col text split; base
+
+// .column-container has no display:flex of its own, and mobile has
+
+// an explicit display:block override at 767px that must keep
+
+// winning there, so the flex conversion is scoped to desktop) ---
+
+@media (min-width: 768px) {
+        section.flex-two-column-text.flex-two-column-text .container.container .column-container.column-container {
+            display: flex;
+            align-items: flex-start;
+        }
+    }
+
+section.flex-two-column-text.flex-two-column-text .container.container .column-container.column-container .column.column {
+        float: none;
+    }
+
+section.flex-two-column-text.flex-two-column-text .container.container .column-container.column-container .column.column .body-text.body-text {
+        float: none;
+    }
+
+section.flex-two-column-text.flex-two-column-text .container.container .column-container.column-container .column.column .link-container.link-container {
+        float: none;
+    }
+
+// --- section.four-column-stats (4-up stat grid, no existing flex
+
+// parent; flex-wrap so it still stacks 1-per-row at mobile where
+
+// .column becomes width:100%) ---
+
+section.four-column-stats.four-column-stats .container.container .four-column-container.four-column-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.four-column-stats.four-column-stats .container.container .four-column-container.four-column-container .column.column {
+        float: none;
+    }
+
+// --- section.switcher-module ---
+
+// .module-switcher is already display:inline-block in the live CSS;
+
+// switching it to inline-flex (not flex, to keep its shrink-to-fit
+
+// sizing) lets its .module-switch-button children sit in a row
+
+// without their own float. The mobile-only float:left on
+
+// .module-switcher itself (base line 476) becomes dead once this
+
+// applies, so it needs no separate fix.
+
+section.switcher-module.switcher-module .container.container .top-block.top-block .title-switcher-container.title-switcher-container .module-switcher.module-switcher {
+        display: inline-flex;
+    }
+
+section.switcher-module.switcher-module .container.container .top-block.top-block .title-switcher-container.title-switcher-container .module-switcher.module-switcher .module-switch-button.module-switch-button {
+        float: none;
+    }
+
+section.switcher-module.switcher-module .container.container .switch-content-container.switch-content-container {
+        float: none;
+    }
+
+// .icon-text-column-container is already display:flex in the live
+
+// CSS, so .column's float is already inert -- bare float:none. But
+
+// .column itself is NOT flex, and its own .icon-container (80px) +
+
+// .text-container (calc(100% - 80px)) children still need a real
+
+// flex parent to stay side by side.
+
+//
+
+// CORRECTION 2026-09-08: the "sum to exactly 100%, no wrap needed at
+
+// any breakpoint" claim above only checked the base/desktop
+
+// declarations. .text-container's real CSS has
+
+// @media(max-width:1023px){width:100%;margin-top:24px} -- at that
+
+// breakpoint the pair sums to 180% (80px icon + 100% text), which in
+
+// production overflows the float and wraps below the icon (the
+
+// classic stacking-via-overflow trick), but in a flex row with no
+
+// wrap, the items just flex-shrink to fit the same row instead --
+
+// icon and text end up squeezed side by side instead of stacked.
+
+// Adding flex-wrap:wrap reproduces the real stacking at ≤1023px
+
+// while leaving the ≥1024px side-by-side layout unaffected (the pair
+
+// does sum to exactly 100% there, so nothing wraps).
+
+section.switcher-module.switcher-module .container.container .switch-content-container.switch-content-container .icon-text-column-container.icon-text-column-container .column.column {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.switcher-module.switcher-module .container.container .switch-content-container.switch-content-container .icon-text-column-container.icon-text-column-container .column.column .icon-container.icon-container {
+        float: none;
+    }
+
+section.switcher-module.switcher-module .container.container .switch-content-container.switch-content-container .icon-text-column-container.icon-text-column-container .column.column .text-container.text-container {
+        float: none;
+    }
+
+// --- section.meet-the-team: .team-container-inner is already
+
+// display:flex in the live CSS, so .column's float is already inert.
+
+section.meet-the-team.meet-the-team .container.container .team-container.team-container .team-container-inner.team-container-inner .column.column {
+        float: none;
+    }
+
+// --- section.two-column-cta: .cta-column-container is already
+
+// display:flex in the live CSS, so the top-level .column's float is
+
+// already inert; everything nested inside .column is a single
+
+// stacked block (or, for the mobile-only `a`, explicitly full-width)
+
+// with nothing else needing to sit beside it.
+
+section.two-column-cta.two-column-cta .container.container .column.column {
+        float: none;
+    }
+
+section.two-column-cta.two-column-cta .container.container .column.column.text-column.text-column .title.title {
+        float: none;
+    }
+
+section.two-column-cta.two-column-cta .container.container .column.column.text-column.text-column .text-container.text-container {
+        float: none;
+    }
+
+section.two-column-cta.two-column-cta .container.container .column.column.text-column.text-column .button-container.button-container {
+        float: none;
+    }
+
+@media (max-width: 767px) {
+        section.two-column-cta.two-column-cta .container.container .column.column.text-column.text-column .button-container.button-container a {
+            float: none;
+        }
+    }
+
+section.two-column-cta.two-column-cta.two-column-cta-home.two-column-cta-home .container.container .cta-column-container.cta-column-container .column.column.image-column.image-column .button-container.button-container.mobile.mobile {
+        float: none;
+    }
+
+@media (max-width: 767px) {
+        section.two-column-cta.two-column-cta.two-column-cta-home.two-column-cta-home .container.container .cta-column-container.cta-column-container .column.column.image-column.image-column .button-container.button-container.mobile.mobile a {
+            float: none;
+        }
+    }
+
+section.two-column-cta.two-column-cta.two-column-cta-home.two-column-cta-home .container.container .cta-column-container.cta-column-container .column.column.image-column.image-column.image-right.image-right .image-inner-container.image-inner-container {
+        float: none;
+    }
+
+section.two-column-cta.two-column-cta.two-column-cta-home.two-column-cta-home .container.container .cta-column-container.cta-column-container .column.column.image-column.image-column.image-right.image-right .image-inner-container.image-inner-container img {
+        float: none;
+    }
+
+section.two-column-cta.two-column-cta.two-column-cta-home.two-column-cta-home .container.container .cta-column-container.cta-column-container .column.column.image-column.image-column.image-right.image-right .image-inner-container.image-inner-container .caption-text.caption-text {
+        float: none;
+    }
+
+// --- section.basic-text-introduction-block: sole 100%-width block.
+
+section.basic-text-introduction-block.basic-text-introduction-block .text-container.text-container {
+        float: none;
+    }
+
+// --- section.team-block ---
+
+// .column-container already carries dead `justify-content:
+
+// space-between` and a mobile `flex-direction: column` (base lines
+
+// 1305/1308) with no `display: flex` ever set -- both only make
+
+// sense if this was always meant to be a flex parent, so adding
+
+// display:flex here is completing the original design, not a new
+
+// one; the mobile flex-direction:column already handles the
+
+// title-column/team-column mobile stack correctly once flex is on.
+
+section.team-block.team-block .column-container.column-container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+section.team-block.team-block .column-container.column-container .column.column {
+        float: none;
+    }
+
+@media (max-width: 767px) {
+        section.team-block.team-block .column-container.column-container .column.column.title-column.title-column h2 {
+            float: none;
+        }
+    }
+
+// .team-column carries its own more-specific float:right (base line
+
+// 1366), so it needs its own override even though the bare .column
+
+// rule above already set float:none. It also wraps a real one-third
+
+// /one-quarter card grid that has no flex parent of its own yet.
+
+section.team-block.team-block .column-container.column-container .column.column.team-column.team-column {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.team-block.team-block .column-container.column-container .column.column.team-column.team-column .column.column {
+        float: none;
+    }
+
+section.team-block.team-block .column-container.column-container .column.column.team-column.team-column .column.column .text.text {
+        float: none;
+    }
+
+section.team-block.team-block .column-container.column-container .column.column.team-column.team-column .column.column .text.text h2 {
+        float: none;
+    }
+
+// .full-bio .bio-top: image-container (fixed px width) + .text
+
+// (calc(100% - 226px) desktop, 100% at mobile) need to sit side by
+
+// side on desktop and stack on mobile. flex-wrap:wrap handles both
+
+// automatically -- .text alone can never fit next to anything else
+
+// once it's 100% wide, so it wraps to its own line at mobile with no
+
+// extra media query needed.
+
+section.team-block.team-block .full-bio.full-bio .bio-top.bio-top {
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.team-block.team-block .full-bio.full-bio .bio-top.bio-top .text.text {
+        float: none;
+    }
+
+section.team-block.team-block .full-bio.full-bio .bio-top.bio-top .text.text .linkedin.linkedin {
+        float: none;
+    }
+
+section.team-block.team-block .full-bio.full-bio .bio-bottom.bio-bottom {
+        float: none;
+    }
+
+// --- section.introduction-block: sole/stacked 100%-width blocks.
+
+section.introduction-block.introduction-block .text-container.text-container {
+        float: none;
+    }
+
+section.introduction-block.introduction-block .text-container.text-container h1 {
+        float: none;
+    }
+
+section.introduction-block.introduction-block .text-container.text-container span.text.text {
+        float: none;
+    }
+
+section.introduction-block.introduction-block .text-container.text-container .button-container.button-container {
+        float: none;
+    }
+
+section.introduction-block.introduction-block .image-video-container.image-video-container {
+        float: none;
+    }
+
+section.introduction-block.introduction-block .image-video-container.image-video-container .video-image-inner.video-image-inner .image-container.image-container,
+    section.introduction-block.introduction-block .image-video-container.image-video-container .video-image-inner.video-image-inner .video-container.video-container {
+        float: none;
+    }
+
+// --- section.text-editor-content: sole/stacked 100%-width blocks.
+
+section.text-editor-content.text-editor-content .container.container .content-inner.content-inner .content.content {
+        float: none;
+    }
+
+section.text-editor-content.text-editor-content .container.container .content-inner.content-inner .content.content h1,
+    section.text-editor-content.text-editor-content .container.container .content-inner.content-inner .content.content h2,
+    section.text-editor-content.text-editor-content .container.container .content-inner.content-inner .content.content h3,
+    section.text-editor-content.text-editor-content .container.container .content-inner.content-inner .content.content h4,
+    section.text-editor-content.text-editor-content .container.container .content-inner.content-inner .content.content h5,
+    section.text-editor-content.text-editor-content .container.container .content-inner.content-inner .content.content h6,
+    section.text-editor-content.text-editor-content .container.container .content-inner.content-inner .content.content p {
+        float: none;
+    }
+
+section.text-editor-content.text-editor-content .container.container .content-inner.content-inner .content.content p .content-image-container.content-image-container {
+        float: none;
+    }
+
+section.text-editor-content.text-editor-content .container.container .content-inner.content-inner .content.content p .content-image-container.content-image-container img {
+        float: none;
+    }
+
+// --- section.values-full-screen: sole/stacked 100%-width blocks.
+
+section.values-full-screen.values-full-screen {
+        float: none;
+    }
+
+section.values-full-screen.values-full-screen .value.value {
+        float: none;
+    }
+
+section.values-full-screen.values-full-screen .value.value h2,
+    section.values-full-screen.values-full-screen .value.value .sub-title.sub-title {
+        float: none;
+    }
+
+section.values-full-screen.values-full-screen .value.value .container.container .v-wrap.v-wrap .v-box.v-box .inner.inner .pre-content-container.pre-content-container {
+        float: none;
+    }
+
+section.values-full-screen.values-full-screen .value.value .container.container .v-wrap.v-wrap .v-box.v-box .inner.inner .pre-content-container.pre-content-container h2 {
+        float: none;
+    }
+
+section.values-full-screen.values-full-screen .value.value .container.container .v-wrap.v-wrap .v-box.v-box .inner.inner .animation-container.animation-container {
+        float: none;
+    }
+
+section.values-full-screen.values-full-screen .value.value .container.container .progress-bar-container.progress-bar-container .counter.counter {
+        float: none;
+    }
+
+section.values-full-screen.values-full-screen .value.value .container.container .progress-bar-container.progress-bar-container .total-count.total-count {
+        float: none;
+    }
+
+// --- section.title-background-block: .text-container's sibling
+
+// .imageSizeContainer is position:absolute (out of flow), so nothing
+
+// needs to sit beside .text-container -- bare float:none is safe
+
+// even though it carries an explicit (non-100%) width.
+
+section.title-background-block.title-background-block .text-container.text-container {
+        float: none;
+    }
+
+section.title-background-block.title-background-block .text-container.text-container h2 {
+        float: none;
+    }
+
+section.title-background-block.title-background-block .text-container.text-container span.sub-title.sub-title {
+        float: none;
+    }
+
+section.title-background-block.title-background-block .text-container.text-container .button-container.button-container {
+        float: none;
+    }
+
+section.title-background-block.title-background-block .text-container.text-container .button-container.button-container .replay-button.replay-button {
+        float: none;
+    }
+
+// --- section.speakers-block ---
+
+section.speakers-block.speakers-block .container.container .speakers-top.speakers-top {
+        float: none;
+    }
+
+section.speakers-block.speakers-block .container.container .speakers-top.speakers-top h2 {
+        float: none;
+    }
+
+section.speakers-block.speakers-block .container.container .speakers-top.speakers-top p {
+        float: none;
+    }
+
+section.speakers-block.speakers-block .container.container .speakers-bottom.speakers-bottom {
+        float: none;
+    }
+
+// .speaker.one-quarter's desktop 4-up grid has no flex parent of its
+
+// own; scoped to >= 768px only so it never touches
+
+// .speakers-bottom.mobile-slider, which Slick only initialises below
+
+// 768px (main.js: `if (viewportWidth < 768) { $('.speakers-bottom
+
+// .mobile-slider').slick(...) }`) and which keeps floating by design,
+
+// same as the other carousels noted above.
+
+@media (min-width: 768px) {
+        section.speakers-block.speakers-block .container.container .speakers-bottom.speakers-bottom .speaker.speaker.one-quarter.one-quarter {
+            float: none;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+    }
+
+section.speakers-block.speakers-block .container.container .speakers-bottom.speakers-bottom .speaker.speaker.one-quarter.one-quarter .image-container.image-container {
+        float: none;
+    }
+
+section.speakers-block.speakers-block .container.container .speakers-bottom.speakers-bottom .speaker.speaker.one-quarter.one-quarter .job-title.job-title {
+        float: none;
+    }
+
+section.speakers-block.speakers-block .container.container .button-container.button-container {
+        float: none;
+    }
+
+// --- Speaker popup (.mfp-wrap.mfp-gallery): .speaker-popup-container
+
+// is already display:flex in the live CSS, so .column's float is
+
+// already inert; everything nested inside .column is a single
+
+// stacked 100%-width (or sole, non-adjacent) block.
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.image-column.image-column .image-container.image-container {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.image-column.image-column h3.title.title,
+    .mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.image-column.image-column h2.title.title {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.image-column.image-column p {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.image-column.image-column .company-logo.company-logo {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.image-column.image-column .company-logo.company-logo img {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.about-column.about-column .agenda-content-title.agenda-content-title,
+    .mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.about-column.about-column .about-title.about-title {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.about-column.about-column .agenda-items.agenda-items {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.about-column.about-column .agenda-items.agenda-items .agenda-item.agenda-item {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.about-column.about-column .agenda-items.agenda-items .agenda-item.agenda-item .time.time {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.about-column.about-column .agenda-items.agenda-items .agenda-item.agenda-item .agenda-title.agenda-title {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.about-column.about-column .about.about {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.about-column.about-column .about.about .about-text.about-text {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.mfp-gallery.mfp-gallery .mfp-content.mfp-content .speaker-popup-container.speaker-popup-container .column.column.about-column.about-column .about.about .about-text.about-text p {
+        float: none;
+    }
+
+// --- section.text-animation-introduction (homepage hero; also the
+
+// base rules inherited by the .text-animation-introduction-v2
+
+// variant used on template-home.php, which layers its own inline
+
+// <style> overrides on top but doesn't redeclare any of this). Note
+
+// this is a DIFFERENT DOM node from section.text-animation-introduction
+
+// in the Slick-carousel excluded list above -- there is no carousel
+
+// here. .introduction-content-container is already display:flex in
+
+// the live CSS, so .column's float is already inert.
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container h1 {
+        float: none;
+    }
+
+// span.animation-text-line wraps .pre-animation-text (60px) +
+
+// .text-animation-container (calc(100% - 60px)), a real still-live
+
+// 2-item row with no flex parent of its own.
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container span.animation-text-line.animation-text-line {
+        float: none;
+        display: flex;
+        align-items: flex-start;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container span.animation-text-line.animation-text-line .pre-animation-text.pre-animation-text {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container span.animation-text-line.animation-text-line .text-animation-container.text-animation-container {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container span.animation-text-line.animation-text-line .text-animation-container.text-animation-container span.rotating-outer.rotating-outer {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container .text.text {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container .form-container-outer.form-container-outer {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container .form-container-outer.form-container-outer .pre-form-text.pre-form-text {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container .form-container-outer.form-container-outer .form-container-inner.form-container-inner {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container .button-container.button-container {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container .button-container.button-container a {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.image-column.image-column {
+        float: none;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.image-column.image-column .image-container.image-container {
+        float: none;
+    }
+
+// .thank-you-message under the animation-popup form (base
+
+// `float :left`, non-standard spacing -- see header comment).
+
+.mfp-wrap.mfp-wrap.home-animation-popup.home-animation-popup .mfp-content.mfp-content .form-container.form-container {
+        float: none;
+    }
+
+.mfp-wrap.mfp-wrap.home-animation-popup.home-animation-popup .mfp-content.mfp-content .form-container.form-container .form-intro.form-intro {
+        float: none;
+    }
+
+// --- section.logo-ticker-tape: sole/stacked blocks; .band-container-
+
+// backwards/-forwards are themselves already display:flex.
+
+section.logo-ticker-tape.logo-ticker-tape .container.container .title-container.title-container {
+        float: none;
+    }
+
+section.logo-ticker-tape.logo-ticker-tape .container.container .title-container.title-container span.ticker-title.ticker-title {
+        float: none;
+    }
+
+section.logo-ticker-tape.logo-ticker-tape .band-container-backwards.band-container-backwards {
+        float: none;
+    }
+
+section.logo-ticker-tape.logo-ticker-tape .band-container-forwards.band-container-forwards {
+        float: none;
+    }
+
+// --- section.list-card-module: .list-card-container is already
+
+// display:flex in the live CSS, so everything below it is either a
+
+// sole stacked 100%-width block inside one card, or (the
+
+// text-link-container a) a naturally-inline <a> row.
+
+section.list-card-module.list-card-module .container.container .top-container.top-container {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .top-container.top-container .inner.inner h2 {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .top-container.top-container .inner.inner span.text.text {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .title-container.title-container {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .title-container.title-container h3 {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .hover-list-container.hover-list-container {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .hover-list-container.hover-list-container .list-container.list-container {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .hover-list-container.hover-list-container .list-container.list-container .list-item.list-item {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .hover-list-container.hover-list-container .text-link-container.text-link-container a {
+        float: none;
+    }
+
+// --- section.two-column-services: .services-column-container is
+
+// already display:flex in the live CSS, so the top-level .column's
+
+// float is already inert (matches switcher-module exactly).
+
+section.two-column-services.two-column-services .container.container .title-container.title-container {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .title-container.title-container h2 {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.icon-text-column.icon-text-column .service.service {
+        float: none;
+    }
+
+// .icon-container (80px) + .text-container (calc(100% - 80px)),
+
+// same still-live 2-item row pattern as switcher-module above.
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.icon-text-column.icon-text-column {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.icon-text-column.icon-text-column .icon-container.icon-container {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.icon-text-column.icon-text-column .text-container.text-container {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.icon-text-column.icon-text-column .text-container.text-container span {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.text-column.text-column .text-content-inner.text-content-inner {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.text-column.text-column .text-content-inner.text-content-inner .pre-title.pre-title {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.text-column.text-column .text-content-inner.text-content-inner h2 {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.text-column.text-column .text-content-inner.text-content-inner .text.text {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.text-column.text-column .text-content-inner.text-content-inner .links-container.links-container {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.text-column.text-column .text-content-inner.text-content-inner .links-container.links-container a {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .links-container.links-container.mobile.mobile {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .links-container.links-container.mobile.mobile a {
+        float: none;
+    }
+
+// Direct user-requested addition 2026-09-08 (not part of the
+
+// mechanical float-refactor audit): .text-link inside the mobile
+
+// .links-container variant needs display:inline-block.
+
+//
+
+// FIX 2026-09-08: the first attempt at this used the bare selector
+
+// `span.links-container.mobile .text-link`, which compiled fine but
+
+// never won in the cascade -- the mechanical fixer's auto-blockified
+
+// rule for the SAME <a> two lines above
+
+// (section.two-column-services .container .services-column-container
+
+// .links-container.mobile a { float:none; display:block; }) uses the
+
+// full ancestor chain and has much higher specificity, so it kept
+
+// winning with display:block regardless. Matching that same full
+
+// selector chain (with .text-link appended for the extra
+
+// specificity needed to beat the plain `a`) fixes it for real.
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .links-container.links-container.mobile.mobile a.text-link.text-link {
+        display: inline-block;
+    }
+
+// --- section.centered-text-links: reported live by the user as
+
+// still floating/overlapping under ?dev=true. .text-container is
+
+// display:inline-block in the live CSS but span.text (and h2,
+
+// .links-container) have no explicit display of their own, so once
+
+// gated to float:none here, fix-float-none-display.js's own pass
+
+// adds display:block automatically -- same fix class as the
+
+// .text-animation-introduction-v2 .text bug fixed in 3823069.
+
+section.centered-text-links.centered-text-links .text-container.text-container h2 {
+        float: none;
+    }
+
+section.centered-text-links.centered-text-links .text-container.text-container span.text.text {
+        float: none;
+    }
+
+section.centered-text-links.centered-text-links .text-container.text-container .links-container.links-container {
+        float: none;
+    }
+
+// --- section.content-slider-module: .top-content is the non-
+
+// carousel content above .home-content-slider (excluded, see header
+
+// comment) -- sole/stacked 100%-width blocks.
+
+section.content-slider-module.content-slider-module .container.container .top-content.top-content {
+        float: none;
+    }
+
+section.content-slider-module.content-slider-module .container.container .top-content.top-content h2 {
+        float: none;
+    }
+
+section.content-slider-module.content-slider-module .container.container .top-content.top-content .text.text {
+        float: none;
+    }
+
+section.content-slider-module.content-slider-module .container.container .top-content.top-content .link-container.link-container {
+        float: none;
+    }
+
+// --- Misc remaining sole/stacked 100%-width blocks.
+
+.home-component-progress.home-component-progress {
+        float: none;
+    }
+
+section.featured-types.featured-types .article-container-three-post.article-container-three-post {
+        float: none;
+    }
+
+// .item-content-container already carries its own explicit
+
+// display:block in the live CSS here (the .all-container variant
+
+// only -- the non-.all-container .item-content-container is already
+
+// display:flex and out of scope).
+
+section.featured-types.featured-types .article-container-three-post.article-container-three-post .container.container .grid-wrapper.grid-wrapper .item.item.all-container.all-container .item-content-container.item-content-container {
+        float: none;
+    }
+
+section.parallax-image-module.parallax-image-module {
+        float: none;
+    }
+
+section.parallax-image-module.parallax-image-module .parallax-image-container.parallax-image-container {
+        float: none;
+    }
+
+section.parallax-image-module.parallax-image-module .parallax-image-container.parallax-image-container img {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .top-container.top-container {
+        float: none;
+
+        .inner.inner {
+            // float: none; already set unconditionally on .inner itself --
+            // nothing to override here, kept as a comment so the selector
+            // list below stays easy to diff against _flexible.scss.
+        }
+
+        .inner.inner h2,
+        .inner.inner span.text.text {
+            float: none;
+        }
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .title-container.title-container {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .title-container.title-container h3 {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .hover-list-container.hover-list-container {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .hover-list-container.hover-list-container .list-container.list-container {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .hover-list-container.hover-list-container .list-container.list-container .list-item.list-item {
+        float: none;
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .hover-list-container.hover-list-container .text-link-container.text-link-container a {
+        float: none;
+    }
+
+section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.icon-text-column.icon-text-column .service.service {
+        display: flex !important;
+    }
+
+@media (min-width: 768px) {
+        section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.text-column.text-column .text-content-inner.text-content-inner .links-container.links-container {
+            display: flex !important;
+            align-items: center;
+        }
+        section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.text-column.text-column .text-content-inner.text-content-inner .links-container.links-container a.text-link.text-link {
+            margin-top: 0;
+        }
+    }
+
+section.content-slider-module.content-slider-module .container.container .content-slider-container.content-slider-container .progress-container.progress-container {
+        padding-top: 1px;
+        clear: both;
+    }
+
+section.logo-ticker-tape.logo-ticker-tape.background-black.background-black {
+        margin-top: -1px;
+        margin-bottom: -1px;
+    }
+
+section.values-full-screen.values-full-screen {
+        padding: unset;
+    }
+
+section.featured-types.featured-types .article-container-three-post.article-container-three-post {
+        padding: 62px 0;
+    }
+
+@media (max-width: 767px) {
+        section.animation-introduction.animation-introduction .container.container .introduction-content-container.introduction-content-container .button-container.button-container a {
+            display: block;
+        }
+        section.two-column-cta.two-column-cta .container.container .column.column.text-column.text-column .button-container.button-container a {
+            display: block;
+        }
+    }
+
+@media (min-width: 768px) {
+        section.animation-introduction.animation-introduction .container.container .introduction-content-container.introduction-content-container .text-link-container.text-link-container {
+            display: block;
+        }
+        section.two-column-services.two-column-services .container.container .services-column-container.services-column-container .column.column.text-column.text-column .text-content-inner.text-content-inner .links-container.links-container {
+            display: block;
+        }
+    }
+
+section.list-card-module.list-card-module .container.container .list-card-container.list-card-container .one-third.one-third.list-card.list-card .list-card-front.list-card-front .hover-list-container.hover-list-container .text-link-container.text-link-container a {
+        display: block;
+    }
+
+section.content-slider-module.content-slider-module .container.container .top-content.top-content .link-container.link-container {
+        display: block;
+    }
+
+section.text-animation-introduction.text-animation-introduction .container.container .introduction-content-container.introduction-content-container .column.column.text-column.text-column .animation-text-container.animation-text-container .button-container.button-container a {
+        display: block;
+    }
+
+section.logo-ticker-tape.logo-ticker-tape .container.container .title-container.title-container {
+        display: block;
+    }
+
+section.two-column-services.two-column-services .container.container .title-container.title-container {
+        display: block;
+    }

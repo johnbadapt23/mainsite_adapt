@@ -96,7 +96,7 @@ get_header();
                 </a>
                 <?php $counter++; ?>
             <?php endwhile; ?>
-            <?php wp_reset_postdata(); wp_reset_query();?>
+            <?php wp_reset_postdata();?>
 
         </div>
 

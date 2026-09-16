@@ -33,6 +33,23 @@ add_filter('upload_mimes', 'cc_mime_types');
 // ACF Google Maps API key is set once via custom_acf_init() in includes/_customisations.php
 // (this used to be duplicated here as my_acf_init(), registered a second time on acf/init).
 
+// ACF Local JSON: field groups are version-controlled as one file per group
+// in acf-json/ (named by group key), instead of living only in the DB. ACF
+// reads this folder automatically once load_json points at it, and offers
+// a "Sync available" action in Custom Fields whenever a group's DB copy and
+// its JSON file differ -- nothing here overwrites the DB on its own.
+function adapt_acf_json_save_point( $path ) {
+	return get_stylesheet_directory() . '/acf-json';
+}
+add_filter( 'acf/settings/save_json', 'adapt_acf_json_save_point' );
+
+function adapt_acf_json_load_point( $paths ) {
+	unset( $paths[0] );
+	$paths[] = get_stylesheet_directory() . '/acf-json';
+	return $paths;
+}
+add_filter( 'acf/settings/load_json', 'adapt_acf_json_load_point' );
+
 function adapt_admin_style() {
   wp_enqueue_style('admin-styles', get_template_directory_uri(). '/assets/css/admin.css');
 }
@@ -203,6 +220,20 @@ function adapt_page_needs_lottie() {
     // renders a <lottie-player> the same way template-flexible.php does,
     // through its own content_blocks flexible-content field, so it's
     // handled by the same table below instead of a hardcoded special case.
+    // IMPORTANT: this runs on wp_enqueue_scripts, i.e. BEFORE the page
+    // template's own body/loop executes -- and every field below
+    // ('content_blocks' or 'content') is the SAME field each of these
+    // templates' own body loops later iterate via
+    // have_rows($field)/the_row() to actually render the page. This used
+    // to call have_rows()/the_row() here too and return early (`return
+    // true` mid-loop) the instant it found a matching row, without
+    // exhausting or resetting ACF's internal cursor for that field/post --
+    // desyncing it before the real render loop ran, which then started
+    // mid-way and could silently skip rows (see the near-identical bug
+    // this caused in adapt_page_needs_hubspot_forms_embed(), which dropped
+    // an entire flexible-content section from a live page). get_field()
+    // returns the raw row array and never touches that shared loop state,
+    // so it can't have this side effect.
     $field_by_template = array(
         'templates/template-flexible.php'      => array( 'content_blocks', array( 'introduction_with_animation', 'values_full_screen_blocks' ) ),
         'templates/template-home.php'          => array( 'content_blocks', array( 'introduction_with_animation', 'values_full_screen_blocks' ) ),
@@ -216,13 +247,14 @@ function adapt_page_needs_lottie() {
         if ( ! is_page_template( $template ) ) {
             continue;
         }
-        list( $field_name, $layouts ) = $config;
-        if ( have_rows( $field_name ) ) {
-            while ( have_rows( $field_name ) ) {
-                the_row();
-                if ( in_array( get_row_layout(), $layouts, true ) ) {
-                    return true;
-                }
+        [ $field_name, $layouts ] = $config;
+        $rows = get_field( $field_name );
+        if ( ! is_array( $rows ) ) {
+            return false;
+        }
+        foreach ( $rows as $row ) {
+            if ( isset( $row['acf_fc_layout'] ) && in_array( $row['acf_fc_layout'], $layouts, true ) ) {
+                return true;
             }
         }
         return false;
@@ -252,6 +284,51 @@ function adapt_page_needs_gsap() {
     ) );
 }
 
+// The speaker/advisor "Submit an Enquiry" popups (_speaker-module.php,
+// _advisor-module.php, both dispatched from the 'speaker_module' ACF
+// layout) embed HubSpot forms via <div class="hs-form-html"> -- see
+// adapt_page_needs_hubspot_forms_embed() below for the loader script this
+// gates.
+//
+// IMPORTANT: this runs on wp_enqueue_scripts, i.e. BEFORE the page
+// template's own body/loop executes. It deliberately uses get_field()
+// (returns the raw array of rows) instead of have_rows()/the_row() --
+// those maintain ACF's internal per-field loop cursor, and this function
+// used to call them and return early (via `return true` mid-loop) the
+// moment it found a matching row, without exhausting or resetting that
+// cursor. Since it checks the SAME 'content' field the page templates
+// below loop over later via their own have_rows('content')/the_row() to
+// actually render the page, that left the cursor desynced by the time the
+// real render loop ran -- causing it to start mid-way and skip the
+// speaker_module row entirely, silently dropping the whole section from
+// the page. get_field() never touches that shared loop state, so it can't
+// have this side effect.
+function adapt_page_needs_hubspot_forms_embed() {
+    $field_by_template = array(
+        'templates/template-customer-events.php'    => array( 'content', array( 'speaker_module' ) ),
+        'templates/template-ecosystem-advisors.php'  => array( 'content', array( 'speaker_module' ) ),
+    );
+
+    foreach ( $field_by_template as $template => $config ) {
+        if ( ! is_page_template( $template ) ) {
+            continue;
+        }
+        [ $field_name, $layouts ] = $config;
+        $rows = get_field( $field_name );
+        if ( ! is_array( $rows ) ) {
+            return false;
+        }
+        foreach ( $rows as $row ) {
+            if ( isset( $row['acf_fc_layout'] ) && in_array( $row['acf_fc_layout'], $layouts, true ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    return false;
+}
+
 function my_enqueue_scripts() {
     // filemtime() needs a filesystem path, not the public URL. Passing
     // get_template_directory_uri() here silently failed (filemtime() can't
@@ -260,17 +337,55 @@ function my_enqueue_scripts() {
     // meaning CSS/JS changes never busted browser/proxy caches after a
     // deploy. get_template_directory() (filesystem path) fixes that; the
     // enqueued src URL is unchanged.
+    // Footer CSS split (promoted to default 2026-09-02, was ?dev=true-gated
+    // -- see SESSION-HANDOFF.md #70/#9). partials/_footer.scss is
+    // structurally guaranteed to never be above-the-fold (the footer is
+    // always the last thing WordPress renders), so its compiled CSS is
+    // deferred with no visual risk -- verified rule-for-rule against the
+    // old single-bundle main.min.css before this was gated, then confirmed
+    // on staging under the gate before promoting (main-nofooter.min.css +
+    // footer.min.css together resolve to the exact same selector/property/
+    // value set the old main.min.css did; see source/scss/main-nofooter.scss
+    // and source/scss/footer-only.scss for the build side). main.min.css
+    // itself is still built by build:styles (kept for a rollback path) but
+    // is no longer enqueued anywhere.
     wp_enqueue_style(
         'main-styles',
-        get_template_directory_uri(). '/assets/css/main.min.css',
+        get_template_directory_uri(). '/assets/css/main-nofooter.min.css',
         [],
-        filemtime(get_template_directory(). '/assets/css/main.min.css')
+        filemtime(get_template_directory(). '/assets/css/main-nofooter.min.css')
+    );
+    wp_enqueue_style(
+        'footer-styles',
+        get_template_directory_uri(). '/assets/css/footer.min.css',
+        [ 'main-styles' ],
+        filemtime(get_template_directory(). '/assets/css/footer.min.css')
     );
     // Loading ~2 CDN scripts on the 60+ templates that never touch GSAP was
     // pure waste -- see adapt_page_needs_gsap().
     if ( adapt_page_needs_gsap() ) {
         wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js', array(), null, true);
         wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js', array(), null, true);
+        // ScrollMagic + its GSAP plugin (main.js's fixed-scroller /
+        // sticky-slider-cards animations) -- split out of main.min.js into
+        // its own bundle 2026-09-15, same reasoning as the gsap-js/
+        // scrolltrigger-js gating just above: it was previously baked into
+        // every page's main.min.js unconditionally even though only these
+        // 8 templates ever use it, spamming "TweenLite or TweenMax could
+        // not be found" to the console on every other page (harmless --
+        // main.js's own usage is guarded behind element-presence checks --
+        // but pure dead weight). See
+        // source/gulp/tasks/build/scripts-scrollmagic.js for the build
+        // side. Explicit gsap-js/scrolltrigger-js dependency guarantees
+        // load order ahead of main-js's own TweenLite/TimelineMax/
+        // ScrollMagic usage below.
+        wp_enqueue_script(
+            'scrollmagic-js',
+            get_template_directory_uri() . '/assets/js/scrollmagic.min.js',
+            array( 'gsap-js', 'scrolltrigger-js' ),
+            filemtime(get_template_directory(). '/assets/js/scrollmagic.min.js'),
+            true
+        );
     }
 
     // Previously loaded as raw <script> tags in header.php ahead of wp_head().
@@ -284,6 +399,15 @@ function my_enqueue_scripts() {
         wp_enqueue_script('lottie-interactivity', 'https://unpkg.com/@lottiefiles/lottie-interactivity@1.6.2/dist/lottie-interactivity.min.js', array(), '1.6.2', false);
     }
 
+    // Was previously duplicated as a raw <script src="js.hsforms.net/...">
+    // tag inside each speaker/advisor's ACF embed HTML (once per bio card,
+    // so up to 12x per page) -- centralised here so it only loads once.
+    // The script itself finds every .hs-form-html div on the page (including
+    // ones added later, e.g. when a popup opens) and renders a form into it.
+    if ( adapt_page_needs_hubspot_forms_embed() ) {
+        wp_enqueue_script('hubspot-forms-embed', 'https://js.hsforms.net/forms/embed/developer/8336221.js', array(), null, true);
+    }
+
     // Prefills hidden UTM fields on embedded HubSpot forms (.hs-form-html)
     // from the current page's query string, and hides the row once filled.
     // No-op on pages without a HubSpot form embed, so safe to load site-wide.
@@ -295,10 +419,21 @@ function my_enqueue_scripts() {
         true
     );
 
+    // main-js's own ScrollMagic usage is guarded behind element-presence
+    // checks at runtime (see source/js/main.js), so it's safe to enqueue
+    // main-js on every page regardless -- but on the pages where that code
+    // DOES run, it needs scrollmagic-js (and transitively gsap-js/
+    // scrolltrigger-js) to already be loaded. Declaring it as a dependency
+    // here (rather than relying on enqueue-call order, as before
+    // 2026-09-15's ScrollMagic bundle split) guarantees that ordering.
+    $main_js_deps = array( 'jquery' );
+    if ( adapt_page_needs_gsap() ) {
+        $main_js_deps[] = 'scrollmagic-js';
+    }
     wp_enqueue_script(
         'main-js',
         get_template_directory_uri() . '/assets/js/main.min.js',
-        array('jquery'),
+        $main_js_deps,
         filemtime(get_template_directory(). '/assets/js/main.min.js'),
         true
     );
@@ -314,6 +449,65 @@ function my_enqueue_scripts() {
     ));
 }
 add_action('wp_enqueue_scripts', 'my_enqueue_scripts');
+
+// WP-PageNavi's stylesheet (registered handle 'wp-pagenavi' -- WP's
+// style_loader_tag filter is passed the raw handle, NOT the "{handle}-css"
+// id WordPress auto-generates for the <link> tag, which is what actually
+// shows up in the DOM/devtools) is enqueued by the plugin itself on every
+// page, but pagination only actually renders on a handful of listing
+// templates (template-insights.php, template-news.php, etc. -- anywhere
+// wp_pagenavi() is called). On every other page (including the homepage)
+// it was flagged by Lighthouse as a render-blocking request for a
+// stylesheet nothing on the page uses. Rather than track down and dequeue
+// it per-template (it's also pulled in by a few shared partials used
+// across different top-level templates), this defers it everywhere via
+// the standard preload+onload swap -- on the pages that DO use it, the
+// pagination controls are below the initial viewport, so a few
+// milliseconds of async load has no visible effect; on every other page
+// it simply stops blocking render. The <noscript> tag preserves the
+// original enqueued tag as a fallback with JS disabled.
+function adapt_defer_pagenavi_css( $html, $handle ) {
+    if ( 'wp-pagenavi' !== $handle ) {
+        return $html;
+    }
+    // Matches rel="stylesheet" or rel='stylesheet' (WP's own output uses
+    // single quotes) without reusing the captured quote character in the
+    // replacement -- reusing it would break if $html happens to use single
+    // quotes, since the replacement's own onload JS string also needs a
+    // quote character.
+    $preload = preg_replace(
+        '/rel=([\'"])stylesheet\1/',
+        'rel="preload" as="style" onload="this.onload=null;this.rel=\'stylesheet\'"',
+        $html,
+        1
+    );
+    if ( null === $preload || $preload === $html ) {
+        return $html;
+    }
+    return $preload . '<noscript>' . $html . '</noscript>';
+}
+add_filter( 'style_loader_tag', 'adapt_defer_pagenavi_css', 10, 2 );
+
+// Same preload+onload deferred-load technique as adapt_defer_pagenavi_css()
+// above, applied to the 'footer-styles' handle registered in
+// my_enqueue_scripts() -- see the comment there and SESSION-HANDOFF.md
+// #70/#9.
+function adapt_defer_footer_css( $html, $handle ) {
+    if ( 'footer-styles' !== $handle ) {
+        return $html;
+    }
+    $preload = preg_replace(
+        '/rel=([\'"])stylesheet\1/',
+        'rel="preload" as="style" onload="this.onload=null;this.rel=\'stylesheet\'"',
+        $html,
+        1
+    );
+    if ( null === $preload || $preload === $html ) {
+        return $html;
+    }
+    return $preload . '<noscript>' . $html . '</noscript>';
+}
+add_filter( 'style_loader_tag', 'adapt_defer_footer_css', 10, 2 );
 
 // WordPress core enqueues wp-block-library CSS (~18KB, render-blocking) on
 // every single page regardless of whether Gutenberg block markup is actually
@@ -336,6 +530,43 @@ function adapt_maybe_dequeue_block_library_css() {
 }
 add_action( 'wp_enqueue_scripts', 'adapt_maybe_dequeue_block_library_css', 100 );
 
+// Imagify's "Next-Gen format" delivery (Settings > Imagify > Optimization)
+// works by rewriting <img> tags into <picture> elements with a WebP
+// <source> -- it never touches raw attribute values like <video poster="">,
+// even though Imagify still generates the matching sibling .webp file on
+// disk right next to the original (e.g. photo.jpg.webp). The video-poster
+// markup across this theme (introduction block, video blocks, thank-you
+// banner) prints $image['url'] straight into poster="", so those posters
+// were silently stuck serving the full JPG/PNG. This checks for that
+// already-generated .webp sibling on disk and points the poster at it when
+// present, falling back to the original URL untouched for any image
+// Imagify hasn't processed yet (or if Imagify/WebP generation is ever
+// switched off) -- so this can never point at a file that doesn't exist.
+function adapt_webp_poster_url( $url ) {
+    if ( empty( $url ) ) {
+        return $url;
+    }
+    $upload_dir = wp_get_upload_dir();
+    if ( ! str_starts_with( $url, $upload_dir['baseurl'] ) ) {
+        return $url;
+    }
+    $webp_path = str_replace( $upload_dir['baseurl'], $upload_dir['basedir'], $url ) . '.webp';
+    if ( file_exists( $webp_path ) ) {
+        return $url . '.webp';
+    }
+    return $url;
+}
+
+// Sitewide float->flexbox modernization pass: the ?dev=true/dev=false gate
+// and its `dev-float-refactor` body class have been removed entirely
+// (2026-09-14). The gated rules in source/scss/sections/_dev-float-
+// refactor.scss were merged permanently into the real per-template SCSS
+// files after a full pixel-parity verification pass (SESSION-HANDOFF.md
+// §10 onward, closed out §28/§29/§37/§38, final merge+verification §40) --
+// see §40 for the merge mechanics and the computed-style cascade
+// verification that confirmed no visual regressions. There is no more
+// toggle: the modernized flexbox rules are just the CSS now.
+
 // Shared helpers for the 3 AJAX filter callbacks below (speakers,
 // partners, edge partners). Their query-building and HTML render loops
 // differ enough (different taxonomies/post types/ACF fields, and
@@ -350,8 +581,8 @@ add_action( 'wp_enqueue_scripts', 'adapt_maybe_dequeue_block_library_css', 100 )
  * the 3 AJAX filter callbacks reads off $_POST the same way.
  */
 function adapt_get_ajax_filter_request_params() {
-    $paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
-    $expertise_slugs = isset($_POST['expertise']) ? array_map('sanitize_text_field', $_POST['expertise']) : array();
+    $paged = intval( $_POST['paged'] ?? 1 );
+    $expertise_slugs = array_map( 'sanitize_text_field', $_POST['expertise'] ?? array() );
     $posts_per_page = 12; // Number of posts per page
     $offset = ($paged - 1) * $posts_per_page;
 
@@ -383,6 +614,39 @@ function adapt_render_ajax_filter_pagination( $query, $paged ) {
     return ob_get_clean();
 }
 
+/**
+ * Resolve 'expertise' taxonomy term slugs to their term_id, dynamically,
+ * per-environment.
+ *
+ * FIX 2026-09-03 (round 23): term_id is a database auto-increment value
+ * assigned per-site -- it is NOT guaranteed to be the same number on
+ * staging and production even for the "same" term (adapt-analysts here
+ * was 15788 on staging; production's own copy of this term will very
+ * likely have a different ID). A hardcoded array of term_id literals
+ * would silently stop matching real posts the moment this code runs
+ * against any other environment. Slugs, unlike numeric IDs, are the
+ * actual content the taxonomy is queried by lookup -- get_term_by()
+ * resolves whichever ID that slug happens to have on THIS environment
+ * at request time. Static within a single request (WP already caches
+ * term lookups internally), so this costs nothing extra to call more
+ * than once.
+ *
+ * @param array $slugs Taxonomy term slugs (expertise taxonomy).
+ * @return array Resolved term_id values (invalid/missing slugs are
+ *               skipped, not zero-filled, so a bad slug can't produce a
+ *               false-positive tax_query match against term_id 0).
+ */
+function adapt_get_expertise_term_ids( array $slugs ) {
+    $term_ids = array();
+    foreach ( $slugs as $slug ) {
+        $term = get_term_by( 'slug', $slug, 'expertise' );
+        if ( $term instanceof WP_Term ) {
+            $term_ids[] = $term->term_id;
+        }
+    }
+    return $term_ids;
+}
+
 // Speaker Ajax filtering
 add_action('wp_ajax_filter_speakers', 'filter_speakers_callback');
 add_action('wp_ajax_nopriv_filter_speakers', 'filter_speakers_callback');
@@ -392,7 +656,7 @@ function filter_speakers_callback() {
     // matches the nonce main.js sends via ajaxobject.nonce.
     check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
 
-    list( $paged, $expertise_slugs, $posts_per_page, $offset ) = adapt_get_ajax_filter_request_params();
+    [ $paged, $expertise_slugs, $posts_per_page, $offset ] = adapt_get_ajax_filter_request_params();
     // Set by main.js: true when the user actually checked at least one
     // expertise box; false when nothing's checked and $expertise_slugs is
     // instead every checkbox shown on the page (these are ACF-configured
@@ -414,8 +678,19 @@ function filter_speakers_callback() {
         'posts_per_page' => $posts_per_page,
         'paged' => $paged,
         'offset' => $offset,
-        'ignore_custom_sort' => true,
-        'orderby'     => array( 'meta_value' => 'DESC', 'menu_order' => 'ASC' ),
+        // 2026-09-03 (round 23): deliberately NOT setting 'orderby' here.
+        // APTO Pro's posts_orderby() (its apto-class.php) has two different
+        // branches: an explicit orderby=>'menu_order' takes an early-return
+        // path that matches ANY configured Sort structurally, whether or
+        // not that Sort's own "Auto Apply Sort" toggle is on; leaving
+        // 'orderby' unset takes the other branch, which filters candidates
+        // down to Sorts with Auto Apply Sort = Yes specifically
+        // (get_sorts_by_filters(array('_autosort' => array('yes')))) --
+        // read directly from APTO's own source, not guessed. That's the
+        // one that actually matches what the admin toggle in wp-admin
+        // means, so it's the correct match to rely on, and it needs no
+        // 'sort_id' at all (see the note further down where the old
+        // hardcoded sort_id lookup was removed).
     );
 
     // $expertise_slugs is always non-empty in normal operation (either the
@@ -428,15 +703,74 @@ function filter_speakers_callback() {
     //    terms shown on this page (operator IN) -- shows everything
     //    relevant to this module instance's ACF-configured expertise list
     //    while still excluding posts with none of those terms.
-    if ( ! empty( $expertise_slugs ) ) {
-        $args['tax_query'] = array(
-            array(
-                'taxonomy' => 'expertise',
-                'field'    => 'slug',
-                'terms'    => $expertise_slugs,
-                'operator' => $has_selection ? 'AND' : 'IN',
-            ),
-        );
+    if ( ! empty( $has_selection ) ) {
+        // 2026-09-03 (round 19): when every selected slug is already one
+        // of the two known analyst/advisor terms (15788/15789 below), the
+        // second "term_id IN (15788,15789)" clause is redundant -- being
+        // tagged 'adapt-analysts' already guarantees membership in that
+        // set, so dropping it here doesn't change which posts match, only
+        // simplifies the tax_query shape to one clause, which is required
+        // for APTO's Auto Apply Sort Query Rule matching (Sort #66404,
+        // Taxonomy=Expertise/IN/ADAPT Analysts, confirmed correctly
+        // configured in wp-admin) to even be eligible to match this query
+        // at all (see sort_simple_match_check_on_query() in APTO's own
+        // source: it requires the query's tax_query clause COUNT to equal
+        // the Sort's configured rule count).
+        $known_expertise_terms = array( 'adapt-analysts', 'adapt-advisors' );
+        $only_known_terms      = ! array_diff( $expertise_slugs, $known_expertise_terms );
+
+        if ( $only_known_terms ) {
+            $args['tax_query'] = array(
+                array(
+                    'taxonomy' => 'expertise',
+                    'field'    => 'slug',
+                    'terms'    => $expertise_slugs,
+                    // FIX 2026-09-03 (round 22): this was hardcoded to
+                    // 'AND'. For a single selected term 'AND' and 'IN'
+                    // produce identical filtering results (a post either
+                    // has the one term or it doesn't) -- but APTO's Auto
+                    // Apply Sort match check compares this operator string
+                    // literally against the Sort's configured Query Rule
+                    // operator ('IN' for Sort #66404), with no tolerance
+                    // for functional equivalence (confirmed by reading
+                    // APTO Pro's actual source, apto_functions-class.php,
+                    // sort_simple_match_check_on_query(): "if
+                    // ($tax_rule['operator'] != $query_tax['operator'])
+                    // continue;"). 'AND' vs 'IN' was silently failing that
+                    // check on every request -- this, not sort_id or
+                    // clause count, is the actual root cause of the wrong
+                    // speaker order. Use 'IN' only when exactly one term is
+                    // selected (matching Sort #66404's rule exactly);
+                    // preserve 'AND' (all-terms-required) for the genuine
+                    // multi-term case below, where switching to 'IN' would
+                    // change which POSTS match, not just their order --
+                    // that case can't match Sort #66404 anyway (its rule
+                    // is a single term), so this doesn't affect ordering,
+                    // only correctness of the actual filtering behavior.
+                    'operator' => count( $expertise_slugs ) === 1 ? 'IN' : 'AND',
+                ),
+            );
+        } else {
+            $args['tax_query'] = array(
+                'relation' => 'AND',
+                array(
+                    'taxonomy' => 'expertise',
+                    'field'    => 'slug',
+                    'terms'    => $expertise_slugs,
+                    'operator' => 'AND',
+                ),
+                array(
+                    'taxonomy' => 'expertise',
+                    'field'    => 'term_id',
+                    // FIX 2026-09-03 (round 23): was a hardcoded
+                    // array(15788, 15789) -- term_id is a per-environment
+                    // DB value, not portable to production. Resolved
+                    // dynamically by slug via adapt_get_expertise_term_ids().
+                    'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
+                    'operator' => 'IN',
+                ),
+            );
+        }
     } else {
         // Safety net: no slugs at all (e.g. this page renders zero
         // expertise checkboxes). Still exclude untagged posts rather than
@@ -444,11 +778,48 @@ function filter_speakers_callback() {
         $args['tax_query'] = array(
             array(
                 'taxonomy' => 'expertise',
-                'operator' => 'EXISTS',
+                'field'    => 'term_id',
+                // FIX 2026-09-03 (round 23): see comment above -- dynamic,
+                // not hardcoded.
+                'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
+                'operator' => 'IN',
             ),
         );
     }
 
+    // REMOVED 2026-09-03 (round 23): this used to hardcode
+    // $expertise_sort_ids['adapt-analysts'] => 66404, a Sort's own WP post
+    // ID looked up manually in staging's wp-admin. That ID is a
+    // per-environment database value -- production's equivalent "ADAPT
+    // Analysts Order" Sort (if it even has the same name) will almost
+    // certainly have a different post ID, so this would have silently
+    // stopped working the moment it ran anywhere but staging. Per the
+    // user's standing requirement, the order has to come from however the
+    // plugin is configured on each environment, not from an ID copied out
+    // of one specific site's admin.
+    //
+    // No replacement lookup is needed here at all: leaving 'sort_id' unset
+    // lets APTO's own Auto Apply Sort matching (posts_orderby() in its
+    // apto-class.php, the '_autosort' => 'yes' branch) find the correct
+    // Sort itself, purely by structural comparison against this query's
+    // post_type + tax_query -- the exact mechanism the "Auto Apply Sort"
+    // toggle in wp-admin exists to drive. That match only succeeds because
+    // round 22 fixed the tax_query operator to match what the Sort's own
+    // Query Rule is configured with ('IN'); confirmed by reading APTO
+    // Pro's actual source end-to-end (query_match_sort_id() ->
+    // get_sorts_by_filters(array('_autosort' => array('yes'))) ->
+    // sort_simple_match_check_on_query()) rather than guessed. This also
+    // means any future expertise term gets correct ordering automatically
+    // the moment an admin configures a matching Sort with Auto Apply
+    // Sort = Yes -- no theme code changes, on any environment.
+    //
+    // 'orderby' is deliberately left unset (not 'menu_order') so
+    // posts_orderby() takes this '_autosort' => 'yes'-filtered branch
+    // specifically, rather than its other early-return branch (triggered
+    // by an explicit orderby=menu_order) which matches ANY Sort
+    // structurally regardless of whether Auto Apply Sort is actually
+    // turned on for it -- less precise, and not what the admin's toggle
+    // means.
     $speakers_query = new WP_Query($args);
 
     ob_start();
@@ -464,8 +835,10 @@ function filter_speakers_callback() {
                 <a class="slide-out-bio" href="#<?php echo esc_attr( $post_slug ); ?>" id="<?php echo esc_attr( $post_slug ); ?>">
                     <span class="image-container">
                         <span class="bg-container">
-                            <?php $team_member_image = get_field('speaker_image'); ?>
-                            <img src="<?php echo esc_url($team_member_image); ?>" alt="<?php the_title(); ?>" />
+                            <?php
+                            $team_member_image = get_field( 'speaker_image' );
+                            echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                            ?>
                         </span>
                         <span class="text-container">
                             <h5><?php the_title(); ?></h5>
@@ -485,8 +858,10 @@ function filter_speakers_callback() {
                         <span class="bio-top">
                             <span class="image-container">
                                 <span class="bg-container">
-                                    <?php $team_member_image = get_field( 'speaker_image' ); ?>
-                                    <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
+                                    <?php
+                                    $team_member_image = get_field( 'speaker_image' );
+                                    echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                                    ?>
                                 </span>
                                 <span class="border-offset"></span>
                             </span>
@@ -501,8 +876,33 @@ function filter_speakers_callback() {
                         </span>                                               
                     </div>
                     <span class="speaker-button-container">
-                        <span class="std-button form-popup-button-container red-button"><?php echo get_field( 'speaker_form_button', 'options' ); ?></span>
-                        <span style="display:none"><?php echo get_field( 'speaker_form_script', 'options' ); ?></span>
+                        <?php
+                            // Kept in sync with the same HubSpot-embed pattern in
+                            // _speaker-module.php / _advisor-module.php -- this AJAX
+                            // callback renders the paginated/filtered cards for both
+                            // pages (see $post_type above), so it needed the same fix.
+                            $speaker_form_id = 'speakerFormEmbed' . get_the_ID();
+                        ?>
+                        <span class="std-button form-popup-button-container red-button" style="padding: 0;">
+                            <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
+                                <a class="formPopupHubspot" href="#<?= $speaker_form_id; ?>" data-embed-template="<?= $speaker_form_id; ?>Tpl" data-prefill-title="<?= esc_attr( get_the_title() ); ?>">Submit an Analyst Enquiry</a>
+                            <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
+                                <a class="formPopupHubspot" href="#<?= $speaker_form_id; ?>" data-embed-template="<?= $speaker_form_id; ?>Tpl" data-prefill-title="<?= esc_attr( get_the_title() ); ?>">Submit an Advisor Enquiry</a>
+                            <?php endif; ?>
+                        </span>
+                        <div style="display:none">
+                            <div id="<?= $speaker_form_id; ?>">
+                                <span class="form">
+                                    <template id="<?= $speaker_form_id; ?>Tpl">
+                                        <?php if( has_term('adapt-analysts', 'expertise') ) : ?>
+                                            <?php echo get_field( 'speaker_form_script', 'options' ); ?>
+                                        <?php elseif( has_term('adapt-advisors', 'expertise') ) : ?>
+                                            <?php echo get_field( 'speaker_form_script_advisor', 'options' ); ?>
+                                        <?php endif; ?>
+                                    </template>
+                                </span>
+                            </div>
+                        </div>
                     </span>
                 </div>
                 <div class="click-overlay"></div>
@@ -517,6 +917,15 @@ function filter_speakers_callback() {
 
     $response['pagination'] = adapt_render_ajax_filter_pagination( $speakers_query, $paged );
 
+    // REMOVED 2026-09-03 (round 23): the round 20-22 temporary $response
+    // ['_debug'] diagnostic block (raw SQL / hook-callback dump) is gone.
+    // It served its purpose -- live-confirmed via a direct AJAX request
+    // that with the round 22 tax_query operator fix, WP_Query's SQL now
+    // reads "ORDER BY FIELD(wp_posts.ID, 410,1230,66371,58755,56500,
+    // 53071,47720,1295,1281,411), wp_posts.post_date DESC", i.e. exactly
+    // Jim Berry, Anthony Saba, Lisa Drum, Joey Meynink, Harshit Goel,
+    // Honey Mari Gay, Byron Connolly, Matt Boon, Gabby Fredkin, Peter Hind
+    // -- the correct configured order, byte for byte. No longer needed.
     wp_reset_postdata();
 
     echo json_encode($response);
@@ -530,7 +939,7 @@ add_action('wp_ajax_nopriv_filter_partners', 'filter_partners_callback');
 function filter_partners_callback() {
     check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
 
-    list( $paged, $expertise_slugs, $posts_per_page, $offset ) = adapt_get_ajax_filter_request_params();
+    [ $paged, $expertise_slugs, $posts_per_page, $offset ] = adapt_get_ajax_filter_request_params();
 
     $args = array(
         'post_type' => 'partners',
@@ -562,8 +971,10 @@ function filter_partners_callback() {
                 <a class="slide-out-bio" href="#<?php echo esc_attr( $post_slug ); ?>" id="<?php echo esc_attr( $post_slug ); ?>">
                     <span class="image-container">
                         <span class="bg-container">
-                            <?php $team_member_image = get_field( 'logo' ); ?>
-                            <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
+                            <?php
+                            $team_member_image = get_field( 'logo' );
+                            echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                            ?>
                         </span>
                         <span class="text-container mobile-hide">
                             <h5 class="labelMedium"><?php the_title(); ?></h5>                                                    
@@ -580,8 +991,10 @@ function filter_partners_callback() {
                         <span class="bio-top">
                             <span class="image-container">
                                 <span class="bg-container">
-                                    <?php $team_member_image = get_field( 'logo' ); ?>
-                                    <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
+                                    <?php
+                                    $team_member_image = get_field( 'logo' );
+                                    echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                                    ?>
                                 </span>
                                 <span class="border-offset"></span>
                             </span>
@@ -625,7 +1038,7 @@ add_action('wp_ajax_nopriv_edge_filter_partners', 'edge_filter_partners_callback
 function edge_filter_partners_callback() {
     check_ajax_referer( 'adapt_filter_nonce', 'nonce' );
 
-    list( $paged, $expertise_slugs, $posts_per_page, $offset ) = adapt_get_ajax_filter_request_params();
+    [ $paged, $expertise_slugs, $posts_per_page, $offset ] = adapt_get_ajax_filter_request_params();
 
     $args = array(
         'post_type' => 'edge_partners',
@@ -657,8 +1070,10 @@ function edge_filter_partners_callback() {
                 <a class="slide-out-bio" href="#<?php echo esc_attr( $post_slug ); ?>" id="<?php echo esc_attr( $post_slug ); ?>">
                     <span class="image-container">
                         <span class="bg-container">
-                            <?php $team_member_image = get_field( 'logo' ); ?>
-                            <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
+                            <?php
+                            $team_member_image = get_field( 'logo' );
+                            echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                            ?>
                         </span>
                         <span class="text-container mobile-hide">
                             <h5 class="labelMedium"><?php the_title(); ?></h5>                                                    
@@ -675,8 +1090,10 @@ function edge_filter_partners_callback() {
                         <span class="bio-top">
                             <span class="image-container">
                                 <span class="bg-container">
-                                    <?php $team_member_image = get_field( 'logo' ); ?>
-                                    <img src="<?php echo esc_url( $team_member_image ); ?>" alt="<?php the_title(); ?>" />
+                                    <?php
+                                    $team_member_image = get_field( 'logo' );
+                                    echo adapt_acf_image( $team_member_image, 'full', array( 'alt' => get_the_title() ) );
+                                    ?>
                                 </span>
                                 <span class="border-offset"></span>
                             </span>
@@ -742,6 +1159,76 @@ add_filter( 'rocket_delay_js_exclusions', function( $exclusions ) {
         $exclusions[] = '/themes/' . get_template() . '/assets/js/main.min.js';
     }
 
+    // 2026-09-15: found live on staging (only visible on an actual WP Rocket
+    // cached page load -- ?nocache-style query strings used to verify the
+    // ScrollMagic bundle split earlier today bypass the cache entirely and
+    // hid this). WP Rocket's Delay JS execution was, for whatever internal
+    // reason, delaying gsap-js/scrolltrigger-js/main-js on the 8
+    // adapt_page_needs_gsap() templates (deferred to first user interaction)
+    // while leaving the newly-split scrollmagic-js completely undelayed --
+    // so on a real cached page load, scrollmagic.min.js (and its bundled
+    // animation.gsap.js) ran immediately, before GSAP existed on the page.
+    // animation.gsap.js's GSAP-detection (whether TweenLite/TweenMax/gsap is
+    // present) runs exactly once, at parse time, and permanently closures
+    // over the result -- it doesn't just log a cosmetic warning when GSAP
+    // isn't there yet, it can permanently mis-detect the GSAP major version
+    // for that page load. Rather than depend on guessing why WP Rocket
+    // treated this one script differently (no wp-admin access from here to
+    // inspect its Delay JS settings/exclusion list directly), this forces
+    // gsap-js, scrolltrigger-js, scrollmagic-js and main-js to all stay
+    // ungated by Delay JS together on exactly the pages that enqueue them --
+    // guaranteeing they execute in their real enqueue order every time,
+    // same fix shape as the pre-existing homepage exclusion above (which
+    // presumably exists for the same class of problem).
+    if ( adapt_page_needs_gsap() ) {
+        $exclusions[] = 'jquery.min.js';
+        $exclusions[] = 'gsap.min.js';
+        $exclusions[] = 'ScrollTrigger.min.js';
+        $exclusions[] = '/themes/' . get_template() . '/assets/js/scrollmagic.min.js';
+        $exclusions[] = '/themes/' . get_template() . '/assets/js/main.min.js';
+    }
+
+    return $exclusions;
+} );
+
+// 2026-09-15, same investigation as directly above: excluding these 4 scripts
+// from Delay JS was necessary but not sufficient. After a cache clear, all 4
+// stopped being fully delayed, but the "TweenLite or TweenMax could not be
+// found" console error was STILL firing -- because WP Rocket's separate
+// "Load JavaScript deferred" optimization adds a `defer` attribute to
+// gsap-js/scrolltrigger-js/main-js but NOT to scrollmagic-js. This ISN'T
+// fixed by touching WordPress's own `script_loader_tag` filter (tried that
+// first, 2026-09-15 -- it doesn't work: WP Rocket adds `defer` via its own
+// HTML output-buffer rewrite, which runs AFTER `script_loader_tag` has
+// already finished, so anything that filter strips is never actually
+// removed from what ships). The correct fix is WP Rocket's own dedicated
+// exclusion filter for this feature -- confirmed against WP Rocket's
+// official helper plugin (wp-media/wp-rocket-helpers,
+// static-files/wp-rocket-static-exclude-defer-js): `rocket_exclude_defer_js`,
+// the Load-JS-deferred equivalent of `rocket_delay_js_exclusions` above,
+// matched the same way (src-URL path fragments, not script handles).
+add_filter( 'rocket_exclude_defer_js', function( $exclusions ) {
+    if ( adapt_page_needs_gsap() ) {
+        // 2026-09-16: found live immediately after the fix above deployed --
+        // excluding gsap-js/scrolltrigger-js/scrollmagic-js/main-js from
+        // WP Rocket's defer WITHOUT also excluding jquery.min.js broke
+        // main-js outright ("$ is not defined", thrown at main.min.js's very
+        // first line). Reason: jQuery was still being deferred by WP Rocket
+        // (untouched by this filter), so its <script> tag -- though it
+        // appears FIRST in the HTML thanks to the wp_enqueue_script
+        // dependency order -- only actually executes after the whole
+        // document finishes parsing. main-js, now non-deferred, runs
+        // synchronously the instant its own tag is reached, which is BEFORE
+        // that point. Excluding jquery.min.js here too keeps it plain/
+        // synchronous alongside the other 4, so real document order (jquery
+        // -> gsap -> scrolltrigger -> scrollmagic -> main, matching the
+        // wp_enqueue_script dependency chain) is what actually executes.
+        $exclusions[] = 'jquery.min.js';
+        $exclusions[] = 'gsap.min.js';
+        $exclusions[] = 'ScrollTrigger.min.js';
+        $exclusions[] = '/themes/' . get_template() . '/assets/js/scrollmagic.min.js';
+        $exclusions[] = '/themes/' . get_template() . '/assets/js/main.min.js';
+    }
     return $exclusions;
 } );
 
@@ -825,22 +1312,90 @@ add_filter(
     3
 );
 
-add_filter( 'apto/get_orderby', 'my_theme_apto_resource_type_orderby', 10, 3 );
-function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
+// ROLLBACK 2026-09-03 (round 8): rounds 6, 7, and 8 have now ALL crashed
+// /analyst-presentations, despite three completely different diagnostic
+// implementations (unsafe string concat; wp_footer + esc_html/wp_json_encode;
+// and, this last time, a file_put_contents-based logger wrapped in
+// try/catch(Throwable), which by construction should not have been able to
+// throw past its own try block). The fact that all three failed identically
+// (same 500, same response length) strongly suggests the crash is NOT caused
+// by anything specific to each diagnostic's code, but by something else --
+// possibly in how this page's internal loopback request for its initial
+// speaker list behaves under CI/deploy conditions, or a deploy-sync issue
+// separate from this function's logic entirely. Do not add another
+// diagnostic directly inside apto/get_orderby until that's understood;
+// investigate the loopback request and deploy pipeline first.
+add_filter( 'apto/get_orderby', 'my_theme_apto_taxonomy_scoped_orderby', 10, 3 );
+function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query ) {
     global $wpdb;
 
     if ( is_admin() ) {
         return $new_orderby;
     }
 
-    // These three are provided by the Advanced Post Types Order plugin, not
+    if ( ! function_exists( 'apto_get_order_list' ) ) {
+        return $new_orderby;
+    }
+
+    // BUGFIX 2026-09-03 (round 5): expertise (speaker / executive_advisor
+    // AJAX filters) is resolved independently below, straight off this
+    // query's own tax_query, WITHOUT going through
+    // apto_get_query_post_type_taxonomy() / apto_get_order_type() the way
+    // the resource-type branch further down does. Confirmed via Debug
+    // Marks that round 4 (routing expertise through that same
+    // resolve-via-APTO's-own-match path) still produced the unscoped
+    // whole-post-type Archive FIELD() list, unchanged. The likely reason:
+    // Sort #66399 ("Speakers (speaker)", no taxonomy Query Rule, Auto
+    // Apply Sort = Yes) matches every speaker query -- including the
+    // taxonomy-scoped ones meant for the dedicated per-term Advanced Sort
+    // (e.g. #66404, scoped to expertise=ADAPT Analysts) -- so
+    // apto_get_query_post_type_taxonomy() likely resolves against #66399
+    // instead (taxonomy empty) and/or apto_get_order_type() reports 'auto'
+    // (since #66399 itself has Auto Apply Sort enabled), tripping this
+    // function's own early-return guards before the expertise-specific
+    // logic ever ran. Reading the term directly off the query and calling
+    // apto_get_order_list() with it sidesteps APTO's own match resolution
+    // entirely, so it can't be misdirected to the wrong Sort.
+    $post_type = $query->get( 'post_type' );
+
+    if ( in_array( $post_type, array( 'speaker', 'executive_advisor' ), true ) ) {
+        $term_id = 0;
+
+        foreach ( (array) $query->get( 'tax_query' ) as $clause ) {
+            if ( is_array( $clause ) && isset( $clause['taxonomy'] ) && 'expertise' === $clause['taxonomy'] ) {
+                $term = get_term_by( $clause['field'], reset( (array) $clause['terms'] ), 'expertise' );
+                if ( $term ) {
+                    $term_id = $term->term_id;
+                }
+                break;
+            }
+        }
+
+        if ( $term_id ) {
+            $order_list = apto_get_order_list( $post_type, $term_id, 'expertise', $query );
+
+            // count() on a non-array/non-Countable is a fatal TypeError on
+            // PHP 8, so check the type before counting rather than
+            // assuming the plugin always returns an array.
+            if ( is_array( $order_list ) && count( $order_list ) > 0 ) {
+                return "FIELD({$wpdb->posts}.ID, " . implode( ',', array_map( 'absint', $order_list ) ) . ")";
+            }
+        }
+
+        // No expertise clause found, or no manual order set for that term
+        // (e.g. the two-term "no selection" safety-net query, or a term
+        // without its own Advanced Sort yet) -- fall through to whatever
+        // APTO/WordPress would otherwise have used.
+        return $new_orderby;
+    }
+
+    // These two are provided by the Advanced Post Types Order plugin, not
     // this theme. Guarding against them missing (plugin deactivated, or a
     // future update renames one) so this degrades to the default order
     // instead of a fatal "Call to undefined function" on every front-end
     // page that runs a resource-type query.
     if ( ! function_exists( 'apto_get_query_post_type_taxonomy' )
         || ! function_exists( 'apto_get_order_type' )
-        || ! function_exists( 'apto_get_order_list' )
     ) {
         return $new_orderby;
     }
@@ -854,7 +1409,7 @@ function my_theme_apto_resource_type_orderby( $new_orderby, $orderby, $query ) {
         return $new_orderby;
     }
 
-    list( $post_type, $taxonomy ) = $post_type_taxonomy;
+    [ $post_type, $taxonomy ] = $post_type_taxonomy;
 
     if ( 'resource-type' !== $taxonomy ) {
         return $new_orderby;

@@ -9,6 +9,7 @@
                             <?php
                                 $args = array(
                                     'post_type' => 'post',
+                                    'no_found_rows' => true,
                                     'posts_per_page' => 3,
                                     'paged'=> $paged,
                                     'tax_query' => array(
@@ -221,6 +222,7 @@
                             <?php
                                 $args = array(
                                     'post_type' => 'post',
+                                    'no_found_rows' => true,
                                     'posts_per_page' => 4,
                                     'paged'=> $paged,
                                     'tax_query' => array(
@@ -320,8 +322,21 @@
     						<?php endif; ?>
                         <?php } else { ?>
                             <?php
-                                query_posts('meta_key=post_views_count&posts_per_page=4&orderby=meta_value_num&order=DESC');
-                                if (have_posts()) : while (have_posts()) : the_post();
+                                // query_posts() overwrites the global $wp_query, which can
+                                // corrupt pagination/conditional-tag state for anything
+                                // rendered later on the page -- WP_Query() is the documented
+                                // replacement for exactly this kind of secondary,
+                                // in-template query (same pattern as the "most-recent"
+                                // branch of this same field above).
+                                $most_popular_args = array(
+                                    'no_found_rows'  => true,
+                                    'meta_key'       => 'post_views_count',
+                                    'posts_per_page' => 4,
+                                    'orderby'        => 'meta_value_num',
+                                    'order'          => 'DESC',
+                                );
+                                $most_popular_posts = new WP_Query( $most_popular_args );
+                                if ( $most_popular_posts->have_posts() ) : while ( $most_popular_posts->have_posts() ) : $most_popular_posts->the_post();
                              ?>
                                  <div class="resources-side-posts">
                                      <div class="resources-side-posts-inner">
@@ -404,7 +419,7 @@
                                  </div>
                              <?php
                              endwhile; endif;
-                             wp_reset_query();
+                             wp_reset_postdata();
                              ?>
                         <?php }?>
 					</div>

@@ -20,7 +20,7 @@
 			get_template_part('templates/template-' . $postType);
 		} elseif ( is_tax() ) {
 			$q = get_queried_object();
-			$taxonomy = isset($q->taxonomy) ? $q->taxonomy : '';
+			$taxonomy = $q->taxonomy ?? '';
 			get_template_part('templates/template-' . $taxonomy);
 		} elseif ( is_single() ) {
 			get_template_part('templates/single-' . $postType);

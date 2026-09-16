@@ -1,0 +1,138 @@
+name: Visual Regression Gate
+
+# Sitemap-wide, zero-tolerance pixel-diff check for the adapt theme.
+# See tools/visual-regression/capture-and-diff.mjs for the actual logic and
+# a full explanation of what this does and why.
+#
+# TRIGGER -- DELIBERATELY MANUAL ONLY (workflow_dispatch) FOR NOW:
+# The natural design would be to auto-run this right after every staging
+# deploy via `on: workflow_run: workflows: ["Build and Deploy Theme"]`.
+# That was ruled out for now: workflow_run-triggered workflows only fire if
+# the workflow file exists on the repository's DEFAULT branch -- which is
+# "main" here, not "dev" (confirmed via the repo's branch list). "dev" is
+# 124 commits ahead of "main", and "main" has its own deploy-production.yml
+# that deploys to the PRODUCTION server on *any* push to main, regardless
+# of which files changed. Getting this file onto main to satisfy
+# workflow_run's requirement would mean pushing to main, which would risk
+# firing an unrelated production deploy of whatever main currently has --
+# a completely disproportionate side effect for adding a test tool.
+#
+# So: run this manually (Actions tab -> Visual Regression Gate -> Run
+# workflow) after a staging deploy you want verified, until a safer
+# automatic-triggering approach is deliberately set up as its own decision
+# (e.g. a step that polls the GitHub API and waits for the matching
+# "Build and Deploy Theme" run to finish, triggered directly by `push` to
+# dev rather than by workflow_run -- avoids the default-branch requirement
+# entirely, but is its own separate, carefully-tested piece of work).
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: >-
+          "check": screenshot every sitemap URL and diff pixel-by-pixel
+          against the stored baseline; fails on ANY difference. "capture-baseline":
+          screenshot and save as the new baseline (first run, or after
+          reviewing/accepting a real visual change -- requires bumping the
+          number in tools/visual-regression/.baseline-version first if a
+          baseline already exists, otherwise this fails on purpose rather
+          than silently doing nothing).
+        type: choice
+        options:
+          - check
+          - capture-baseline
+        default: check
+      target_base_url:
+        description: 'Base URL to screenshot (sitemap is read from <this>/sitemap_index.xml)'
+        type: string
+        default: 'https://staging.adapt.com.au'
+
+jobs:
+  visual-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: tools/visual-regression/package-lock.json
+
+      - name: Install dependencies
+        working-directory: tools/visual-regression
+        run: npm ci --no-audit --no-fund
+
+      - name: Install Playwright's Chromium
+        working-directory: tools/visual-regression
+        # --with-deps installs the OS-level libraries Chromium needs too --
+        # safe and normal here (full root access on a GitHub-hosted runner),
+        # unlike a sandboxed environment where this same command fails.
+        run: npx playwright install --with-deps chromium
+
+      - name: Read baseline cache key
+        id: vars
+        run: |
+          VERSION=$(cat tools/visual-regression/.baseline-version 2>/dev/null | tr -d '[:space:]')
+          if [ -z "$VERSION" ]; then
+            echo "::error::tools/visual-regression/.baseline-version is missing or empty -- refusing to guess a cache key."
+            exit 1
+          fi
+          echo "cache_key=visual-baseline-v${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Using cache key: visual-baseline-v${VERSION}"
+
+      # "check" mode: the baseline MUST already exist -- fail loudly (not a
+      # silent empty-baseline pass) if it doesn't.
+      - name: Restore baseline cache (check mode)
+        if: inputs.mode == 'check'
+        uses: actions/cache/restore@v4
+        with:
+          path: tools/visual-regression/baselines
+          key: ${{ steps.vars.outputs.cache_key }}
+          fail-on-cache-miss: true
+
+      # "capture-baseline" mode: refuse to silently no-op. actions/cache
+      # cannot overwrite an existing key -- a save against an already-used
+      # key just gets skipped with a warning, which would make this look
+      # like it worked when it didn't. Check for an existing entry FIRST
+      # and fail with an explicit instruction, rather than let that happen.
+      - name: Check baseline cache doesn't already exist (capture-baseline mode)
+        if: inputs.mode == 'capture-baseline'
+        id: existing_cache_check
+        uses: actions/cache/restore@v4
+        with:
+          path: tools/visual-regression/baselines
+          key: ${{ steps.vars.outputs.cache_key }}
+          lookup-only: true
+
+      - name: Fail if baseline already exists for this version (capture-baseline mode)
+        if: inputs.mode == 'capture-baseline' && steps.existing_cache_check.outputs.cache-hit == 'true'
+        run: |
+          echo "::error::A baseline already exists for cache key '${{ steps.vars.outputs.cache_key }}'. actions/cache can't overwrite an existing key (the save step would silently be skipped, which would look like success without actually updating anything). To intentionally accept new screenshots as the baseline, bump the number in tools/visual-regression/.baseline-version in a commit first, then re-run this with mode: capture-baseline."
+          exit 1
+
+      - name: Run capture
+        working-directory: tools/visual-regression
+        env:
+          VISUAL_REGRESSION_MODE: ${{ inputs.mode == 'capture-baseline' && 'baseline' || 'check' }}
+          TARGET_BASE_URL: ${{ inputs.target_base_url }}
+        run: npm run capture
+
+      - name: Save baseline cache (capture-baseline mode)
+        if: inputs.mode == 'capture-baseline'
+        uses: actions/cache/save@v4
+        with:
+          path: tools/visual-regression/baselines
+          key: ${{ steps.vars.outputs.cache_key }}
+
+      - name: Upload diff artifacts (check mode)
+        if: always() && inputs.mode == 'check'
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-diffs
+          path: |
+            tools/visual-regression/diffs
+            tools/visual-regression/current
+          retention-days: 14
+          if-no-files-found: ignore

@@ -32,7 +32,7 @@ remove_action('wp_head', 			'rel_canonical');
 remove_action('wp_head', 			'wp_shortlink_wp_head', 10, 0);
 
 // filters
-add_filter('show_admin_bar', 		'__return_false');
+add_filter('show_admin_bar', 		'custom_show_admin_bar_admins_only');
 add_filter('xmlrpc_enabled',        '__return_false');
 add_filter('excerpt_more', 			'custom_excerpt_link');
 add_filter('excerpt_length', 		'custom_excerpt_length', 999 );

@@ -2,7 +2,11 @@ name: Build and Deploy Theme (Production)
 
 # Runs on every push to the "main" branch:
 #   1. Installs Node deps and compiles CSS/JS from source/ via gulp
-#      (build:styles compiles source/scss -> assets/css/main.min.css,
+#      (build:styles compiles source/scss -> assets/css/main.min.css --
+#       kept as an unused rollback artifact, see the footer-split note
+#       below; build:styles-split compiles the same source, minus the
+#       footer partial, into the two files actually enqueued --
+#       assets/css/main-nofooter.min.css and assets/css/footer.min.css;
 #       build:scripts bundles source/js + vendor libs -> assets/js/main.min.js)
 #   2. Uploads the theme to the server over SFTP.
 #
@@ -71,7 +75,7 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Compile CSS and JS
-        run: npx gulp build:styles build:scripts
+        run: npx gulp build:styles build:styles-split build:scripts
 
       # See deploy.yml (staging) for the full rationale behind
       # milanmk/actions-file-deployer, delta mode, and the exclude/include
@@ -116,4 +120,4 @@ jobs:
             :!/gulpfile.js
             :!/faviconData.json
             :!/README.md
-          sync-delta-includes: 'assets/css/main.min.css,assets/js/main.min.js'
+          sync-delta-includes: 'assets/css/main.min.css,assets/css/main-nofooter.min.css,assets/css/footer.min.css,assets/js/main.min.js'
