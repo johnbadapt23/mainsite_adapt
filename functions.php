@@ -1191,6 +1191,46 @@ add_filter( 'rocket_delay_js_exclusions', function( $exclusions ) {
     return $exclusions;
 } );
 
+// 2026-09-15, same investigation as directly above: excluding these 4 scripts
+// from Delay JS was necessary but not sufficient. After a cache clear, all 4
+// stopped being fully delayed, but the "TweenLite or TweenMax could not be
+// found" console error was STILL firing -- because WP Rocket's separate
+// "Load JavaScript deferred" optimization adds a `defer` attribute to
+// gsap-js/scrolltrigger-js/main-js but NOT to scrollmagic-js (same
+// unexplained asymmetry as the Delay JS issue above -- scrollmagic-js is a
+// brand new handle as of today's deploy, everything else here pre-dates it,
+// and no wp-admin access from here to inspect why WP Rocket treats it
+// differently). `defer` scripts only run after the document finishes
+// parsing, in their relative document order -- but a script WITHOUT defer
+// runs immediately, synchronously, the moment the parser reaches its <script>
+// tag, regardless of where later deferred scripts sit in the HTML. So the
+// real execution order was: scrollmagic-js (no defer, runs immediately) --
+// THEN, after the whole page finishes parsing -- gsap-js, scrolltrigger-js,
+// main-js (all deferred). scrollmagic-js's bundled animation.gsap.js was
+// still parsing before GSAP existed, every time.
+//
+// Rather than chase whatever makes WP Rocket single this one script out (and
+// risk it changing again on a future cache regen), this stops depending on
+// WP Rocket's per-script defer/delay classification being consistent at
+// all: it strips any `defer`/`async` WP Rocket or WP core adds to these 4
+// specific handles on the pages that enqueue them, forcing them back to
+// plain synchronous <script src> tags. Plain scripts execute strictly in
+// HTML document order, which already matches the real dependency chain
+// (gsap -> scrolltrigger -> scrollmagic -> main, per the enqueue order and
+// explicit dependency arrays in my_enqueue_scripts() above) -- so this
+// guarantees correct order from the document structure itself, with no
+// reliance on any optimization plugin's behavior.
+add_filter( 'script_loader_tag', function( $tag, $handle ) {
+    $gsap_script_handles = array( 'gsap-js', 'scrolltrigger-js', 'scrollmagic-js', 'main-js' );
+    if ( in_array( $handle, $gsap_script_handles, true ) && adapt_page_needs_gsap() ) {
+        $tag = str_replace( ' defer', '', $tag );
+        $tag = str_replace( ' async', '', $tag );
+    }
+    return $tag;
+}, 999, 2 ); // deliberately late priority: must run after WP Rocket's own
+             // script_loader_tag filter (which is what adds the defer
+             // attribute this strips) or there's nothing to strip yet.
+
 
 add_filter( 'pre_get_rocket_option_remove_unused_css', function( $value ) {
     if ( is_front_page() ) {
