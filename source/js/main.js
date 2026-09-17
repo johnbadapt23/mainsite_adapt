@@ -4188,15 +4188,30 @@ function animateOverlappingCards() {
     var spacing = 25;   // vertical offset between cards
     var maxShrink = 0.08; // maximum shrink per card
 
-    $cards.each(function(i) {
-        var $card = $(this).find('.overlapping-card');
+    // 2026-09-17: this used to call $nextCard.offset() (a forced synchronous
+    // layout read) and $(window).height() inside a nested loop that ALSO
+    // wrote $card.css('transform', ...) once per outer iteration -- reads
+    // and writes interleaved across ~n^2 iterations, which forces the
+    // browser to recompute layout on every single read instead of batching
+    // it once. Flagged by Lighthouse as "Forced reflow", attributed to
+    // jQuery/this function (~94-98ms per run, on scroll/resize + once on
+    // page load). Fix: read every card's offset (and the window height)
+    // once up front, do all the math from those cached values, then apply
+    // every transform in a separate pass at the end -- same output, but the
+    // browser only has to lay out once instead of n times.
+    var winHeight = $(window).height();
+    var viewportTrigger = winHeight / 2; // start shrinking when next card is halfway in view
+    var offsets = $cards.map(function() {
+        return $(this).offset().top; // absolute offset
+    }).get();
+
+    var scales = [];
+    for (var i = 0; i < $cards.length; i++) {
         var scale = 1;
 
         // Loop through all following cards to determine how much to shrink previous ones
         for (var j = i + 1; j < $cards.length; j++) {
-            var $nextCard = $cards.eq(j);
-            var nextOffset = $nextCard.offset().top; // absolute offset
-            var viewportTrigger = $(window).height() / 2; // start shrinking when next card is halfway in view
+            var nextOffset = offsets[j];
 
             // progress: 0 → 1 as next card approaches stickyTop
             var progress = Math.min(Math.max((viewportTrigger - (nextOffset - scrollTop)) / viewportTrigger, 0), 1);
@@ -4205,11 +4220,16 @@ function animateOverlappingCards() {
             scale -= maxShrink * progress;
         }
 
+        scales.push(scale);
+    }
+
+    $cards.each(function(i) {
+        var $card = $(this).find('.overlapping-card');
+
         // Offset each card vertically by spacing
         var yOffset = spacing * i;
 
-        $card.css('transform', 'translateY(' + yOffset + 'px) scale(' + scale + ')');
-
+        $card.css('transform', 'translateY(' + yOffset + 'px) scale(' + scales[i] + ')');
     });
 }
 
