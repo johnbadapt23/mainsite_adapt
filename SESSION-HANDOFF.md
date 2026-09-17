@@ -5609,3 +5609,132 @@ swallowing the wheel event. This investigation was interrupted by the
 push/revert/selector-fix conversation and is still open -- worth
 picking up next, since it's likely the highest-impact issue of
 everything found this session.
+
+
+---
+
+## §46 -- 2026-09-17: dead-CSS removal (durable version of the "CSS splitting" request)
+
+### Context
+
+User asked for the homepage's CSS to be "split" (Lighthouse flagged the
+1.8MB `main-nofooter.min.css` bundle). Investigated first: WP Rocket's
+"Remove Unused CSS" already generates real per-page critical CSS
+(~46KB inlined in `<head>`, confirmed live) with the full bundle loading
+async/non-blocking in the background -- a manual per-template SCSS split
+would be redundant with a more precise, already-working system, and
+risky given the site's shared ACF flexible-content architecture (template
+boundaries don't map to CSS usage boundaries). Presented this and asked
+the user how to proceed; instruction back was **"do what is best
+long-term, not quick fixes that will be a problem in the future."**
+Redirected to removing genuinely dead CSS at the SCSS source instead --
+durable, no new fragile machinery, shrinks every page.
+
+### Method
+
+Rather than coverage-sampling live pages (real false-positive risk: a
+selector unmatched on today's sample can still be legitimately used on
+an untested page, a `:hover` state, or a page deliberately excluded from
+the sitemap), used the theme's own confirmed-dead PHP templates as the
+starting point -- files already established as **structurally
+unreachable** by prior sessions in this doc (no `Template Name:` header,
+zero references via `get_template_part`/`include`/`require`/
+`single_template` anywhere in the theme): `old-template-resource-type.php`,
+`template-resource-type-pre-media.php`, `member-single-post.php`,
+`single-post-no-embed.php`, `single-post-feb.php`,
+`single-post-side-articles.php`, plus two more confirmed the same way
+this pass (`august-single-post.php`, `single-post_author.php`,
+`single-event-nov.php`) and one dead component partial
+(`customer-story-components/_category-slider.php`, per §18).
+
+Cross-checked live page→template assignments via the WP REST API
+(`/wp-json/wp/v2/pages?...&_fields=id,link,template,status`,
+authenticated) rather than trusting the XML sitemap alone -- the sitemap
+only covers indexed pages, and utility templates (thank-you, login,
+search-results) are legitimately noindexed while still live. This
+caught a real near-miss: `template-thank-you.php` (hyphenated, no
+"new") has zero pages assigned despite being referenced in `header.php`,
+while `template-thankyou.php` (no hyphen, looked like the obvious
+orphan) turned out to have one live published page. Left both alone --
+neither is in this pass's scope, and one is actively wired up.
+
+For each confirmed-dead file, extracted every CSS class it references
+and checked whether that class appears in ANY live `.php`/`.js` file in
+the theme. Classes exclusive to the dead set are provably unreachable --
+no live page can ever render markup carrying them, so no matching SCSS
+rule can ever apply anywhere.
+
+### Removed (pure deletions, 1,294 lines, 0 insertions, verified with
+### `git diff --stat` and a real `dart-sass` compile of all three
+### edited partials -- 0 errors)
+
+- **`source/scss/templates/_author.scss` -- deleted entirely** (584
+  lines). Every selector in the file is scoped under
+  `section.speaker-profile.author-section`,
+  `section.author-posts-listing`, or
+  `section.author-events.events-listing-module` -- all three root
+  classes exclusive to the now-confirmed-dead `single-post_author.php`.
+  (A JS guard in `main.js`, `if ($('.author-posts-listing').length)`,
+  also references this markup -- confirmed inert for the same reason,
+  left untouched per the standing "leave dead PHP files alone" decision;
+  this pass only touches CSS.)
+- **`source/scss/templates/_single-post.scss`** (182 lines removed):
+  the real `.podcastPlayer`/`.sideArticles` style blocks (only ever
+  rendered by the dead single-post variants, confirmed absent from the
+  live `single-post.php`), plus their corresponding entries in the
+  float-refactor "gate" section (`// line 228`/`253`/`361`/`369`/`382`/
+  `392` -- removed each full entry, not just the innermost selector, to
+  avoid leaving empty wrapper shells).
+- **`source/scss/templates/_customer-stories.scss`** (517 lines
+  removed): the entire `.story-categories-slider-module` block (514
+  lines -- turned out to already contain the `.white-text-60`/
+  `.slide-counter-outer` nested rules originally targeted separately)
+  plus one standalone `.white-text-60` block -- all exclusive to the
+  dead `_category-slider.php` component.
+- **`source/scss/templates/_customer-events.scss`** (11 lines
+  removed): the matching float-refactor gate entry for the same dead
+  component.
+
+### Verification
+
+- `git diff --stat`: 4 files, 1,294 deletions, 0 insertions -- pure
+  removal.
+- Brace-balance check (custom script) on all 3 edited files: 0 (fully
+  balanced) after editing.
+- Zero remaining references anywhere in `source/scss/` to any removed
+  class (`podcastPlayer`, `sideArticles`, `story-categories-slider-module`,
+  `slide-counter*`, `white-text-60`, `author-events`, `author-section`,
+  `speaker-profile`, `linkedin-button`, `mobile-title-container`,
+  `author-posts-listing`).
+- Seam-checked every removal boundary by hand (no orphaned selectors,
+  no doubled braces, no dangling gate-list comments).
+- Installed `sass` (dart-sass) fresh into `node_modules` on the user's
+  machine (network was slow -- two `npm install` attempts timed out
+  before it finished in the background) and compiled all three edited
+  partials for real, against the theme's actual global mixins/
+  variables: **0 errors**, only pre-existing `@import`-deprecation
+  warnings common to the whole codebase. Did not run the full
+  `gulp build:styles-main-nofooter` pipeline (autoprefixer + cssmin +
+  the custom `splitOversizedRules`/`fixFloatNoneDisplay` postprocessing)
+  since `node_modules` wasn't fully installed in this session -- worth
+  a real `npx gulp build:styles-main-nofooter` + live pixel-diff on
+  `/careers/`, a `/resources/...` post, and `/customer-stories/` before
+  this ships, same as every other CSS change in this doc.
+
+### Status
+
+Committed to the user's files on their machine (via the device bridge),
+**not committed to git yet** -- left for the user to review the diff,
+`git add`/commit, and push per standing practice. Did not touch any of
+the underlying dead PHP files themselves (per the user's earlier
+standing decision to leave confirmed-dead files alone) -- this pass is
+CSS-only.
+
+Five remaining templates found this session with a `Template Name:`
+header but zero pages currently assigned (`template-events-old.php`,
+`template-home-nov.php`, `template-flexible-nov.php`,
+`template-agenda.php` [confirmed live elsewhere, not dead],
+`template-thank-you.php`) are **not** in this dead-CSS pass -- they're
+editor-selectable at any time via the WP admin template dropdown, so
+"currently unused" isn't the same guarantee as "unreachable." Left as a
+separate, lower-confidence category if the user wants to revisit later.

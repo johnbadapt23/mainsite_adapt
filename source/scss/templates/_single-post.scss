@@ -224,81 +224,6 @@ section.singlePost {
                 }
             }
 
-            .podcastPlayer {
-                float: left;
-                width: 100%;
-                margin-bottom: 40px;
-
-                @include responsive(767) {
-            		margin-bottom: 0px;
-                }
-
-                a.button.audioReveal {
-                    position: relative;
-                    padding-left: 18px;
-
-                    &:after {
-                        content: ' ';
-                        position: absolute;
-                        right: 18px;
-                        top: 17px;
-                        background-image: url('../images/full-arrow-white.svg');
-                        background-repeat: no-repeat;
-                        width: 13.61px;
-                        height: 16.1px;
-                    }
-                }
-
-                .audioWrapper {
-                    float: left;
-                    position: relative;
-                    width: 100%;
-                    margin-top: 30px;
-                    display: none;
-
-                    &.show {
-                        display: block;
-
-                        a.close {
-                            position: absolute;
-                            top: 20px;
-                            right: 20px;
-                            width: 11.6px;
-                            height: 11.6px;
-                            content: ' ';
-                            background-image: url('../images/close.svg');
-                            background-size: 11.6px 11.6px;
-                        }
-                    }
-
-                    // .mejs-container {
-                    //     width: 100% !important;
-                    //     height: 130px !important;
-                    // }
-
-                    //
-                    //
-                    // .mejs-time-total {
-                    //     margin: 0px !important;
-                    // }
-                    //
-                    // .mejs-time-loaded,
-                    // .mejs-time-slider {
-                    //     height: 3px !important;
-                    // }
-                    //
-                    // .mejs-time-current {
-                    //     color: $color-red !important;
-                    //     height: 3px !important;
-                    // }
-                    //
-                    // .mejs-time-rail {
-                    //     background-color: rgba(255,255,255,0.6)!important;
-                    //     height: 3px !important;
-                    //     padding: 0 !important;
-                    // }
-                }
-            }
         }
 
         .right {
@@ -357,55 +282,6 @@ section.singlePost {
     }
 }
 
-.sideArticles {
-    float: left;
-    width: 100%;
-
-    @include responsive(767) {
-        display: none;
-    }
-
-    h2 {
-        float: left;
-        width: 100%;
-        font-family: $font-light;
-        font-size: 14px;
-        line-height: 1.21;
-        letter-spacing: normal;
-        text-align: left;
-        color: #000000;
-        margin-bottom: 22px;
-        text-transform: uppercase;
-    }
-
-    .relatedArticle {
-        float: left;
-        width: 100%;
-        border-bottom: 1px solid $color-red;
-        margin-bottom: 35px;
-
-        .postDetails {
-            margin-bottom: 15px !important;
-        }
-
-        a {
-            float: left;
-            width: 100%;
-            font-family: $font-base;
-            font-size: 14px;
-            font-style: bold;
-            line-height: 1.43;
-            text-align: left;
-            color: #000;
-            padding-bottom: 17px;
-            @include transition();
-
-            &:hover {
-                color: $color-red;
-            }
-        }
-    }
-}
 
 .imageGridBlock {
     float: left;
@@ -991,32 +867,6 @@ section.singlePost.singlePost {
                 }
         }
 
-// line 228
-
-section.singlePost.singlePost {
-                .fullWidth.fullWidth {
-                        .left.left {
-                                .podcastPlayer.podcastPlayer {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 253
-
-section.singlePost.singlePost {
-                .fullWidth.fullWidth {
-                        .left.left {
-                                .podcastPlayer.podcastPlayer {
-                                        .audioWrapper.audioWrapper {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
 // line 306
 
 section.singlePost.singlePost {
@@ -1033,38 +883,6 @@ section.singlePost.singlePost {
 
 .articleWrapper.articleWrapper {
                 float: none;
-        }
-
-// line 361
-
-.sideArticles.sideArticles {
-                float: none;
-        }
-
-// line 369
-
-.sideArticles.sideArticles {
-                h2 {
-                        float: none;
-                }
-        }
-
-// line 382
-
-.sideArticles.sideArticles {
-                .relatedArticle.relatedArticle {
-                        float: none;
-                }
-        }
-
-// line 392
-
-.sideArticles.sideArticles {
-                .relatedArticle.relatedArticle {
-                        a {
-                                float: none;
-                        }
-                }
         }
 
 // line 411

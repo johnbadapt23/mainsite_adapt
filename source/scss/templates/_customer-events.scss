@@ -10376,17 +10376,6 @@ section.stories-hero-slider.stories-hero-slider {
         display: flow-root;
     }
 
-section.story-categories-slider-module.story-categories-slider-module {
-        // templates/customer-story-components/_category-slider.php --
-        // wraps .category-slider-container (Slick). This selector also
-        // has its own explicit float:left in base CSS (_customer-
-        // stories.scss), but the gate's `body.dev-float-refactor
-        // section{float:none}` (0,1,1 specificity, element+ancestor
-        // class) beats the base rule's `.story-categories-slider-module
-        // {float:left}` (0,1,0, single class) regardless -- same
-        // mechanism documented throughout this file.
-        display: flow-root;
-    }
 
 section.two-column-services.two-column-services.landing-two-column-slider.landing-two-column-slider {
         // templates/landing-components/_two-column-slider.php -- wraps
