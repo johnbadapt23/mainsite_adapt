@@ -32,7 +32,7 @@
 }
 section.text-animation-introduction.text-animation-introduction-v2{
     height: auto;
-    /*padding-bottom: 0;
+    /*padding-bottom: 0;*/
 }
 .text-animation-introduction-v2 .introduction-content-container{
     justify-content: center;
