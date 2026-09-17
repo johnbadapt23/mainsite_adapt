@@ -336,6 +336,17 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
  				 <?php } ?>
 				<?php if ( get_sub_field( 'marketing' ) == 1 ) { ?>
 					<span class="marketing-text"><?php echo get_sub_field( 'marketing_text' ); ?></span>
+					<?php if( get_sub_field('hide_checkbox_marketing') == 1 ) : ?>
+					<style>
+						.hs_single_client_opt_in {
+							pointer-events: none;
+						}
+						.hs_single_client_opt_in input + span::before,
+						.hs_single_client_opt_in input + span::after{
+							display: none !important;
+						}
+					</style>
+					<?php endif;?>
 				<?php } else { ?>
 					<style>
 						.hs_single_client_opt_in {
