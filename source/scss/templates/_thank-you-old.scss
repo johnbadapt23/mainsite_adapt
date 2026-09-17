@@ -1,5 +1,5 @@
 section.thank-you-banner {
-    float: left;
+    float: none;
     width: 100%;
     position: relative;
     padding: 70px 0;
@@ -45,13 +45,20 @@ section.thank-you-banner {
     }
 
     .container {
+        display: flex;
+        flex-direction: row-reverse;
+
+        @include responsive(767) {
+            flex-direction: column;
+        }
+
         .column {
             color: #000;
             &.image-column {
                 padding-left: 90px;
                 position: relative;
                 z-index: 1;
-                float: right;
+                float: none;
 
                 @include responsive(767) {
                     padding-left: 0px;
@@ -121,7 +128,7 @@ section.thank-you-banner {
                 }
 
                 .text-inner {
-                    float: left;
+                    float: none;
                     width: 100%;
                     max-width: 415px;
                 }
@@ -133,7 +140,7 @@ section.thank-you-banner {
                     color: $color-red;
                     font-weight: bold;
                     margin-bottom: 20px;
-                    float: left;
+                    float: none;
                     width: 100%;
 
                     @include responsive(767) {
@@ -150,7 +157,7 @@ section.thank-you-banner {
                     text-transform: none;
                     font-weight: bold;
                     margin-bottom: 20px;
-                    float: left;
+                    float: none;
                     width: 100%;
 
                     @include responsive(767) {
@@ -160,7 +167,7 @@ section.thank-you-banner {
                 }
 
                 .button-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-top: 20px;
                 }
@@ -171,7 +178,7 @@ section.thank-you-banner {
 }
 
 section.information-blocks {
-    float: left;
+    float: none;
     width: 100%;
     padding: 70px 0;
     color: #000;
@@ -182,11 +189,13 @@ section.information-blocks {
 
     .container {
         .column-container {
-            float: left;
+            display: flex;
+            flex-wrap: wrap;
+            float: none;
             width: 100%;
 
             .column.information-column {
-                float: left;
+                float: none;
                 padding: 60px 60px 40px 60px;
                 text-align: center;
 
@@ -201,7 +210,7 @@ section.information-blocks {
 
                 h3 {
                     color: $color-red;
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     font-size: 20px;
@@ -214,7 +223,7 @@ section.information-blocks {
                 }
 
                 h2 {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     text-transform: none;
@@ -230,7 +239,7 @@ section.information-blocks {
                 }
 
                 span.text {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     font-family: $font-base;
@@ -252,7 +261,7 @@ section.information-blocks {
                 }
 
                 .button-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     margin-top: 10px;
@@ -262,7 +271,7 @@ section.information-blocks {
                     }
 
                     .tooltip-container {
-                        float: left;
+                        float: none;
                         width: 100%;
                         text-align: center;
                         position: relative;
@@ -334,7 +343,7 @@ section.information-blocks {
 }
 
 section.cta-block {
-    float: left;
+    float: none;
     width: 100%;
     padding: 30px 0px;
 
@@ -343,7 +352,7 @@ section.cta-block {
         height: 100%;
 
         .cta-content {
-            float: left;
+            float: none;
             width: 100%;
             background-color: #000;
             padding: 50px 30px 0;
@@ -377,7 +386,7 @@ section.cta-block {
                 position: relative;
 
                 .cta-title {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
 
@@ -422,14 +431,14 @@ section.cta-block {
                 }
 
                 .button-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     margin-top: 20px;
                 }
 
                 .bottom-image-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     margin-top: 40px;
@@ -440,7 +449,7 @@ section.cta-block {
                     }
 
                     img {
-                        float: left;
+                        float: none;
                         width: 100%;
                         -webkit-box-shadow: 0px 15px 15px 0px rgba(0,0,0,0.1);
                         -moz-box-shadow: 0px 15px 15px 0px rgba(0,0,0,0.1);
@@ -453,7 +462,7 @@ section.cta-block {
 }
 
 section.faq-block {
-    float: left;;
+    float: none;;
     width: 100%;
     background-color: #fff;
     color: #000;
@@ -464,9 +473,15 @@ section.faq-block {
     }
 
     .container {
+        display: flex;
+
+        @media (max-width:767px) {
+            flex-direction: column;
+        }
+
         .title-column {
             width: 185px;
-            float: left;
+            float: none;
 
             @media (max-width:1023px) {
                 width: 150px;
@@ -493,7 +508,7 @@ section.faq-block {
 
         .faq-column {
             width: calc(100% - 185px);
-            float: left;
+            float: none;
 
             @media (max-width:1023px) {
                 width: calc(100% - 150px);
@@ -504,7 +519,7 @@ section.faq-block {
             }
 
             .faq-item {
-                float: left;
+                float: none;
                 width: 100%;
                 margin-bottom: 30px;
                 color: #000;
@@ -519,7 +534,7 @@ section.faq-block {
                 }
 
                 .question {
-                    float: left;
+                    float: none;
                     width: 100%;
                     font-family: $font-base;
                     font-size: 16px;
@@ -570,7 +585,7 @@ section.faq-block {
 
                 .answer {
                     border-top: 1px solid #e1e1e1;
-                    float: left;
+                    float: none;
                     width: 100%;
                     position: relative;
                     padding-right: 50px;
@@ -595,284 +610,3 @@ section.faq-block {
         }
     }
 }
-
-
-// =====================================================================
-// Float -> Flexbox modernization pass, folded in from the formerly
-// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
-// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
-// Pixel-parity verified against the gated build before this merge --
-// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
-// dated 2026-09-14) for the full audit trail, per-rule provenance, and
-// the isolated-build diff used to confirm this file's compiled output
-// is unchanged from the pre-merge gated build.
-// =====================================================================
-// line 2
-
-section.thank-you-banner.thank-you-banner {
-                float: none;
-        }
-
-// line 124
-
-section.thank-you-banner.thank-you-banner {
-                .container.container {
-                        .column.column {
-                                &.text-column.text-column {
-                                        .text-inner.text-inner {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 136
-
-section.thank-you-banner.thank-you-banner {
-                .container.container {
-                        .column.column {
-                                &.text-column.text-column {
-                                        h3 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 153
-
-section.thank-you-banner.thank-you-banner {
-                .container.container {
-                        .column.column {
-                                &.text-column.text-column {
-                                        h2 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 163
-
-section.thank-you-banner.thank-you-banner {
-                .container.container {
-                        .column.column {
-                                &.text-column.text-column {
-                                        .button-container.button-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 174
-
-section.information-blocks.information-blocks {
-                float: none;
-        }
-
-// line 185
-
-section.information-blocks.information-blocks {
-                .container.container {
-                        .column-container.column-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 204
-
-section.information-blocks.information-blocks {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.information-column.information-column {
-                                        h3 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 217
-
-section.information-blocks.information-blocks {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.information-column.information-column {
-                                        h2 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 233
-
-section.information-blocks.information-blocks {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.information-column.information-column {
-                                        span.text.text {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 255
-
-section.information-blocks.information-blocks {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.information-column.information-column {
-                                        .button-container.button-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 265
-
-section.information-blocks.information-blocks {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.information-column.information-column {
-                                        .button-container.button-container {
-                                                .tooltip-container.tooltip-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 337
-
-section.cta-block.cta-block {
-                float: none;
-        }
-
-// line 346
-
-section.cta-block.cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                float: none;
-                        }
-                }
-        }
-
-// line 380
-
-section.cta-block.cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                .cta-inner.cta-inner {
-                                        .cta-title.cta-title {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 425
-
-section.cta-block.cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                .cta-inner.cta-inner {
-                                        .button-container.button-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 432
-
-section.cta-block.cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                .cta-inner.cta-inner {
-                                        .bottom-image-container.bottom-image-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 443
-
-section.cta-block.cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                .cta-inner.cta-inner {
-                                        .bottom-image-container.bottom-image-container {
-                                                img {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 456
-
-section.faq-block.faq-block {
-                float: none;
-        }
-
-// line 507
-
-section.faq-block.faq-block {
-                .container.container {
-                        .faq-column.faq-column {
-                                .faq-item.faq-item {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 522
-
-section.faq-block.faq-block {
-                .container.container {
-                        .faq-column.faq-column {
-                                .faq-item.faq-item {
-                                        .question.question {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 573
-
-section.faq-block.faq-block {
-                .container.container {
-                        .faq-column.faq-column {
-                                .faq-item.faq-item {
-                                        .answer.answer {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }

@@ -5738,3 +5738,588 @@ header but zero pages currently assigned (`template-events-old.php`,
 editor-selectable at any time via the WP admin template dropdown, so
 "currently unused" isn't the same guarantee as "unreachable." Left as a
 separate, lower-confidence category if the user wants to revisit later.
+
+
+---
+
+## §47 -- 2026-09-17 (cont.): §45's scroll-freeze bug -- investigated, not reproduced, user confirms resolved
+
+Picked this up as the next open item after §46. Attempted reproduction
+on `https://staging.adapt.com.au/` using real (CDP-simulated) wheel-scroll
+events, not `window.scrollTo()` (which §45 already confirmed works) --
+both as a logged-in admin and, after logging the tab out, as an
+anonymous visitor (the distinction that mattered for the earlier WP
+Rocket Delay-JS bug in this doc). Scrolled the homepage from 0 to
+3000px across several rapid successive real-wheel scroll actions, and
+separately tested `/careers/`. Every scroll moved the page normally.
+No `.scrollmagic-pin-spacer` elements present, no full-viewport overlay,
+all core scripts (`main.min.js`, jQuery, modernizr) loaded `200`.
+
+Could not reproduce -- asked the user to check on their own machine
+rather than declare it fixed on a negative automated result alone.
+**User confirmed: not freezing for them either.**
+
+### Likely explanation (not confirmed, no further action needed)
+
+§45 logged this bug while verifying the `display:flex` regression fix,
+mid-flux at the time (the `!important` band-aid was still in place and
+the real source-level fix in `fix-float-none-display.js` had only just
+landed). The codebase has moved on substantially since -- that real fix
+is confirmed present in `HEAD`/`origin/dev` as of this session, along
+with §46's dead-CSS removal. Plausibly the scroll-freeze was entangled
+with the same regression and got resolved as a side effect once the
+real fix (rather than the override patch) was in place; no separate
+root cause was ever isolated, so this is a plausible explanation, not
+a confirmed one.
+
+### Status: resolved (by user confirmation), closed
+
+No code change made -- there was nothing left to fix once it stopped
+reproducing. Closing out task #6's scroll-freeze portion.
+
+
+---
+
+## §48 -- 2026-09-17 (cont.): GSAP/ScrollMagic `TweenLite or TweenMax` console error -- fixed, applied to live bundle
+
+### Context
+
+Root cause was fully isolated in §44: `animation.gsap.js` (a vendored
+ScrollMagic plugin) does an eager `TweenLite`/`TweenMax` presence check
+at IIFE parse-time (not call-time) and `console.error`s if GSAP isn't
+loaded on the page. GSAP itself is intentionally conditionally loaded
+only on 8 templates via `adapt_page_needs_gsap()` in `functions.php`, so
+every other page hit the console error on load -- cosmetic (nothing
+visibly breaks), but a real error firing site-wide.
+
+A prior session (commit `d221402`, 2026-09-15) had already made the
+correct *source-level* fix: split ScrollMagic + its GSAP plugin out of
+the main JS bundle (`source/gulp/paths.js`: new `scriptsScrollmagic`
+array), added a new gulp task `build:scripts-scrollmagic` (builds a
+separate `scrollmagic.min.js`), and updated `functions.php` to
+conditionally enqueue `scrollmagic-js` alongside `gsap-js`/
+`scrolltrigger-js` only on the same 8 templates (also excluded from WP
+Rocket's Delay-JS). **But `assets/js/main.min.js` itself was never
+rebuilt after that split** -- confirmed via mtime (`main.min.js`:
+2026-08-24, stale, vs. `scrollmagic.min.js`: 2026-09-15) and a literal
+grep (`TweenLite or TweenMax` count = 1 in the live file). So the bug
+was still live on every page despite the fix already existing at the
+source level.
+
+User approved fixing it this session ("Yes, go ahead") after being told
+it touches a minified vendor bundle.
+
+### Method
+
+`gulp` itself could not be gotten working in this session --
+`npm install`/`npm ci` repeatedly left `node_modules` corrupted across
+several different packages in sequence (`snapdragon`, `nanomatch`,
+`vinyl-fs`), none of which npm's own diffing repaired. Rather than keep
+fighting the toolchain, replicated the exact `build:scripts` gulp task
+(`source/gulp/tasks/build/scripts.js`) directly: read the 12-file
+`src.scripts` list from `source/gulp/paths.js` (confirmed ScrollMagic
+already absent from it, per the prior session's split), expanded the
+one `@@include('includes/_maps.js')` directive in `main.js` the same
+way `gulp-file-include` would, then minified each file individually
+with the working `node_modules/.bin/uglifyjs` CLI binary (`-c -m`,
+matching `gulp-uglify`'s defaults; confirmed same underlying engine --
+`uglify-js: 3.19.3` installed satisfies the project's
+`"uglify-js": "^3.0.5"` dependency) and concatenated the results in
+source order, exactly matching `gulp-concat('main.min.js')`.
+
+### Applied
+
+- Backed up the live file first: `assets/js/main.min.js.bak-pre-gsapfix-20260917`
+  (330019 bytes, the stale pre-fix version) left alongside it.
+- Replaced `assets/js/main.min.js` with the rebuilt bundle (297624
+  bytes -- smaller, as expected, since ScrollMagic + its GSAP plugin are
+  no longer in this file).
+
+### Verification
+
+- `grep -c "TweenLite or TweenMax" assets/js/main.min.js` -> **0** (was
+  1). Bug fixed.
+- `node -c assets/js/main.min.js` -> syntax OK.
+- `grep -c "ScrollMagic.Controller\|ScrollMagic.Scene"` -> 1 (expected:
+  legitimate guarded usage elsewhere in the bundle preserved, not
+  stripped).
+- Confirmed this session's earlier `main.js` edits (video-gating,
+  overlapping-card reflow fix) survived the rebuild: literal-name
+  greps came back empty as expected (uglify's `-m` mangles local
+  identifiers), but the non-mangled string literals they depend on --
+  `prefers-reduced-motion`, `data-autoplay-src`, `saveData`,
+  `overlapping-card-wrapper` -- are all present (count 1 each).
+- `git diff --stat assets/js/main.min.js`: 1 file changed (expected --
+  minified output is close to single-line, so this doesn't reflect
+  true content size; the 297624 vs 330019 byte delta is the real
+  signal).
+
+### Not run this pass
+
+The full `gulp build:scripts` (or `build:scripts-scrollmagic`, already
+current) pipeline as real CI -- `node_modules`/gulp remained broken in
+this session throughout. The hand-rolled Python replica is believed
+functionally identical (same source list, same minifier, same include
+expansion, same concat order) but hasn't been cross-verified against an
+actual `gulp` run. Worth doing once `node_modules` is reinstalled
+cleanly (e.g. `rm -rf node_modules && npm ci` on a fast/stable
+connection), to confirm the two outputs match.
+
+No live GSAP-dependent animation was manually re-tested against the 8
+templates that do load ScrollMagic + GSAP (`adapt_page_needs_gsap()`'s
+list) -- those templates don't include this bundle's ScrollMagic code
+either way (it's `scrollmagic.min.js` on those pages, already correct
+and unchanged), so this fix shouldn't affect them, but a live check on
+one of the 8 (e.g. via staging) before shipping would be prudent.
+
+### Status
+
+Applied on the user's machine via the device bridge, **not committed
+to git yet** -- left for the user to review (`git diff assets/js/`,
+though it'll show as a single large-line diff given the file is
+minified), decide whether to keep or discard the backup file
+(`main.min.js.bak-pre-gsapfix-20260917`, currently untracked), commit,
+and push per standing practice.
+
+Task #6 (fix/verify regressions) is now fully closed: scroll-freeze
+resolved by user confirmation (§47), GSAP console error fixed and
+applied (this section).
+
+
+---
+
+## §49 -- 2026-09-17 (cont.): float-grid redesign started -- `_benchmarks-maturity.scss` (1st file), 5 declarations fixed
+
+### Context
+
+§41 flagged 229 remaining `float:left`/`float:right` declarations across
+16 template SCSS files needing individual redesign (Category C: real
+multi-column grids; Category D: no width to reason from), separate from
+the 453 mechanically-safe ones already applied directly. User approved
+starting this work "one file now," picking the smallest candidate by
+§41's old count: `_benchmarks-maturity.scss` (listed as 0 Cat-C, 1
+Cat-D).
+
+### Discrepancy found: the file didn't match the old audit
+
+§41's 453 "safe" direct-edit fixes were documented as "written to disk,
+NOT yet committed" at the time, and checking `git log` for this file
+shows no matching commit -- only generic "updates"/"fixes for staging"
+messages. Whatever was on disk then either never got committed or was
+since overwritten by a newer source drop from the client ("updated
+source files from latest files provided by Mark" appears in this file's
+log). Current `git diff`/`git status` for this file was clean against
+`HEAD`, and a fresh grep found **5 active `float: left;` declarations**
+(lines 565, 582, 838, 955, 1079), not the 1 the old table predicted.
+Treated the old count as stale and re-classified all 5 from scratch
+rather than trusting it.
+
+### Classification (same A/B/C/D scheme as §41)
+
+All 5 turned out to be mechanically safe, not genuine grids:
+
+- **Line 565** -- `h3 { width: 100%; float: left; ... }` -- Category B
+  (literal full-width float, non-carousel).
+- **Line 582** -- `.text-link { width: 75px; float: left; display: flex;
+  position: relative; }` -- Category A (own rule already `display:
+  flex` -> float is computed as inert regardless of the CSS source
+  order, per the same reasoning §41 empirically confirmed via
+  `getComputedStyle`).
+- **Line 838** -- `.title-container { float: left; width: 100%; ... }`
+  -- Category B.
+- **Line 955** -- `.auto-card-container-inner { float: left; width:
+  100%; position: relative; ... }` -- Category B.
+- **Line 1079** -- `.title-block { float: left; width: 100%; ... }` --
+  Category B.
+
+No genuine Category C/D grid was found in this file after all -- every
+`float:left` in it turned out to already be either flexed or full-width.
+
+### Applied
+
+Direct edits (same pattern as §41's safe-fix approach): `float: left`
+-> `float: none` in place, all 5 declarations, in
+`source/scss/templates/_benchmarks-maturity.scss`.
+
+### Verification
+
+- `git diff --stat`: 1 file, 5 insertions(+), 5 deletions(-) -- exactly
+  the 5 targeted lines, nothing else touched.
+- Compiled the file for real with `dart-sass` against the theme's
+  actual global mixins/variables (`source/scss/global/_mixins.scss`,
+  `_variables.scss`): 0 errors, only the same `@import`-deprecation
+  warnings common to the whole codebase (same as §46).
+- Grepped the compiled CSS: `float: left` count = 0 anywhere in this
+  file's output; `float: none` count = 6 (5 from this edit + 1
+  pre-existing, unrelated to this change).
+- Did **not** do a live before/after pixel/computed-style diff on
+  staging this pass (the two-browser Chrome-extension picker needed a
+  live user confirmation click mid-session and was skipped to keep
+  moving) -- same caveat §46 left open. The live page for this template
+  is reachable via `template-benchmarks-maturity.php`
+  (`_auto-play-card-carousel.php`, `_quicklinks-with-hover.php`,
+  `_list-block.php` component partials, matching the 3 edited
+  sections). Worth a quick visual check on that page before shipping,
+  same recommendation as every other CSS change in this doc.
+
+### Status
+
+Applied on the user's machine via the device bridge, **not committed to
+git yet** -- left for the user to review/commit/push per standing
+practice.
+
+### Remaining files (16 total, `_benchmarks-maturity.scss` now done)
+
+Per §41's original breakdown (also now suspect given this file's
+mismatch -- worth spot-checking each before trusting the C/D counts):
+`_market-buyer.scss` (2), `_agenda.scss` (4), `_thank-you-old.scss` (4),
+`_benchmarking.scss` (4), `_subscribe.scss` (6), `_single-events.scss`
+(8), `_home.scss` (10), `_gtm.scss` (12), `_services.scss` (12),
+`_resources.scss` (16), `_roundtable.scss` (15), `_single-post.scss`
+(19), `_position.scss` (25), `_landing.scss` (43), `_customer-
+stories.scss` (48). Next smallest candidate: `_market-buyer.scss`.
+
+
+---
+
+## §50 -- 2026-09-17 (cont.): float-grid redesign, 2nd file -- `_market-buyer.scss`, 10 declarations fixed
+
+### Context
+
+Continuing §49's file-by-file pass on the 229 declarations flagged in
+§41. Picked the next smallest file per the old breakdown:
+`_market-buyer.scss` (listed as 1 Cat-C, 1 Cat-D, 2 total).
+
+### Same stale-count pattern as §49
+
+Same as `_benchmarks-maturity.scss`: the file was clean against `HEAD`
+(no pending changes from a prior unfinished pass), but a fresh grep
+found **10 active `float:left`/`float:right` declarations** (lines 17,
+28, 33, 39, 232, 710, 733, 774, 802, 808), not the 2 the old §41 table
+predicted. Re-classified all 10 from scratch rather than trusting the
+old count, same as §49.
+
+### Classification
+
+- **Lines 17, 28, 33, 39** (`section.video-module` and its nested
+  `.image-video-container`/`.video-image-inner`/`.image-container,
+  .video-container`) -- all `width: 100%` -- Category B.
+- **Line 232** (`.side-bar-navigation ul li`) -- `width: 100%` --
+  Category B.
+- **Line 710** (`.column.accordion-block`) -- own rule already has
+  `display: flex; flex-direction: column;` -- Category A.
+- **Line 733** (`.column.accordion-block .faq-item .icon-container`,
+  `width: 24px`) -- narrower width, would normally be Category C, but
+  its direct parent `.faq-item` has `display: flex` on its own rule
+  (confirmed a few lines up in the same block) -- per the flexbox spec,
+  a flex item's float is always computed as `none` regardless of its
+  own float/display value, so this is safe by the same "provably inert"
+  reasoning as Category A, just via the parent's flex context rather
+  than the element's own rule. Labeled **Category A (parent-flex)** to
+  distinguish it from the simpler same-rule case, in case this pattern
+  recurs in later files.
+- **Line 774** (`.faq-item .answer`, `width: 100%`) -- also a direct
+  child of the same flex `.faq-item` -- both Category A (parent-flex)
+  and Category B independently; either reasoning alone makes it safe.
+- **Line 802** (`.column.image-block`) -- direct child of
+  `.column-container`, which has `display: flex; flex-direction: row;`
+  on its own rule (confirmed above in the same file) -- Category A
+  (parent-flex); also carries `order: 1`, a flex-only property, which
+  independently confirms this element was always intended to be a flex
+  item.
+- **Line 808** (`.column.image-block .image-container`, `width: 100%`)
+  -- parent `.column.image-block` itself has no `display: flex` (only
+  `padding-right`/`height`/`order`), so this one isn't a flex item --
+  but `width: 100%` makes it Category B on its own.
+
+No genuine Category C/D grid found in this file either -- same outcome
+as §49's file.
+
+### Applied
+
+Direct edits, all 10 declarations: `float: left`/`float:left`/`float:
+right` -> `float: none`, exact original spacing preserved outside the
+value itself, in `source/scss/templates/_market-buyer.scss`.
+
+### Verification
+
+- `git diff --stat`: 1 file, 10 insertions(+), 10 deletions(-) --
+  exactly the 10 targeted lines.
+- Compiled for real with `dart-sass` against the theme's global mixins/
+  variables: 0 errors, only the standard `@import`-deprecation
+  warnings.
+- Compiled CSS: `float: left`/`float: right` count = 0 anywhere in this
+  file's output; `float: none` count = 18 (10 from this edit + 8
+  pre-existing).
+- Same caveat as §49: no live staging screenshot/computed-style check
+  done this pass.
+
+### Status
+
+Applied on the user's machine via the device bridge, **not committed to
+git yet**.
+
+### Remaining files (14 left)
+
+`_agenda.scss`, `_thank-you-old.scss`, `_benchmarking.scss`,
+`_subscribe.scss`, `_single-events.scss`, `_home.scss`, `_gtm.scss`,
+`_services.scss`, `_resources.scss`, `_roundtable.scss`,
+`_single-post.scss`, `_position.scss`, `_landing.scss`,
+`_customer-stories.scss` -- all counts from §41's original table are
+now suspect given both files done so far had 5x the predicted
+declarations; treat each file's real count as unknown until grepped
+fresh. Next smallest candidates by the old (now unreliable) count:
+`_agenda.scss` and `_thank-you-old.scss`, both listed at 4.
+
+
+---
+
+## §51 -- 2026-09-17 (cont.): `_agenda.scss` found confirmed-dead mid-float-audit -- removed (819 lines), one live rule kept
+
+### Context
+
+Continuing §49/§50's file-by-file float-grid pass, next candidate was
+`_agenda.scss`. Found 25 active `float:left`/`float:right` declarations
+(not the 4 the old §41 table predicted -- same stale-count pattern as
+the last two files). While classifying them, noticed all but 4 already
+had matching float-refactor gate entries at the bottom of the file
+(the same `// line NNN` + doubled-specificity `float: none` pattern
+used throughout this project -- confirming those 21 were already
+computed as `float: none` in production and just needed the
+"collapse the gate into a direct edit" cleanup, zero risk). Of the
+remaining 4, two (`section.agenda-title`, a bare `<section>` with no
+width) turned out to already be covered by a **sitewide** gate rule
+(`section { float: none !important; }` in
+`source/scss/global/_styles.scss`, from the original global
+float-refactor pass) -- also already inert. The last two --
+`a.agenda-days-switcher` (a horizontal tab nav) and the
+`.speaker-image-container` (335px) / `.content-container`
+(`calc(100% - 335px)`) pair (a genuine two-column sidebar+content
+layout) -- were real, ungated float grids that would need an actual
+flexbox redesign.
+
+Before redesigning those two, checked which live page actually renders
+this markup (standard practice before touching a real layout) -- and
+found none does.
+
+### The confirmed-dead finding
+
+`_agenda.scss`'s selectors are scoped under four root selectors:
+`section.agenda-title`, `div.agenda-day`, `main.agenda`,
+`section.agenda-item`. The classes these require
+(`agenda-title`/`agenda-item` on a `<section>`, `agenda-day`,
+`agenda-days-switcher`, `speaker-image-container`,
+`content-container`, `company-container`, `roundtable-container`, etc.)
+are only ever emitted by three component partials:
+`templates/components/_agenda-item.php`,
+`templates/components/_agenda-house-keeping.php`, and
+`templates/components/_agenda-item-roundtable.php`.
+
+A theme-wide grep for every literal reference to those three filenames
+(`get_template_part`/`include`/`require`, `functions.php`'s ACF
+flexible-content dispatch tables, shortcode registrations, block
+registrations) found **zero** -- nothing in the theme ever calls them.
+The literally-named "Agenda" page template
+(`templates/template-agenda.php`, the only template with "agenda" in
+its filename) does NOT use `get_template_part` dispatch for these
+components at all -- it renders its own hardcoded markup
+(`.agendaBlock`, `.agendaHighlightsBlock`) built directly from ACF
+fields, entirely unrelated to `_agenda.scss`'s selectors. Same for the
+only other live pages that mention "agenda"
+(`single-event.php`/`single-event-nov.php`, `template-speakers.php`,
+`single-registration.php`, `_speakers-block.php`) -- all use different,
+unrelated markup (`agendaBlock`, `<a class="agenda-item">` as a plain
+link, `<span class="agenda-title">`) that doesn't match this file's
+`section.agenda-title`/`section.agenda-item` selectors.
+
+This is the same "structurally unreachable" test used throughout this
+engagement for confirmed-dead PHP files (no reference anywhere in the
+theme), applied here to three *component* partials rather than a
+top-level template -- and since every one of `_agenda.scss`'s rules
+(bar one) is scoped under classes exclusive to those dead components,
+the CSS is provably unreachable the same way §46's dead-CSS removals
+were.
+
+**One live exception found and kept**: `main.agenda { background-color:
+#fff; padding-bottom: 60px; }`. `template-agenda.php` line 9 has
+`<main id="main" role="main" class="agenda" ...>` -- a real match, kept
+as-is.
+
+### Applied
+
+Rewrote `source/scss/templates/_agenda.scss` down to just the one live
+rule (`main.agenda`) plus an explanatory header comment recording why
+the rest was removed and pointing back to this section. Removed: both
+`section.agenda-title` variants (`.one-day`/`.multi-day`, including the
+day-switcher tab nav), `div.agenda-day`, the entire `section.agenda-item`
+block (speaker/content two-column layout, company/speaker info, agenda
+description, the roundtable sub-block), and the entire float-refactor
+gate section for all of the above -- 819 lines total. This also
+resolves what would otherwise have been the 2 real Category-C
+redesigns (the two-column layout, the tab nav) -- moot, since neither
+selector can ever match live markup.
+
+Per the standing decision, the three dead PHP component files
+themselves (`_agenda-item.php`, `_agenda-house-keeping.php`,
+`_agenda-item-roundtable.php`) were **not** touched -- this pass is
+CSS-only, same as §46.
+
+### Verification
+
+- Compiled the new file standalone with `dart-sass` against the
+  theme's global mixins/variables: 0 errors, only the standard
+  `@import`-deprecation warnings. Output is exactly the one
+  `main.agenda` rule (plus unrelated `@keyframes` pulled in from the
+  global mixins import, confirming nothing scoped to this file leaked
+  through).
+- `git diff --stat`: 1 file, 13 insertions(+), 819 deletions(-).
+- Re-ran the theme-wide reference grep one more time after the edit to
+  make sure nothing else in `source/scss/`, `source/js/`, or any `.php`
+  file references the removed selectors by their exact compiled class
+  names -- clean.
+
+### Status
+
+Applied on the user's machine via the device bridge, **not committed to
+git yet** -- left for the user to review/commit/push. Given the size of
+this removal, worth a closer look at the diff before shipping, same as
+every dead-CSS removal in this doc, though the confirmed-dead test here
+was as rigorous as §46's.
+
+### Effect on the float-grid tracker
+
+`_agenda.scss` is now done (0 remaining `float:left`/`float:right`
+declarations, verified). 13 files left. Given both this file's stale
+count and `_market-buyer.scss`/`_benchmarks-maturity.scss`'s stale
+counts turned out to be significantly off, and this file additionally
+turned out to be a dead-code case rather than a real float-fix case,
+it's worth re-running a fresh grep-based count on any remaining file
+before assuming its old §41 number is accurate -- and worth being
+alert to the same "is this even live" question on the larger remaining
+files (`_customer-stories.scss`, `_landing.scss`, `_position.scss`),
+since dead-CSS and real-float-grid issues can and do overlap in the
+same file.
+
+
+---
+
+## §52 -- 2026-09-17 (cont.): float-grid redesign, 3rd file -- `_thank-you-old.scss`, 26 declarations (22 mechanical + 3 real flexbox conversions)
+
+### Context
+
+Continuing the file-by-file pass (§49-§51). `_thank-you-old.scss` had 26
+active `float:left`/`float:right` declarations (again, not the 4 the old
+§41 table predicted). Before doing any work, checked liveness first
+given §51's dead-file surprise: this file's selectors
+(`section.thank-you-banner`, `section.information-blocks`,
+`section.cta-block`, `section.faq-block`) are rendered by
+`templates/components/_thank-you-banner-block.php`, `_information-blocks.php`,
+`_cta-block.php`, `_faq-block.php` -- all dispatched by
+`templates/template-thankyou.php`, which §46 already confirmed has one
+live published page. So this file is genuinely live, unlike `_agenda.scss`.
+
+### Classification
+
+22 of 26 declarations already had matching float-refactor gate entries
+(same pattern as §51) -- already computed as `float: none` in
+production, safe to collapse into direct edits. The remaining 4 were
+real, ungated float layouts:
+
+- **`.column.image-column` (banner) / `.column.text-column`** -- both
+  carry the shared sitewide `.one-half` utility class
+  (`width: 50%; float: left;` in `source/scss/global/_styles.scss`,
+  used by many other templates -- not touched). This file's own rule
+  overrides `.image-column`'s float to `right` (more specific
+  selector), while `.text-column` keeps `float: left` from `.one-half`
+  since nothing here overrides it. Net effect: a genuine 50/50
+  two-column banner (image floated right, text sitting in the
+  remaining space on the left), confirmed against the live PHP markup
+  in `_thank-you-banner-block.php` (image-column renders first in the
+  DOM, text-column second).
+- **`.column.information-column`** (info-blocks section) -- also
+  carries `.one-half` (`width: 50%; float: left`), repeated once per
+  ACF row inside `.column-container` (confirmed via
+  `_information-blocks.php`'s loop) -- a genuine wrapping 2-per-row
+  grid, not a fixed 2-item layout.
+- **`.title-column` (185px) / `.faq-column`
+  (`calc(100% - 185px)`)** (FAQ section) -- both float left, sitting
+  side by side in DOM order (title first/left, FAQ list
+  second/right) -- a genuine fixed-sidebar + content layout, same
+  shape as the pair found (and later found moot) in `_agenda.scss`.
+
+### Applied
+
+**22 mechanical edits**: direct `float: left`/`float: right` ->
+`float: none` on the gated lines, matching §41/§49-§51's established
+safe pattern.
+
+**3 real flexbox conversions**, each scoped to just that section (never
+touching the shared `.one-half`/`.one-quarter` utility classes
+themselves, which are reused across many other templates):
+
+- `section.thank-you-banner .container`: `display: flex;
+  flex-direction: row-reverse;` (DOM order is image-then-text, but the
+  image needs to render on the right -- `row-reverse` reproduces what
+  `float: right` was doing without touching markup), with
+  `@include responsive(767) { flex-direction: column; }` to preserve
+  the original mobile stacking behavior (both columns already collapse
+  to `width: 100%` via `.one-half`'s own responsive rule -- unchanged).
+  `.image-column`'s own `float: right` -> `float: none` (now inert as
+  a flex item; kept explicit for source cleanliness). `.text-column`
+  needed no edit -- its float came from `.one-half` and is now
+  harmlessly inert too, without touching that shared class.
+- `section.information-blocks .container .column-container`:
+  `display: flex; flex-wrap: wrap;` added (plus its own
+  `float: left` -> `float: none`, one of the 22 gated/mechanical
+  lines). `.information-column`'s `float: left` -> `float: none`
+  (inert as a flex item; its `width: 50%` from `.one-half` now serves
+  as flex-basis, two per row, wrapping correctly at any count).
+- `section.faq-block .container`: `display: flex;` added, with
+  `@media (max-width:767px) { flex-direction: column; }` (matching
+  this section's own existing raw `@media` convention rather than the
+  `@include responsive()` mixin used elsewhere in the file, for
+  consistency with its neighbors). DOM order (title first/left, FAQ
+  second/right) already matches the desired visual order with plain
+  `flex-direction: row` (the default), so no reversal needed here,
+  unlike the banner. Both `.title-column` and `.faq-column`'s own
+  `float: left` -> `float: none`.
+
+Also removed the entire float-refactor gate section (278 lines) at the
+bottom of the file, now fully redundant once every gated declaration
+was collapsed to a direct edit.
+
+### Verification
+
+- `grep` for `float:\s*left\|float:\s*right` in the file: 0 matches
+  anywhere.
+- Compiled for real with `dart-sass` against the theme's global mixins/
+  variables: 0 errors, only the standard `@import`-deprecation
+  warnings. Confirmed in the compiled output: `display: flex` present
+  on exactly the 3 intended selectors
+  (`section.thank-you-banner .container`,
+  `section.information-blocks .container .column-container`,
+  `section.faq-block .container`), `flex-direction: row-reverse` and
+  `flex-wrap: wrap` both present, `float: left`/`float: right` count =
+  0, `float: none` count = 27.
+- `git diff --stat`: 1 file, 41 insertions(+), 307 deletions(-).
+- Did **not** do a live before/after screenshot/computed-style check on
+  staging -- same caveat as §49-§51. Given this pass includes 3 real
+  layout conversions (not just mechanical edits), this file is the
+  highest-value candidate in the whole float-grid tracker for an actual
+  live visual check before shipping -- specifically the banner's
+  image/text side-by-side order and the FAQ sidebar/content split, at
+  both desktop and the 767px mobile breakpoint.
+
+### Status
+
+Applied on the user's machine via the device bridge, **not committed to
+git yet**.
+
+### Remaining files (12 left)
+
+`_benchmarking.scss`, `_subscribe.scss`, `_single-events.scss`,
+`_home.scss`, `_gtm.scss`, `_services.scss`, `_resources.scss`,
+`_roundtable.scss`, `_single-post.scss`, `_position.scss`,
+`_landing.scss`, `_customer-stories.scss` -- old §41 counts all
+unreliable, re-grep each fresh. Also worth checking liveness before
+starting each, per §51's finding.
