@@ -10,8 +10,17 @@
                     <div class="video-container" style="aspect-ratio: auto; padding-bottom: 56.5%;">
                         <div class="bg-container">
                             <?php $image = get_sub_field('poster_image'); ?>
-                            <video width="100%" autoplay loop muted playsinline poster="<?php echo esc_url( adapt_webp_poster_url( $image['url'] ) ); ?>" style="height: 100%;">
-                                <source type="video/mp4" src="<?php echo get_sub_field( 'autoplay_video' ); ?>" />
+                            <?php // 2026-09-17: src shipped as data-autoplay-src, not src -- see
+                            // adaptGateAutoplayVideos() in source/js/main.js. Keeps the file
+                            // from downloading unconditionally on page load (flagged by
+                            // Lighthouse as an "enormous network payload" on the pages using
+                            // this pattern); JS decides client-side whether to actually load
+                            // and play it, since this page is served from WP Rocket's
+                            // full-page cache and a PHP-side Save-Data/etc. check can't work
+                            // there (it would just get baked into whichever visitor's
+                            // request happened to prime the cache). ?>
+                            <video width="100%" loop muted playsinline poster="<?php echo esc_url( adapt_webp_poster_url( $image['url'] ) ); ?>" style="height: 100%;">
+                                <source type="video/mp4" data-autoplay-src="<?php echo get_sub_field( 'autoplay_video' ); ?>" />
                             </video>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>                                
                                 <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>"></a>

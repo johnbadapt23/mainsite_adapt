@@ -167,6 +167,48 @@
 		});
 	}
 
+	// 2026-09-17: autoplay hero/background videos (.bg-container > video[loop
+	// muted playsinline]) used to hardcode their real file URL in the
+	// <source src> the server output, so every visitor's browser started
+	// fetching the full file immediately on page load regardless of network
+	// conditions or motion preference -- Lighthouse flagged this as a
+	// multi-MB "enormous network payload" on pages using the pattern (e.g.
+	// the homepage's Vimeo hero, ~4MB). The real URL now ships as
+	// data-autoplay-src instead of src, and the <video> tag no longer
+	// carries the autoplay attribute in the markup -- this decides,
+	// client-side, whether to actually wire up the source and start
+	// playback. This has to be client-side rather than a PHP-side
+	// Save-Data/etc. check: the whole site is served through WP Rocket's
+	// full-page cache, so a server-side check would just get baked into
+	// whichever visitor's request happened to prime the cache and get
+	// served to everyone else regardless of their own actual
+	// header/preference.
+	function adaptGateAutoplayVideos() {
+		var saveData = !!(navigator.connection && navigator.connection.saveData);
+		var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		if (saveData || reducedMotion) {
+			// Leave the poster image showing -- data-autoplay-src is never
+			// touched, so the browser never fetches the video file at all.
+			return;
+		}
+
+		$('.bg-container > video > source[data-autoplay-src]').each(function () {
+			var $source = $(this);
+			var $video = $source.closest('video');
+			$source.attr('src', $source.attr('data-autoplay-src'));
+			$video.get(0).load();
+			$video.attr('autoplay', 'autoplay');
+			var playPromise = $video.get(0).play();
+			if (playPromise && typeof playPromise.catch === 'function') {
+				playPromise.catch(function () {
+					// Autoplay blocked (e.g. low-power mode) -- the poster
+					// image stays as the fallback, same as before this change.
+				});
+			}
+		});
+	}
+
 	$(document).ready(function (){
 
 		// STANDARD
@@ -175,6 +217,7 @@
 		match();
 		outsideContainer();
 		aos();
+		adaptGateAutoplayVideos();
 
 		if($('.progress-container').length ){
 			scrollProgressBar();
