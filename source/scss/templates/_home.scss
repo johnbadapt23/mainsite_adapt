@@ -19,7 +19,7 @@ body.template-home {
 
 .loading {
     width: 100%;
-    float: left;
+    float: none;
     height: 100vh;
     position: fixed;
     top: 0;
@@ -53,7 +53,7 @@ body.template-home {
 
 #main {
     width: 100%;
-    float: left;
+    float: none;
 
     &.home {
         padding-top:0px;
@@ -65,7 +65,7 @@ body.template-home {
 
         ul {
             list-style: none;
-            float:left;
+            float: none;
             width: 100%;
             margin:0px;
             padding:0px;
@@ -96,7 +96,7 @@ body.template-home {
                         left:20px;
                         right:20px;
                         height:82px;
-                        float:left;
+                        float: none;
                         text-align: right;
 
                         @include responsive(767) {
@@ -110,8 +110,16 @@ body.template-home {
                             width: 100%;
                         }
 
+
+                        // Direct child only (not .text/.title inside each <a>,
+                        // which the broad `span` rule above also matches) -- this
+                        // is the actual row of banner_buttons <a> elements.
+                        > span {
+                            display: flex;
+                            flex-direction: row-reverse;
+                        }
                         a {
-                            float:right;
+                            float: none;
                             margin-right:16px;
                             width:calc(33.33% - 10.66px);
                             height:82px;
@@ -170,7 +178,7 @@ body.template-home {
                             }
 
                             span.text {
-                                float:left;
+                                float: none;
                                 width: 100%;
                                 margin-top:22px;
                                 font-size: 10px;
@@ -186,7 +194,7 @@ body.template-home {
 
                             span.title {
                                 margin-top:8px;
-                                float:left;
+                                float: none;
                                 width: 100%;
                                 font-size: 14px;
                                 line-height: 17px;
@@ -217,9 +225,15 @@ body.template-home {
                         }
 
                         &.columns {
+                            display: flex;
+
+                            @include responsive(767) {
+                                flex-direction: column;
+                            }
+
 
                             .column {
-                                float:left;
+                                float: none;
                                 width:calc(33.33% - 16px);
                                 margin-left:24px;
 
@@ -243,7 +257,7 @@ body.template-home {
                             font-size: 40px;
                             line-height:50px;
                             text-transform: uppercase;
-                            float:left;
+                            float: none;
                             width: 100%;
 
                             @include responsive(767) {
@@ -258,7 +272,7 @@ body.template-home {
                             margin:30px 0px 0px;
                             font-size: 16px;
                             line-height: 26px;
-                            float:left;
+                            float: none;
                             width: 100%;
 
                             @include responsive(767) {
@@ -267,7 +281,7 @@ body.template-home {
                         }
 
                         span.buttonBlock {
-                            float:left;
+                            float: none;
                             width: 100%;
                             margin-top:60px;
 
@@ -286,7 +300,7 @@ body.template-home {
                         }
 
                         span.videoLink {
-                            float:left;
+                            float: none;
                             width: 100%;
                             margin-top:60px;
 
@@ -296,7 +310,9 @@ body.template-home {
 
                             a,
                             .playBtn {
-                                float:left;
+                                float: none;
+                                display: flex;
+                                align-items: center;
                                 background: none;
                                 border: none;
                                 padding: 0;
@@ -306,7 +322,7 @@ body.template-home {
                                 appearance: none;
 
                                 > span {
-                                    float:left;
+                                    float: none;
                                     width:auto;
                                     margin: 0px;
 
@@ -323,7 +339,8 @@ body.template-home {
                                             font-size: 14px;
                                             line-height: 17px;
                                             clear:both;
-                                            float:left;
+                                            float: none;
+                                            display: block;
                                             font-family: $font-light;
 
                                             &:last-child {
@@ -380,7 +397,13 @@ section.logoGrid {
     }
 
     .titleBlock {
-        float: left;
+        float: none;
+        display: flex;
+        align-items: flex-start;
+
+        @include responsive(640) {
+            flex-direction: column;
+        }
         width: 100%;
         position: relative;
         margin-bottom: 52px;
@@ -391,7 +414,7 @@ section.logoGrid {
         }
 
         .title {
-            float: left;
+            float: none;
             width: 33.33%;
             padding-right: 20px;
 
@@ -401,7 +424,7 @@ section.logoGrid {
             }
 
             h2 {
-                float: left;
+                float: none;
                 width: 100%;
                 font-family: $font-main;
                 font-size: 40px;
@@ -427,7 +450,7 @@ section.logoGrid {
             }
 
             &.centre {
-                float: left;
+                float: none;
                 width: 33.33%;
 
                 @include responsive(640) {
@@ -440,12 +463,14 @@ section.logoGrid {
             }
 
             &.right {
-                float: right;
+                float: none;
+                margin-left: auto;
                 width: 33.33%;
 
                 @include responsive(640) {
-                    float: left;
+                                float: none;
                     width: 100%;
+                    margin-left: 0;
                 }
 
                 h3 {
@@ -460,7 +485,9 @@ section.logoGrid {
     }
 
     .logoBlock {
-        float: left;
+        float: none;
+        display: flex;
+        flex-wrap: wrap;
         width: 100%;
         padding: 52px 0 90px;
         text-align: center;
@@ -470,13 +497,13 @@ section.logoGrid {
         }
 
         .logo {
-            float: left;
+            float: none;
             display: inline-block;
             width: 33.33%;
             padding-right: 10%;
 
             .logoContainer {
-                float: left;
+                float: none;
                 position: relative;
                 padding-top: 50%;
                 width: 100%;
@@ -500,7 +527,7 @@ section.logoGrid {
             }
 
             .logoTitle {
-                float: left;
+                float: none;
                 width: 100%;
                 font-family: $font-alt;
                 font-size: 25px;
@@ -548,7 +575,8 @@ section.logoGrid.counter {
             }
 
             .number {
-                float: left;
+                float: none;
+                display: block;
                 font-family: $font-light;
                 color: $color-red;
                 font-size: 8vw;
@@ -584,229 +612,3 @@ span.dark-overlay {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=0 ); /* IE6-9 */
 }
 
-
-// =====================================================================
-// Float -> Flexbox modernization pass, folded in from the formerly
-// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
-// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
-// Pixel-parity verified against the gated build before this merge --
-// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
-// dated 2026-09-14) for the full audit trail, per-rule provenance, and
-// the isolated-build diff used to confirm this file's compiled output
-// is unchanged from the pre-merge gated build.
-// =====================================================================
-// line 22
-
-.loading.loading {
-                float: none;
-        }
-
-// line 56
-
-#main {
-                float: none !important;
-        }
-
-// line 68
-
-#main {
-                section.banner.banner {
-                        ul {
-                                float: none;
-                        }
-                }
-        }
-
-// line 173
-
-#main {
-                section.banner.banner {
-                        ul {
-                                li {
-                                        .container.container {
-                                                .baseButtons.baseButtons {
-                                                        a {
-                                                                span.text.text {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 189
-
-#main {
-                section.banner.banner {
-                        ul {
-                                li {
-                                        .container.container {
-                                                .baseButtons.baseButtons {
-                                                        a {
-                                                                span.title.title {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 246
-
-#main {
-                section.banner.banner {
-                        ul {
-                                li {
-                                        .container.container {
-                                                .content.content {
-                                                        span.title.title {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 261
-
-#main {
-                section.banner.banner {
-                        ul {
-                                li {
-                                        .container.container {
-                                                .content.content {
-                                                        span.text.text {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 270
-
-#main {
-                section.banner.banner {
-                        ul {
-                                li {
-                                        .container.container {
-                                                .content.content {
-                                                        span.buttonBlock.buttonBlock {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 289
-
-#main {
-                section.banner.banner {
-                        ul {
-                                li {
-                                        .container.container {
-                                                .content.content {
-                                                        span.videoLink.videoLink {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 383
-
-section.logoGrid.logoGrid {
-                .titleBlock.titleBlock {
-                        float: none;
-                }
-        }
-
-// line 404
-
-section.logoGrid.logoGrid {
-                .titleBlock.titleBlock {
-                        .title.title {
-                                h2 {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 447
-
-section.logoGrid.logoGrid {
-                .titleBlock.titleBlock {
-                        .description.description {
-                                &.right.right {
-                                        @include responsive(640) {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 463
-
-section.logoGrid.logoGrid {
-                .logoBlock.logoBlock {
-                        float: none;
-                }
-        }
-
-// line 479
-
-section.logoGrid.logoGrid {
-                .logoBlock.logoBlock {
-                        .logo.logo {
-                                .logoContainer.logoContainer {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 503
-
-section.logoGrid.logoGrid {
-                .logoBlock.logoBlock {
-                        .logo.logo {
-                                .logoTitle.logoTitle {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 99
-
-#main {
-                section.banner.banner {
-                        ul {
-                                li {
-                                        .container.container {
-                                                .baseButtons.baseButtons {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }

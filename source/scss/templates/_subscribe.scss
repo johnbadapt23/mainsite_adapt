@@ -35,7 +35,7 @@ section.subscribe-introduction {
 
         .content-container {
             width: 100%;
-            float: left;
+            float: none;
             position: relative;
             padding-bottom: 131px;
 
@@ -102,7 +102,7 @@ section.subscribe-introduction {
                 margin: 0 auto;
 
                 .pre-title {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     font-size: 20px;
@@ -117,7 +117,7 @@ section.subscribe-introduction {
                 }
 
                 h1 {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     margin-bottom: 56px;
@@ -128,14 +128,15 @@ section.subscribe-introduction {
                 }
 
                 .button-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     position: relative;
 
                     @media (max-width: 767px) {
                         a {
-                            float: left;
+                            float: none;
+                            display: block;
                             width: 100%;
                         }
                     }
@@ -157,7 +158,7 @@ section.subscribe-introduction {
                     }
 
                     .post-button-text {
-                        float: left;
+                        float: none;
                         width: 100%;
                         text-align: center;
                         margin-top: 8px;
@@ -169,11 +170,11 @@ section.subscribe-introduction {
         }
 
         .image-overlay-container {
-            float: left;
+            float: none;
             width: 100%;
 
             img {
-                float: left;
+                float: none;
                 width: 100%;
             }
         }
@@ -181,7 +182,7 @@ section.subscribe-introduction {
 }
 
 section.two-column-image-text-subscribe {
-    float: left;
+    float: none;
     width: 100%;
     padding: 86px 0;
 
@@ -191,13 +192,13 @@ section.two-column-image-text-subscribe {
 
     .container {
         h2 {
-            float: left;
+            float: none;
             width: 100%;
             text-align: center;
         }
 
         .two-column-image-text-outer {
-            float: left;
+            float: none;
             width: 100%;
             display: flex;
 
@@ -238,7 +239,7 @@ section.two-column-image-text-subscribe {
                 }
 
                 img {
-                    float: left;
+                    float: none;
                     width: 100%;
                 }
             }
@@ -248,7 +249,7 @@ section.two-column-image-text-subscribe {
 
                 h2,
                 h4 {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: left;
                     margin-bottom: 16px;
@@ -264,7 +265,7 @@ section.two-column-image-text-subscribe {
                 }
 
                 .text {
-                    float: left;
+                    float: none;
                     width: 100%;
                     font-size: 20px;
                     line-height: 28px;
@@ -276,7 +277,7 @@ section.two-column-image-text-subscribe {
                 }
 
                 .list-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-top: 40px;
 
@@ -285,7 +286,7 @@ section.two-column-image-text-subscribe {
                     }
 
                     .list-item {
-                        float: left;
+                        float: none;
                         width: 100%;
                         position: relative;
                         padding-left: 36px;
@@ -313,7 +314,7 @@ section.two-column-image-text-subscribe {
                 }
 
                 .button-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-top: 40px;
                 }
@@ -431,7 +432,8 @@ section.three-column-icon-text {
 
     .container {
         .title-container {
-            float: left;
+            float: none;
+            display: block;
             width: 100%;
             text-align: center;
             margin-bottom: 80px;
@@ -455,7 +457,7 @@ section.three-column-icon-text {
 
         }
         .icon-text-column-container {
-            float: left;
+            float: none;
             width: 100%;
             padding: 80px 110px;
             display: flex;
@@ -469,7 +471,8 @@ section.three-column-icon-text {
             }
 
             .column {
-                float: left;
+                float: none;
+                display: flex;
                 width: 33.3%;
                 margin-bottom: 80px;
 
@@ -479,7 +482,7 @@ section.three-column-icon-text {
 
                 @media (max-width: 767px) {
                     margin-bottom: 40px;
-                    float: left;
+                    float: none;
                     width: 100%;
                 }
 
@@ -508,7 +511,7 @@ section.three-column-icon-text {
                 }
 
                 .icon-container {
-                    float: left;
+                    float: none;
                     width: 80px;
                     padding-right: 24px;
 
@@ -518,11 +521,11 @@ section.three-column-icon-text {
                 }
 
                 .text-container {
-                    float: left;
+                    float: none;
                     width: calc(100% - 80px);
 
                     span {
-                        float: left;
+                        float: none;
                         width: 100%;
 
                         &.title {
@@ -555,7 +558,8 @@ section.two-column-subscribe{
         text-align: center;
 
         .title-container {
-            float: left;
+            float: none;
+            display: block;
             width: 100%;
             text-align: center;
             margin-bottom: 80px;
@@ -620,21 +624,26 @@ section.two-column-subscribe{
             }
 
             .top-content {
-                float: left;
+                float: none;
+                display: flex;
                 width: 100%;
                 margin-bottom: 32px;
 
+                @media (max-width: 1023px) {
+                    flex-direction: column;
+                }
+
                 .card-image-container {
-                    float: right;
+                    float: none;
                     width: 180px;
 
                     @media (max-width: 1023px) {
-                        float: left;
+                        float: none;
                         width: 145px;
                     }
 
                     .image-container {
-                        float: left;
+                        float: none;
                         width: 100%;
                         height: 164px;
 
@@ -645,7 +654,7 @@ section.two-column-subscribe{
                 }
 
                 .text-content {
-                    float: left;
+                    float: none;
                     width: calc(100% - 180px);
 
                     @media (max-width: 1023px) {
@@ -654,7 +663,7 @@ section.two-column-subscribe{
                 }
 
                 .pre-title {
-                    float: left;
+                    float: none;
                     width: 100%;
                     color: $color-dark-grey;
                     font-size: 18px;
@@ -663,19 +672,19 @@ section.two-column-subscribe{
                 }
 
                 h4 {
-                    float: left;
+                    float: none;
                     width: 100%;
                 }
             }
 
             .text-tags-container {
-                float: left;
+                float: none;
                 width: 100%;
                 margin-bottom: 32px;
                 max-width: 350px;
 
                 .text {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 32px;
                     font-size: 20px;
@@ -687,11 +696,13 @@ section.two-column-subscribe{
                 }
 
                 .tags-container {
-                    float: left;
+                    float: none;
+                    display: flex;
+                    flex-wrap: wrap;
                     width: 100%;
 
                     .tag {
-                        float: left;
+                        float: none;
                         margin-right: 8px;
                         margin-bottom: 8px;
                         border-radius: 12px;
@@ -718,11 +729,12 @@ section.two-column-subscribe{
                 }
 
                 .form-popup-button-container {
-                    float: left;
+                    float: none;
                     width: 100%;
 
                     a {
-                        float: left;
+                        float: none;
+                        display: block;
                         width: 100%;
                         text-align: center;
                     }
@@ -732,466 +744,3 @@ section.two-column-subscribe{
     }
 }
 
-
-// =====================================================================
-// Float -> Flexbox modernization pass, folded in from the formerly
-// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
-// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
-// Pixel-parity verified against the gated build before this merge --
-// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
-// dated 2026-09-14) for the full audit trail, per-rule provenance, and
-// the isolated-build diff used to confirm this file's compiled output
-// is unchanged from the pre-merge gated build.
-// =====================================================================
-// line 38
-
-section.subscribe-introduction.subscribe-introduction {
-                .container.container {
-                        .content-container.content-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 105
-
-section.subscribe-introduction.subscribe-introduction {
-                .container.container {
-                        .content-container.content-container {
-                                .content-inner.content-inner {
-                                        .pre-title.pre-title {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 120
-
-section.subscribe-introduction.subscribe-introduction {
-                .container.container {
-                        .content-container.content-container {
-                                .content-inner.content-inner {
-                                        h1 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 131
-
-section.subscribe-introduction.subscribe-introduction {
-                .container.container {
-                        .content-container.content-container {
-                                .content-inner.content-inner {
-                                        .button-container.button-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 138
-
-section.subscribe-introduction.subscribe-introduction {
-                .container.container {
-                        .content-container.content-container {
-                                .content-inner.content-inner {
-                                        .button-container.button-container {
-                                                @media (max-width: 767px) {
-                                                        a {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 160
-
-section.subscribe-introduction.subscribe-introduction {
-                .container.container {
-                        .content-container.content-container {
-                                .content-inner.content-inner {
-                                        .button-container.button-container {
-                                                .post-button-text.post-button-text {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 172
-
-section.subscribe-introduction.subscribe-introduction {
-                .container.container {
-                        .image-overlay-container.image-overlay-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 176
-
-section.subscribe-introduction.subscribe-introduction {
-                .container.container {
-                        .image-overlay-container.image-overlay-container {
-                                img {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 184
-
-section.two-column-image-text-subscribe.two-column-image-text-subscribe {
-                float: none;
-        }
-
-// line 194
-
-section.two-column-image-text-subscribe.two-column-image-text-subscribe {
-                .container.container {
-                        h2 {
-                                float: none;
-                        }
-                }
-        }
-
-// line 200
-
-section.two-column-image-text-subscribe.two-column-image-text-subscribe {
-                .container.container {
-                        .two-column-image-text-outer.two-column-image-text-outer {
-                                float: none;
-                        }
-                }
-        }
-
-// line 241
-
-section.two-column-image-text-subscribe.two-column-image-text-subscribe {
-                .container.container {
-                        .two-column-image-text-outer.two-column-image-text-outer {
-                                .image-column.image-column {
-                                        img {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 251
-
-section.two-column-image-text-subscribe.two-column-image-text-subscribe {
-                .container.container {
-                        .two-column-image-text-outer.two-column-image-text-outer {
-                                .text-column.text-column {
-                                        h2,
-                h4 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 267
-
-section.two-column-image-text-subscribe.two-column-image-text-subscribe {
-                .container.container {
-                        .two-column-image-text-outer.two-column-image-text-outer {
-                                .text-column.text-column {
-                                        .text.text {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 279
-
-section.two-column-image-text-subscribe.two-column-image-text-subscribe {
-                .container.container {
-                        .two-column-image-text-outer.two-column-image-text-outer {
-                                .text-column.text-column {
-                                        .list-container.list-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 288
-
-section.two-column-image-text-subscribe.two-column-image-text-subscribe {
-                .container.container {
-                        .two-column-image-text-outer.two-column-image-text-outer {
-                                .text-column.text-column {
-                                        .list-container.list-container {
-                                                .list-item.list-item {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 316
-
-section.two-column-image-text-subscribe.two-column-image-text-subscribe {
-                .container.container {
-                        .two-column-image-text-outer.two-column-image-text-outer {
-                                .text-column.text-column {
-                                        .button-container.button-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 434
-
-section.three-column-icon-text.three-column-icon-text {
-                .container.container {
-                        .title-container.title-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 458
-
-section.three-column-icon-text.three-column-icon-text {
-                .container.container {
-                        .icon-text-column-container.icon-text-column-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 482
-
-section.three-column-icon-text.three-column-icon-text {
-                .container.container {
-                        .icon-text-column-container.icon-text-column-container {
-                                .column.column {
-                                        @media (max-width: 767px) {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 521
-
-section.three-column-icon-text.three-column-icon-text {
-                .container.container {
-                        .icon-text-column-container.icon-text-column-container {
-                                .column.column {
-                                        .text-container.text-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 525
-
-section.three-column-icon-text.three-column-icon-text {
-                .container.container {
-                        .icon-text-column-container.icon-text-column-container {
-                                .column.column {
-                                        .text-container.text-container {
-                                                span {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 558
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .title-container.title-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 623
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .column-container.column-container {
-                                .top-content.top-content {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 637
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .column-container.column-container {
-                                .top-content.top-content {
-                                        .card-image-container.card-image-container {
-                                                .image-container.image-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 648
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .column-container.column-container {
-                                .top-content.top-content {
-                                        .text-content.text-content {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 657
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .column-container.column-container {
-                                .top-content.top-content {
-                                        .pre-title.pre-title {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 666
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .column-container.column-container {
-                                .top-content.top-content {
-                                        h4 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 672
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .column-container.column-container {
-                                .text-tags-container.text-tags-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 678
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .column-container.column-container {
-                                .text-tags-container.text-tags-container {
-                                        .text.text {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 690
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .column-container.column-container {
-                                .text-tags-container.text-tags-container {
-                                        .tags-container.tags-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 721
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .column-container.column-container {
-                                .form-container.form-container {
-                                        .form-popup-button-container.form-popup-button-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 725
-
-section.two-column-subscribe.two-column-subscribe {
-                .container.container {
-                        .column-container.column-container {
-                                .form-container.form-container {
-                                        .form-popup-button-container.form-popup-button-container {
-                                                a {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-@media (max-width: 767px) {
-        section.subscribe-introduction.subscribe-introduction .container.container .content-container.content-container .content-inner.content-inner .button-container.button-container a {
-            display: block;
-        }
-    }
-
-section.two-column-subscribe.two-column-subscribe .container.container .column-container.column-container .form-container.form-container .form-popup-button-container.form-popup-button-container a {
-        display: block;
-    }
-
-section.three-column-icon-text.three-column-icon-text .container.container .title-container.title-container {
-        display: block;
-    }
-
-section.two-column-subscribe.two-column-subscribe .container.container .title-container.title-container {
-        display: block;
-    }

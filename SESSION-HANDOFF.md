@@ -6323,3 +6323,699 @@ git yet**.
 `_landing.scss`, `_customer-stories.scss` -- old §41 counts all
 unreliable, re-grep each fresh. Also worth checking liveness before
 starting each, per §51's finding.
+
+
+---
+
+## §53 -- 2026-09-18: user committed/pushed prior work; float-grid redesign, 4th file -- `_benchmarking.scss`, 16 declarations, all mechanical
+
+### Housekeeping note
+
+Picking this session back up, found the user had committed and pushed
+§48-§52's work (GSAP fix, `_benchmarks-maturity.scss`,
+`_market-buyer.scss`, `_agenda.scss`, `_thank-you-old.scss`) as commit
+`64131a6` ("updates; optimize float-based elements; optimize css using
+per-template queueing"), followed by their own separate commit
+`b9bede7` ("added new toggle checkbox for roundtable registration").
+Working tree is clean, `dev` is up to date with `origin/dev`. Also
+noticed a stale, empty `.git/index.lock` on the user's machine
+(couldn't remove it -- no delete permission requested for it this
+pass, and it isn't blocking any read operation) -- flagged to the user
+directly; it may need manual removal before their next `git commit` if
+still present.
+
+### This file
+
+`_benchmarking.scss` styles `template-benchmarking.php` -- confirmed
+live (it's one of the 8 templates `adapt_page_needs_gsap()` explicitly
+lists, and its `body.template-benchmarking` selector at line 617
+matches the theme's live-template body-class convention). 16 active
+`float:left` declarations found (old §41 table isn't available for
+this file's individual count, but the pattern held again -- this
+wasn't a small easy file).
+
+### Classification
+
+12 of 16 already had matching float-refactor gate entries (verified by
+selector content, not raw line number -- the gate's own `// line NNN`
+comments are anchored to line numbers from whenever the gate was
+written, which had drifted +4 from current line numbers partway
+through the file due to some unrelated earlier edit; matched by
+comparing the gate's compiled selector to the current declaration's
+context instead of trusting the number literally). The remaining 4
+(lines 25, 31, 36, 43, all in `section.quote-slider`'s
+`.quote-module`/`.customer-quote-slider-inner`/`h2`/`.small-quote-text`)
+were ungated but all plain `width: 100%` -- Category B, mechanically
+safe, no real grid found anywhere in this file.
+
+### Applied
+
+All 16: direct `float: left` -> `float: none`. Removed the now-fully-
+redundant float-refactor gate section at the bottom of the file
+(matching every one of the 12 gated declarations).
+
+### Verification
+
+- `grep` for `float:\s*left\|float:\s*right`: 0 matches in the file.
+- Compiled for real with `dart-sass` against the theme's global mixins/
+  variables: 0 errors. Compiled output: `float: left`/`float: right`
+  count = 0.
+- `git diff --stat`: 1 file, 16 insertions(+), 177 deletions(-).
+
+### Status
+
+Applied on the user's machine via the device bridge, **not committed to
+git yet**.
+
+### Remaining files (11 left)
+
+`_subscribe.scss`, `_single-events.scss`, `_home.scss`, `_gtm.scss`,
+`_services.scss`, `_resources.scss`, `_roundtable.scss`,
+`_single-post.scss`, `_position.scss`, `_landing.scss`,
+`_customer-stories.scss`.
+
+
+---
+
+## §54 -- 2026-09-18 (cont.): float-grid redesign, 5th file -- `_subscribe.scss`, 38 declarations (33 mechanical + 3 real flexbox conversions), plus a methodology note on `<span>`/`<a>` floats worth flagging for every remaining file
+
+### Context
+
+Continuing the file-by-file pass (§49-§53). Picked the next candidate from
+§53's remaining list: `_subscribe.scss`. Confirmed live before starting,
+per §51's standing practice: its four root selectors
+(`section.subscribe-introduction`, `section.two-column-image-text-subscribe`,
+`section.three-column-icon-text`, `section.two-column-subscribe`) are each
+rendered by their own component partial in
+`templates/subscribe-components/` (`_introduction.php`,
+`_two-column-image-text.php`, `_three-column-icon-text.php`,
+`_two-column-subscribe.php`), all dispatched by `templates/template-subscribe.php`
+via ACF flexible-content rows. The `two_column_subscribe_blocks` and
+`three_column_icon_text` layouts are also reused by several other live
+templates (`template-benchmarking.php`, `template-comparison.php`,
+`template-services.php`, and others), so this file is live and
+higher-traffic than a single-page template would be.
+
+### Fresh count, same stale-table pattern as every file so far
+
+A fresh grep found **38 active `float:left`/`float:right` declarations**
+(lines 38, 105, 120, 131, 138, 160, 172, 176, 184, 194, 200, 241, 251,
+267, 279, 288, 316, 434, 458, 472, 482, 511, 521, 525, 558, 623, 628,
+632, 637, 648, 657, 666, 672, 678, 690, 694, 721, 725) -- not the 6 §41's
+old table predicted. Same pattern as every file in this series so far;
+the old table is now treated as fully unreliable and ignored.
+
+### Classification
+
+33 of 38 already had matching float-refactor gate entries at the bottom
+of the file, verified by selector content (all 33 matched cleanly by
+their `// line NNN` comment *and* by comparing the gate's compiled
+selector path to the current declaration -- no drift found this time,
+unlike §53). These 33 were already computed as `float: none` in
+production; collapsed into direct edits per the established safe
+pattern.
+
+The remaining 5 (lines 472, 511, 628, 632, 694) were ungated and
+classified fresh:
+
+- **Line 472** -- `.icon-text-column-container .column` -- narrower
+  width (33.3%), but the parent `.icon-text-column-container` has
+  `display: flex; flex-wrap: wrap;` on its own rule (confirmed a few
+  lines up) -- **Category A (parent-flex)**, same reasoning §50
+  established.
+- **Line 511 / (521 was already gated)** -- `.column .icon-container`
+  (80px) / `.text-container` (`calc(100% - 80px)`) -- a genuine
+  side-by-side icon+text pair, both floated, no flex anywhere in their
+  own ancestry (`.column` itself is not a flex container) -- **Category
+  C**, real grid, needs redesign.
+- **Line 628 / 632** -- `.top-content .card-image-container` (180px
+  desktop / 145px at <=1023px, `float: right` on desktop, overridden to
+  `float: left` on the mobile breakpoint) paired with `.text-content`
+  (`calc(100% - 180px)`, already gated at line 648) -- **Category C**,
+  a genuine two-column card layout.
+- **Line 694** -- `.tags-container .tag` -- float with no width at all
+  (just `margin-right`/`margin-bottom`), a wrapping row of pill/tag
+  chips -- **Category D** in shape, but the fix is the same well-known
+  "floats used purely for horizontal wrapping" pattern -> `flex-wrap`.
+
+### The methodology note: `<span>`/`<a>` floats need a `display` check, not just a width check
+
+This file's markup (checked against all 4 component partials) uses
+`<span>` for the vast majority of its structural wrapper elements
+(`.top-content`, `.card-image-container`, `.text-content`,
+`.pre-title`, `.text-tags-container`, `.tags-container`, `.tag`,
+`.form-popup-button-container`, etc. -- almost everything except the
+outer `<section>`/`<div class="container">`/`<div class="column">`
+levels), plus real `<a>` tags for the two button links. This matters
+because of a CSS rule that hadn't come up explicitly in §49-§53 (those
+files leaned much more on `<div>`/heading tags, which are block by
+default regardless of float): **a floated inline element (`span`, `a`)
+has its computed `display` forced to `block` by the UA only while
+`float` is non-`none`** (CSS2.1 9.7). Set `float: none` on a `<span>`
+or `<a>` with no explicit `display` of its own, and it silently reverts
+to inline, at which point `width: 100%`/`width: 180px` etc. stop
+applying -- a real regression, not just a source-tidiness issue.
+
+This file's own float-refactor gate had already solved this for two
+cases via a small set of bonus non-numbered rules at the very bottom
+(`.button-container a` under the mobile breakpoint, and
+`.form-popup-button-container a`, both forced to `display: block`
+alongside their `float: none`) -- both were preserved by adding
+`display: block;` directly alongside the collapsed `float: none;`
+edits at their two lines (138, 725). The gate also carried two
+apparently-redundant `display: block` overrides on `.title-container`
+(a `<div>`, already block by default) -- kept those too, on the
+"can't confirm it's a no-op, costs nothing to keep" principle, rather
+than assume they were dead weight.
+
+For the many *already-gated* span-based floats (`.pre-title`,
+`.post-button-text`, `.text`, `.list-container`, `.list-item`, the
+inner `.text-container span`, etc.), no display fix was needed: those
+were already covered by §41's original live Playwright computed-style
+verification across all 16 files (this one included), which empirically
+confirmed `float: none` alone was sufficient for them -- collapsing a
+verified gate into a direct edit doesn't change the compiled output at
+all, so no new risk was introduced by leaving them as-is.
+
+For the 3 new Category-C/D conversions (all newly designed this pass,
+not previously verified by anyone), the same span-display risk was
+closed a different way: every span in question (`.card-image-container`,
+`.text-content`, `.tag`) was made a **direct child of a newly-flexed
+parent**, and CSS's flex/grid item blockification rule (CSS Display
+Level 3) forces a flex item's computed `display` to block-level
+regardless of its specified value, the same way floats used to -- so no
+manual `display: block` was needed for those three. This "make it a
+flex item and the blockification comes for free" pattern is worth
+carrying into the remaining files, several of which likely share this
+theme's span-heavy markup convention.
+
+### Applied
+
+**33 mechanical edits**: `float: left`/`float: right` -> `float: none`
+on the gated lines (plus the two `display: block` additions on the `a`
+tags and two on the `.title-container` divs, preserving the gate's
+bonus rules).
+
+**3 real flexbox conversions**, each scoped to just its own section:
+
+- `.column .icon-container` / `.text-container` (three-column-icon-text):
+  added `display: flex;` to `.column` itself. DOM order (icon first,
+  text second, confirmed in `_three-column-icon-text.php`) already
+  matches the desired left-to-right visual order, so no reversal
+  needed -- plain `display: flex;` reproduces the fixed-80px-icon +
+  fill-the-rest layout exactly.
+- `.top-content` (two-column-subscribe): added `display: flex;`, with
+  `@media (max-width: 1023px) { flex-direction: column; }`. Checked
+  actual DOM order in `_two-column-subscribe.php`: `.text-content`
+  renders *before* `.card-image-container` (opposite of what the SCSS's
+  own source order suggested), and since `.text-content` was
+  `float: left` (renders left) and `.card-image-container` was
+  `float: right` (renders right), default `flex-direction: row` (no
+  reversal) reproduces the desktop layout exactly, in DOM order. At
+  <=1023px the original float behaviour was an implicit stack (the
+  mobile override makes `.text-content` `width: 100%`, which can't fit
+  beside the still-explicitly-sized 145px image, so it drops onto its
+  own line) -- `flex-direction: column` at that breakpoint reproduces
+  the same stacked order (text first/top, image second/below) without
+  needing `flex-wrap` or manual reordering.
+- `.tags-container .tag` (two-column-subscribe): added `display: flex;
+  flex-wrap: wrap;` to `.tags-container`. `.tag` keeps its own
+  `margin-right`/`margin-bottom` for gaps between chips; wrapping
+  behaviour is now explicit instead of an implicit float-wrap side
+  effect.
+
+Also removed the entire float-refactor gate section (464 lines,
+including its 4 bonus non-numbered rules, all folded into direct edits
+above) at the bottom of the file, now fully redundant.
+
+### Verification
+
+- `grep` for `float:\s*left\|float:\s*right` in the file: 0 matches.
+- Compiled for real with the theme's actual `sass` npm package
+  (`node_modules/.bin/sass`, dart-sass 1.102.0 -- the standalone
+  `dart-sass` binary isn't on PATH on this machine, unlike what §49-§53
+  assumed; the local `sass` package is the same dart-sass engine
+  underneath) against the theme's full global import chain (`_mixins`,
+  `_variables`, `_fonts`, `_icons`, `_base`, `_styles` -- needed all
+  six this time; `_mixins`+`_variables` alone, which is what §49 used,
+  wasn't enough for this file because two of its color/weight variables
+  -- `$h2-font-weight` etc. -- are defined inside `_styles.scss`
+  itself, not `_variables.scss`): 0 errors, only the standard
+  `@import`-deprecation warnings common to the whole codebase.
+- Parsed the compiled CSS into rule blocks and isolated the 125 blocks
+  whose selector touches one of this file's four root sections: 0 of
+  125 contain `float: left`/`float: right`.
+- Directly inspected the compiled output for all three flex conversions
+  and the two `a`/title-container display fixes -- all five compiled
+  exactly as designed (`display: flex` + `width: 33.3%` on the icon/text
+  column; `display: flex` + `width: 100%` on `.top-content`, with its
+  `flex-direction: column` correctly scoped inside its own
+  `@media (max-width: 1023px)` block; `display: flex; flex-wrap: wrap;`
+  on `.tags-container`; `display: block` alongside `float: none` on
+  both `a` selectors and both `.title-container` instances).
+- Did **not** do a live before/after screenshot/computed-style check on
+  staging -- same caveat as every prior file in this series. Given this
+  pass includes 3 real layout conversions on a component reused across
+  several live templates (not just `template-subscribe.php`), this file
+  is a strong candidate for a live visual check before shipping,
+  specifically the three-column icon/text row, the two-column-subscribe
+  card's image/text side-by-side order at desktop and its stacked order
+  at <=1023px, and the tag chips wrapping in `.tags-container`.
+- Two scratch dart-sass compile-test files
+  (`compile_test_TEMP.scss`/`.css`) were created in the repo root for
+  this verification and deleted before finishing (required requesting
+  delete permission for the connected folder this pass, since it
+  wasn't previously granted this session).
+
+### Status
+
+Applied on the user's machine via the device bridge, **not committed to
+git yet** -- left for the user to review/commit/push per standing
+practice. `git diff --stat`: 1 file, 50 insertions(+), 501 deletions(-).
+
+### Remaining files (10 left)
+
+`_single-events.scss`, `_home.scss`, `_gtm.scss`, `_services.scss`,
+`_resources.scss`, `_roundtable.scss`, `_single-post.scss`,
+`_position.scss`, `_landing.scss`, `_customer-stories.scss` -- old §41
+counts all unreliable, re-grep each fresh. Also worth checking
+liveness first per §51's finding, and now also worth checking early in
+each file whether its markup leans on `<span>`/`<a>` for structural
+wrappers (as this file and presumably `_introduction.php`'s siblings
+do) -- if so, apply the same two checks this section introduced: (1)
+for a mechanical gate collapse, trust the original gate's exact output
+(with its display fix, if it had one) rather than re-deriving it; (2)
+for any new flex conversion, prefer making the affected span/anchor a
+direct flex item of a newly-`display: flex` parent over hand-adding
+`display: block`, since flex-item blockification handles it for free.
+
+
+---
+
+## §55 -- 2026-09-18 (cont.): float-grid redesign, 6th file -- `_single-events.scss`, 22 declarations (20 fixed: 17 mechanical + 3 real flexbox conversions; 1 deliberately left as a genuine float, out of scope)
+
+### Context
+
+Continuing the file-by-file pass (§49-§54). Picked `_single-events.scss`
+from §54's remaining list. Confirmed live: its root selectors
+(`section.banner`, `section.navigation`, `section.centerModeCarousel`,
+`section.agendaHighlightsBlock`, `section.imageGridBlock.logos`) all
+match markup in `templates/single-event.php` and
+`templates/single-event-nov.php`, the two "Event" post templates (the
+same templates §51 already confirmed are live when ruling out
+`_agenda.scss`'s dead code).
+
+### Fresh count
+
+**22 active `float:left`/`float:right` declarations** (lines 26, 47,
+51, 74, 87, 103, 191, 196, 223, 306, 336, 346, 350, 364, 386, 398, 418,
+439, 459, 483, 488, 562), not the old table's number. Only **11** of
+these had a matching float-refactor gate entry (47, 87, 103, 336, 346,
+350, 439, 459, 483, 488, 562) -- the other 11 were never covered by the
+original 2026-09-14 pass at all, a bigger gap than §49-§54 saw (those
+were mostly fully gated with only a handful of new ones each). All 11
+gate matches checked cleanly against their selector, no drift.
+
+### The one declaration left alone on purpose: `.insetImage` (line 26)
+
+`section.banner .insetImage` (`float: left; width: 20.6%; position:
+relative; padding-top: 20.6%;`) sits first inside a slide's `.content`
+div, ahead of a `.column.title`, `<hr>`, `.column.text`, and (per this
+file) `.buttonBlock`/`.videoLink`. Checked `single-event.php`: none of
+`.content`, `.column`, `.buttonBlock` have any width/float override
+anywhere in this theme's SCSS (`.buttonBlock` does exist globally in
+`global/_styles.scss`, but it's an unrelated legacy WYSIWYG-editor
+utility class, not scoped to this banner) -- meaning `.column.title`/
+`.column.text` are plain unstyled `<div>`s that get their layout purely
+from being adjacent to `.insetImage`'s float. This is a **genuine
+text-wrap-around-an-image float** (the classic, original use case for
+`float`), not a grid hack: the title/text content is meant to flow
+around the inset image the way a pull-quote or magazine image wraps
+body text. There is no flexbox or grid equivalent that reproduces
+organic text wrap around a floated box -- only `float` (optionally with
+`shape-outside`) does this. Converting it to a fixed two-column flex
+layout would be a genuine design change (rigid columns instead of
+wrapping text), not a like-for-like modernization, and I'm not
+confident enough in the intended visual result to make that call
+unilaterally. Left as `float: left` untouched, flagged here for a
+decision: either accept it staying as a (legitimate, non-grid) float
+permanently, or have someone confirm on the live page whether a rigid
+two-column layout is actually an acceptable visual replacement before
+converting it.
+
+### Classification of the rest
+
+- **13 simple Category B/mechanical** (47 `.videoLink` itself -- gated,
+  trusted exactly as the gate had it, `float: none` alone, see below;
+  87 `section.navigation`; 103 nav `ul`; 191 `.titleBlock`; 223
+  `.center`; 306 `ul.slick-dots`; 336 `section.agendaHighlightsBlock`;
+  346 `.agendaBlock`; 350 `.item`; 439 `.seeMore`; 459 `.titleBlock`
+  (imageGridBlock); 483 `.logoGroup`; 562 `.yourLogoHere`) -- all
+  literal `width: 100%` (or, for 47, already-verified), all on `<div>`,
+  `<ul>`, or `<section>` elements (checked against
+  `single-event.php`/`single-event-nov.php`) that are block-level by
+  default regardless of float, so no display fix needed.
+- **1 defensive display fix**: line 196, `.titleBlock .title` -- this
+  one *is* a `<span>` (`<span class="title"><h2>...</h2><hr></span>`),
+  ungated (never verified before), and unlike §54's already-verified
+  spans I have no prior computed-style check to lean on for this
+  specific one. A `<span>` wrapping two block-level children (`h2`,
+  `hr`) is invalid HTML that browsers generally paper over by
+  rendering the block children on their own line regardless of the
+  span's own computed display, but rather than rely on that leniency,
+  added `display: block;` alongside `float: none;` -- costs nothing,
+  removes the ambiguity entirely.
+- **The `.videoLink` gate (line 47) was trusted exactly as written,
+  no display fix added**, which is worth calling out because it looks
+  like it *should* need one: `.videoLink` is `<span class="videoLink">`
+  with `width: 100%`, and per CSS2.1 9.7 a floated inline element's
+  display computes to block only while floated -- remove the float
+  with no explicit `display` and a bare `<span>` reverts to inline,
+  which would normally break `width: 100%`. But this exact selector
+  was part of the original 2026-09-14 batch (§41) that did real
+  Playwright computed-style verification across two viewports, and its
+  gate says `float: none` alone was sufficient -- collapsing a
+  pre-verified gate 1:1 doesn't change the compiled output at all, so
+  the safe move is to trust it exactly rather than "improve" it with an
+  addition nobody asked for. (Plausible explanation: `.videoLink`'s
+  only child is a single `<button>` or `<a>`, and `<button>`'s UA
+  default display is `inline-block`, not `inline` -- an inline-block
+  child inside an inline parent with only one child often renders
+  indistinguishably from a block parent, since there's nothing else on
+  the "line" to reveal the difference.)
+- **3 real flexbox conversions** (all newly designed, not previously
+  verified by anyone):
+  - **`.time` (20%) / `.eventOverview` (80%)**, `section.agendaHighlightsBlock
+    .agendaBlock .item` -- checked the real DOM in `single-event.php`:
+    both live inside `.item > .container > .inner`, not directly inside
+    `.item`, so the new `display: flex;` (with `align-items:
+    flex-start;` and `@include responsive(767) { flex-direction:
+    column; }`, matching this section's existing 767px stacking
+    breakpoint on both children) was added to a new `.container .inner`
+    rule nested inside `.item`, not to `.item` itself -- adding it to
+    `.item` would have done nothing, since `.time`/`.eventOverview`
+    are grandchildren, not children. Both are `<span>`s; both become
+    direct flex items of the newly-flexed `.inner`, so they're
+    auto-blockified for free (same reasoning as §54).
+  - **`.title` (auto-width) / `.description` (auto-width)**, nested
+    inside `.eventOverview` -- a floated bold label next to a floated
+    wrapping paragraph, the same "run-in label + wrapping text" float
+    idiom as `.insetImage` above, but *this* one has an easy flex
+    equivalent because both sides are already meant to sit in a single
+    row with the label first (unlike `.insetImage`'s organic wrap
+    around a large image on multiple lines of surrounding text).
+    `.eventOverview` itself got `display: flex; align-items:
+    flex-start;` (serving double duty as both the flex item of `.inner`
+    above and the flex container for its own two children).
+    `.description` got `flex: 1 1 auto; min-width: 0;` added (float
+    with `width: auto` shrinks-to-fit but is bounded by the remaining
+    available width in practice, which is what "fill the rest of the
+    row and wrap the paragraph" looks like -- `flex: 1 1 auto` is the
+    direct flex equivalent, and `min-width: 0` avoids the well-known
+    flex long-word/overflow trap). `.title` needed no extra property,
+    same shrink-to-fit sizing as before.
+  - **The video "play" button icon+label row**, `section.banner
+    .videoLink a, .playBtn` and its descendants -- the trickiest of the
+    three. The original rule floats `a`/`.playBtn` itself (line 51,
+    icon+text row) and, separately, an unqualified `span` selector
+    nested under `&:last-child` (line 74) that -- because `a`/`.playBtn`
+    is always both first-child and last-child (it's the button's only
+    child; the template renders exactly one of `<a>` or `<button>`, never
+    both) -- matches *every* descendant span: `.icon`, `.text`, and
+    `.text`'s own two unclassed child spans ("Watch Video" / duration).
+    Recursively floating all of them left, in DOM order, with none of
+    them carrying an explicit width, produces one continuous
+    left-to-right row: icon, then "Watch Video", then the duration --
+    read together as a single button label. Reproduced this with nested
+    flex rather than one flat rule: `display: flex; align-items:
+    center;` added directly to the `a, .playBtn` rule (line 51, icon +
+    `.text` side by side), and a **new**, separately-scoped `.text {
+    display: flex; align-items: center; }` rule added alongside the
+    existing broad `span` rule (which keeps applying its
+    `float: none;`/font styling to all four spans unchanged) to put
+    `.text`'s own two children side by side too. Every span in the
+    chain ends up as a direct flex item of one of these two containers,
+    so all of them are auto-blockified without any manual `display:
+    block`. This is the one conversion in this file worth a live check
+    before shipping -- of the three, it's the one where I'm relying on
+    inferring the intended visual result (one continuous row) from the
+    selector structure rather than from an unambiguous width/percentage
+    split.
+
+### Applied
+
+17 mechanical edits (13 simple + `.videoLink`'s gate collapse + the 3
+Category-C float:none conversions that don't need their own new
+container) plus the 3 real flexbox conversions described above.
+Removed the float-refactor gate section (101 lines, no bonus
+non-numbered rules this time, unlike §54) at the bottom of the file,
+now fully redundant. `.insetImage` (line 26) is the only declaration
+left untouched.
+
+### Verification
+
+- `grep` for `float:\s*left\|float:\s*right`: exactly 1 match (line 26,
+  the deliberate exception) -- everything else, 0.
+- Compiled for real with `node_modules/.bin/sass` (dart-sass 1.102.0)
+  against the theme's full global import chain: 0 errors, only the
+  standard `@import`-deprecation warnings.
+- Parsed the compiled CSS into rule blocks and isolated the 73 that
+  touch this file's five root sections: 0 unexpected
+  `float: left`/`float: right` among them (the one expected exception,
+  `.insetImage`, confirmed still present as designed). Directly
+  inspected the three flex conversions and the two display fixes in
+  the compiled output -- all landed exactly as designed (`.container
+  .inner` gets `display: flex` + the `flex-direction: column` media
+  override; `.eventOverview` and `.description` get their flex
+  properties; the `a`/`.playBtn` and nested `.text` rules both compile
+  to `display: flex`; `.titleBlock .title` compiles to `float: none;
+  display: block;`).
+- Did **not** do a live before/after screenshot/computed-style check on
+  staging -- same caveat as every prior file. This file has the highest
+  number of "newly designed, not previously verified" conversions of
+  the series so far (3, same count as §52, but on a file with a
+  genuinely ambiguous recursive-float pattern) -- the video play-button
+  row and the `.insetImage` decision are the two things most worth a
+  human look before committing.
+
+### Status
+
+Applied on the user's machine via the device bridge, **not committed to
+git yet**. `git diff --stat`: 1 file, 42 insertions(+), 123
+deletions(-).
+
+### Remaining files (9 left, one file's scope narrowed)
+
+`_home.scss`, `_gtm.scss`, `_services.scss`, `_resources.scss`,
+`_roundtable.scss`, `_single-post.scss`, `_position.scss`,
+`_landing.scss`, `_customer-stories.scss` -- re-grep each fresh, check
+liveness first, and now also watch for the two new patterns this file
+surfaced: (1) a genuine text-wrap-around-image float with no flex/grid
+equivalent (leave it, flag it, don't guess a redesign that changes the
+visual result) vs. a same-looking-but-actually-single-row float pair
+that *does* have a clean flex equivalent -- the difference is whether
+the wrapped content is meant to flow across multiple lines around the
+float or sit in one row beside it; (2) a `&:first-child`/`&:last-child`
+pair on a selector that only ever has one matching element (both
+pseudo-classes match simultaneously) -- easy to misread as "two
+different elements" when it's actually compound styling on one.
+
+
+---
+
+## §56 -- 2026-09-18 (cont.): float-grid redesign, 7th file -- `_home.scss`, 26 declarations (all fixed: 20 mechanical + 6 real flexbox conversions), the homepage
+
+### Context
+
+Continuing the file-by-file pass (§49-§55). `_home.scss` styles the
+site's actual homepage (`body.home`/`body.template-home`), served by
+two live, independently-selectable WP templates:
+`templates/template-home.php` ("Home Template") and
+`templates/template-home-nov.php` ("Home Template (Nov)") -- confirmed
+via their `Template Name` headers, the same convention that made
+`single-event.php`/`single-event-nov.php` both live in §51/§55. Given
+this is the highest-traffic page on the site, took extra care to trace
+every declaration back to its real PHP markup rather than infer
+structure from the SCSS alone.
+
+### Fresh count
+
+**26 active `float:left`/`float:right` declarations** (lines 22, 56,
+68, 99, 114, 173, 189, 222, 246, 261, 270, 289, 299, 309, 326, 383, 394,
+404, 430, 443, 447, 463, 473, 479, 503, 551). 16 already had a matching
+gate entry (22, 56, 68, 99, 173, 189, 246, 261, 270, 289, 383, 404, 447,
+463, 479, 503), all verified to match by selector, no drift. The other
+10 were never covered by the original pass.
+
+### Two declarations computed as `float: none` already, before any edit
+
+Lines 22 (`.loading`) and 68/99 (the banner `ul` and `.baseButtons`)
+carry `position: fixed`/`position: absolute` on the same rule -- per
+CSS2.1 9.7, float is forced to compute as `none` for a positioned
+element regardless of the specified value, the same "position" category
+§41 defined. Collapsing their gates was risk-free by that same
+reasoning already established in this series.
+
+### Classification and the six real conversions
+
+Fourteen of the 26 were literal `width: 100%` (or already gate-verified
+span cases -- `.loading`, `#main`, banner `ul`, `.baseButtons`,
+`.baseButtons a span.text`/`span.title`, `.content span.title`/
+`span.text`/`span.buttonBlock`/`span.videoLink`, `.titleBlock` and its
+`h2`, `.logoBlock`, `.logoContainer`, `.logoTitle`) -- collapsed
+straight to `float: none` with no display fix, all trusting §41's
+original computed-style verification for these exact selectors exactly
+as `_single-events.scss` and this file's own gate had them (no
+"improving" a pre-verified fix with an addition nobody asked for).
+
+The other six needed real design work:
+
+- **`.baseButtons a`** (line 114, `float: right`, three `banner_buttons`
+  rendered in a loop as `<a>` tags inside one unclassed wrapping
+  `<span>`) -- confirmed via `&:first-child { margin-right: 0px; }`
+  that the intended visual order is the classic "consecutive
+  `float:right` reverses DOM order" behaviour (first DOM child ends up
+  *rightmost*, because each subsequent float:right box has to queue up
+  to the *left* of the one before it). Reproduced with
+  `flex-direction: row-reverse;` on a **new**, precisely-scoped
+  `.baseButtons > span` rule (the direct-child combinator matters here:
+  the existing broad `.baseButtons span { display: inline-block; width:
+  100%; }` rule also matches the `.text`/`.title` spans *inside* each
+  button, so a bare `span` selector would have wrongly turned those
+  into flex containers too). With `row-reverse`, the default
+  `justify-content: flex-start` already packs the group against the
+  main-start edge, which *is* the right edge in reverse mode -- so no
+  `justify-content` override was needed, and the existing
+  `margin-right: 16px`/`:first-child { margin-right: 0 }` values work
+  unchanged (physical margin properties don't flip with
+  `flex-direction`).
+- **`.content.columns .column`** (line 222, `float: left`, two
+  `<div class="column title">`/`<div class="column text">` siblings,
+  confirmed against `template-home-nov.php`) -- `display: flex;` added
+  to the `&.columns` modifier only, *not* the base `.content` rule
+  (which needs to keep stacking its children vertically in the
+  non-columns case -- the `text_layout` ACF field picks between the two
+  at render time, and both must keep working).
+- **`.titleBlock .title` / `.description.centre` / `.description.right`**
+  (lines 394/430/443, the `section.logoGrid` title+description row,
+  same component pieces already seen in `_single-events.scss`'s
+  `counter_block`) -- `.title` and `.description` are exactly two
+  `<span>` siblings (confirmed against
+  `templates/components/_counter-block.php` and the `logo_grid` layout
+  in `template-home-nov.php`), with `.description` taking a mutually
+  exclusive `centre` or `right` modifier from an ACF field. `display:
+  flex;` added to `.titleBlock`; `.description.right` got `margin-left:
+  auto;` (the standard flex trick to push one item to the far end of a
+  row without needing a `:has()` selector or JS) instead of its old
+  `float: right`, while `.description.centre` needed nothing extra
+  (default flex packing already sits it right next to `.title`, same as
+  its old `float: left`). Also added a `margin-left: 0;` reset inside
+  `.description.right`'s existing `@include responsive(640)` block,
+  since `margin-left: auto` has no equivalent "cancel" once the layout
+  switches to `flex-direction: column` at that breakpoint (this file's
+  desktop/mobile breakpoint for this component).
+- **`.logoBlock .logo`** (line 473, `float: left`, plus its own
+  pre-existing `display: inline-block`) -- `.logo` already carried an
+  explicit `display: inline-block` on the *same* rule as its float,
+  which -- once float is removed -- would have "woken up" and taken
+  over as the actual rendering mode, switching this 3-per-row logo grid
+  from float-wrapping to inline-block-wrapping. Both look similar but
+  inline-block introduces whitespace-gap sensitivity that float-wrapping
+  doesn't have, so rather than rely on the newly-active inline-block,
+  added `display: flex; flex-wrap: wrap;` to the parent `.logoBlock`
+  instead, consistent with every other multi-item grid fixed in this
+  series -- `.logo`'s own `display: inline-block` is now harmless
+  (flex-item blockification overrides it for outer layout purposes) and
+  was left untouched rather than removed, to keep the diff minimal.
+- **The video "play" button icon+label row** (`section.banner .content
+  span.videoLink a, .playBtn`, lines 299/309/326) -- structurally
+  identical to §55's `_single-events.scss` button (icon span + text
+  span side by side, confirmed against the same `<button
+  class="playBtn"><span class="icon">...</span><span
+  class="text">...</span></button>` markup in `template-home-nov.php`),
+  **but with one real difference worth flagging**: the innermost rule
+  in *this* file has an **active** `clear: both;` (§55's equivalent
+  rule had the same property present but commented out with `//
+  clear:both;`). An active `clear: both` on both of `.text`'s own two
+  children ("Watch Video" and the duration) means each one clears the
+  float before it, which -- combined with both also being
+  `float: left` -- stacks them on separate lines rather than sitting
+  side by side. So unlike §55 (one continuous row, replicated with
+  nested `display: flex` at every level), this file's version needed
+  `display: flex; align-items: center;` only on the *outer*
+  `a, .playBtn` rule (icon + text-wrapper side by side) while the
+  *inner* "Watch Video"/duration spans got `display: block;` instead
+  (preserving their stacked, two-line layout, which is what the active
+  `clear: both` was achieving). This is a good example of why each
+  file's actual source needs reading in full rather than pattern-matching
+  a fix from the previous file that merely looks the same.
+  Also added a defensive `display: block;` to `section.logoGrid.counter
+  .logoBlock .logo .number` (line 551, ungated, a `<span>` with no
+  width) for the same reason as §54/§55's span cases -- cheap insurance
+  against it losing its own line next to `.logoTitle` once un-floated.
+
+### Applied
+
+20 mechanical edits (14 simple width:100%/already-inert + the two
+gate-collapse cases that needed nothing extra) plus the 6 real
+conversions above. Removed the float-refactor gate section (224 lines,
+no bonus non-numbered rules this time) at the bottom of the file, now
+fully redundant.
+
+### Verification
+
+- `grep` for `float:\s*left\|float:\s*right`: 0 matches.
+- Compiled for real with `node_modules/.bin/sass` (dart-sass 1.102.0)
+  against the theme's full global import chain: 0 errors, only the
+  standard `@import`-deprecation warnings.
+- Parsed the compiled CSS into rule blocks and isolated the 99 whose
+  selector is genuinely scoped to this file (`#main`, `.loading`,
+  `body.home`/`body.template-home`, `section.logoGrid`) -- 0 unexpected
+  `float: left`/`float: right` among them. (An earlier, cruder pass
+  using a looser "content" substring match falsely flagged 7 unrelated
+  blocks belonging to completely different templates --
+  `.post-content`, `.peer-insights-item`, `.mfp-registration` -- that
+  happen to share the word "content"; re-scoped the check to this
+  file's actual root selectors and confirmed those were never a real
+  issue.) Directly inspected all six real conversions in the compiled
+  output -- all landed exactly as designed (`.baseButtons > span`'s
+  `flex-direction: row-reverse`, `.content.columns`'s `display: flex`,
+  `.titleBlock`'s flex + `.description.right`'s `margin-left: auto`,
+  `.logoBlock`'s `flex-wrap: wrap`, the video button's `display: flex`
+  on the outer rule, and `.number`'s `display: block`).
+- Did **not** do a live before/after screenshot/computed-style check on
+  staging -- same caveat as every prior file, but given this is the
+  homepage and has the highest real-conversion count of the series so
+  far (6), this is the strongest candidate yet for a live visual check
+  before shipping: specifically the banner CTA button row's left-right
+  order (`.baseButtons`), the two-column banner slide variant
+  (`.content.columns`, only reachable when a slide's `text_layout`
+  field is set to it), the logo-grid title/description row in both its
+  `centre` and `right` variants, and the video play-button's icon/label
+  layout.
+
+### Status
+
+Applied on the user's machine via the device bridge, **not committed to
+git yet**. `git diff --stat`: 1 file, 54 insertions(+), 252
+deletions(-).
+
+### Remaining files (8 left)
+
+`_gtm.scss`, `_services.scss`, `_resources.scss`, `_roundtable.scss`,
+`_single-post.scss`, `_position.scss`, `_landing.scss`,
+`_customer-stories.scss` -- re-grep each fresh, check liveness first
+(watch for "-nov" or similarly-suffixed sibling templates sharing the
+same SCSS file, as `_home.scss` and `_single-events.scss` both had),
+and now also watch for: (1) an element with *both* `float` and an
+explicit `display` already on the same rule -- removing just the float
+can "wake up" the other display value with different wrapping behaviour
+than the float had (the `.logo`/inline-block case here); (2) a
+`float:right` sequence, which reverses visual order relative to DOM
+order and needs `flex-direction: row-reverse` to reproduce correctly
+(confirm via any `&:first-child`/`&:last-child` margin asymmetry, which
+usually gives away which end is "anchored"); (3) don't assume a
+structurally-identical-looking component (like the video play button)
+behaves the same in every file -- check whether `clear: both` next to
+a float is live or commented out, since that one property flips the
+intended layout from "one row" to "stacked lines".

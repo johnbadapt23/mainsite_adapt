@@ -44,11 +44,13 @@ section.banner {
     .videoLink {
         width: 100%;
         margin-top: 60px;
-        float: left;
+        float: none;
 
         a,
         .playBtn {
-            float: left;
+            float: none;
+            display: flex;
+            align-items: center;
             width: auto;
             background: none;
             border: none;
@@ -71,12 +73,17 @@ section.banner {
                     font-size: 14px;
                     line-height: 17px;
                     // clear: both;
-                    float: left;
+                    float: none;
                     font-family: $font-main;
 
                     &:last-child {
                         font-family: $font-main;
                     }
+                }
+
+                .text {
+                    display: flex;
+                    align-items: center;
                 }
             }
         }
@@ -84,7 +91,7 @@ section.banner {
 }
 
 section.navigation {
-    float: left;
+    float: none;
     width: 100%;
     height: 53px;
     background-color: $color-red;
@@ -100,7 +107,7 @@ section.navigation {
 
     ul {
         list-style: none;
-        float: left;
+        float: none;
         width: 100%;
 
         li {
@@ -188,12 +195,13 @@ section.centerModeCarousel {
     }
 
     .titleBlock {
-        float: left;
+        float: none;
         width: 100%;
         text-align: center;
 
         .title {
-            float: left;
+            float: none;
+            display: block;
             width: 100%;
             text-align: center;
 
@@ -220,7 +228,7 @@ section.centerModeCarousel {
     }
 
     .center {
-        float: left;
+        float: none;
         width: 100%;
         transform: scale(1);
 
@@ -303,7 +311,7 @@ button.slick-next {
 }
 
 ul.slick-dots {
-    float: left;
+    float: none;
     width: 100%;
     text-align: center;
     list-style: none;
@@ -333,7 +341,7 @@ ul.slick-dots {
 }
 
 section.agendaHighlightsBlock {
-    float: left;
+    float: none;
     width: 100%;
     padding: 74px 0 54px;
 
@@ -343,11 +351,11 @@ section.agendaHighlightsBlock {
     }
 
     .agendaBlock {
-        float: left;
+        float: none;
         width: 100%;
 
         .item {
-            float: left;
+            float: none;
             width: 100%;
             border-bottom: 2px solid #f2f2f2;
             padding: 31px 0;
@@ -360,8 +368,17 @@ section.agendaHighlightsBlock {
                 border-bottom: none;
             }
 
+
+            .container .inner {
+                display: flex;
+                align-items: flex-start;
+
+                @include responsive(767) {
+                    flex-direction: column;
+                }
+            }
             .time {
-                float: left;
+                float: none;
                 width: 20%;
                 font-family: $font-base;
                 font-size: 24px;
@@ -383,7 +400,9 @@ section.agendaHighlightsBlock {
             }
 
             .eventOverview {
-                float: left;
+                float: none;
+                display: flex;
+                align-items: flex-start;
                 width: 80%;
 
                 @include responsive(1023) {
@@ -395,7 +414,7 @@ section.agendaHighlightsBlock {
                 }
 
                 .title {
-                    float: left;
+                    float: none;
                     width: auto;
                     margin-right: 10px;
                     font-family: $font-base;
@@ -415,7 +434,9 @@ section.agendaHighlightsBlock {
                 }
 
                 .description {
-                    float: left;
+                    float: none;
+                    flex: 1 1 auto;
+                    min-width: 0;
                     width: auto;
                     padding-top: 7px;
 
@@ -436,7 +457,7 @@ section.agendaHighlightsBlock {
     }
 
     .seeMore {
-        float: left;
+        float: none;
         width: 100%;
         text-align: center;
         padding-top: 40px;
@@ -456,7 +477,7 @@ section.imageGridBlock.logos {
 
     .titleBlock {
         text-align: center;
-        float: left;
+        float: none;
         width: 100%;
 
         h2 {
@@ -480,12 +501,12 @@ section.imageGridBlock.logos {
     }
 
     .logoGroup {
-        float: left;
+        float: none;
         width: 100%;
         margin-top: 30px;
 
         .title {
-            float: left;
+            float: none;
             width: 100%;
             text-align: center;
 
@@ -559,7 +580,7 @@ section.imageGridBlock.logos {
             text-align: center;
 
             .yourLogoHere {
-                float: left;
+                float: none;
                 width: 100%;
                 text-align: center;
                 font-family: $font-main;
@@ -606,105 +627,3 @@ section.imageGridBlock.logos {
     }
 }
 
-
-// =====================================================================
-// Float -> Flexbox modernization pass, folded in from the formerly
-// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
-// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
-// Pixel-parity verified against the gated build before this merge --
-// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
-// dated 2026-09-14) for the full audit trail, per-rule provenance, and
-// the isolated-build diff used to confirm this file's compiled output
-// is unchanged from the pre-merge gated build.
-// =====================================================================
-// line 47
-
-section.banner.banner {
-                .videoLink.videoLink {
-                        float: none;
-                }
-        }
-
-// line 87
-
-section.navigation.navigation {
-                float: none;
-        }
-
-// line 103
-
-section.navigation.navigation {
-                ul {
-                        float: none;
-                }
-        }
-
-// line 336
-
-section.agendaHighlightsBlock.agendaHighlightsBlock {
-                float: none;
-        }
-
-// line 346
-
-section.agendaHighlightsBlock.agendaHighlightsBlock {
-                .agendaBlock.agendaBlock {
-                        float: none;
-                }
-        }
-
-// line 350
-
-section.agendaHighlightsBlock.agendaHighlightsBlock {
-                .agendaBlock.agendaBlock {
-                        .item.item {
-                                float: none;
-                        }
-                }
-        }
-
-// line 439
-
-section.agendaHighlightsBlock.agendaHighlightsBlock {
-                .seeMore.seeMore {
-                        float: none;
-                }
-        }
-
-// line 459
-
-section.imageGridBlock.imageGridBlock.logos.logos {
-                .titleBlock.titleBlock {
-                        float: none;
-                }
-        }
-
-// line 483
-
-section.imageGridBlock.imageGridBlock.logos.logos {
-                .logoGroup.logoGroup {
-                        float: none;
-                }
-        }
-
-// line 488
-
-section.imageGridBlock.imageGridBlock.logos.logos {
-                .logoGroup.logoGroup {
-                        .title.title {
-                                float: none;
-                        }
-                }
-        }
-
-// line 562
-
-section.imageGridBlock.imageGridBlock.logos.logos {
-                .item.item {
-                        &:last-child {
-                                .yourLogoHere.yourLogoHere {
-                                        float: none;
-                                }
-                        }
-                }
-        }
