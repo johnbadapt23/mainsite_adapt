@@ -7019,3 +7019,149 @@ structurally-identical-looking component (like the video play button)
 behaves the same in every file -- check whether `clear: both` next to
 a float is live or commented out, since that one property flips the
 intended layout from "one row" to "stacked lines".
+
+## §57 -- 2026-09-18 (cont.): staging deploy validated -- stale critical-CSS cache found and cleared, then a real regression found and fixed in `_subscribe.scss`
+
+User pushed/deployed §53-56's four files (`_benchmarking.scss`,
+`_subscribe.scss`, `_single-events.scss`, `_home.scss`) and asked for
+live validation on `https://staging.adapt.com.au/` before continuing to
+the remaining 8 files.
+
+### Part 1: false alarm -- stale WP Rocket "Remove Unused CSS" cache
+
+First validation pass found every changed selector still computing its
+*old* pre-refactor value in the browser (`.icon-container` float:left
+instead of float:none, `.column` display:block instead of flex, etc.),
+across every one of the four files. Traced this all the way through
+before concluding anything was actually wrong:
+
+- Confirmed the GitHub Actions deploy (`deploy.yml`, "dev" branch) ran
+  and succeeded for the commit (`68a9e24`) via the public Actions API
+  (`gh` isn't installed on the user's machine; used `curl` against
+  `api.github.com/repos/.../actions/runs` instead).
+- Fetched `assets/css/main-nofooter.min.css` **directly** from the
+  server (bypassing the page) -- it already had the correct
+  post-refactor rules, with a Last-Modified timestamp matching the
+  deploy exactly. So the build + upload genuinely worked.
+- But every actual page load came back `x-cache: HIT` and the HTML
+  contained WP Rocket markers, with no `<link rel=stylesheet>` for the
+  theme CSS at all -- only inlined `<style>` blocks. That's WP Rocket's
+  "Remove Unused CSS" / critical-CSS feature: it pre-generates a cached
+  per-page CSS snippet and inlines *that* instead of the real file, and
+  the cached snippet predated this deploy.
+- User cleared the cache; re-checked and the live computed styles for
+  every previously-stale selector now matched source
+  (`.column`{display:flex}, `.icon-container`{float:none}, etc.).
+
+**Lesson for future deploys on this project**: a green CI run and a
+correct compiled file on disk are not sufficient evidence that visitors
+are seeing the new CSS on this stack -- WP Rocket's critical-CSS cache
+sits in front of it and has to be cleared separately after any CSS
+change before a live visual check means anything. Worth asking whether
+`deploy.yml` should hit WP Rocket's cache-clear endpoint/WP-CLI command
+as a final step, instead of relying on someone remembering to click
+"Clear Cache" in wp-admin.
+
+### Part 2: a real regression, found only after the cache was actually clear
+
+With fresh CSS confirmed, re-checked `two-column-image-text-subscribe`
+on `/join-the-community/` (the one section flagged last session as
+"looks fine at desktop, collapses to 0 height on mobile, but that's
+pre-existing since the float declarations on `.column`/`.image-column`/
+`.text-column` were never touched"). That framing was wrong. Compared
+the exact same DOM/content against production
+(`https://adapt.com.au/join-the-community/` -- confirmed byte-identical
+ACF content, different theme/build entirely: "adapt" theme,
+un-split `main.min.css`, own deploy pipeline off `main`) and found
+production renders this block correctly at mobile width (798px section
+height) while staging still collapses it to 0, *even with the fresh
+CSS*. So this was never a cache artifact -- it's a genuine defect this
+refactor introduced.
+
+Root cause: `.two-column-image-text-outer`'s **own** float --
+untouched conceptually until you look at what it was actually doing --
+was changed from `float: left` to `float: none` back in §54, reasoned
+about at the time as safe because the rule already has
+`display: flex` at desktop (Category A: "own rule already flex -> float
+inert"). True at desktop. But at `@media (max-width: 767px)` the same
+rule overrides display back to `block` (needed so its two children,
+`.image-column`/`.text-column`, stack instead of sitting side by side)
+-- and *nothing* overrides float back at that breakpoint. On
+production, the container's own (untouched) `float: left` is still
+live there, and a floated box establishes its own block formatting
+context, which is *incidentally* exactly what was containing its two
+floated (deliberately-left-as-Category-C-real-grid) children and giving
+the section its height. Flattening that float to `none` silently threw
+away that side effect: on mobile the container is a plain
+`display: block` box with only floated children inside and no BFC of
+its own, so per ordinary CSS it computes 0 height, and the image +
+text render outside the document flow, overlapping whatever section
+comes next.
+
+Fix (`_subscribe.scss`, inside `.two-column-image-text-outer`'s
+`@media (max-width: 767px)` block): changed `display: block` to
+`display: flow-root`. `flow-root` is the modern, purpose-built
+replacement for exactly this "floated-children clearfix" role --
+establishes a new BFC (correctly contains the floats, section height
+back to matching content) without reintroducing `float` and, unlike
+`overflow: hidden`, without risking clipping the `.image-container`
+decorative offset pseudo-elements used by other variants of this block
+elsewhere on the site (`&:nth-child(2n) .image-container:after { top:
+-16px; ... }` -- not present in the DOM on this specific page, but
+compiled from a shared rule other pages/ACF rows can trigger, so it had
+to stay non-destructive). Verified via the established dart-sass
+isolated-compile method: `display: flow-root;` shows up correctly
+scoped inside the `@media (max-width: 767px)` block, nothing else in
+the compiled output changed. Not yet re-verified live (needs another
+push/deploy/cache-clear cycle) -- flagging here so the next session
+picks it up if it's reading this before a live check confirms it.
+
+**Methodology update for all remaining files**: when a rule being
+flattened from `float: X` to `float: none` also has its OWN
+`display: flex`/`grid` that gets overridden back to `block` (or
+anything non-flex/grid) inside a narrower-width media query on the
+*same* rule, don't classify it as Category A on the strength of the
+desktop rule alone. Check what that element's children are doing at
+the narrower breakpoint too -- if any of them are real (Category C)
+floats, the parent's own float may be the only thing giving the
+collapsed-width layout a BFC, and removing it needs a replacement
+(`display: flow-root` on the parent, preferably over `overflow: hidden`
+unless there's a specific reason a clip is fine).
+
+### Status
+
+`_subscribe.scss` has one additional uncommitted change on top of
+§54/the user's own commit (`68a9e24`): the `flow-root` fix above.
+`git diff --stat`: 1 file, 13 insertions(+), 1 deletion(-). Not
+committed -- left for the user per usual practice, this time explicitly
+because it needs a fresh deploy + WP Rocket cache clear to actually
+verify live, which isn't something to do unprompted mid-session.
+
+`_benchmarking.scss` (all mechanical/Category A) and the two live
+sections it has content for on `/benchmark-maturity-assessment/`
+(`benchmarking-four-column`, `benchmarking-three-column-text-image-cards`)
+re-checked clean at mobile + desktop with the fresh cache, no console
+errors.
+
+`_home.scss` and `_single-events.scss`: re-confirmed (with fresh cache,
+so this is no longer a caching question) that no currently-published
+page/event exercises the sections these files touch --
+`_home.scss`'s banner/logoGrid selectors are 0 matches on both staging
+and production's homepage (both already migrated to newer ACF blocks,
+confirmed identical between environments so this isn't a staging-only
+content gap), and 9 different live "event" posts checked all render
+only a bare `eventShare` section with no banner/overview/video content
+populated. Still can't get a live visual read on either file's changes;
+the compiled-CSS verification from §55/§56 is what stands.
+
+### Remaining files (8 left, unchanged)
+
+`_gtm.scss`, `_services.scss`, `_resources.scss`, `_roundtable.scss`,
+`_single-post.scss`, `_position.scss`, `_landing.scss`,
+`_customer-stories.scss`. In addition to the three watch-items listed
+at the end of §56, add a fourth: (4) when flattening a container's own
+float to `none`, check whether that same rule's `display` gets
+overridden away from flex/grid at any narrower breakpoint, and whether
+that breakpoint still has real (non-flex-item) floated children inside
+-- if so the container needs `display: flow-root` at that breakpoint,
+not just a bare float removal.

@@ -203,7 +203,19 @@ section.two-column-image-text-subscribe {
             display: flex;
 
             @media (max-width: 767px) {
-                display: block;
+                // display:block alone left this container with no block
+                // formatting context of its own at this breakpoint: its
+                // .image-column/.text-column children are still real
+                // (Category C) floats here, and the container's own float
+                // was previously float:left, which happened to establish
+                // that BFC and contain them. Flattening that float to
+                // float:none (this refactor) removed the side effect,
+                // collapsing the container to 0 height on mobile with the
+                // floated children rendering outside the flow. flow-root
+                // re-establishes containment without reintroducing float
+                // and without clipping the decorative .image-container
+                // offset pseudo-elements the way overflow:hidden would.
+                display: flow-root;
             }
 
             .column {
