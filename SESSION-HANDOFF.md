@@ -7165,3 +7165,100 @@ overridden away from flex/grid at any narrower breakpoint, and whether
 that breakpoint still has real (non-flex-item) floated children inside
 -- if so the container needs `display: flow-root` at that breakpoint,
 not just a bare float removal.
+
+## §58 -- 2026-09-18 (cont.): float-grid redesign, 8th file -- `_gtm.scss`, 58 declarations, all mechanical (0 real conversions)
+
+First file done under the refined methodology from §57. Live page:
+`/services/technology-vendors` (`template-gtm`, page id 61951) -- has
+real content for every ACF layout except `two_column_map_module`
+(`_two-column-map.php`) and `static_cards`/`repeatable_image_text_with_border`
+(`_static-cards.php`, `_repeatable-image-text.php`), which this specific
+page's rows don't use but which are still checked below since another
+`template-gtm` page could use them.
+
+### The §57 lesson, refined
+
+§57 found a real bug: flattening a *container's own* float to `none`
+while its children stayed genuinely floated (Category C, deliberately
+untouched) removed the container's only block-formatting-context and
+collapsed it. Auditing all 58 declarations here (not just the
+individually-classified ones -- the 41 the file's own pre-existing gate
+already covered too, since the gate predates the §57 finding and could
+have the same blind spot) turned up zero instances of that pattern, but
+clarified the actual rule, which is narrower and more useful than "check
+for a responsive flex->block switch":
+
+**A container's own float is only dangerous to remove when, after this
+pass, it still has an in-flow child that (a) is genuinely floated and
+(b) is the container's only source of height** (no non-floated sibling
+content, no fixed/explicit height on the container itself). If every
+float in a given parent/child chain is being flattened *together* in
+the same pass, there's nothing left floated to lose containment for --
+a stack of formerly-floated-now-block boxes sizes itself normally by
+definition, since each one's height comes from its own (now non-floated)
+content. The `_subscribe.scss` bug only happened because the parent's
+float was flattened while `.image-column`/`.text-column` were
+*deliberately* kept floating (out of scope, real Category C grid) --
+a scope mismatch, not just "a responsive display switch exists".
+
+So the actual check that matters, run against every declaration in this
+file: for each element whose float is being flattened, does removing it
+leave any child element in the render tree that is (a) still literally
+`float: left/right` after this file's changes and (b) sitting inside a
+parent with no other height source (no fixed height, no flex/grid
+already handling it, no already-inline-block/otherwise-BFC-having
+ancestor)? Walked every one of the 58 declarations' full container
+chains (down to the PHP template markup where SCSS nesting doesn't
+match DOM nesting, e.g. `.overlapping-cards-container` >
+`.overlapping-card-wrapper` > `.overlapping-card` > `.column-container`
+in `_overlapping-cards.php`) and confirmed each one resolves to one of:
+already inside a `display:flex`/`grid` ancestor (own float irrelevant,
+Category A, most of the file); a "flatten-together" chain like the
+overlapping-cards sticky stack, the icon-accordion, or
+`repeatable-image-text`'s `.cards`/`.column-container`/`.image-column`
+tree, where nothing floated survives the pass; or a fixed/explicit
+`height` on the parent (`.icon-container{height:32px}`,
+`.quote-slider-timer{height:1px}`, `.logo-container{height:40px}`),
+which is immune to float-collapse regardless of what's inside it.
+
+**New caveat worth flagging for the remaining files**: some of this
+file's flex containers (`.column-container`/`.column` inside
+`three-column-video-gtm`) have no `display: flex` written anywhere in
+`_gtm.scss` itself -- they only carry `align-items`/`gap`, which are
+no-ops without a flex/grid display. The actual `display: flex` for
+those classes is coming from a *different* template file entirely
+(this section's live class list is
+`three-column-video-gtm three-column-icon-text-ecosystems
+three-column-partnered-research` -- multiple partials' rules apply to
+the same markup by design). Confirmed this by checking
+`getComputedStyle` on the *live* page rather than trusting an
+isolated single-file dart-sass compile, which can't see cross-file
+cascade contributions. Worth doing that live check specifically
+whenever a container/column class name looks generic/shared and the
+file being edited doesn't itself explain why it's flex.
+
+### Status
+
+`float: left`/`float: right` -> `float: none` for all 58 declarations
+(matches the file's existing 41-entry gate exactly for those, plus 17
+additional declarations the gate didn't cover, all confirmed safe by
+the walk above), gate section removed (621 lines). No real flexbox
+conversions needed anywhere in this file -- every floated element was
+already either a flex item, inside a fixed-height parent, or being
+flattened as part of a whole all-float chain. Verified via the
+established isolated dart-sass compile: 0 unexpected
+`float: left`/`float: right` among this file's real root selectors in
+the compiled output. `git diff --stat`: 1 file, 58 insertions(+), 679
+deletions(-). Not yet checked live (not deployed this pass) and not
+committed -- left for the user per usual practice.
+
+### Remaining files (7 left)
+
+`_services.scss`, `_resources.scss`, `_roundtable.scss`,
+`_single-post.scss`, `_position.scss`, `_landing.scss`,
+`_customer-stories.scss`. Apply the same full container-chain walk as
+above (not just the individually-ungated declarations -- recheck the
+existing gate entries too, since every file's gate predates the §57
+finding), and watch for classes that are flex only because of a
+sibling template file, confirmed via live `getComputedStyle` rather
+than an isolated compile.
