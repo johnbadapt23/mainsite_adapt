@@ -72,14 +72,14 @@ section.events-title-block.services-introduction {
                 top: 0 !important;
 
                 .image-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     position: relative;
                     padding-top: 0 !important;
                     
 
                     .bg-container {
-                        float: left;
+                        float: none;
                         width: 100%;
                         position: relative;
 
@@ -101,7 +101,7 @@ section.events-title-block.services-introduction {
         text-align: left;
 
         .content-container {
-            float: left;
+            float: none;
             width: 100%;
             max-width: 778px;
             padding-right: 0px;
@@ -109,7 +109,7 @@ section.events-title-block.services-introduction {
             z-index: 2;
 
             h1 {
-                float: left;
+                float: none;
                 width: 100%;
                 padding-bottom: 32px;
                 margin-bottom: 32px;
@@ -123,7 +123,7 @@ section.events-title-block.services-introduction {
             }
 
             .text {
-                float: left;
+                float: none;
                 width: 100%;
                 max-width: 570px;
                 font-size: 20px;
@@ -136,7 +136,7 @@ section.events-title-block.services-introduction {
             }
 
             .button-container{
-                float: left;
+                float: none;
                 width: 100%;
 
                 @media (max-width: 1023px) {
@@ -233,15 +233,17 @@ section.services-two-column-image-text {
 
     .container {
         .column-container {
-            float: left;
+            float: none;
             width: 100%;
+            display: flex;
+            flex-direction: row-reverse;
 
             @media (max-width: 767px) {
-                display: block;
+                flex-direction: column;
             }
 
             .column {
-                float: left;
+                float: none;
                 width: 50%;
                 text-align: left;
 
@@ -259,7 +261,7 @@ section.services-two-column-image-text {
                     }
 
                     h2 {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 40px;
 
@@ -268,7 +270,7 @@ section.services-two-column-image-text {
                         }
 
                         p {
-                            float: left;
+                            float: none;
                             width: 100%;
                             margin-bottom: 0px;
                             strong {
@@ -279,7 +281,7 @@ section.services-two-column-image-text {
                     }
 
                     .text {
-                        float: left;
+                        float: none;
                         width: 100%;
                         max-width: 520px;
                         font-size: 20px;
@@ -294,7 +296,7 @@ section.services-two-column-image-text {
                 &.image-column {
                     padding-right: 60px;
                     padding-left: 40px;
-                    float: right;
+                    float: none;
 
                     @media (max-width: 1023px) {
                         padding-right: 24px;
@@ -305,7 +307,7 @@ section.services-two-column-image-text {
                     }
 
                     img {
-                        float: left;
+                        float: none;
                         width: 100%;
                     }
                 }
@@ -323,7 +325,7 @@ section.three-column-icon-services {
 
     .container {
         .title-container {
-            float: left;
+            float: none;
             width: 100%;
             text-align: center;
             margin-bottom: 130px;
@@ -339,14 +341,14 @@ section.three-column-icon-services {
                 margin: 0 auto;
 
                 h2 {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     margin-bottom: 0px;
                 }
 
                 .text {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     margin-top: 16px;
@@ -361,17 +363,17 @@ section.three-column-icon-services {
         }
 
         .column-container {
-            float: left;
+            float: none;
             width: 100%;
             display: flex;
             flex-wrap: wrap;
 
             @media (max-width: 767px) {
-                display: block;
+                flex-direction: column;
             }
 
             .column {
-                float: left;
+                float: none;
                 width: 33.33%;
 
                 @media (max-width: 767px) {
@@ -383,23 +385,23 @@ section.three-column-icon-services {
                     margin-bottom: 40px;
 
                     .icon-container {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 32px;
 
                         img {
-                            float: left;
+                            float: none;
                             width: 70px;
                         }
                     }
 
                     .text-container {
-                        float: left;
+                        float: none;
                         width: 100%;
                         max-width: 333px;
 
                         .icon-text-title {
-                            float: left;
+                            float: none;
                             width: 100%;
                             font-size: 20px;
                             line-height: 28px;
@@ -409,7 +411,7 @@ section.three-column-icon-services {
                         }
 
                         .icon-text {
-                            float: left;
+                            float: none;
                             width: 100%;
                             font-size: 18px;
                             line-height: 28px;
@@ -419,7 +421,7 @@ section.three-column-icon-services {
 
                 &.cta-column {
                     .cta-inner {
-                        float: left;
+                        float: none;
                         width: 100%;
                         border: 1px solid $color-red;
                         border-style: dashed;
@@ -432,7 +434,7 @@ section.three-column-icon-services {
                         }
 
                         .red-text {
-                            float: left;
+                            float: none;
                             width: 100%;
                             max-width: 270px;
                             font-size: 20px;
@@ -443,11 +445,11 @@ section.three-column-icon-services {
                         }
 
                         .button-container {
-                            float: left;
+                            float: none;
                             width: 100%;
 
                             a {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 max-width: 270px;
                             }
@@ -470,13 +472,13 @@ section.services-cards-module {
         text-align: center;
 
         .card-container {
-            float: left;
+            float: none;
             width: 100%;
             display: flex;
             flex-wrap: wrap;
 
             @media (max-width:767px) {
-                display: inherit;
+                flex-direction: column;
             }
 
             .card {
@@ -499,7 +501,7 @@ section.services-cards-module {
                     width: 100%;
                     padding: 32px;
                     margin-left: 0;
-                    float: left;
+                    float: none;
                 }
 
                 &:after {
@@ -539,7 +541,7 @@ section.services-cards-module {
                 }
 
                 .icon-container {
-                    float: left;
+                    float: none;
                     width: 100%;
 
                     .image-container {
@@ -561,7 +563,7 @@ section.services-cards-module {
                 }
 
                 .content-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     position: relative;
                     text-align: left;
@@ -594,7 +596,7 @@ section.services-cards-module {
                         }
 
                         h4 {
-                            float: left;
+                            float: none;
                             width: 100%;
                             font-weight: 500;
                             font-family: $font-medium;
@@ -604,7 +606,7 @@ section.services-cards-module {
                         }
 
                         .card-text {
-                            float: left;
+                            float: none;
                             width: 100%;
                             color: #000;
                             opacity: 0;
@@ -733,7 +735,7 @@ section.two-column-switch-module {
             padding: 0px;
         }
         .title-switch-container {
-            float: left;
+            float: none;
             width: 100%;
             text-align: center;
             border-bottom: 1px solid $color-light-grey;
@@ -744,7 +746,7 @@ section.two-column-switch-module {
             }
 
             .title-container {
-                float: left;
+                float: none;
                 width: 100%;
                 text-align: center;
                 margin-bottom: 48px;
@@ -754,7 +756,7 @@ section.two-column-switch-module {
                 }
 
                 h2 {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     margin-bottom: 0px;
@@ -762,7 +764,7 @@ section.two-column-switch-module {
             }
 
             .switcher-container {
-                float: left;
+                float: none;
                 width: 100%;
                 text-align: center;
 
@@ -838,11 +840,11 @@ section.two-column-switch-module {
         }
 
         .module-container {
-            float: left;
+            float: none;
             width: 100%;
 
             .switch-module {
-                float: left;
+                float: none;
                 width: 100%;
                 display: none;
                 padding: 80px;
@@ -870,12 +872,12 @@ section.two-column-switch-module {
                 }
 
                 .column-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     display: flex;
 
                     .column {
-                        float: left;
+                        float: none;
                         width: 50%;
 
                         &.text-list-column {
@@ -907,18 +909,18 @@ section.two-column-switch-module {
 
                             img {
                                 width: 100%;
-                                float: left;
+                                float: none;
                             }
                         }
 
                         h2 {
-                            float: left;
+                            float: none;
                             width: 100%;
                             margin-bottom: 16px;
                         }
 
                         .text {
-                            float: left;
+                            float: none;
                             width: 100%;
                             font-size: 20px;
                             line-height: 28px;
@@ -934,19 +936,19 @@ section.two-column-switch-module {
 
                             @media (max-width:767px) {
                                 display: block;
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 margin-bottom: 40px;
                             }
                         }
 
                         .list-container {
-                            float: left;
+                            float: none;
                             width: 100%;
                             margin-bottom: 40px;
 
                             .list-item {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 position: relative;
                                 padding-left: 36px;
@@ -974,15 +976,15 @@ section.two-column-switch-module {
                             }
 
                             .button-container {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 margin-top: 24px;
 
                                 a {
-                                    float: left;
+                                    float: none; display: block;
 
                                     @media (max-width:767px) {
-                                        float: left;
+                                        float: none;
                                         width: 100%;
                                     }
                                 }
@@ -1050,7 +1052,7 @@ section.background-image-stats {
         z-index: 1;
 
         .title-container {
-            float: left;
+            float: none;
             width: 100%;
             text-align: center;
             margin-bottom: 115px;
@@ -1071,13 +1073,15 @@ section.background-image-stats {
         }
 
         .stats-column-container {
-            float: left;
+            float: none;
             width: 100%;
+            display: flex;
+            flex-wrap: wrap;
 
             .stat-column {
                 width: 33.33%;
                 text-align: center;
-                float: left;
+                float: none;
 
                 @media (max-width:767px) {
                     width: 100%;
@@ -1140,7 +1144,7 @@ section.background-image-stats {
 
                     h2 {
                         margin-bottom: 0px;
-                        float: left;
+                        float: none;
                         width: 100%;
                         text-align: center;
 
@@ -1153,7 +1157,7 @@ section.background-image-stats {
                     .stat-subtitle {
                         font-size: 16px;
                         line-height: 20px;
-                        float: left;
+                        float: none;
                         width: 100%;
                         text-align: center;
                     }
@@ -1169,8 +1173,9 @@ section.background-image-stats {
 
         .four-column-container {
             position: relative;
-            float: left;
+            float: none;
             width: 100%;
+            display: flow-root;
 
             @media (max-width: 767px) {
                 margin-bottom: -120px;
@@ -1186,7 +1191,7 @@ section.background-image-stats {
                 @media (max-width: 1023px) {
                     position: relative;
                     width: 100%;
-                    float: left;
+                    float: none;
                     left: auto;
                     bottom: auto;
                     margin-bottom: 100px;
@@ -1198,7 +1203,7 @@ section.background-image-stats {
                 }
 
                 h3 {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: center;
                     margin-bottom: 0px;
@@ -1253,7 +1258,7 @@ section.background-image-stats {
 
                     h2 {
                         margin-bottom: 0px;
-                        float: left;
+                        float: none;
                         width: 100%;
                         text-align: center;
 
@@ -1266,7 +1271,7 @@ section.background-image-stats {
                     .stat-subtitle {
                         font-size: 16px;
                         line-height: 20px;
-                        float: left;
+                        float: none;
                         width: 100%;
                         text-align: center;
                     }
@@ -1368,14 +1373,14 @@ section.two-column-acordion {
             }
 
             h2 {
-                float: left;
+                float: none;
                 width: 100%;
                 text-align: center;
                 margin-bottom: 24px;
             }
 
             .text {
-                float: left;
+                float: none;
                 width: 100%;
                 text-align: center;
                 font-size: 20px;
@@ -1388,16 +1393,16 @@ section.two-column-acordion {
         }
 
         .accordion-container {
-            float: left;
+            float: none;
             width: 100%;
             display: flex;
 
             @media (max-width: 767px) {
-                display: block;
+                flex-direction: column;
             }
 
             .accordion-image-column {
-                float: left;
+                float: none;
                 width: 50%;
                 padding-right: 140px;
                 padding-top: 10px;
@@ -1413,18 +1418,18 @@ section.two-column-acordion {
                 }
 
                 .accordion-image-inner {
-                    float: left;
+                    float: none;
                     width: 100%;
 
                     img {
-                        float: left;
+                        float: none;
                         width: 100%;
                     }
                 }
             }
 
             .accordion-text-column {
-                float: left;
+                float: none;
                 width: 50%;
                 text-align: left;
 
@@ -1433,7 +1438,7 @@ section.two-column-acordion {
                 }
 
                 .faq-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     border-bottom: 1px solid $color-medium-light-grey;
                     padding: 24px 0px;
@@ -1443,7 +1448,7 @@ section.two-column-acordion {
                     }
 
                     .question {
-                        float: left;
+                        float: none;
                         width: 100%;
                         font-size: 20px;
                         line-height: 24px;
@@ -1484,14 +1489,14 @@ section.two-column-acordion {
                     }
 
                     .accordion-content {
-                        float: left;
+                        float: none;
                         width: 100%;
                         display: none;
                         text-align: left;
                         padding-top: 24px;
 
                         .tag {
-                            float: left;
+                            float: none; display: inline-block;
                             background-color: $color-secondary-light-grey;
                             color: $color-dark-grey;
                             border-radius: 12px;
@@ -1513,7 +1518,7 @@ section.animation-icon-module {
 
     .container {
         .column-container {
-            float: left;
+            float: none;
             width: 100%;
             display: flex;
             border: 1px solid #000;
@@ -1522,7 +1527,7 @@ section.animation-icon-module {
             overflow: hidden;
 
             @media (max-width: 767px) {
-                display: block;
+                flex-direction: column;
             }
 
             .column.icon-column {
@@ -1539,7 +1544,7 @@ section.animation-icon-module {
                     padding: 45px 24px;
                     border-right: none;
                     border-bottom: 1px solid #000;
-                    float: left;
+                    float: none;
                 }
 
                 &.left-border {
@@ -1554,18 +1559,19 @@ section.animation-icon-module {
                 }
 
                 h3 {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 60px;
                 }
 
                 .icon-column-container {
                     width: 100%;
-                    float: left;
+                    float: none;
                     display: flex;
                     flex-wrap: wrap;
 
                     .icon-column {
+                        display: flex;
                         width: 33.3%;
                         margin-bottom: 40px;
 
@@ -1575,7 +1581,7 @@ section.animation-icon-module {
                         }
 
                         .icon-container {
-                            float: left;
+                            float: none;
                             width: 52px;
                             padding-right: 12px;
 
@@ -1589,7 +1595,7 @@ section.animation-icon-module {
                         }
 
                         .title-container {
-                            float: left;
+                            float: none;
                             width: calc(100% - 52px);
                             padding-right: 40px;
                             height: 100%;
@@ -1623,7 +1629,7 @@ section.animation-icon-module {
 
                 @media (max-width: 767px) {
                     width: 100%;
-                    float: left;
+                    float: none;
                     padding: 45px 24px;
                     border-right: none;
 
@@ -1633,1041 +1639,10 @@ section.animation-icon-module {
                 }
 
                 .animation-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                 }
             }
         }
     }
 }
-
-
-// =====================================================================
-// Float -> Flexbox modernization pass, folded in from the formerly
-// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
-// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
-// Pixel-parity verified against the gated build before this merge --
-// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
-// dated 2026-09-14) for the full audit trail, per-rule provenance, and
-// the isolated-build diff used to confirm this file's compiled output
-// is unchanged from the pre-merge gated build.
-// =====================================================================
-// line 75
-
-section.events-title-block.events-title-block.services-introduction.services-introduction {
-                &.new-intro.new-intro {
-                        .content-container.content-container {
-                                .side-image-container.side-image-container {
-                                        .image-container.image-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 82
-
-section.events-title-block.events-title-block.services-introduction.services-introduction {
-                &.new-intro.new-intro {
-                        .content-container.content-container {
-                                .side-image-container.side-image-container {
-                                        .image-container.image-container {
-                                                .bg-container.bg-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 104
-
-section.events-title-block.events-title-block.services-introduction.services-introduction {
-                .container.container {
-                        .content-container.content-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 112
-
-section.events-title-block.events-title-block.services-introduction.services-introduction {
-                .container.container {
-                        .content-container.content-container {
-                                h1 {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 126
-
-section.events-title-block.events-title-block.services-introduction.services-introduction {
-                .container.container {
-                        .content-container.content-container {
-                                .text.text {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 139
-
-section.events-title-block.events-title-block.services-introduction.services-introduction {
-                .container.container {
-                        .content-container.content-container {
-                                .button-container.button-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 236
-
-section.services-two-column-image-text.services-two-column-image-text {
-                .container.container {
-                        .column-container.column-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 262
-
-section.services-two-column-image-text.services-two-column-image-text {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                h2 {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 271
-
-section.services-two-column-image-text.services-two-column-image-text {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                h2 {
-                                                        p {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 282
-
-section.services-two-column-image-text.services-two-column-image-text {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                .text.text {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 308
-
-section.services-two-column-image-text.services-two-column-image-text {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.image-column.image-column {
-                                                img {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 326
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .title-container.title-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 342
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .title-container.title-container {
-                                .title-inner.title-inner {
-                                        h2 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 349
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .title-container.title-container {
-                                .title-inner.title-inner {
-                                        .text.text {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 364
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .column-container.column-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 386
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.icon-text-item.icon-text-item {
-                                                .icon-container.icon-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 397
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.icon-text-item.icon-text-item {
-                                                .text-container.text-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 402
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.icon-text-item.icon-text-item {
-                                                .text-container.text-container {
-                                                        .icon-text-title.icon-text-title {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 412
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.icon-text-item.icon-text-item {
-                                                .text-container.text-container {
-                                                        .icon-text.icon-text {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 422
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.cta-column.cta-column {
-                                                .cta-inner.cta-inner {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 435
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.cta-column.cta-column {
-                                                .cta-inner.cta-inner {
-                                                        .red-text.red-text {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 446
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.cta-column.cta-column {
-                                                .cta-inner.cta-inner {
-                                                        .button-container.button-container {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 450
-
-section.three-column-icon-services.three-column-icon-services {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.cta-column.cta-column {
-                                                .cta-inner.cta-inner {
-                                                        .button-container.button-container {
-                                                                a {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 473
-
-section.services-cards-module.services-cards-module {
-                .container.container {
-                        .card-container.card-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 502
-
-section.services-cards-module.services-cards-module {
-                .container.container {
-                        .card-container.card-container {
-                                .card.card {
-                                        @media (max-width:767px) {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 542
-
-section.services-cards-module.services-cards-module {
-                .container.container {
-                        .card-container.card-container {
-                                .card.card {
-                                        .icon-container.icon-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 564
-
-section.services-cards-module.services-cards-module {
-                .container.container {
-                        .card-container.card-container {
-                                .card.card {
-                                        .content-container.content-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 597
-
-section.services-cards-module.services-cards-module {
-                .container.container {
-                        .card-container.card-container {
-                                .card.card {
-                                        .content-container.content-container {
-                                                .content-container-inner.content-container-inner {
-                                                        h4 {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 607
-
-section.services-cards-module.services-cards-module {
-                .container.container {
-                        .card-container.card-container {
-                                .card.card {
-                                        .content-container.content-container {
-                                                .content-container-inner.content-container-inner {
-                                                        .card-text.card-text {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 736
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .title-switch-container.title-switch-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 747
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .title-switch-container.title-switch-container {
-                                .title-container.title-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 757
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .title-switch-container.title-switch-container {
-                                .title-container.title-container {
-                                        h2 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 765
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .title-switch-container.title-switch-container {
-                                .switcher-container.switcher-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 841
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 845
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                .switch-module.switch-module {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 873
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                .switch-module.switch-module {
-                                        .column-container.column-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 910
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                .switch-module.switch-module {
-                                        .column-container.column-container {
-                                                .column.column {
-                                                        &.image-column.image-column {
-                                                                img {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 915
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                .switch-module.switch-module {
-                                        .column-container.column-container {
-                                                .column.column {
-                                                        h2 {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 921
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                .switch-module.switch-module {
-                                        .column-container.column-container {
-                                                .column.column {
-                                                        .text.text {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 937
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                .switch-module.switch-module {
-                                        .column-container.column-container {
-                                                .column.column {
-                                                        .mobile-image.mobile-image {
-                                                                @media (max-width:767px) {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 944
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                .switch-module.switch-module {
-                                        .column-container.column-container {
-                                                .column.column {
-                                                        .list-container.list-container {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 949
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                .switch-module.switch-module {
-                                        .column-container.column-container {
-                                                .column.column {
-                                                        .list-container.list-container {
-                                                                .list-item.list-item {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 977
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                .switch-module.switch-module {
-                                        .column-container.column-container {
-                                                .column.column {
-                                                        .list-container.list-container {
-                                                                .button-container.button-container {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 985
-
-section.two-column-switch-module.two-column-switch-module {
-                .container.container {
-                        .module-container.module-container {
-                                .switch-module.switch-module {
-                                        .column-container.column-container {
-                                                .column.column {
-                                                        .list-container.list-container {
-                                                                .button-container.button-container {
-                                                                        a {
-                                                                                @media (max-width:767px) {
-                                                                                        float: none;
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1053
-
-section.background-image-stats.background-image-stats {
-                > .container.container.three-stats.three-stats {
-                        .title-container.title-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1074
-
-section.background-image-stats.background-image-stats {
-                > .container.container.three-stats.three-stats {
-                        .stats-column-container.stats-column-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1143
-
-section.background-image-stats.background-image-stats {
-                > .container.container.three-stats.three-stats {
-                        .stats-column-container.stats-column-container {
-                                .stat-column.stat-column {
-                                        .stat-container.stat-container {
-                                                h2 {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1156
-
-section.background-image-stats.background-image-stats {
-                > .container.container.three-stats.three-stats {
-                        .stats-column-container.stats-column-container {
-                                .stat-column.stat-column {
-                                        .stat-container.stat-container {
-                                                .stat-subtitle.stat-subtitle {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1172
-
-section.background-image-stats.background-image-stats {
-                > .container.container.four-stats.four-stats {
-                        .four-column-container.four-column-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1189
-
-section.background-image-stats.background-image-stats {
-                > .container.container.four-stats.four-stats {
-                        .four-column-container.four-column-container {
-                                .absolute-title-container.absolute-title-container {
-                                        @media (max-width: 1023px) {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1201
-
-section.background-image-stats.background-image-stats {
-                > .container.container.four-stats.four-stats {
-                        .four-column-container.four-column-container {
-                                .absolute-title-container.absolute-title-container {
-                                        h3 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1256
-
-section.background-image-stats.background-image-stats {
-                > .container.container.four-stats.four-stats {
-                        .four-column-container.four-column-container {
-                                .column.column {
-                                        .stat-container.stat-container {
-                                                h2 {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1269
-
-section.background-image-stats.background-image-stats {
-                > .container.container.four-stats.four-stats {
-                        .four-column-container.four-column-container {
-                                .column.column {
-                                        .stat-container.stat-container {
-                                                .stat-subtitle.stat-subtitle {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1371
-
-section.two-column-acordion.two-column-acordion {
-                .container.container {
-                        .title-container.title-container {
-                                h2 {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 1378
-
-section.two-column-acordion.two-column-acordion {
-                .container.container {
-                        .title-container.title-container {
-                                .text.text {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 1391
-
-section.two-column-acordion.two-column-acordion {
-                .container.container {
-                        .accordion-container.accordion-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1416
-
-section.two-column-acordion.two-column-acordion {
-                .container.container {
-                        .accordion-container.accordion-container {
-                                .accordion-image-column.accordion-image-column {
-                                        .accordion-image-inner.accordion-image-inner {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1420
-
-section.two-column-acordion.two-column-acordion {
-                .container.container {
-                        .accordion-container.accordion-container {
-                                .accordion-image-column.accordion-image-column {
-                                        .accordion-image-inner.accordion-image-inner {
-                                                img {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1436
-
-section.two-column-acordion.two-column-acordion {
-                .container.container {
-                        .accordion-container.accordion-container {
-                                .accordion-text-column.accordion-text-column {
-                                        .faq-container.faq-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1446
-
-section.two-column-acordion.two-column-acordion {
-                .container.container {
-                        .accordion-container.accordion-container {
-                                .accordion-text-column.accordion-text-column {
-                                        .faq-container.faq-container {
-                                                .question.question {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1487
-
-section.two-column-acordion.two-column-acordion {
-                .container.container {
-                        .accordion-container.accordion-container {
-                                .accordion-text-column.accordion-text-column {
-                                        .faq-container.faq-container {
-                                                .accordion-content.accordion-content {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1516
-
-section.animation-icon-module.animation-icon-module {
-                .container.container {
-                        .column-container.column-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1542
-
-section.animation-icon-module.animation-icon-module {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.icon-column.icon-column {
-                                        @media (max-width: 767px) {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1557
-
-section.animation-icon-module.animation-icon-module {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.icon-column.icon-column {
-                                        h3 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1564
-
-section.animation-icon-module.animation-icon-module {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.icon-column.icon-column {
-                                        .icon-column-container.icon-column-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1592
-
-section.animation-icon-module.animation-icon-module {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.icon-column.icon-column {
-                                        .icon-column-container.icon-column-container {
-                                                .icon-column.icon-column {
-                                                        .title-container.title-container {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1626
-
-section.animation-icon-module.animation-icon-module {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.animation-column.animation-column {
-                                        @media (max-width: 767px) {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1636
-
-section.animation-icon-module.animation-icon-module {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.animation-column.animation-column {
-                                        .animation-container.animation-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-@media (max-width: 767px) {
-        section.two-column-switch-module.two-column-switch-module .container.container .module-container.module-container .switch-module.switch-module .column-container.column-container .column.column .list-container.list-container .button-container.button-container a {
-            display: block;
-        }
-    }
-
-@media (min-width: 1101px) {
-        section.two-column-switch-module.two-column-switch-module .container.container .title-switch-container.title-switch-container .switcher-container.switcher-container {
-            display: block;
-        }
-    }
-
-section.three-column-icon-services.three-column-icon-services .container.container .column-container.column-container .column.column.cta-column.cta-column .cta-inner.cta-inner .button-container.button-container a {
-        display: block;
-    }
-
-section.three-column-icon-services.three-column-icon-services .container.container .title-container.title-container {
-        display: block;
-    }
