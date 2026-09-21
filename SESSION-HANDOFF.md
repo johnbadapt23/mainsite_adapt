@@ -7657,3 +7657,198 @@ next `git add`/`commit` will pick up the rest).
 methodology. Also worth checking `git status` for `MM` (not just `M`) on
 each remaining file before trusting a plain `git diff --stat`, per this
 section's finding.
+
+
+---
+
+## §61 -- 2026-09-21: float-grid redesign, 11th file -- `_roundtable.scss`, 26 declarations (23 fixed: 16 mechanical + 5 real flexbox conversions + 1 defensive `display:inline-block` + 1 breakpoint `float` removal folded into a real conversion; 2 deliberately preserved as documented production-bug exceptions, plus their gate-section rules and comment kept verbatim)
+
+### Context
+
+Continuing from §60. Picked `_roundtable.scss`, confirmed live via
+`templates/template-executive-roundtables.php` (renders
+`templates/roundtable-components/_card-slider.php` and `_experience.php`).
+Two root sections: `section.roundtable-card-slider-module` and
+`section.experience-module`.
+
+This file's gate section had an unusual, much smaller shape than every
+other file in the series: only 7 genuine `// line NNN` collapse-eligible
+entries (all inside `section.experience-module`), plus two special,
+heavily-documented, must-not-touch exceptions that predate this whole
+project and are unrelated to routine float-collapse:
+
+- **`.cards-progress`** -- a real, measured production bug (dated
+  2026-09-10, well before this redesign pass started): removing this
+  element's `float: left` causes a 90px height shortfall on
+  `/private-executive-roundtables/`, via the same "clearance-margin-
+  absorption" mechanism documented for `.menu-bottom` in the header
+  pass -- a cleared/unfloated block's margin gets absorbed into the
+  float-clearing position instead of adding on top of it. A
+  double-class `float: none` override was tried first and silently
+  lost the cascade to a bulk-generated `?dev=true`-era rule from a
+  (likely decommissioned -- no references found in `gulpfile.js` or
+  top-level build files) `fix-float-none-display.js` tool, so a
+  quad-class `float: left` override was added to force the win without
+  `!important`.
+- **`.slide-image-container`'s gate-section rule** -- NOT a float fix.
+  It's `display: flex !important;`, presumably overriding Slick's own
+  inline styles or another more-specific rule. The base rule in the
+  main file body has no `display` property at all.
+
+**Decision: left `.cards-progress`'s base rule, its quad-class override,
+its full explanatory comment, AND the unrelated `.slide-image-container`
+flex rule completely untouched**, as a deliberate exception to this
+project's usual "collapse everything then delete the whole gate section"
+pattern. Only the 7 genuine `// line NNN` float-collapse entries were
+removed from the gate (now redundant, folded into direct source edits);
+the gate section's banner comment was kept (still true, still explains
+the two preserved rules below it) and given one added paragraph noting
+that only the collapse-no-op entries were removed.
+
+### Fresh count
+
+**26 raw matches, 23 active declarations** before the gate boundary
+(3 matches are inside the gate section text itself and don't count).
+16 ungated, 7 already gated (all 7 within `section.experience-module`,
+all verified by selector content against the live main-body rules
+before collapsing -- no drift).
+
+### Real conversions -- two genuine 2-column grids inside `experience-module`, both DOM-order-verified via PHP
+
+Read `templates/roundtable-components/_experience.php` before choosing
+row/row-reverse (per the standing DOM-order-verification practice) --
+and it's a good thing I did: the SCSS source lists `.experience-text-column`
+before `.experience-image-container`, but the PHP renders
+`.experience-image-container` FIRST and `.experience-text-column` SECOND
+-- the opposite of SCSS source order.
+
+- **`.experience-container`** (outer 50/50 split: image first in DOM,
+  floats right; text second in DOM, floats left) -> `display: flex;
+  flex-direction: row-reverse;` reproduces the DOM-vs-visual mismatch
+  without touching markup, with `@media (max-width:767px) {
+  flex-direction: column; }` added (mobile already stacked both to
+  width:100%, image first, matching DOM order -- confirmed the gate had
+  *already* silently forced the mobile `float:left` on
+  `.experience-image-container` to `float:none`, i.e. this was already
+  effectively unfloated on mobile in production; folded that into the
+  same real edit rather than leaving a separate collapse).
+- **`.experience-text-container`** (a repeatable accordion-style row
+  nested inside `.experience-text-column`: `.title` 50% then `.text`
+  50%, DOM order matches visual order, no reversal needed) ->
+  `display: flex;` with `@media (max-width:1023px) { flex-direction:
+  column; }` (matches the original's `width: 100%` stacking at that
+  breakpoint for both children).
+
+### The `.slide-image-container` no-op check (card-slider-module)
+
+Before flattening `.slide-image-container`'s own ungated `float: left`,
+checked whether it conflicted with the preserved gate-section
+`display: flex !important` rule on the same selector: it doesn't --
+per spec, `float` + `display: flex` still blockifies to a floating flex
+container, so `.image-container` (its sole child) was *already* a flex
+item and already float-inert in current production, regardless of this
+pass. Flattening `.slide-image-container`'s own float to `float: none`
+changes nothing observable (still `display: flex` via the untouched
+`!important` rule, still full width) -- confirmed this reasoning against
+the compiled output rather than assuming it.
+
+### Container-chain-walk: `.slide-inner` needed no `flow-root` fix
+
+`.slide-inner`'s own float was ungated (still a real, live float in
+production) and its in-flow children include a fixed-size
+`.image-container` (180x164, no `width:100%`) that could in principle
+need containment once unfloated. But every one of `.slide-inner`'s
+in-flow children in this pass ends up either full-width (safe no-op),
+a solo child with nothing to wrap (also a safe no-op, same "no visible
+difference" reasoning as `_resources.scss` §60's `.main-image-container`),
+or already a flex container (`.slide-image-container`, via the preserved
+`!important` rule) -- so once all of them are flattened together, none
+of `.slide-inner`'s children remain genuinely floated, and no
+`flow-root`/containment fix was needed on `.slide-inner` itself.
+
+### Mechanical flattens (16, all provably safe no-ops -- single full-width block or a solo non-wrapping child)
+
+`.top-content`, `.title` (top-content), `.roundtable-card-slider`
+(full-bleed slider wrapper -- not Slick-managed itself, only its
+descendants are), `.slide-inner`, `.slide-tag-container`,
+`.slide-image-container`, `.image-container` (card, 180x164 solo
+child), `.slide-text` (solo child of a `position:absolute` ancestor),
+`.experience-title-container`, `.column.one-half` (scoped nested
+selector only -- the shared sitewide `.one-half` utility class itself
+was not touched), `h2` (inside that column), `.experience-image-inner`
+(height is fully driven by `padding-top: 110%`, not by flow content --
+containment was never a concern here), `.image-container` (nested
+inside `.experience-image`, same aspect-ratio-box pattern).
+
+### One defensive `display: inline-block` addition
+
+- `.tag` (card-slider, ungated `<span>` pill/chip, single instance per
+  slide per the PHP, no explicit width) -> `float: none; display:
+  inline-block;`, same defensive pattern used throughout this series
+  for bare `<span>`/`<a>` elements.
+
+### Applied
+
+23 `float: left`/`float: right` -> `float: none` (16 mechanical + 5 as
+part of the 2 real conversions + 2 gate-collapse entries folded into
+those same conversions). 2 real flexbox conversions. 1 defensive
+`display: inline-block` addition. Removed the 7 now-redundant
+`// line NNN` collapse entries from the gate section; **kept the gate's
+banner comment, the full `.cards-progress` bugfix documentation and its
+quad-class override, and the unrelated `.slide-image-container` flex
+rule completely untouched**, as the deliberate exception documented
+above.
+
+### Verification
+
+- `grep` for `float:\s*left\|float:\s*right`: 2 real matches, both
+  `.cards-progress` (the base rule and the quad-class override) --
+  exactly the intended exception, everything else 0. (3 more matches
+  are inside the preserved comment's prose, not real declarations.)
+- Compiled for real with `node_modules/.bin/sass` (dart-sass) against
+  the theme's full global import chain: 0 errors, only standard
+  `@import`-deprecation warnings.
+- Parsed the compiled CSS, isolated every rule block touching either
+  root section or `.cards-progress`: 0 unexpected `float: left`/
+  `float: right`, both intentional `.cards-progress` exceptions present
+  and unchanged, the `.slide-image-container` `display: flex !important`
+  rule confirmed present in the compiled output. Directly inspected both
+  real conversions (`.experience-container`'s row-reverse + mobile
+  column-stack, `.experience-text-container`'s flex + 1023px
+  column-stack), `.slide-inner`, and `.tag` in the compiled output --
+  all landed exactly as designed.
+- `git status --short` showed plain `M` (not `MM`) for this file, so
+  the usual `git diff HEAD --stat` and a plain `git diff --stat` would
+  have agreed here; used `git diff HEAD --stat` anyway per the §60
+  practice: **1 file, 42 insertions(+), 116 deletions(-)**.
+- A scratch dart-sass compile-test file (`wrapper_roundtable_TEMP.scss`)
+  was created in the repo root for this verification; moved to the
+  existing `_to_delete/` folder (no delete permission granted this
+  session) rather than interrupting with a permission prompt for
+  one-file cleanup.
+- Re-noticed a stale, empty `.git/index.lock` on the user's machine
+  (timestamped from this session's own `git status`/`git diff`
+  invocations) -- non-blocking for reads, flagged again as likely to
+  interfere with the user's next `git commit`/`git add` until removed
+  manually.
+- Did **not** do a live before/after screenshot/computed-style check on
+  staging -- same caveat as every prior file. The two real conversions
+  in `experience-module` (especially the row-reverse image/text swap,
+  since the DOM order turned out to be the reverse of what the SCSS
+  source order implied) are the most worth a human look before shipping.
+
+### Status
+
+Applied on the user's machine via the device bridge, **not committed to
+git yet**.
+
+### Remaining files (4 left)
+
+`_single-post.scss`, `_position.scss`, `_landing.scss`,
+`_customer-stories.scss`. Continue the established container-chain-walk
+methodology: recheck gated entries too (not just ungated declarations),
+verify DOM order via the actual PHP before choosing `row`/`row-reverse`
+(don't trust SCSS source order -- this file's `experience-container` is
+proof it can be backwards), watch for the shared `.one-half`/
+`.one-quarter`/`.one-third` utility classes, and check `git status` for
+`MM` (not just `M`) before trusting a plain `git diff --stat`.
