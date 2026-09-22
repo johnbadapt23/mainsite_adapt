@@ -7995,3 +7995,182 @@ second proof point, after `_roundtable.scss`, that guessing from SCSS
 alone is a real risk), watch for the shared `.one-half`/`.one-quarter`/
 `.one-third` utility classes, and check `git status` for `MM` (not just
 `M`) before trusting a plain `git diff --stat`.
+
+
+---
+
+## §63 -- 2026-09-22: float-grid redesign, 13th file -- `_position.scss`, 53 declarations (42 fixed: 36 mechanical/defensive + 6 gate-collapse + 2 real flexbox/inline-block conversions folded into that count; 11 deliberately left untouched -- entire `section.position-icon-slider` subtree, zero gate coverage)
+
+### Context
+
+Continuing from §62. Picked `_position.scss`. Live templates confirmed via
+grep of its root selectors (`section.position-information`,
+`section.position-icon-slider`, `section.text-title-list`,
+`section.open-positions`, plus the root-level `.team-term` utility) against
+`single-position.php`, `templates/components/_open-positions.php`, and
+`templates/components/_text-title-list.php`.
+
+### Fresh count
+
+**53 active `float:left`/`float:right` declarations** across four root
+sections plus one root-level utility class. Gate section (203 lines) at the
+bottom, covering `section.position-information` and `section.open-positions`
+only -- confirmed by grep that `section.position-icon-slider` has **zero**
+gate entries anywhere in the gate section, a first for this series.
+
+### Section-by-section handling
+
+- **`section.position-information`** (line 25) -- mostly gated. All real
+  and gated declarations flattened to `float: none`, including the
+  `.team-image-container`/`.team-image` real flexbox conversion:
+  ```scss
+  .team-image-container {
+      float: none; width: 100%;
+      display: flex;      // NEW
+      flex-wrap: wrap;    // NEW
+      .team-image { float: none; width: 64px; margin-right: 12px; }
+  }
+  ```
+  Verified via `single-position.php` that `.team-image` sits inside
+  `<?php while ( have_rows( 'team_members' ) ) : ?>` -- a genuine repeater,
+  not solo. `.apply-container` (Apply button, Share button, Copy link,
+  Email link row, with sticky-bottom/breakpoint-toggle responsive logic)
+  given defensive `display: inline-block` treatment on each item instead of
+  a full flex redesign, to avoid touching its complex positioning/state
+  logic. `.team-term` (root-level utility `<span>` chip, used 3 times
+  across `single-position.php` and `_open-positions.php`, always solo per
+  usage site but treated defensively per series convention regardless)
+  also given `display: inline-block`.
+
+- **`section.position-icon-slider`** (line 419, 11 declarations) --
+  **deliberately skipped in full, left as original literal floats, no
+  edits made.** Two compounding reasons: (1) unlike every other section in
+  this file and every other file processed in this series so far, this
+  subtree has **zero gate coverage** -- nothing in it has been pre-verified
+  safe in production the way a gated declaration has; (2) it contains a
+  `.progress` element (`section.position-icon-slider .icon-slider-container
+  .container .progress`) that is structurally identical to the
+  `.cards-progress` bug documented in §61 (`_roundtable.scss`) -- a
+  clearance-margin-absorption pattern where flattening the float without
+  first measuring/reproducing an intentional height shortfall causes a
+  real visual regression -- but with **no bugfix comment or prior
+  investigation justifying it** the way `.cards-progress` had. Given both
+  the lack of any safety net and a plausible match to a known-dangerous
+  pattern, the conservative call was to leave the whole subtree alone
+  rather than risk an undocumented regression. This is the first file in
+  the series where the gate-section trim did **not** remove 100% of the
+  original gate content's *relevance* -- though as it happens there was no
+  gate content for this subtree to begin with, so the removal of the gate
+  section is still complete and correct, nothing gate-related was lost.
+
+- **`section.text-title-list`** (line 617, plus `.two-column-list`
+  modifier variant) -- fully flattened, one real conversion shared by both
+  the base 40/60 split and the 50/50 two-column-list variant:
+  ```scss
+  .text-title-list-inner {
+      float: none; width: 100%; height: 100%; ...
+      display: flex;      // NEW
+      flex-wrap: wrap;    // NEW
+  }
+  ```
+  Verified DOM order via `templates/components/_text-title-list.php`:
+  `.text-title-column` then `.list-column`, no reversal needed.
+
+- **`section.open-positions`** (line 842) -- fully flattened this
+  section (§63's main work), one real conversion:
+  ```scss
+  .container {
+      display: flex;      // NEW -- title-column + positions-column pair
+      .title-column {
+          width: 331px;
+          float: none;         // was float: left
+          flex-shrink: 0;      // NEW -- preserves fixed-width, non-shrinking behaviour floats provided
+          padding-right: 30px;
+      }
+      .positions-column {
+          width: calc(100% - 331px);
+          float: none;         // was float: left -- becomes flex item, fills remaining space
+          padding-top: 123px;
+      }
+  }
+  .submit-cv-link {
+      float: none; display: inline-block;   // defensive, single bare link with icon
+  }
+  ```
+  Verified DOM order via `templates/components/_open-positions.php`:
+  `.title-column` then `.positions-column`, no reversal needed. The 6
+  already-gated declarations inside this section (`h2`, `.item.position-
+  item` root, its `.labelXLarge`, `.other-roles-container` root, its
+  `.labelXLarge`, its `p`) were all mechanical full-width flattens,
+  pre-verified safe by the gate, folded into this section's total.
+
+### Applied
+
+42 `float: left` -> `float: none` (36 mechanical/defensive + 6 gate-collapse,
+folded into 2 real conversions' selectors where applicable) + 2 real
+flexbox/defensive conversions (`.team-image-container`/`.team-image`,
+`section.open-positions .container`). 11 declarations in
+`section.position-icon-slider` deliberately left as literal floats.
+Removed the float-refactor gate section (now fully redundant -- everything
+it covered has been collapsed into the main body; the untouched
+`position-icon-slider` subtree had no gate entries to lose).
+
+### Verification
+
+- `grep` for `float:\s*left\|float:\s*right`: exactly **11** matches, all
+  confirmed (via `awk` root-selector scan) to fall within
+  `section.position-icon-slider` -- everything else, 0.
+- Compiled for real with `node_modules/.bin/sass` (dart-sass) against the
+  theme's global import chain: 0 errors, only standard `@import`-deprecation
+  warnings.
+- Parsed the compiled CSS, isolated every rule block containing `float:`
+  across the whole stylesheet (184 blocks total, most unrelated to this
+  file): confirmed every `section.position-information`, `section.text-
+  title-list`, and `section.open-positions` block shows `float: none`,
+  `section.position-icon-slider` blocks (7, covering the 11 declarations)
+  show `float: left` unchanged as intended, and no other file's rules were
+  affected. Directly inspected both real conversions in the compiled
+  output: `section.open-positions .container { display: flex; }`,
+  `.title-column { float: none; flex-shrink: 0; ... }`, `.submit-cv-link
+  { float: none; display: inline-block; ... }` -- all landed exactly as
+  designed.
+- `git status --short` showed plain `M` (not `MM`) for this file, so
+  `git diff HEAD --stat` is trustworthy as-is: **1 file, 56 insertions(+),
+  440 deletions(-)**.
+- A scratch dart-sass compile-test file (`wrapper_position_TEMP.scss`) was
+  created in the repo root for this verification; moved to the existing
+  `_to_delete/` folder (no delete permission granted this session) rather
+  than interrupting with a permission prompt for one-file cleanup.
+- Did **not** do a live before/after screenshot/computed-style check on
+  staging -- same caveat as every prior file. The `section.open-positions
+  .container` 2-column-to-flex conversion and the `.team-image-container`
+  repeater-wrap conversion are the two most worth a human look before
+  shipping. The untouched `section.position-icon-slider` subtree is
+  unchanged behaviourally (still literal floats, exactly as in production
+  today), so it carries no new risk from this pass -- but it also means
+  this file, unlike the last several, still has a live float-based layout
+  section that a future pass would need to revisit with more care (ideally
+  after confirming what `.progress`'s actual measured behaviour is, the
+  same way `.cards-progress` was measured in §61).
+
+### Status
+
+Applied on the user's machine via the device bridge. Committed by me (per
+the user's standing instruction from earlier this session to commit
+directly rather than leaving changes staged) -- see the commit message for
+the hash. Not pushed; staying on `dev` per the standing constraint, push is
+the user's call.
+
+### Remaining files (2 left)
+
+`_landing.scss`, `_customer-stories.scss`. Continue the established
+container-chain-walk methodology: recheck gated entries too (not just
+ungated declarations), verify DOM/repeater cardinality via the actual PHP
+before assuming a float is solo vs. multi-item, watch for the shared
+`.one-half`/`.one-quarter`/`.one-third` utility classes, check `git status`
+for `MM` (not just `M`) before trusting a plain `git diff --stat`, and now
+also explicitly watch for the "zero gate coverage" risk pattern discovered
+in this file's `position-icon-slider` subtree -- treat any ungated section
+containing a progress-bar/clearance-margin-style element as a candidate for
+the same conservative skip-and-flag treatment rather than assuming it's
+safe just because the rest of the file collapsed cleanly.

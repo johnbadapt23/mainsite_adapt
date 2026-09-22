@@ -13,7 +13,8 @@ body.position {
 }
 
 .team-term {
-    float: left;
+    float: none;
+    display: inline-block;
     border: 1px solid #000000;
     border-radius: 12px;
     padding: 4px 16px;
@@ -42,7 +43,7 @@ section.position-information {
         }
 
         .position-column-container {
-            float: left;
+            float: none;
             width: 100%;
             height: 100%;
             position: relative;
@@ -55,7 +56,7 @@ section.position-information {
 
                 @media (max-width: 1023px) {
                     width: 100%;
-                    float: left;
+                    float: none;
                     position: relative;
                     top: auto;
                     height: auto;
@@ -65,7 +66,7 @@ section.position-information {
                 }
 
                 .back-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 32px;
 
@@ -74,7 +75,8 @@ section.position-information {
                     }
 
                     .back {
-                        float: left;
+                        float: none;
+                        display: inline-block;
                         width: auto;
                         position: relative;
                         padding-left: 26px;
@@ -130,7 +132,7 @@ section.position-information {
                 }
 
                 .title-tag-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 32px;
 
@@ -139,28 +141,30 @@ section.position-information {
                     }
 
                     h1 {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 16px;
                     }
                 }
 
                 .team-container {
-                    float: left;
+                    float: none;
                     width: 100%;
 
                     .labelMedium {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 16px;
                     }
 
                     .team-image-container {
-                        float: left;
+                        float: none;
                         width: 100%;
+                        display: flex;
+                        flex-wrap: wrap;
 
                         .team-image {
-                            float: left;
+                            float: none;
                             width: 64px;
                             margin-right: 12px;
 
@@ -197,7 +201,8 @@ section.position-information {
                     width: calc(100% - 70px);
 
                     .form-popup-button-container {
-                        float: left;
+                        float: none;
+                        display: inline-block;
                         width: auto;
                         margin-right: 24px;
 
@@ -213,13 +218,15 @@ section.position-information {
                         }
 
                         a {
-                            float: left;
+                            float: none;
+                            display: inline-block;
                             width: auto;
                         }
                     }
 
                     .share-job-container {
-                        float: left;
+                        float: none;
+                        display: inline-block;
                         width: auto;
 
                         &.mobile {
@@ -240,7 +247,8 @@ section.position-information {
 
                     .copy-link,
                     .email-link {
-                        float: left;
+                        float: none;
+                        display: inline-block;
                         width: auto;
                         text-align: center;
                         margin-right: 24px;
@@ -282,7 +290,7 @@ section.position-information {
 
 
                             .job-link-text {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 text-align: center;
                                 font-size: 12px;
@@ -303,7 +311,7 @@ section.position-information {
                         }
 
                         .job-link-text {
-                            float: left;
+                            float: none;
                             width: 100%;
                             text-align: center;
                             font-size: 12px;
@@ -343,7 +351,7 @@ section.position-information {
                             }
 
                             .job-link-text {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 text-align: center;
                                 font-size: 12px;
@@ -395,16 +403,16 @@ section.position-information {
 
                 @media (max-width: 1023px) {
                     width: 100%;
-                    float: left;
+                    float: none;
                     padding: 32px 20px;
                 }
 
                 .overview-text {
-                    float: left;
+                    float: none;
                     width: 100%;
 
                     li {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 20px;
                     }
@@ -615,7 +623,7 @@ section.position-icon-slider {
 }
 
 section.text-title-list {
-    float: left;
+    float: none;
     width: 100%;
     padding: 88px 0;
 
@@ -633,7 +641,7 @@ section.text-title-list {
         }
 
         .text-title-list-container {
-            float: left;
+            float: none;
             width: 100%;
             padding: 100px 110px 145px;
 
@@ -650,13 +658,15 @@ section.text-title-list {
             // }
 
             .text-title-list-inner {
-                float: left;
+                float: none;
                 width: 100%;
                 height: 100%;
                 background-color: #fff;
                 border: 1px solid #000;
                 border-top-left-radius: 36px;
                 position: relative;
+                display: flex;
+                flex-wrap: wrap;
 
                 &:after {
                     content: '';
@@ -676,7 +686,7 @@ section.text-title-list {
                 }
 
                 .text-title-column {
-                    float: left;
+                    float: none;
                     width: 40%;
                     height: 100%;
                     padding: 68px 48px;
@@ -699,7 +709,7 @@ section.text-title-list {
                 }
 
                 .list-column {
-                    float: left;
+                    float: none;
                     width: 60%;
                     height: 100%;
                     padding: 68px 48px;
@@ -713,7 +723,7 @@ section.text-title-list {
                     }
 
                     .list-item {
-                        float: left;
+                        float: none;
                         width: 100%;
                         position: relative;
                         padding-left: 44px;
@@ -778,7 +788,7 @@ section.text-title-list.two-column-list {
             }
 
             h2 {
-                float: left;
+                float: none;
                 width: 100%;
                 text-align: center;
                 margin-bottom: 65px;
@@ -796,7 +806,7 @@ section.text-title-list.two-column-list {
                 }
 
                 .list-column {
-                    float: left;
+                    float: none;
                     width: 50%;
                     height: 100%;
                     padding: 72px;
@@ -822,14 +832,14 @@ section.text-title-list.two-column-list {
 
                     .list-item {
                         .title {
-                            float: left;
+                            float: none;
                             width: 100%;
                             font-weight: 500;
                             font-family: $font-medium;
                         }
 
                         .text {
-                            float: left;
+                            float: none;
                             width: 100%;
                         }
                     }
@@ -840,7 +850,7 @@ section.text-title-list.two-column-list {
 }
 
 section.open-positions {
-    float: left;
+    float: none;
     padding: 80px 0 100px;
 
     @media (max-width: 1023px) {
@@ -852,9 +862,12 @@ section.open-positions {
     }
 
     .container {
+        display: flex;
+
         .title-column {
             width: 331px;
-            float: left;
+            float: none;
+            flex-shrink: 0;
             padding-right: 30px;
 
             @media (max-width: 1023px) {
@@ -866,13 +879,13 @@ section.open-positions {
             }
 
             h2 {
-                float: left;
+                float: none;
                 width: 100%;
                 margin-bottom: 15px;
             }
 
             .curly-arrow-container {
-                float: left;
+                float: none;
                 width: 100%;
                 padding-left: 65px;
 
@@ -891,7 +904,7 @@ section.open-positions {
 
         .positions-column {
             width: calc(100% - 331px);
-            float: left;
+            float: none;
             padding-top: 123px;
 
             @media (max-width: 1023px) {
@@ -905,7 +918,7 @@ section.open-positions {
             }
 
             .item.position-item {
-                float: left;
+                float: none;
                 width: 100%;
                 padding: 24px 140px 24px 40px;
                 border: 1px solid $color-medium-light-grey;
@@ -942,7 +955,7 @@ section.open-positions {
                 }
 
                 .labelXLarge {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 16px;
                     @include transition(all, 300ms, ease);
@@ -967,7 +980,7 @@ section.open-positions {
             }
 
             .other-roles-container {
-                float: left;
+                float: none;
                 width: 100%;
                 padding: 40px 140px 40px 40px;
                 border: 1px solid $color-medium-light-grey;
@@ -980,19 +993,20 @@ section.open-positions {
                 }
 
                 .labelXLarge {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 16px;
                 }
 
                 p {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 30px;
                 }
 
                 .submit-cv-link {
-                    float: left;
+                    float: none;
+                    display: inline-block;
                     position: relative;
                     font-size: 18px;
                     line-height: 22px;
@@ -1014,401 +1028,3 @@ section.open-positions {
     }
 }
 
-
-// =====================================================================
-// Float -> Flexbox modernization pass, folded in from the formerly
-// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
-// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
-// Pixel-parity verified against the gated build before this merge --
-// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
-// dated 2026-09-14) for the full audit trail, per-rule provenance, and
-// the isolated-build diff used to confirm this file's compiled output
-// is unchanged from the pre-merge gated build.
-// =====================================================================
-// line 45
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 58
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .position-title-column.position-title-column {
-                                        @media (max-width: 1023px) {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 68
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .position-title-column.position-title-column {
-                                        .back-container.back-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 133
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .position-title-column.position-title-column {
-                                        .title-tag-container.title-tag-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 142
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .position-title-column.position-title-column {
-                                        .title-tag-container.title-tag-container {
-                                                h1 {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 149
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .position-title-column.position-title-column {
-                                        .team-container.team-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 153
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .position-title-column.position-title-column {
-                                        .team-container.team-container {
-                                                .labelMedium.labelMedium {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 159
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .position-title-column.position-title-column {
-                                        .team-container.team-container {
-                                                .team-image-container.team-image-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 285
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .position-title-column.position-title-column {
-                                        .apply-container.apply-container {
-                                                .copy-link.copy-link,
-                    .email-link.email-link {
-                                                        a {
-                                                                .job-link-text.job-link-text {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 306
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .position-title-column.position-title-column {
-                                        .apply-container.apply-container {
-                                                .share-button.share-button {
-                                                        .job-link-text.job-link-text {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 346
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .position-title-column.position-title-column {
-                                        .apply-container.apply-container {
-                                                .back-top-link.back-top-link {
-                                                        a,
-                        .back-to-top.back-to-top {
-                                                                .job-link-text.job-link-text {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 398
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .overview-column.overview-column {
-                                        @media (max-width: 1023px) {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 403
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .overview-column.overview-column {
-                                        .overview-text.overview-text {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 407
-
-section.position-information.position-information {
-                .container.container {
-                        .position-column-container.position-column-container {
-                                .overview-column.overview-column {
-                                        .overview-text.overview-text {
-                                                li {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 618
-
-section.text-title-list.text-title-list {
-                float: none;
-        }
-
-// line 636
-
-section.text-title-list.text-title-list {
-                .container.container {
-                        .text-title-list-container.text-title-list-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 653
-
-section.text-title-list.text-title-list {
-                .container.container {
-                        .text-title-list-container.text-title-list-container {
-                                .text-title-list-inner.text-title-list-inner {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 716
-
-section.text-title-list.text-title-list {
-                .container.container {
-                        .text-title-list-container.text-title-list-container {
-                                .text-title-list-inner.text-title-list-inner {
-                                        .list-column.list-column {
-                                                .list-item.list-item {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 781
-
-section.text-title-list.text-title-list.two-column-list.two-column-list {
-                .container.container {
-                        .text-title-list-container.text-title-list-container {
-                                h2 {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 825
-
-section.text-title-list.text-title-list.two-column-list.two-column-list {
-                .container.container {
-                        .text-title-list-container.text-title-list-container {
-                                .text-title-list-inner.text-title-list-inner {
-                                        .list-column.list-column {
-                                                .list-item.list-item {
-                                                        .title.title {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 832
-
-section.text-title-list.text-title-list.two-column-list.two-column-list {
-                .container.container {
-                        .text-title-list-container.text-title-list-container {
-                                .text-title-list-inner.text-title-list-inner {
-                                        .list-column.list-column {
-                                                .list-item.list-item {
-                                                        .text.text {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 869
-
-section.open-positions.open-positions {
-                .container.container {
-                        .title-column.title-column {
-                                h2 {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 908
-
-section.open-positions.open-positions {
-                .container.container {
-                        .positions-column.positions-column {
-                                .item.item.position-item.position-item {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 945
-
-section.open-positions.open-positions {
-                .container.container {
-                        .positions-column.positions-column {
-                                .item.item.position-item.position-item {
-                                        .labelXLarge.labelXLarge {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 970
-
-section.open-positions.open-positions {
-                .container.container {
-                        .positions-column.positions-column {
-                                .other-roles-container.other-roles-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 983
-
-section.open-positions.open-positions {
-                .container.container {
-                        .positions-column.positions-column {
-                                .other-roles-container.other-roles-container {
-                                        .labelXLarge.labelXLarge {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 989
-
-section.open-positions.open-positions {
-                .container.container {
-                        .positions-column.positions-column {
-                                .other-roles-container.other-roles-container {
-                                        p {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
