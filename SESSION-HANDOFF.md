@@ -8330,3 +8330,194 @@ risky Category-C multi-column grid, check whether it's already
 modernized structurally while literal `float` declarations were simply
 never cleaned up afterward, making it a mechanical flatten rather than a
 redesign.
+
+
+---
+
+## §65 -- 2026-09-22: float-grid redesign, 15th (final) file -- `_customer-stories.scss`, 132 declarations (132 fixed: ~130 mechanical + 1 gate-collapse batch + 1 real flexbox conversion; 1 additional literal `float: right` left untouched because it was already dead/commented-out code, not a live declaration)
+
+### Context
+
+Continuing from §64. Picked `_customer-stories.scss`, the largest file in
+this entire series (4833 lines original, 132 active float declarations
+across a long chain of root sections: `section.customer-stories`,
+`section.related-stories`, `section.categories-title-block`,
+`section.stories-listing`, `section.featured-stories`,
+`section.logo-ticker-tape.logo-scroller`, `.story-categories-three-column-
+module`, `section.customer-stories-title`, `.stories-hero-slider` (mobile
++ desktop variants), and a tail covering `body.template-customer-stories`,
+`.slide-out-story-item`, `.click-overlay`, `html.overflow-hidden`, and a
+final `body.customer_stories`). Live templates confirmed via grep against
+`templates/customer-story-components/_category-slider.php`,
+`_category-three-column.php`, `_hero-slider.php`, `_title-block.php`,
+`templates/partials/_mega-main-menu-mobile.php`, `_mega-main-menu.php`,
+`templates/single-customer_stories.php`, `templates/template-customer-
+stories-categories.php`, and `templates/template-customer-stories.php`.
+
+### Fresh count
+
+**132 active `float:left`/`float:right` declarations** -- by far the most
+of any file in this series. Gate section (1186 lines) at the bottom,
+covering roughly half (76 `// line NNN` entries) -- the rest ungated but
+verified safe the same way as every prior file.
+
+### The one real conversion -- verified via actual PHP cardinality
+
+`section.customer-stories .caption-container` (the story author's name/
+role + company byline row) was the only genuine multi-item layout in the
+entire file requiring a new flex context. Verified via
+`templates/single-customer_stories.php` lines 289-317: exactly two
+children, `.name-role` and `.company` (a `<span>` name/role block and a
+`<span class="company">` company name). Unlike most `.caption-container`
+instances elsewhere in the file, THIS ONE's parent had no pre-existing
+`display: flex` -- only an inert, unused `justify-content` property sitting
+uselessly on a block-level element. Converted:
+
+```scss
+.caption-container {
+    float: none;                    // was float: left
+    width: 100%;
+    padding: 16px 0;
+    border-top: 1px solid $color-red;
+    display: flex;                  // NEW
+    align-items: baseline;          // NEW
+    justify-content: space-between; // was inert, now real
+
+    .name-role {
+        @media (max-width: 1023px) {
+            width: 75%;
+            float: none;             // was float: left
+        }
+    }
+    &.company {
+        float: none;                 // was float: right
+        margin-right: 0px;
+        margin-left: 0px;
+    }
+}
+```
+
+### New methodological insight this file -- "already-flex parent makes float inert"
+
+Every OTHER `.caption-container`/`.company` pair in the file (in
+`section.related-stories`, `section.stories-listing`,
+`section.featured-stories`, `.story-categories-three-column-module`, and
+both variants of `.stories-hero-slider`) sits inside a parent that already
+has `display: flex` set (predating this refactor pass or not, it doesn't
+matter). Per the CSS spec, `float` has zero effect on a flex item or a
+flex container's own box once it's laid out as flex -- so these looked
+identical in shape to the one real conversion above (same class names,
+same visual "name + company" pairing) but required nothing more than
+removing the vestigial float. This generalizes a rule for future passes on
+this codebase: **before treating a repeated-looking multi-item pattern as
+a new "real conversion" candidate, check whether the shared parent is
+already flex** -- if so, it's a mechanical flatten no matter how the
+children are named or how many siblings they have.
+
+### Shared "related-item card" component discovered mid-file
+
+`.related-inner`, `.company-logo-container`, `.sub-cat`, `.title`,
+`.caption-container`, `.caption-container-outer`, `.types-tag-container`,
+and `.related-title-container` are the same reusable card-partial styles,
+repeated near-verbatim across `section.related-stories`,
+`section.stories-listing`, `section.featured-stories`, and
+`.story-categories-three-column-module` (they all render the same PHP
+card partial). Handled efficiently via an occurrence-counted bulk-replace
+(count exact matches first with a throwaway script, then replace all N at
+once with an `r_all(label, old, new, expect=N)` helper) rather than
+disambiguating each context by hand -- safe here because the
+transformation (mechanical float removal) is verified-identical wherever
+the exact text matches. A few visually similar blocks turned out to have
+subtly different property values (background-color, `align-items`,
+`height`) and were correctly excluded from the bulk pass, handled
+individually instead.
+
+### One declaration deliberately left untouched -- but it's dead code, not a risk skip
+
+`.stories-hero-slider`'s mobile variant has an entirely commented-out
+`&.company { float: right; ... }` block (inside a `// .labelSmall { ... }`
+comment). This is not a live declaration -- it doesn't compile, doesn't
+render, and carries zero production risk either way -- so it was correctly
+left exactly as-is rather than "fixed." This is the reason the post-edit
+grep for `float:\s*left\|float:\s*right` shows **1** match instead of 0:
+that one match is inside a `//` comment.
+
+### Mechanical and defensive flattens
+
+The remaining ~130 declarations across `body.customer_stories`,
+`section.customer-stories` (39 total, minus the one real conversion's
+selectors), `section.related-stories` (10), `section.categories-title-
+block` (1), `section.stories-listing` (11), `section.featured-stories`
+(6), `section.logo-ticker-tape.logo-scroller` (0 -- confirmed no floats),
+`.story-categories-three-column-module` (4), `section.customer-stories-
+title` (1), `.stories-hero-slider` (24, split ~13 mobile + ~11 desktop),
+and the tail (`body.template-customer-stories`, `.slide-out-story-item`
+[14 declarations: `.story-top`/`.company-logo-container`/`.logo-
+container`/`img`, `.event-name`, `.quote-container`, `.bio-container`,
+`.labelLarge`/`p.p-xsmall`, `.share-container`/`span.share`, `.story-
+bottom`/`.events-cta`/`h3`], `.click-overlay`, `html.overflow-hidden`,
+final `body.customer_stories`) were all safe no-ops -- single full-width/
+auto-width children with no other layout-bearing siblings, or children of
+already-flex parents per the insight above.
+
+### Applied
+
+132 `float: left`/`float: right` -> `float: none` (131 mechanical/
+defensive + gate-collapse, folded into 1 real conversion's selectors
+where applicable). Removed the float-refactor gate section (1186 lines),
+now fully redundant. 1 additional occurrence (commented-out dead code)
+correctly left untouched.
+
+### Verification
+
+- `grep` for `float:\s*left\|float:\s*right`: **1** match, confirmed to be
+  inside a `//` comment (dead code, not a live declaration) -- everywhere
+  else, 0.
+- Brace-balance check (Python brace-depth counter) confirmed the main
+  body (lines 1-3646) closes at depth 0 exactly where the gate section's
+  header comment begins -- gate section trimmed cleanly.
+- Compiled for real with `node_modules/.bin/sass` (dart-sass) against the
+  theme's global import chain: exit code 0, only standard `@import`-
+  deprecation warnings, 0 errors.
+- Parsed the compiled CSS (263 total `float:` rule blocks across the
+  whole stylesheet, most unrelated to this file): all 71 rule blocks
+  matching this file's selectors show `float: none`; nothing outside this
+  file's selectors was touched. Directly inspected the one real
+  conversion in the compiled output --
+  `section.customer-stories ... .caption-container { float: none; ...
+  display: flex; align-items: baseline; justify-content: space-between;
+  }`, plus `.name-role { float: none; }` and `.labelSmall.company {
+  float: none; ... }` -- landed exactly as designed.
+- `git status --short` showed plain `M` (not `MM`) for this file, so
+  `git diff HEAD --stat` is trustworthy as-is: **1 file, 134
+  insertions(+), 1321 deletions(-)**.
+- A scratch dart-sass compile-test file (`wrapper_customer_stories_TEMP.scss`)
+  was created in the repo root for this verification; deleted outright
+  (delete permission remains granted for this connected folder from
+  earlier this session).
+- Did **not** do a live before/after screenshot/computed-style check on
+  staging -- same caveat as every prior file. The `.caption-container`
+  name/company byline conversion in `section.customer-stories` (the main
+  single-story template) is the one change most worth a human look before
+  shipping, since it's the only real layout change in this file and it's
+  user-facing on every customer-story page.
+
+### Status
+
+Applied on the user's machine via the device bridge. Committed by me
+directly (per the user's standing instruction from earlier this session)
+-- see the commit message for the hash. Not pushed; staying on `dev` per
+the standing constraint, push is the user's call.
+
+### Remaining files (0 left -- float-grid redesign pass complete)
+
+This was the last of the originally-identified files
+(`_position.scss`, `_landing.scss`, `_customer-stories.scss`). The
+float-grid redesign pass (task #5) is now fully complete across all 15
+files processed in this series. No further files remain in that specific
+scope. Any further work needs fresh direction from the user -- e.g. the
+previously-delivered duplication-audit report's recommended next steps
+(still pending, awaiting the user's choice), or a live staging visual/
+computed-style check across the accumulated float-grid work (flagged
+repeatedly across this series, not yet acted on), or writing the
+consolidated summary report (task #7, still open, lower priority).
