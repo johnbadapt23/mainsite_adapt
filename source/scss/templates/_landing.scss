@@ -1,5 +1,5 @@
 div.landing-header {
-    float: left;
+    float: none;
     width: 100%;
     z-index: 1;
     height: 145px;
@@ -12,10 +12,13 @@ div.landing-header {
     }
 
     .container-inner {
-        float: left;
+        float: none;
         width: 100%;
         padding-bottom: 40px;
         border-bottom: 1px solid #E4E4E4;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
         @media (max-width: 1023px) {
             padding-bottom: 20px;
@@ -35,10 +38,10 @@ div.landing-header {
     }
 
     .logo-container {
-        float: left;
+        float: none;
 
         img {
-            float: left;
+            float: none;
             width: auto;
             height: 65px;
 
@@ -49,7 +52,7 @@ div.landing-header {
     }
 
     .text-container-right {
-        float: right;
+        float: none;
         line-height: 65px;
         font-size: 16px;
         color: #5F5F5F;
@@ -62,7 +65,7 @@ div.landing-header {
 
     &.edge-events-partner-landing {
         .logo-container {
-            float: left;
+            float: none;
 
             img {            
                 height: 30px;   
@@ -160,7 +163,7 @@ section.two-column-services.landing-video-intro {
         }
 
         .landing-video-intro-columns {
-            float: left;
+            float: none;
             width: 100%;
             height: 100%;
             display: flex;
@@ -169,13 +172,13 @@ section.two-column-services.landing-video-intro {
             @media (max-width:767px) {
                 display: inherit;
                 height: auto;
-                float: left;
+                float: none;
             }
 
             .column {
                 @media (max-width:767px) {
                     width: 100%;
-                    float: left;
+                    float: none;
                 }
 
                 &.text-column {
@@ -192,11 +195,11 @@ section.two-column-services.landing-video-intro {
 
                     .text-content-inner {
                         width: 100%;
-                        float: left;
+                        float: none;
                     }
 
                     .pre-title {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 16px;
                         font-size: 18px;
@@ -208,7 +211,7 @@ section.two-column-services.landing-video-intro {
                     }
 
                     .title {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 12px;
 
@@ -219,21 +222,24 @@ section.two-column-services.landing-video-intro {
 
                         p {
                             margin-bottom: 0px;                            
-                            float: left;
+                            float: none;
                             width: 100%;                                
                         }
                     }
 
                     .text {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 20px;
                     }                    
                 }
 
                 .links-container {
-                    float: left;
+                    float: none;
                     width: 100%;
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
 
                     &.mobile {
                         display: none;
@@ -251,7 +257,7 @@ section.two-column-services.landing-video-intro {
                     }
 
                     .std-button {
-                        float: left;
+                        float: none;
 
                         @media (max-width:767px) {
                             width: 100%;
@@ -260,7 +266,7 @@ section.two-column-services.landing-video-intro {
                     }
 
                     .text-link {
-                        float: left;
+                        float: none;
                         margin-left: 32px;
                         margin-top: 18px;
                         font-size: 18px;
@@ -278,11 +284,13 @@ section.two-column-services.landing-video-intro {
                 }
 
                 .buttons-container {
-                    float: left;
+                    float: none;
                     width: 100%;
+                    display: flex;
+                    flex-wrap: wrap;
 
                     .std-button {
-                        float: left;
+                        float: none;
                         margin-bottom: 10px;
 
                         &:first-child {
@@ -299,7 +307,7 @@ section.two-column-services.landing-video-intro {
 
                 &.video-column {
                     .video-container {
-                        float: left;
+                        float: none;
                         padding-top: 56.25%;
                         position: relative;
 
@@ -379,7 +387,7 @@ section.about-block {
 
     .container {
         .about-container {
-            float: left;
+            float: none;
             width: 100%;
             background-color: #222222;
             padding: 60px 90px;
@@ -401,18 +409,20 @@ section.about-block {
 
                 img {
                     width: 100%;
-                    float: left;
+                    float: none;
                 }
             }
 
             .logo {
-                float: left;
+                float: none;
                 margin-bottom: 40px;
             }
 
             .column-container {
-                float: left;
+                float: none;
                 width: 100%;
+                display: flex;
+                flex-wrap: wrap;
 
                 .column {                    
 
@@ -446,12 +456,13 @@ section.about-block {
                     .text p {
                         font-size: 18px;
                         line-height: 28px;
-                        float: left;
+                        float: none;
                         width: 100%;
                     }
 
                     a.about-link {
-                        float: left;
+                        float: none;
+                        display: inline-block;
                         padding-right: 28px;
                         font-weight: bold;
                         text-transform: none;
@@ -535,7 +546,7 @@ section.two-column-services.landing-two-column-slider {
         }
 
         .landing-video-intro-columns {
-            float: left;
+            float: none;
             width: 100%;
             display: flex;
 
@@ -563,16 +574,16 @@ section.two-column-services.landing-two-column-slider {
 
                     .text-content-inner {
                         width: 100%;
-                        float: left;
+                        float: none;
                     }
     
                     .title {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 12px;
 
                         p {
-                            float: left;
+                            float: none;
                             width: 100%;
                         }
     
@@ -582,14 +593,14 @@ section.two-column-services.landing-two-column-slider {
                     }
     
                     .text {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 20px;
                         font-size: 20px;
                         line-height: 28px;
 
                         p {
-                            float: left;
+                            float: none;
                             width: 100%;
                             font-size: 20px;
                             line-height: 28px;
@@ -616,7 +627,7 @@ section.two-column-services.landing-two-column-slider {
                     }
 
                     .column-slider-container {
-                        float: left;
+                        float: none;
                         width: 100%;
 
                         @media (max-width:767px) {
@@ -635,18 +646,18 @@ section.two-column-services.landing-two-column-slider {
                             }
 
                             .slider-inner {
-                                float: left;
+                                float: none;
                                 width: 100%;
 
                                 .image-container {
-                                    float: left;
+                                    float: none;
                                     width: 100%;
                                     padding-top: 56.25%;
                                     margin-bottom: 4px;
                                 }
 
                                 .caption-container {
-                                    float: left;
+                                    float: none;
                                     width: 100%;
                                     font-size: 16px;
                                     line-height: 28px;
@@ -796,7 +807,7 @@ section.video-quote-block {
 
     .container {
         .video-quote-container {
-            float: left;
+            float: none;
             width: 100%;
             display: flex;
             padding: 80px 110px;
@@ -838,7 +849,7 @@ section.video-quote-block {
                     }
 
                     .quote {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 12px;
                         font-weight: 500;
@@ -850,7 +861,7 @@ section.video-quote-block {
                     }
 
                     .quoter {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 40px;
                         font-size: 16px;
@@ -861,7 +872,7 @@ section.video-quote-block {
                     }
 
                     .text-link {
-                        float: left;  
+                        float: none;  
                         font-size: 18px;   
                         
                         @media (max-width: 767px) {
@@ -872,7 +883,7 @@ section.video-quote-block {
 
                 &.video-column {
                     .video-container {
-                        float: left;
+                        float: none;
                         padding-top: 56.25%;
                         position: relative;
 
@@ -952,7 +963,7 @@ section.sponsor-block {
         };
 
         .top-block {
-            float: left;
+            float: none;
             width: 100%;
             text-align: left;
 
@@ -961,14 +972,14 @@ section.sponsor-block {
             }
 
             h2 {
-                float: left;
+                float: none;
                 width: 100%;
                 margin-bottom: 32px;
             }
         }
 
         .table-block {
-            float: left;
+            float: none;
             width: 100%;
 
             &.mobile {
@@ -976,7 +987,7 @@ section.sponsor-block {
             }
 
             .table-top-row {
-                float: left;
+                float: none;
                 width: 100%;
                 display: flex;
                 border-bottom: 2px solid #000;
@@ -988,7 +999,7 @@ section.sponsor-block {
             }
 
             .table-row {
-                float: left;
+                float: none;
                 width: 100%;
                 display: flex;
                 align-items: center;
@@ -996,7 +1007,7 @@ section.sponsor-block {
 
                 .title-column {
                     width: 300px;
-                    float: left;                    
+                    float: none;                    
                 }
 
                 .table-title {
@@ -1008,13 +1019,13 @@ section.sponsor-block {
 
                 .column {
                     width: calc(25% - 75px);
-                    float: left;
+                    float: none;
                     text-align: center;
                 }
             }
 
             .table-content {
-                float: left;
+                float: none;
                 width: 100%;
 
                 .table-row {
@@ -1096,7 +1107,7 @@ section.sponsor-block {
                             border-radius: 4px;                                                   
 
                             .tooltip-title {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 color: #fff;
                                 font-size: 14px;
@@ -1107,7 +1118,7 @@ section.sponsor-block {
                             }
 
                             .tooltip-text {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 color: #fff;
                                 font-size: 14px;
@@ -1126,7 +1137,7 @@ section.sponsor-block {
             }
 
             .sponsors-slider-container {
-                float: left;
+                float: none;
                 width: 100%;
 
                 .slick-list {
@@ -1140,12 +1151,12 @@ section.sponsor-block {
                 }
 
                 .slide {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-right: 16px;                    
 
                     .table {
-                        float: left;
+                        float: none;
                         width: 100%;
                         -webkit-box-shadow: 8px 8px 16px 0px rgba(57, 57, 57, 0.08);
                         -moz-box-shadow: 8px 8px 16px 0px rgba(57, 57, 57, 0.08);
@@ -1158,7 +1169,7 @@ section.sponsor-block {
                             line-height: 22px;
                             font-weight: 500;
                             font-family: $font-medium;
-                            float: left;
+                            float: none;
                             width: 100%;
                             padding-bottom: 16px;
                             color: #121212;
@@ -1191,7 +1202,7 @@ section.sponsor-block {
                                 z-index: 2;
 
                                 .tooltip-title {
-                                    float: left;
+                                    float: none;
                                     width: 100%;
                                     color: #fff;
                                     font-size: 14px;
@@ -1202,7 +1213,7 @@ section.sponsor-block {
                                 }
 
                                 .tooltip-text {
-                                    float: left;
+                                    float: none;
                                     width: 100%;
                                     color: #fff;
                                     font-size: 14px;
@@ -1230,12 +1241,14 @@ section.sponsor-block {
                         }
 
                         .table-row {
-                            float: left;
+                            float: none;
                             width: 100%;
                             padding: 8px 0;
+                            display: flex;
+                            align-items: center;
 
                             .title-column {
-                                float: left;
+                                float: none;
                                 width: calc(100% - 24px);
                                 text-align: left;
                                 padding-right: 36px;
@@ -1255,7 +1268,8 @@ section.sponsor-block {
                             }
 
                             .answer-column {
-                                float: left;
+                                float: none;
+                                flex-shrink: 0;
                                 width: 24px;
                                 text-align: center;
                                 font-size: 16px;
@@ -1304,12 +1318,12 @@ section.sponsor-block {
                         }   
                         
                         .inclusions {
-                            float: left;
+                            float: none;
                             width: 100%;
                             margin-top: 32px;
 
                             .inclusions-container {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 text-align: left;
                                 border-top: 1px solid #E4E4E4;
@@ -1318,7 +1332,7 @@ section.sponsor-block {
                                 display: none;
 
                                 .inclusion-small-text {
-                                    float: left;
+                                    float: none;
                                     width: 100%;
                                     color: #5F5F5F;
                                     margin-bottom: 16px;
@@ -1329,7 +1343,7 @@ section.sponsor-block {
                                 }
 
                                 .table-row {
-                                    float: left;
+                                    float: none;
                                     width: 100%;
                                     height: 26px;
 
@@ -1344,7 +1358,7 @@ section.sponsor-block {
 
                             .inclusion-trigger {
                                 display: block;
-                                float: left;
+                                float: none;
                                 color: $color-red;
                                 cursor: pointer;
                                 font-size: 14px;
@@ -1389,19 +1403,19 @@ section.sponsor-block {
         }
 
         .bottom-block {
-            float: left;
+            float: none;
             width: 100%;
             padding-top: 40px;
             text-align: center;
 
             @media (max-width:767px) {
                 .button-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     padding: 0 20px;
 
                     .std-button {
-                        float: left;
+                        float: none;
                         width: 100%;
                     }
                 }
@@ -1454,7 +1468,7 @@ section.delegate-block {
             }
 
             .button-container {
-                float: left;
+                float: none;
                 width: 100%;
                 display: flex;
                 justify-content: center;
@@ -1471,7 +1485,7 @@ section.delegate-block {
         }
 
         .delegate-slide-container {
-            float: left;
+            float: none;
             width: 100%;
             margin-top: 20px;
 
@@ -1528,7 +1542,7 @@ section.delegate-block {
             }
 
             .delegate-slides {
-                float: left;
+                float: none;
                 width: 100%;
 
                 .delegate-slide {
@@ -1544,13 +1558,13 @@ section.delegate-block {
                         width: 100%;
                         height: 100%;
                         top: 0;
-                        float: left;
+                        float: none;
                         position: relative;
                         transition: all .3s ease;
 
                         .logo-container {
                             width: 100%;
-                            float: left;
+                            float: none;
                             position: relative;
                             height: 100px;
                             overflow: hidden;
@@ -1568,12 +1582,12 @@ section.delegate-block {
                         }
 
                         .text-container {
-                            float: left;
+                            float: none;
                             width: 100%;
                             text-align: center;
 
                             .slide-text {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 text-align: center;
                                 font-size: 16px;
@@ -1631,433 +1645,3 @@ section.delegate-block {
     }
 }
 
-
-// =====================================================================
-// Float -> Flexbox modernization pass, folded in from the formerly
-// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
-// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
-// Pixel-parity verified against the gated build before this merge --
-// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
-// dated 2026-09-14) for the full audit trail, per-rule provenance, and
-// the isolated-build diff used to confirm this file's compiled output
-// is unchanged from the pre-merge gated build.
-// =====================================================================
-// line 2
-
-div.landing-header.landing-header {
-                float: none;
-        }
-
-// line 15
-
-div.landing-header.landing-header {
-                .container-inner.container-inner {
-                        float: none;
-                }
-        }
-
-// line 163
-
-section.two-column-services.two-column-services.landing-video-intro.landing-video-intro {
-                .container.container {
-                        .landing-video-intro-columns.landing-video-intro-columns {
-                                float: none;
-                        }
-                }
-        }
-
-// line 178
-
-section.two-column-services.two-column-services.landing-video-intro.landing-video-intro {
-                .container.container {
-                        .landing-video-intro-columns.landing-video-intro-columns {
-                                .column.column {
-                                        @media (max-width:767px) {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 195
-
-section.two-column-services.two-column-services.landing-video-intro.landing-video-intro {
-                .container.container {
-                        .landing-video-intro-columns.landing-video-intro-columns {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                .text-content-inner.text-content-inner {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 199
-
-section.two-column-services.two-column-services.landing-video-intro.landing-video-intro {
-                .container.container {
-                        .landing-video-intro-columns.landing-video-intro-columns {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                .pre-title.pre-title {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 211
-
-section.two-column-services.two-column-services.landing-video-intro.landing-video-intro {
-                .container.container {
-                        .landing-video-intro-columns.landing-video-intro-columns {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                .title.title {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 222
-
-section.two-column-services.two-column-services.landing-video-intro.landing-video-intro {
-                .container.container {
-                        .landing-video-intro-columns.landing-video-intro-columns {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                .title.title {
-                                                        p {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 228
-
-section.two-column-services.two-column-services.landing-video-intro.landing-video-intro {
-                .container.container {
-                        .landing-video-intro-columns.landing-video-intro-columns {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                .text.text {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 235
-
-section.two-column-services.two-column-services.landing-video-intro.landing-video-intro {
-                .container.container {
-                        .landing-video-intro-columns.landing-video-intro-columns {
-                                .column.column {
-                                        .links-container.links-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 281
-
-section.two-column-services.two-column-services.landing-video-intro.landing-video-intro {
-                .container.container {
-                        .landing-video-intro-columns.landing-video-intro-columns {
-                                .column.column {
-                                        .buttons-container.buttons-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 382
-
-section.about-block.about-block {
-                .container.container {
-                        .about-container.about-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 404
-
-section.about-block.about-block {
-                .container.container {
-                        .about-container.about-container {
-                                .top-corner-icon.top-corner-icon {
-                                        img {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 414
-
-section.about-block.about-block {
-                .container.container {
-                        .about-container.about-container {
-                                .column-container.column-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 449
-
-section.about-block.about-block {
-                .container.container {
-                        .about-container.about-container {
-                                .column-container.column-container {
-                                        .column.column {
-                                                .text.text,
-                    .text.text p {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 799
-
-section.video-quote-block.video-quote-block {
-                .container.container {
-                        .video-quote-container.video-quote-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 841
-
-section.video-quote-block.video-quote-block {
-                .container.container {
-                        .video-quote-container.video-quote-container {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                .quote.quote {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 853
-
-section.video-quote-block.video-quote-block {
-                .container.container {
-                        .video-quote-container.video-quote-container {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                .quoter.quoter {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 955
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .top-block.top-block {
-                                float: none;
-                        }
-                }
-        }
-
-// line 964
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .top-block.top-block {
-                                h2 {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 971
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .table-block.table-block {
-                                float: none;
-                        }
-                }
-        }
-
-// line 979
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .table-block.table-block {
-                                .table-top-row.table-top-row {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 991
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .table-block.table-block {
-                                .table-row.table-row {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 1017
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .table-block.table-block {
-                                .table-content.table-content {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 1099
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .table-block.table-block {
-                                .table-content.table-content {
-                                        .title-column.title-column {
-                                                .tooltip-icon.tooltip-icon {
-                                                        .tooltip.tooltip {
-                                                                .tooltip-title.tooltip-title {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1110
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .table-block.table-block {
-                                .table-content.table-content {
-                                        .title-column.title-column {
-                                                .tooltip-icon.tooltip-icon {
-                                                        .tooltip.tooltip {
-                                                                .tooltip-text.tooltip-text {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1392
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .bottom-block.bottom-block {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1399
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .bottom-block.bottom-block {
-                                @media (max-width:767px) {
-                                        .button-container.button-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1404
-
-section.sponsor-block.sponsor-block {
-                .container.container {
-                        .bottom-block.bottom-block {
-                                @media (max-width:767px) {
-                                        .button-container.button-container {
-                                                .std-button.std-button {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1457
-
-section.delegate-block.delegate-block {
-                .container.container {
-                        .top-container.top-container {
-                                .button-container.button-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-@media (max-width: 767px) {
-        section.partners-cards-module.partners-cards-module .container.container .button-container.button-container a {
-            display: block;
-        }
-        section.sponsor-block.sponsor-block .container.container .bottom-block.bottom-block .button-container.button-container .std-button.std-button {
-            display: block;
-        }
-    }
-
-section.logo-ticker-tape.logo-ticker-tape .container.container .title-container.title-container {
-        display: block;
-    }
-
-section.two-column-services.two-column-services .container.container .title-container.title-container {
-        display: block;
-    }

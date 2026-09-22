@@ -8174,3 +8174,159 @@ in this file's `position-icon-slider` subtree -- treat any ungated section
 containing a progress-bar/clearance-margin-style element as a candidate for
 the same conservative skip-and-flag treatment rather than assuming it's
 safe just because the rest of the file collapsed cleanly.
+
+
+---
+
+## §64 -- 2026-09-22: float-grid redesign, 14th file -- `_landing.scss`, 75 declarations (75 fixed: ~66 mechanical/defensive + gate-collapse + 9 real flexbox conversions folded into that count; 0 left untouched)
+
+### Context
+
+Continuing from §63. Picked `_landing.scss`, the largest file in this
+series so far (2063 lines, 75 float declarations across 8 root sections:
+`div.landing-header`, `section.two-column-services.landing-video-intro`,
+`section.about-block`, `section.two-column-services.landing-two-column-
+slider`, `section.partner-form.landing-form` (no floats), `section.video-
+quote-block`, `section.community-block.landing-community` (no floats),
+`section.sponsor-block`, `body.template-landing` (no floats), `main.edge-
+events-partner` (no floats), `section.delegate-block`). Live templates
+confirmed via grep of root selectors against `templates/template-
+landing.php`, `templates/template-event-partner-landing.php`, `templates/
+single-registration.php`, and the `templates/landing-components/*.php`
+partials each ACF flexible-content block renders through.
+
+### Fresh count
+
+**75 active `float:left`/`float:right` declarations.** Gate section (413
+lines) at the bottom covering `div.landing-header`, most of `section.two-
+column-services.landing-video-intro`, most of `section.about-block`,
+`section.sponsor-block`'s desktop table, and `section.delegate-block`'s
+`.button-container` -- the rest ungated but safe once verified.
+
+### A pleasant surprise -- most of this file was already flex
+
+Unlike every prior file, several of this file's largest sections
+(`.landing-video-intro-columns` in both the video-intro and two-column-
+slider variants, `.video-quote-container`, `.table-top-row`/`.table-row`
+in the sponsor table, `.button-container` in delegate-block) **already had
+`display: flex` set**, with `float: left` lingering as an inert vestige on
+the flex container itself or on flex-item children (where float has zero
+effect). These were pure mechanical flattens -- no new `display: flex`
+needed, just removing the leftover float declarations. This made the bulk
+of the file's 75 declarations lower-risk than a typical file in this
+series.
+
+### Real conversions (9, all verified via the actual PHP markup before touching anything)
+
+- **`div.landing-header .container-inner`** -- `.logo-container` and
+  `.text-container-right` are two bare `<span>` siblings (logo image, then
+  "Powered by ADAPT" text) laid out via `float:left`/`float:right`.
+  Verified via `template-landing.php`: exactly 2 siblings. Added
+  `display: flex; align-items: center; justify-content: space-between;`
+  to the (already-gated) `.container-inner`, flattened both children.
+- **`.links-container`** (video-intro variant) -- verified via
+  `_intro-video-block.php`: holds one `.std-button` plus one `.text-link`
+  side by side (button + "watch video" link). Added `display: flex;
+  flex-wrap: wrap; align-items: center;`.
+- **`.buttons-container`** (video-intro variant) -- verified via
+  `_intro-block.php`: a genuine `have_rows('buttons')` repeater (2 buttons
+  typical, `&:first-child { margin-right }` in the SCSS confirms multi-
+  item). Added `display: flex; flex-wrap: wrap;`.
+- **`.about-container .column-container`** -- 2 `.column.one-half`
+  siblings (verified via `_about-block.php`), relying on the shared global
+  `.one-half` utility class (untouched, out of scope) for width. Added
+  `display: flex; flex-wrap: wrap;` to the local `.column-container`.
+- **`section.sponsor-block`'s mobile-slider `.table-row`** (nested inside
+  `.table`, inside each `.slide`) -- verified via `_sponsorship.php`: each
+  row is exactly `.title-column` + `.answer-column` (a fixed 24px icon
+  column), the classic fixed-width-icon + fill-text pair seen throughout
+  this series. Added `display: flex; align-items: center;` to the row and
+  `flex-shrink: 0;` to `.answer-column`. (The *desktop* `.table-row` was
+  already flex, per the "pleasant surprise" above -- only the mobile-
+  slider variant needed a real conversion.)
+
+### The one genuinely complex layout in this file -- turned out to be safe
+
+`section.sponsor-block`'s desktop comparison table (`.table-top-row` /
+`.table-row` / `.title-column` / 4x tier `.column`) looked, on first read,
+like a strong Category-C candidate (a real multi-column data table). On
+closer inspection it was **already `display: flex; align-items: center;`**
+on both the header row and each data row -- so despite being visually a
+complex table, structurally it required zero new flex work, just
+mechanical float removal on the already-inert children. No Category-C
+skip was needed anywhere in this file.
+
+### Mechanical and defensive flattens
+
+~65 declarations across every section were safe no-ops: single full-width
+children inside already-flex or naturally-block parents (`.text-content-
+inner`, `.pre-title`, `.title`, `.text` and their `p` descendants, `.logo`,
+`a.about-link` given defensive `display: inline-block` per the series'
+bare-`<a>`-chip convention, `.video-container` and its slick-carousel
+internals, the sponsor table's tooltip/inclusions internals, and the
+entire `delegate-block` slick-carousel subtree). `main.landing`, `section.
+partner-form.landing-form`, `section.community-block.landing-community`,
+`body.template-landing`, and `main.edge-events-partner` had **zero**
+floats to begin with -- confirmed, not just assumed, by reading each
+block in full.
+
+### Applied
+
+75 `float: left`/`float: right` -> `float: none` (mechanical/defensive +
+gate-collapse, folded into 9 real conversions' selectors where
+applicable). Removed the float-refactor gate section (413 lines), now
+fully redundant.
+
+### Verification
+
+- `grep` for `float:\s*left\|float:\s*right`: **0** matches anywhere in
+  the file -- first file in this series with zero declarations left
+  untouched.
+- Compiled for real with `node_modules/.bin/sass` (dart-sass) against the
+  theme's global import chain: 0 errors, only standard `@import`-
+  deprecation warnings.
+- Parsed the compiled CSS, isolated every rule block containing `float:`
+  that matches this file's selectors: all 75 show `float: none`, none
+  elsewhere in the stylesheet were touched. Directly inspected all 5 real
+  conversions in the compiled output (`.container-inner`, `.links-
+  container`, `.buttons-container`, `.column-container`, the mobile
+  `.table-row`/`.answer-column`) -- all landed exactly as designed.
+- `git status --short` showed plain `M` (not `MM`) for this file, so
+  `git diff HEAD --stat` is trustworthy as-is: **1 file, 89 insertions(+),
+  505 deletions(-)**.
+- A scratch dart-sass compile-test file (`wrapper_landing_TEMP.scss`) was
+  created in the repo root for this verification; this time deleted
+  outright (delete permission was granted to the connected folder earlier
+  this session, at the user's request, so no `_to_delete/` detour was
+  needed).
+- Did **not** do a live before/after screenshot/computed-style check on
+  staging -- same caveat as every prior file. The `div.landing-header`
+  logo/text-row conversion and the sponsor table's mobile `.table-row`
+  icon-column conversion are the two most worth a human look before
+  shipping, since both are user-facing on every landing-template page
+  load (the header) or on mobile devices specifically (the sponsor table).
+
+### Status
+
+Applied on the user's machine via the device bridge. Committed by me
+directly (per the user's standing instruction from earlier this session)
+-- see the commit message for the hash. Not pushed; staying on `dev` per
+the standing constraint, push is the user's call.
+
+### Remaining files (1 left)
+
+`_customer-stories.scss`. Continue the established container-chain-walk
+methodology: recheck gated entries too (not just ungated declarations),
+verify DOM/repeater cardinality via the actual PHP before assuming a float
+is solo vs. multi-item, watch for the shared `.one-half`/`.one-quarter`/
+`.one-third` utility classes (this file reinforced that pattern --
+`.column-container` in `about-block` relied on the global `.one-half`
+class for width while only the local float/display needed touching),
+check `git status` for `MM` (not just `M`) before trusting a plain `git
+diff --stat`, watch for the "zero gate coverage" risk pattern from §63,
+and now also this file's new lesson: **before assuming a section is a
+risky Category-C multi-column grid, check whether it's already
+`display: flex`** -- a complex-looking table or grid may have already been
+modernized structurally while literal `float` declarations were simply
+never cleaned up afterward, making it a mechanical flatten rather than a
+redesign.
