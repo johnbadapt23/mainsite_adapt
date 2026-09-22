@@ -16,7 +16,7 @@ body.post {
 }
 
 section.singlePost {
-    float: left;
+    float: none;
     width: 100%;
     padding: 0px 0 80px;
 
@@ -25,7 +25,7 @@ section.singlePost {
     }
 
     .featureBlock {
-        float: left;
+        float: none;
         width: 100%;
         position: relative;
         padding-top: 52.65%;
@@ -60,14 +60,15 @@ section.singlePost {
     }
 
     .postDetails {
-        float: left;
+        float: none;
         width: 100%;
         height: 19px;
         margin-bottom: 38px;
 
         span {
             position: relative;
-            float: left;
+            float: none;
+            display: inline-block;
             font-family: $font-base;
             font-size: 12px;
             line-height: 19px;
@@ -95,7 +96,8 @@ section.singlePost {
 
         .podcast,
         .watchIcon {
-            float: left;
+            float: none;
+            display: inline-block;
             width: 19px;
             height: 19px;
             margin-left: 10px;
@@ -113,7 +115,7 @@ section.singlePost {
     .fullWidth {
         .left {
             h2 {
-                float: left;
+                float: none;
                 width: 100%;
                 font-family: $font-base;
                 weight: bold;
@@ -123,7 +125,7 @@ section.singlePost {
             }
 
             hr {
-                float: left;
+                float: none;
                 width: 43px;
                 height: 5px;
                 background-color: $color-red;
@@ -132,19 +134,22 @@ section.singlePost {
             }
 
             .author {
-                float: left;
+                float: none;
                 width: 100%;
                 margin-bottom: 20px;
+                display: flex;
+                flex-wrap: wrap;
 
                 .authorSingle {
-                    float: left;
+                    float: none;
+                    display: flex;
                     width: auto;
                     margin-right: 30px;
                     margin-bottom: 20px;
                 }
 
                 .label {
-                    float: left;
+                    float: none;
                     width: 100%;
                     color: $color-red;
                     font-family: $font-light;
@@ -159,7 +164,7 @@ section.singlePost {
                 }
 
                 .authorImage {
-                    float: left;
+                    float: none;
                     width: 75px;
                     height: 80px;
                     border-radius: 3px;
@@ -170,12 +175,12 @@ section.singlePost {
                 }
 
                 .authorText {
-                    float: left;
+                    float: none;
                     padding-top: 5px;
                     margin-bottom: 0px;
 
                     .authorName {
-                        float: left;
+                        float: none;
                         clear: both;
                         font-family: $font-light;
                         font-size: 14px;
@@ -188,7 +193,7 @@ section.singlePost {
                     }
 
                     .authorDescription {
-                        float: left;
+                        float: none;
                         clear: both;
                         font-family: $font-base;
                         font-size: 12px;
@@ -199,12 +204,12 @@ section.singlePost {
                     }
 
                     .logoWrapper {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin: 15px 0 20px 0;
 
                         .logoContainer {
-                            float: left;
+                            float: none;
                             width: 100px;
                             position: relative;
                             padding-top: 11%;
@@ -228,16 +233,18 @@ section.singlePost {
 
         .right {
             .share {
-                float: left;
+                float: none;
                 width: 100%;
+                display: flex;
+                flex-wrap: wrap;
 
                 a {
-                    float: left;
+                    float: none;
                     margin-right: 15px;
                     text-align: center;
 
                     img {
-                        float: left;
+                        float: none;
                         width: 25px;
                         height: 25px;
                         clear: both;
@@ -245,7 +252,7 @@ section.singlePost {
                     }
 
                     span {
-                        float: left;
+                        float: none;
                         clear: both;
                         font-family: $font-main;
                         font-size: 12px;
@@ -261,7 +268,7 @@ section.singlePost {
 }
 
 .articleWrapper {
-    float: left;
+    float: none;
     width: 100%;
 
     p {
@@ -284,7 +291,7 @@ section.singlePost {
 
 
 .imageGridBlock {
-    float: left;
+    float: none;
     width: 100%;
     padding: 94px 0 6px;
 
@@ -297,7 +304,7 @@ section.singlePost {
     }
 
     h2 {
-        float: left;
+        float: none;
         width: 100%;
         text-transform: uppercase;
         font-size: 40px;
@@ -309,7 +316,7 @@ section.singlePost {
     }
 
     .gridWrapper {
-        float: left;
+        float: none;
         width: 100%;
         text-align: center;
 
@@ -364,7 +371,7 @@ section.singlePost {
             }
 
             .title {
-                float: left;
+                float: none;
                 clear: both;
                 font-family: $font-light;
                 font-size: 14px;
@@ -378,7 +385,7 @@ section.singlePost {
             }
 
             .description {
-                float: left;
+                float: none;
                 clear: both;
                 font-family: $font-base;
                 font-size: 12px;
@@ -390,7 +397,7 @@ section.singlePost {
             }
 
             .logoContainer {
-                float: left;
+                float: none;
                 width: 60%;
                 background-size: contain;
                 background-position: center center;
@@ -407,7 +414,7 @@ section.singlePost {
 }
 
 section.textImageBlock {
-    float: left;
+    float: none;
     width: 100%;
     padding: 87px 0 105px 0;
 
@@ -423,7 +430,7 @@ section.textImageBlock {
         text-align: center;
 
         h2 {
-            float: left;
+            float: none;
             width: 100%;
             text-transform: uppercase;
             font-size: 40px;
@@ -438,7 +445,7 @@ section.textImageBlock {
     }
 
     .itemsWrapper {
-        float: left;
+        float: none;
         width: 100%;
 
         .item {
@@ -497,7 +504,7 @@ section.textImageBlock {
             }
 
             .title {
-                float: left;
+                float: none;
                 width: 100%;
                 clear: both;
                 font-family: $font-light;
@@ -511,7 +518,7 @@ section.textImageBlock {
             }
 
             .description {
-                float: left;
+                float: none;
                 width: 100%;
                 clear: both;
                 font-family: $font-base;
@@ -524,7 +531,7 @@ section.textImageBlock {
             }
 
             .logoContainer {
-                float: left;
+                float: none;
                 width: 100%;
                 background-size: contain;
                 background-position: center center;
@@ -541,7 +548,7 @@ section.textImageBlock {
 }
 
 .relatedArticlesCarousel {
-    float: left;
+    float: none;
     width: 100%;
     padding: 60px 0 55px;
 
@@ -550,7 +557,7 @@ section.textImageBlock {
     }
 
     h2 {
-        float: left;
+        float: none;
         width: 100%;
         text-transform: uppercase;
         font-size: 40px;
@@ -599,11 +606,11 @@ section.textImageBlock {
     }
 
     .articlesCarousel {
-        float: left;
+        float: none;
         width: 100%;
 
         .relatedArticle {
-            float: left;
+            float: none;
             width: 100%;
             border-radius: 3px;
             box-shadow: 2px 3px 9px 0 rgba(0, 0, 0, 0.1);
@@ -611,7 +618,7 @@ section.textImageBlock {
 
             .imageContainer {
                 position: relative;
-                float: left;
+                float: none;
                 width: 100%;
                 padding-top: 72%;
 
@@ -645,7 +652,7 @@ section.textImageBlock {
             }
 
             .postDetails {
-                float: left;
+                float: none;
                 width: 100%;
                 padding: 20px 27px;
 
@@ -654,14 +661,15 @@ section.textImageBlock {
             	}
 
                 .info {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 27px;
                 }
 
                 span {
                     position: relative;
-                    float: left;
+                    float: none;
+                    display: inline-block;
                     font-family: $font-base;
                     font-size: 12px;
                     line-height: 19px;
@@ -694,7 +702,7 @@ section.textImageBlock {
                 }
 
                 .articleLink {
-                    float: left;
+                    float: none;
                     width: 100%;
                     color: #000;
                     margin-bottom: 26px;
@@ -714,12 +722,13 @@ section.textImageBlock {
 }
 
 .tags {
-    float: left;
+    float: none;
     width: 100%;
     margin-bottom: 34px;
 
     span {
-        float: left;
+        float: none;
+        display: inline-block;
         margin-right: 10px;
         font-family: $font-base;
         font-size: 12px;
@@ -748,7 +757,7 @@ section.singlePost.locked {
     }
 
     span.excerpt {
-        float: left;
+        float: none;
         width: 100%;
         text-align: left;
         color: #000;
@@ -759,7 +768,8 @@ section.singlePost.locked {
 section.singlePost {
     .container {
         a.back-button {
-            float: left;
+            float: none;
+            display: inline-block;
             text-transform: uppercase;
             color: #000;
             padding-left: 20px;
@@ -780,215 +790,3 @@ section.singlePost {
     }
 }
 
-
-// =====================================================================
-// Float -> Flexbox modernization pass, folded in from the formerly
-// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
-// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
-// Pixel-parity verified against the gated build before this merge --
-// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
-// dated 2026-09-14) for the full audit trail, per-rule provenance, and
-// the isolated-build diff used to confirm this file's compiled output
-// is unchanged from the pre-merge gated build.
-// =====================================================================
-// line 19
-
-section.singlePost.singlePost {
-                float: none;
-        }
-
-// line 28
-
-section.singlePost.singlePost {
-                .featureBlock.featureBlock {
-                        float: none;
-                }
-        }
-
-// line 63
-
-section.singlePost.singlePost {
-                .postDetails.postDetails {
-                        float: none;
-                }
-        }
-
-// line 116
-
-section.singlePost.singlePost {
-                .fullWidth.fullWidth {
-                        .left.left {
-                                h2 {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 135
-
-section.singlePost.singlePost {
-                .fullWidth.fullWidth {
-                        .left.left {
-                                .author.author {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 147
-
-section.singlePost.singlePost {
-                .fullWidth.fullWidth {
-                        .left.left {
-                                .author.author {
-                                        .label.label {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 202
-
-section.singlePost.singlePost {
-                .fullWidth.fullWidth {
-                        .left.left {
-                                .author.author {
-                                        .authorText.authorText {
-                                                .logoWrapper.logoWrapper {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 306
-
-section.singlePost.singlePost {
-                .fullWidth.fullWidth {
-                        .right.right {
-                                .share.share {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 339
-
-.articleWrapper.articleWrapper {
-                float: none;
-        }
-
-// line 411
-
-.imageGridBlock.imageGridBlock {
-                float: none;
-        }
-
-// line 424
-
-.imageGridBlock.imageGridBlock {
-                h2 {
-                        float: none;
-                }
-        }
-
-// line 436
-
-.imageGridBlock.imageGridBlock {
-                .gridWrapper.gridWrapper {
-                        float: none;
-                }
-        }
-
-// line 491
-
-.imageGridBlock.imageGridBlock {
-                .gridWrapper.gridWrapper {
-                        .item.item {
-                                .title.title {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 534
-
-section.textImageBlock.textImageBlock {
-                float: none;
-        }
-
-// line 550
-
-section.textImageBlock.textImageBlock {
-                .title.title {
-                        h2 {
-                                float: none;
-                        }
-                }
-        }
-
-// line 565
-
-section.textImageBlock.textImageBlock {
-                .itemsWrapper.itemsWrapper {
-                        float: none;
-                }
-        }
-
-// line 624
-
-section.textImageBlock.textImageBlock {
-                .itemsWrapper.itemsWrapper {
-                        .item.item {
-                                .title.title {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 638
-
-section.textImageBlock.textImageBlock {
-                .itemsWrapper.itemsWrapper {
-                        .item.item {
-                                .description.description {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 651
-
-section.textImageBlock.textImageBlock {
-                .itemsWrapper.itemsWrapper {
-                        .item.item {
-                                .logoContainer.logoContainer {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 841
-
-.tags.tags {
-                float: none;
-        }
-
-// line 875
-
-section.singlePost.singlePost.locked.locked {
-                span.excerpt.excerpt {
-                        float: none;
-                }
-        }

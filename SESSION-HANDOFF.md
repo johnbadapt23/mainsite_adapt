@@ -7852,3 +7852,146 @@ verify DOM order via the actual PHP before choosing `row`/`row-reverse`
 proof it can be backwards), watch for the shared `.one-half`/
 `.one-quarter`/`.one-third` utility classes, and check `git status` for
 `MM` (not just `M`) before trusting a plain `git diff --stat`.
+
+
+---
+
+## §62 -- 2026-09-22: float-grid redesign, 12th file -- `_single-post.scss`, 48 declarations (46 fixed: 40 mechanical/defensive + 3 real flexbox conversions + 3 defensive `display:inline-block` additions folded into the count above; 2 deliberately left as genuine Category-C multi-column grids)
+
+### Context
+
+Continuing from §61. Picked `_single-post.scss`. This file has no `Template
+Name:` header itself (it's a component-style stylesheet shared by whichever
+of the several near-identical `single-post*.php`/`member-single-post.php`
+templates render its markup), so confirmed live the same way as the rest of
+the series: grepped its two root selectors (`section.singlePost`,
+`section.textImageBlock`) against every template file. Live in
+`single-post-feb.php`, `single-post-no-embed.php`, `single-post-side-
+articles.php`, `member-single-post.php`, `single-event.php`, `single-event-
+nov.php`, and `template-agenda.php`.
+
+(Side note, unrelated to this section: while confirming live status I ran
+a broader duplication audit of the `single-post*` template family for a
+separate request -- see the duplication-audit report delivered earlier
+this session. That's a documentation/investigation deliverable, not a code
+change, and doesn't affect anything below.)
+
+### Fresh count
+
+**48 active `float:left`/`float:right` declarations**, gate section entirely
+separate at the bottom (line 794+). 21 gated (verified by selector content
+against the live main-body rules, no drift), 27 ungated.
+
+### Cardinality verified via PHP before any real conversion -- caught two real multi-item rows
+
+Per the standing practice of never guessing repeatable-vs-solo from SCSS
+alone: read `single-post-feb.php`'s markup before touching `.authorSingle`
+and confirmed it sits inside `<?php while ( have_rows( 'contributors' ) ) :
+?>` -- a genuine ACF repeater, so multiple co-author cards can render side
+by side and need to wrap, not a single solo element (my working assumption
+from a previous, interrupted pass through this file had this backwards --
+caught and corrected before writing anything). Separately confirmed
+`.share` (in `single-post-no-embed.php`, since `single-post-feb.php` doesn't
+render this block) holds exactly 2 real `<a>` share links (LinkedIn, Email)
+side by side, also a genuine multi-item row.
+
+### Three real flexbox conversions -- a nested nested wrapping-row-of-icon+text-pairs shape
+
+- **`.fullWidth .left .author`** (parent of the repeater, already gated to
+  `float: none`) -> added `display: flex; flex-wrap: wrap;` so the
+  `.authorSingle` cards it contains sit in a wrapping row exactly like the
+  original float-based layout did (each card's own `margin-right`/
+  `margin-bottom` reproduce the original gaps).
+- **`.authorSingle`** (the repeated item, ungated, `width: auto` --
+  shrink-wrap, same as a float) -> `float: none; display: flex;`. This
+  makes it simultaneously a flex *item* of `.author` (wrapping row) and a
+  flex *container* of its own two children -- the classic fixed-width-icon
+  (`.authorImage`, 75px) + fill-the-rest-text (`.authorText`, unconstrained
+  width) pair seen throughout this series, nested one level inside the
+  wrapping-row conversion above it.
+- **`.fullWidth .right .share`** (already gated to `float: none`) -> added
+  `display: flex; flex-wrap: wrap;` for its 2 share-link children, same
+  wrapping-row shape as `.author` but with only 2 items.
+
+### The two genuine Category-C grids -- left untouched, same reasoning as every prior file's ambiguous multi-column floats
+
+- **`.imageGridBlock .gridWrapper .item`** (float:left,
+  `width: calc(24.7% - 81.75px)`, `margin-left: 109px`,
+  `&:nth-child(4n + 1) { margin-left: 0px; }`) -- a genuine 4-column grid
+  using fixed-pixel-gutter float math. The 4 columns' widths plus 3 gutters
+  sum to 98.8%, not 100% -- an intentional-looking asymmetry that a
+  `flex`+`gap` rewrite would have to reproduce exactly to avoid a visible
+  shift. Left as a literal float; its parent `.gridWrapper` is already
+  gated to `float: none` (safe, no new risk -- already computed that way in
+  production).
+- **`section.textImageBlock .itemsWrapper .item`** (float:left,
+  `width: calc(33.2% - 102px)`, `margin-left: 153px`,
+  `&:nth-child(3n + 1)`) -- same shape, a genuine 3-column grid. Same
+  reasoning, left untouched; parent `.itemsWrapper` already gated safe.
+
+### Mechanical flattens and defensive `display: inline-block` additions
+
+40 declarations were safe no-ops (single full-width blocks, or solo
+non-wrapping children -- fixed-size aspect-ratio boxes, single logos,
+single `<hr>` dividers, etc.), all flattened to `float: none` with no other
+change. 5 were bare inline elements needing the same defensive treatment
+used throughout this series (float removed, `display: inline-block` added
+to preserve their horizontal-row/chip appearance without redesigning the
+parent): `.postDetails span` (the category/date meta chips, both the
+`section.singlePost` one and the separate `.relatedArticle .postDetails`
+one), `.podcast`/`.watchIcon` (small icon beside the meta chips), `.tags
+span` (tag chip row), and `a.back-button` (single bare `<a>`, no width).
+
+### Applied
+
+46 `float: left` -> `float: none` (40 mechanical/defensive + 3 folded into
+the real conversions' own selectors + 3 defensive `display: inline-block`
+pairs counted above). 3 real flexbox conversions. Removed the float-refactor
+gate section (203 lines) at the bottom of the file, now fully redundant.
+
+### Verification
+
+- `grep` for `float:\s*left\|float:\s*right`: exactly 2 matches, both the
+  intentional Category-C grid-item exceptions -- everything else, 0.
+- Compiled for real with `node_modules/.bin/sass` (dart-sass) against the
+  theme's full global import chain: 0 errors, only standard
+  `@import`-deprecation warnings.
+- Parsed the compiled CSS, isolated every rule block touching any of this
+  file's root selectors: 0 unexpected `float: left`/`float: right`, both
+  intentional exceptions present and unchanged. Directly inspected all 3
+  real conversions (`.author`, `.authorSingle`, `.share`) in the compiled
+  output -- all three landed exactly as designed, including the nested
+  flex-item-and-flex-container behaviour on `.authorSingle`.
+- `git status --short` showed plain `M` (not `MM`) for this file, so a
+  plain `git diff --stat` would have been accurate here too; used
+  `git diff HEAD --stat` anyway per the §60 practice: **1 file, 56
+  insertions(+), 258 deletions(-)**.
+- A scratch dart-sass compile-test file (`wrapper_single_post_TEMP.scss`)
+  was created in the repo root for this verification; moved to the
+  existing `_to_delete/` folder (no delete permission granted this
+  session) rather than interrupting with a permission prompt for
+  one-file cleanup.
+- Did **not** do a live before/after screenshot/computed-style check on
+  staging -- same caveat as every prior file. The `.author`/`.authorSingle`
+  nested-flex conversion (multiple co-authors wrapping) is the one most
+  worth a human look before shipping, since it's the first genuinely
+  nested wrapping-row-of-icon+text-pairs shape in this series.
+
+### Status
+
+Applied on the user's machine via the device bridge. **Committed this time**
+(the user explicitly asked me to start committing, rather than leaving it
+staged for them) as part of this session's commit -- see the commit message
+for the hash. Not pushed; staying on `dev` per the standing constraint,
+push is the user's call.
+
+### Remaining files (3 left)
+
+`_position.scss`, `_landing.scss`, `_customer-stories.scss`. Continue the
+established container-chain-walk methodology: recheck gated entries too
+(not just ungated declarations), verify DOM/repeater cardinality via the
+actual PHP before assuming a float is solo vs. multi-item (this file is a
+second proof point, after `_roundtable.scss`, that guessing from SCSS
+alone is a real risk), watch for the shared `.one-half`/`.one-quarter`/
+`.one-third` utility classes, and check `git status` for `MM` (not just
+`M`) before trusting a plain `git diff --stat`.
