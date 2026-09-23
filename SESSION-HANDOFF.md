@@ -8521,3 +8521,44 @@ previously-delivered duplication-audit report's recommended next steps
 computed-style check across the accumulated float-grid work (flagged
 repeatedly across this series, not yet acted on), or writing the
 consolidated summary report (task #7, still open, lower priority).
+
+
+---
+
+## §66 -- 2026-09-23: duplication-audit report, step 1 -- fixed the two live `Template Name:` collisions (comment-only, no functional change)
+
+### Context
+
+Continuing from §65 (float-grid redesign pass fully complete) and the delivered consolidated summary report. Moved to the previously-delivered duplication-audit report's recommended next steps (`Claude outputs/duplication-audit.md`), starting with the lowest-risk item: the two live wp-admin `Template Name:` collisions identified in that report's section 1A.
+
+Before starting, confirmed the WordPress REST API is not reachable from either this environment or the device bridge (`curl` to `staging.adapt.com.au/wp-json/` returns a 403 from the egress proxy in both places) -- same limitation the duplication-audit report already flagged. This ruled out confirming live page-template assignments myself, so this step deliberately stayed within the audit report's "safe regardless of live assignment" category: a `Template Name:` comment rename never touches WordPress's `_wp_page_template` postmeta (which stores the file path, not the label), so relabeling can't break any existing page's template assignment. Deletion of either byte-identical/near-duplicate file was explicitly *not* attempted -- that still needs live-assignment confirmation per the audit report, and stays open.
+
+### Self-inflicted mistake, caught and fixed before it was committed
+
+The very first edit attempt (a botched Python one-liner) overwrote `template-flexible-nov.php` from 915 lines down to 8, destroying the file's body. Caught immediately via `git status --short` / `wc -l` before anything was committed or pushed. Recovered with `git checkout -- templates/template-flexible-nov.php` (required first removing a stale, unrelated `.git/index.lock` left over from an earlier interrupted command -- confirmed via `ps aux` that no real git process was running before requesting delete permission and removing the 0-byte lock file). File verified restored to its original 915 lines and byte-identical `git status` (clean) before retrying. The retry used a str.replace-with-assertion pattern (asserts exactly one match, asserts the new content is strictly longer, asserts the file's tail 100-200 bytes are byte-identical before writing) specifically to make a repeat of this mistake structurally impossible.
+
+### Fix applied (mirrors the existing `template-home-nov.php` precedent exactly)
+
+- **`templates/template-flexible-nov.php`**: `Template Name: Flexible Template` -> `Template Name: Flexible Template (Nov)`, with the same explanatory comment block `template-home-nov.php` already carries ("Renamed so this is distinguishable from templates/template-flexible.php in the wp-admin page-template dropdown..."). `template-flexible.php` (4.2KB) is left untouched as the original/primary template; `template-flexible-nov.php` (41KB, ~15 more ACF flexible-content block types) keeps its distinct content, only the dropdown label changed.
+- **`templates/template-thankyou.php`**: `Template Name: Thank You Template` -> `Template Name: Thank You Template (2)`, same pattern. `template-thank-you.php` (the hyphenated one) is left untouched as the original. These two files are byte-identical apart from whitespace; relabeling one resolves the wp-admin ambiguity without deleting either, deferring the "which one is actually dead" question to live-assignment confirmation as the audit report recommends.
+- `templates/template-thank-you-new.php` (`Template Name: Thank You New Template`) already has a distinct name -- confirmed out of scope, no change needed.
+
+Both diffs are comment-only (`git diff` shows only the doc-comment block changing in each file, nothing in the executable PHP below it).
+
+### Verification
+
+- `git diff -- templates/template-flexible-nov.php templates/template-thankyou.php`: reviewed both diffs directly, confirmed only the `Template Name:` comment blocks changed.
+- `git status --short`: confirmed exactly these 2 files modified, nothing else in the working tree touched.
+- No PHP linter available on the device (`php` not installed there); risk is judged negligible since the change is a docblock comment only, verified char-for-char against the unchanged executable code.
+- Did not attempt a live wp-admin check (dropdown label rendering) -- no reachable path to staging's admin from either environment this session.
+
+### Status
+
+Applied on the user's machine via the device bridge, not yet committed (holding per usual practice of batching a clear diff for review before committing). File-deletion permission was granted for the connected `adapt` folder mid-session (to remove the stale git lock) and remains enabled for the rest of this session -- used only for that lock file, nothing else.
+
+### Remaining duplication-audit items (still open, unstarted)
+
+1. **`single-resource.php`/`single-resources.php`** (byte-identical, different Template Names -- not a collision, just redundant) -- no action needed per the audit report; consolidating would require a delete, which needs live-assignment confirmation.
+2. **PHP component-partial merges** (video/download two-vs-three-column pairs, `_counter-block`/`_repeatable-counter-block`) -- all confirmed live on both sides, the safer/higher-value merge target, but a real refactor (not attempted this section).
+3. **Confirmed-dead cleanup** (single-post dead-file cluster, ~7 likely-dead component files) -- blocked on live-template-assignment confirmation via wp-admin or a reachable REST endpoint, neither available from this environment.
+4. **SCSS-layer duplication** -- audit report recommends deprioritizing, architectural repetition rather than a real problem.
