@@ -121,7 +121,7 @@
 <?php wp_head(); ?>
 
 <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
@@ -129,8 +129,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 
 <!-- Google tag ga4 (gtag.js) --> 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-J1TXH5MDSE"></script> 
-<script>
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" async src="https://www.googletagmanager.com/gtag/js?id=G-J1TXH5MDSE"></script> 
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
     window.dataLayer = window.dataLayer || [];   
     function gtag(){dataLayer.push(arguments);}   
     gtag('js', new Date());   gtag('config', 'G-J1TXH5MDSE'); 
@@ -143,10 +143,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 ?>
 <?php if ( is_page_template('templates/template-thank-you-new.php') || is_page_template('templates/template-thank-you.php') ) { ?>
     <!-- Event snippet for Form Submits | All Forms conversion page --> 
-    <script> gtag('event', 'conversion', {'send_to': 'AW-769682308/TFnsCK6mn80ZEITXge8C'});</script>
+    <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>"> gtag('event', 'conversion', {'send_to': 'AW-769682308/TFnsCK6mn80ZEITXge8C'});</script>
 <?php } ?>
 <!-- Start of HubSpot Embed Code -->
-<script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/8336221.js"></script>
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/8336221.js"></script>
 <!-- End of HubSpot Embed Code -->
 </head>
 <body <?php body_class(''); ?> data-page-id="<?= the_ID(); ?>" rel="<?php if ( is_404() ): echo 'notFound'; endif; ?>">

@@ -8863,3 +8863,36 @@ A static allowlist isn't the right long-term shape for this site -- GTM will kee
 ### Status
 
 Verification only, no code changes. §73's CSP decision (Report-Only, not enforcing) is validated by real traffic data. No further action planned unless requested.
+
+
+---
+
+## §75 -- 2026-09-23: CSP nonce + 'strict-dynamic' (still Report-Only, not enforcing)
+
+### Context
+
+§74 found that a static host-source allowlist can't keep up with what Google Tag Manager injects at runtime (66 real violations on one page load, from ad-tech/analytics vendors configured in GTM's own admin console, invisible to a code grep). The recommended fix was a per-request nonce on the theme's own scripts plus `'strict-dynamic'` in `script-src`: browsers that support `'strict-dynamic'` then trust the nonce-tagged script AND, recursively, anything that script injects via `document.createElement('script')` -- which covers GTM's whole dynamic vendor stack without enumerating each one by hand. User approved implementing this, still Report-Only.
+
+### What changed
+
+`functions.php`:
+- `adapt_csp_nonce()` -- generates one nonce per request (`base64_encode(random_bytes(16))`, 128 bits) in a static var, so every call in the same request returns the identical value whether it's the header being built on `send_headers` or markup rendered later in `header.php`.
+- `adapt_add_nonce_to_enqueued_scripts()` on the `script_loader_tag` filter -- adds `nonce="..."` to every `<script>` tag WordPress renders for a `wp_enqueue_script()`-registered handle. Covers all 8 handles in `my_enqueue_scripts()`: gsap-js, scrolltrigger-js, scrollmagic-js, lottie-player, lottie-interactivity, hubspot-forms-embed, utm-form-fields, main-js.
+- `adapt_csp_report_only_header()`'s `script-src` now leads with `'strict-dynamic' 'nonce-<the nonce>'` ahead of the existing host allowlist. Both are kept together deliberately: browsers new enough to honor `'strict-dynamic'` ignore the host allowlist entirely once it's present; older browsers that don't recognize `'strict-dynamic'` fall back to the host allowlist, so nothing regresses for them. Same logic already applies to `'unsafe-inline'`, which browsers that understand nonces ignore in favor of the nonce -- it stays for the same graceful-fallback reason.
+
+`header.php`:
+- Added `nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>"` by hand to the 5 raw `<script>` tags that bypass `wp_enqueue_script()` entirely and so aren't touched by the filter above: the GTM bootstrap inline snippet, the gtag.js async loader, the gtag inline config block, the thank-you-page conversion-tracking snippet, and HubSpot's `hs-script-loader`. The commented-out Google Maps `<script>` (inert, inside an HTML comment) was left alone.
+
+Both edits used the same safe pattern as every other `functions.php`/`header.php` change this engagement: a Python script that asserts each anchor is found the expected number of times, asserts brace-balance and PHP open/close-tag counts match the pre-edit baseline (functions.php) or grew by exactly the number of new `<?php ... ?>` pairs (header.php), and only writes if every assertion passes -- so a bad anchor crashes before anything touches disk. Verified via `git diff` and a `tail`/`grep` check that the file's true closing `?>` is still last and unique.
+
+### Known, deliberate gap -- still Report-Only, not enforcing
+
+Two things are NOT covered by this pass, both already visible as extra Report-Only violations rather than breakage:
+1. `main-js` uses `wp_localize_script()` (passing `ajaxobject` data to JS). WordPress renders that as a separate inline `<script id="main-js-js-extra">` tag via a different code path that the `script_loader_tag` filter does not touch, so it has no nonce.
+2. A repo-wide grep found roughly 37 more raw inline `<script>` tags scattered across ~20 other template files (customer-story, benchmark, services, gtm-components, etc.), none of which were touched in this pass -- retrofitting all of them was flagged as its own, larger effort rather than something to fold into this change.
+
+Both are exactly why this stays `Content-Security-Policy-Report-Only` rather than switching to an enforcing `Content-Security-Policy`: under Report-Only these just log more violations for later review; under an enforcing header they'd break those scripts outright. Switching to enforcing is a separate decision that needs its own explicit sign-off, once a follow-up pass nonces (or otherwise accounts for) the two gaps above.
+
+### Status
+
+Committed to `dev` (not pushed). Once pushed, recommend re-checking the browser console on `/adapt-vs-gartner/` (same page and method as §74) to compare the violation count/shape against §74's baseline of 66 -- the GTM-injected third-party stack should now be covered by `'strict-dynamic'` and mostly drop out, leaving the two known gaps above as the main remaining signal.

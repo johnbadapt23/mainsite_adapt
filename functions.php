@@ -1496,6 +1496,38 @@ function adapt_noindex_staging_header() {
 }
 add_action( 'send_headers', 'adapt_noindex_staging_header' );
 
+// SECURITY 2026-09-23 (follow-up to §74): per-request CSP nonce, shared
+// between the header sent on 'send_headers' (adapt_csp_report_only_header,
+// below) and any markup rendered later in the same request that needs to
+// echo the same value into a nonce="..." attribute (the script_loader_tag
+// filter immediately below, and the raw <script> tags in header.php).
+// Generated once per request via a static var so every caller gets the
+// identical nonce; base64(16 random bytes) matches the CSP nonce-source
+// grammar (base64-value characters only) with 128 bits of entropy.
+function adapt_csp_nonce() {
+    static $nonce = null;
+    if ( null === $nonce ) {
+        $nonce = base64_encode( random_bytes( 16 ) );
+    }
+    return $nonce;
+}
+
+// Adds the shared nonce to every script tag WordPress renders for a
+// wp_enqueue_script()-registered handle (gsap-js, scrolltrigger-js,
+// scrollmagic-js, lottie-player, lottie-interactivity,
+// hubspot-forms-embed, utm-form-fields, main-js). Raw <script> tags that
+// bypass the enqueue system entirely (GTM bootstrap, gtag.js, HubSpot's
+// hs-script-loader in header.php) are NOT covered by this filter and are
+// nonced by hand at their own tags instead. Guards against double-adding
+// a nonce in case a handle's tag already carries one.
+function adapt_add_nonce_to_enqueued_scripts( $tag, $handle ) {
+    if ( false === strpos( $tag, ' nonce=' ) ) {
+        $tag = str_replace( '<script ', '<script nonce="' . esc_attr( adapt_csp_nonce() ) . '" ', $tag );
+    }
+    return $tag;
+}
+add_filter( 'script_loader_tag', 'adapt_add_nonce_to_enqueued_scripts', 10, 2 );
+
 // SECURITY 2026-09-23 (follow-up to §72): Content-Security-Policy in
 // REPORT-ONLY mode. Deliberately not enforcing -- the Report-Only variant
 // of this header never blocks anything, it only logs violations to the
@@ -1518,7 +1550,7 @@ add_action( 'send_headers', 'adapt_noindex_staging_header' );
 // hash-based policy blind.
 function adapt_csp_report_only_header() {
     $csp = "default-src 'self'; "
-        . "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://unpkg.com https://js.hsforms.net https://js.hs-scripts.com https://www.googletagmanager.com https://formcrafts.com; "
+        . "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' 'nonce-" . adapt_csp_nonce() . "' https://cdnjs.cloudflare.com https://unpkg.com https://js.hsforms.net https://js.hs-scripts.com https://www.googletagmanager.com https://formcrafts.com; "
         . "style-src 'self' 'unsafe-inline'; "
         . "img-src 'self' data: https:; "
         . "font-src 'self' data:; "
