@@ -8896,3 +8896,31 @@ Both are exactly why this stays `Content-Security-Policy-Report-Only` rather tha
 ### Status
 
 Committed to `dev` (not pushed). Once pushed, recommend re-checking the browser console on `/adapt-vs-gartner/` (same page and method as §74) to compare the violation count/shape against §74's baseline of 66 -- the GTM-injected third-party stack should now be covered by `'strict-dynamic'` and mostly drop out, leaving the two known gaps above as the main remaining signal.
+
+
+---
+
+## §76 -- 2026-09-23: §75 live verification -- 66 -> 33 violations, GTM's ad-tech stack now trusted
+
+### What I checked
+
+Confirmed `4a98c6a` (§75) is live: `origin/dev` matches local HEAD. Fetched `/adapt-vs-gartner/` on staging directly and read the actual `Content-Security-Policy-Report-Only` response header -- confirms `'strict-dynamic' 'nonce-<value>'` is present ahead of the host allowlist, no enforcing `Content-Security-Policy` header sent. Checked the live DOM: 16 of 48 `<script>` tags carry the shared nonce (matches the header's nonce exactly), covering the 8 filter-covered enqueued handles plus the 5 hand-nonced tags in `header.php`. (Note: `element.getAttribute('nonce')` reads back empty by design -- browsers hide the nonce content attribute from the DOM once parsed; had to read the `.nonce` IDL property instead to actually see it, which is what I used.) Then read the full browser console on the same page, same method as §74's baseline.
+
+### Result: 33 violations, down from 66 in §74 -- and the whole GTM ad-tech stack is gone from the list
+
+Every violation this time is still logged at `[info]` level as report-only (nothing blocked), and there are zero `[error]`-level console entries at all this run. The breakdown of the 33:
+- ~11 "Executing inline script" violations -- `'unsafe-inline'` is ignored once a nonce is present, so these are exactly the un-nonced raw `<script>` tags §75 already flagged as a known gap (the ~37 scattered across other template files, plus the inline speculation-rules script).
+- 1 external script load blocked by allowlist -- `js-ap1.hsforms.net`'s HubSpot forms script (a regional CDN redirect target the nonced `hubspot-forms-embed` handle loads next, evidently not recognized as strict-dynamic-inherited).
+- 1 external script load -- WP Rocket's delay/lazy-load bundle (`wp-rocket/assets/js/lazyload`), loaded by a mechanism that doesn't inherit trust from a nonced parent.
+- ~13 `connect-src` violations, all `forms-ap1.hsforms.com` (HubSpot's form-submission/validation/visitor API calls) -- `connect-src` was never touched by this change, this is the same pre-existing gap §73's allowlist had.
+- 1 `font-src` violation -- the same third-party-widget Google Fonts request §74 already saw.
+
+Critically, every one of the GTM-injected ad-tech/analytics violations from §74's 66 -- Google Ads conversion/remarketing, LinkedIn Insight, Facebook Pixel, Bing Ads, Reddit Pixel, Microsoft Clarity, Hotjar, and HubSpot's own dozen-plus tracking subdomains -- is gone from this run. That's `'strict-dynamic'` doing exactly what it's supposed to: those scripts are all injected at runtime by the now-nonced GTM bootstrap script via `document.createElement('script')`, so they inherit its trust instead of needing individual host-allowlist entries.
+
+### What's left
+
+Everything still outstanding is exactly what §75 already named as deliberately out of scope for this pass (the ~37 other inline `<script>` tags and `main-js`'s `wp_localize_script()` output) plus two directives this change never touched (`connect-src`, `font-src`) -- none of it new, none of it a regression. Still `Content-Security-Policy-Report-Only`, not enforcing.
+
+### Status
+
+Verification only, no code changes. §75's nonce + `'strict-dynamic'` change is confirmed live and working as designed -- real traffic data shows violations roughly halved and the entire GTM-managed ad-tech surface now trusted without a static per-vendor allowlist. No further action planned unless requested.
