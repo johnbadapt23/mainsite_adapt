@@ -1553,9 +1553,9 @@ function adapt_csp_report_only_header() {
         . "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' 'nonce-" . adapt_csp_nonce() . "' https://cdnjs.cloudflare.com https://unpkg.com https://js.hsforms.net https://js.hs-scripts.com https://www.googletagmanager.com https://formcrafts.com; "
         . "style-src 'self' 'unsafe-inline'; "
         . "img-src 'self' data: https:; "
-        . "font-src 'self' data:; "
+        . "font-src 'self' data: https://fonts.gstatic.com; "
         . "frame-src 'self' https://player.vimeo.com https://vimeo.com https://formcrafts.com https://www.googletagmanager.com; "
-        . "connect-src 'self' https://js.hsforms.net;";
+        . "connect-src 'self' https://js.hsforms.net https://forms-ap1.hsforms.com;";
     header( "Content-Security-Policy-Report-Only: {$csp}" );
 }
 add_action( 'send_headers', 'adapt_csp_report_only_header' );

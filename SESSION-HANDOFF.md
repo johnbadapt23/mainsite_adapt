@@ -8924,3 +8924,28 @@ Everything still outstanding is exactly what §75 already named as deliberately 
 ### Status
 
 Verification only, no code changes. §75's nonce + `'strict-dynamic'` change is confirmed live and working as designed -- real traffic data shows violations roughly halved and the entire GTM-managed ad-tech surface now trusted without a static per-vendor allowlist. No further action planned unless requested.
+
+
+---
+
+## §77 -- 2026-09-23: CSP follow-up -- close the connect-src / font-src gaps §76 found
+
+### Context
+
+§76's live comparison (66 -> 33 violations after §75's nonce + `'strict-dynamic'` change) left a few directives untouched. Two of the remaining 33 were simple, safe allowlist gaps rather than anything needing nonce/strict-dynamic work: HubSpot's form API calls (`connect-src`) and a Google Fonts request from a third-party widget (`font-src`). Neither directive is affected by `'strict-dynamic'` (that only changes how `script-src` is evaluated), so a plain host addition closes them -- no nonce plumbing needed, no functional risk since the header is still Report-Only either way.
+
+### What changed
+
+`functions.php`'s `adapt_csp_report_only_header()`:
+- `font-src` now also allows `https://fonts.gstatic.com`.
+- `connect-src` now also allows `https://forms-ap1.hsforms.com` (HubSpot's form-submission/validation/visitor/feature-control API, called by the already-allowlisted `hubspot-forms-embed` script).
+
+Same verify-before-write pattern as every other change this engagement: anchor-count assertions, PHP open/close-tag count checked against baseline, only writes if every assertion passes. `git diff` confirms a 2-line change, closing `?>` still last and unique.
+
+### What's deliberately NOT touched (accepted, permanent gap under Report-Only)
+
+The other two script-src violations §76 found -- HubSpot's `js-ap1.hsforms.net` regional loader and WP Rocket's lazyload bundle -- are NOT allowlist gaps and can't be closed by adding hosts. Once `'strict-dynamic'` is present, browsers that honor it stop consulting the host allowlist for `script-src` entirely (the violation message says so explicitly: "host-based allowlisting is disabled"). Those two scripts are loaded by third-party code (HubSpot's own JS, WP Rocket's own JS) in a way that doesn't inherit trust from a nonced parent script, and there's no way to add a nonce to a tag this theme doesn't control. Fixing them would mean patching or monkey-patching third-party plugin/vendor JS, which is a meaningfully different (and riskier) kind of change than anything done in this CSP effort so far -- not attempted.
+
+### Status
+
+Committed to `dev` (not pushed). Once pushed, expect the violation count on `/adapt-vs-gartner/` to drop from §76's 33 to roughly 31 (the 2 connect-src + ~1 font-src entries -- exact count depends on how many duplicate connect-src calls the page makes). The remaining violations are the already-documented, accepted gaps: the ~37 other un-nonced inline `<script>` tags elsewhere in the template tree, `main-js`'s `wp_localize_script()` extra tag, and the two script-src loads above that strict-dynamic can't reach.
