@@ -9028,3 +9028,16 @@ None of the vendors added in §79 (Google Ads/Analytics, LinkedIn, Reddit, HubSp
 ### Status
 
 Committed to `dev` (not pushed). Once pushed and reverified, expect these last 2 connect-src violations gone, leaving only the long-documented, deliberately-out-of-scope gaps: ~15 un-nonced inline `<script>`/event-handler attributes elsewhere in the template tree, `main-js`'s `wp_localize_script()` extra tag, and the 2 script-src loads that don't inherit strict-dynamic trust. No further connect-src work is expected unless a future check turns up something new.
+
+
+---
+
+## §81 -- 2026-09-23: §80 post-push verification (partial -- GTM ad-tech tags did not fire this check)
+
+Confirmed `93120f0` (§80) is live: `origin/dev` matches local HEAD. Fetched the CSP header directly from the page's own JS context with a cache-busting query string and `cache: "no-store"` -- got `x-cache: MISS` (genuinely fresh, not a cached snapshot) and confirmed the response's `Content-Security-Policy-Report-Only` header contains both `https://h.clarity.ms` and `https://vc.hotjar.io` in `connect-src`, exactly matching what's on `dev`. That part is solid, deterministic confirmation.
+
+What I could NOT confirm this round: a live, GTM-fired violation count. In a fresh single tab, cache-busted navigation to `/adapt-vs-gartner/`, accepting the site's cookie-consent banner, and waiting ~16s combined with a scroll (to rule out WP Rocket's delayed-JS-execution pattern), zero third-party network requests fired at all -- no `googletagmanager.com`, no ad-tech or analytics beacons of any kind, and correspondingly zero `connect-src` violations in the console (only the same long-accepted `script-src` gaps: 2 host loads, inline scripts/handlers). This is a different result from §76/§78/§79, which did observe GTM-fired traffic live. I don't have a confirmed explanation -- possibly a GTM trigger/consent-mode condition not met by this particular check, possibly something environmental -- and didn't want to guess further or spend more cycles chasing it speculatively.
+
+### Status
+
+Code-level change is confirmed live and correct. Live-traffic confirmation that `h.clarity.ms`/`vc.hotjar.io` specifically go silent (the way the other 14 §79 hosts were confirmed silent) is outstanding -- not because anything looks wrong, but because no GTM ad-tech traffic fired in this check to confirm either way. Worth a fresh look next time GTM traffic is observed firing normally; no code changes needed based on this check.
