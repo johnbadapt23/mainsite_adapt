@@ -150,6 +150,35 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End of HubSpot Embed Code -->
 </head>
 <body <?php body_class(''); ?> data-page-id="<?= the_ID(); ?>" rel="<?php if ( is_404() ): echo 'notFound'; endif; ?>">
+    <?php
+    // A11Y 2026-09-23: skip-to-content link (WCAG 2.4.1 Bypass Blocks --
+    // confirmed via a live DOM audit that no page offered any way for a
+    // keyboard/screen-reader user to skip the header/nav and jump straight
+    // to #main). Visually hidden off-screen until it receives keyboard
+    // focus, so this has zero visual-layout impact on any template. Styled
+    // inline here rather than added to the SCSS build so it needs no
+    // rebuild step and can't interact with anything else in main.min.css.
+    // #main exists on effectively every template (confirmed by grep across
+    // templates/); on the rare template without it, the link is simply a
+    // harmless no-op instead of erroring.
+    ?>
+    <a class="adapt-skip-link" href="#main">Skip to main content</a>
+    <style>
+        .adapt-skip-link {
+            position: absolute;
+            top: -999px;
+            left: 0;
+            z-index: 10000;
+            padding: 12px 20px;
+            background: #000;
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .adapt-skip-link:focus {
+            top: 0;
+        }
+    </style>
     <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NHF4ZRS"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

@@ -1452,4 +1452,48 @@ function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query )
     return $new_orderby;
 }
 
+// SECURITY/SEO 2026-09-23: two low-risk fixes from a full accessibility/
+// SEO/security/performance audit pass (see SESSION-HANDOFF.md §72 for the
+// full findings list -- most items were either already fine or flagged for
+// the user rather than acted on; these were unambiguous and safe). A third
+// fix from the same pass, a skip-to-content link, lives in header.php since
+// it's markup, not a header hook.
+
+// 1) Baseline security response headers that were entirely absent from the
+//    live response (confirmed by direct header inspection on staging).
+//    Both are standard, non-breaking headers with no known compatibility
+//    risk for this theme: X-Content-Type-Options stops browsers from
+//    MIME-sniffing a response into an unintended content type, and
+//    X-Frame-Options stops this site being framed by another origin
+//    (clickjacking) -- confirmed nothing in this theme relies on being
+//    embedded via iframe on another domain. Deliberately NOT adding a
+//    Content-Security-Policy here: correctly allowlisting cdnjs, unpkg,
+//    js.hsforms.net, googletagmanager, and every inline script this theme
+//    already relies on is a much bigger, higher-risk change that needs
+//    deliberate design and testing, not a drive-by addition alongside
+//    these two.
+function adapt_security_headers() {
+    header( 'X-Content-Type-Options: nosniff' );
+    header( 'X-Frame-Options: SAMEORIGIN' );
+}
+add_action( 'send_headers', 'adapt_security_headers' );
+
+// 2) Force noindex on the staging host only. Confirmed staging.adapt.com.au
+//    is publicly reachable with no authentication and was serving
+//    "index, follow" (Yoast's default) with no X-Robots-Tag at all -- while
+//    a separate, real production site already exists and is correctly
+//    indexed at adapt.com.au. That's a live duplicate-content risk: search
+//    engines can crawl and index staging pages that compete with the
+//    production ones. The X-Robots-Tag header is the standard way to
+//    control indexing without touching Yoast's own meta-tag output (avoids
+//    ending up with two conflicting <meta name="robots"> tags on the page).
+//    Scoped strictly to a "staging." hostname prefix, so this can never
+//    affect production even though the same theme code deploys to both.
+function adapt_noindex_staging_header() {
+    if ( isset( $_SERVER['HTTP_HOST'] ) && 0 === strpos( $_SERVER['HTTP_HOST'], 'staging.' ) ) {
+        header( 'X-Robots-Tag: noindex, nofollow' );
+    }
+}
+add_action( 'send_headers', 'adapt_noindex_staging_header' );
+
 ?>

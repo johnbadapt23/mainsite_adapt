@@ -8772,3 +8772,46 @@ Decision closed. No further action planned on this item within this engagement.
 1. TTFB (807ms) -- server/hosting-side, outside this repo. No further action planned.
 
 All items originally raised in §67's performance pass are now closed (bundle-split: decided to keep as-is; TTFB: out of repo scope; font subsetting: shipped and verified in §69/§70; GSAP bump: shipped and verified in §68; lazy-loading: audited, already complete).
+
+
+---
+
+## §72 -- 2026-09-23: full accessibility/SEO/security/performance/DB-query audit
+
+### Scope
+
+User asked for a broad audit pass: accessibility, SEO, a security pass, overall site performance (Lighthouse-style), and DB query patterns. Real Lighthouse CLI could not be run -- confirmed egress to staging.adapt.com.au is proxy-blocked (403 on CONNECT) from both this environment's cloud container and the device shell, and no headless Chrome is available on the device either. Used the browser pane (which does have a working path to staging) plus static code review instead, covering the same ground: real response headers, live DOM/a11y checks, SEO markup, and code-level security/DB patterns.
+
+### Findings and outcome by area
+
+**Performance.** No new findings beyond what §67-71 already closed out. `main-nofooter.min.css` is gzip'd + year-cached (see §71). No further action.
+
+**Accessibility.**
+- All `<img>` elements have an `alt` attribute; the ~69 with `alt=""` are, on inspection, small decorative icons sitting next to their own visible text label (correct pattern -- avoids double-announcing to screen readers), not a real gap.
+- Form inputs all have associated labels (label[for], aria-label, or wrapping).
+- **Fixed**: no skip-to-content link existed anywhere (WCAG 2.4.1 Bypass Blocks). Added one to `header.php`, visually hidden until keyboard focus, targeting `#main` (present on effectively every template). Styled with an inline `<style>` block scoped to `.adapt-skip-link` rather than touched via the SCSS build, so it needed no rebuild step and can't interact with `main-nofooter.min.css`.
+- **Flagged, not fixed**: no `<nav>`/`role="navigation"` landmark anywhere on the page -- a real gap for screen-reader users, but retrofitting it means restructuring `header.php`'s menu markup, which this environment can't visually regression-test across every template. Two minor heading-hierarchy skips (h2 -> h4) on the homepage. One link with no accessible text found sitewide. None of these three were acted on -- recommend a follow-up pass with your sign-off if you want them addressed.
+
+**SEO.** Title/meta description/canonical/OG tags/Twitter card/JSON-LD (WebPage+BreadcrumbList+WebSite+Organization graph)/robots meta/viewport/lang are all present and correctly formed via Yoast, checked on the homepage. robots.txt and sitemap_index.xml both serve correctly.
+- **Fixed, the one real finding**: staging.adapt.com.au itself is publicly reachable with no authentication and was serving `index, follow` with no `X-Robots-Tag` header at all -- while a separate, already-correctly-indexed production site exists at adapt.com.au (confirmed by loading both). That's a live duplicate-content risk. Added a hostname-scoped `X-Robots-Tag: noindex, nofollow` header (see functions.php changes below) that only fires when `HTTP_HOST` starts with `staging.`, so it can never affect production even though the same theme deploys to both.
+
+**Security.**
+- No raw `$wpdb` queries, no `eval`/`unserialize`/`extract`, no dynamic `include`/`require` on a variable path, no direct superglobal echo anywhere in theme code.
+- All three AJAX endpoints (`filter_speakers`, `filter_partners`, `edge_filter_partners`) call `check_ajax_referer` before doing anything.
+- `wp-config.php.bak`, `debug.log`, and `/wp-content/uploads/` directory listing all correctly return 403. `wp-json/wp/v2/users` (a common WP user-enumeration vector) correctly returns 401 unauthenticated. `readme.html` is exposed (200) but no longer leaks the real core version -- WP Rocket overrides the `<meta name="generator">` tag site-wide, so this is low severity.
+- **Fixed**: `X-Content-Type-Options: nosniff` and `X-Frame-Options: SAMEORIGIN` were both entirely absent from the live response. Added both -- standard, non-breaking, no compatibility risk identified (confirmed nothing in this theme relies on being iframed by another origin).
+- **Flagged, not fixed**: no Content-Security-Policy at all. Deliberately did not add one -- correctly allowlisting cdnjs.cloudflare.com, unpkg.com, js.hsforms.net, googletagmanager.com, and every inline script this theme already relies on is a real design-and-test effort, not something to drive-by alongside the two headers above. Recommend as a dedicated follow-up if you want it.
+
+**DB query patterns.** Grepped for `posts_per_page => -1` (found ~25 across templates) and `meta_query` usage. This area turned out to already have had a dedicated optimization pass on 2026-09-09 (predating this session) -- the unbounded queries that existed purely to iterate results and collect distinct taxonomy terms for filter buttons (never displaying the fetched posts) were already converted to `fields => 'ids'` with `no_found_rows => true`, exactly the right fix (see comments in `template-resource-type.php`, `template-topic.php`, `_events-listing.php` etc.). The remaining `-1` queries fetch full post objects for pages that are supposed to list every item of a naturally small collection (open positions, events, a specific author's posts) -- at this site's actual scale (~1,000 posts across all content types) these aren't a real performance concern for MySQL/WP's object cache. No further action taken; this area is already in good shape.
+
+### Code changes made
+
+`functions.php`: added `adapt_security_headers()` (X-Content-Type-Options, X-Frame-Options, hooked to `send_headers`) and `adapt_noindex_staging_header()` (X-Robots-Tag, hostname-gated to `staging.` only, hooked to `send_headers`).
+
+`header.php`: added the `.adapt-skip-link` skip-to-content link + its scoped inline `<style>`, as the first element inside `<body>`.
+
+**Caught and fixed before committing**: my first attempt at the functions.php edit placed the new code *after* the file's closing `?>` tag instead of before it -- which would have made PHP emit the new comments/functions as literal text output instead of executing them, breaking every page. Caught via `git diff`/manual review of the file tail before staging anything; nothing was committed in the broken state. Rebuilt the edit with the addition correctly placed before the closing tag, verified via `git diff`, brace-balance count (121 open/121 close, unchanged from before), and PHP-open/close-tag count (65/65) before proceeding.
+
+### Status
+
+Not yet committed -- next step. Will commit `functions.php` + `header.php` together, then ask for the usual push+deploy confirmation before live-verifying the three fixes (response headers, staging noindex, skip-link tab-order) the same way §68/§70 verified their changes.
