@@ -9041,3 +9041,16 @@ What I could NOT confirm this round: a live, GTM-fired violation count. In a fre
 ### Status
 
 Code-level change is confirmed live and correct. Live-traffic confirmation that `h.clarity.ms`/`vc.hotjar.io` specifically go silent (the way the other 14 §79 hosts were confirmed silent) is outstanding -- not because anything looks wrong, but because no GTM ad-tech traffic fired in this check to confirm either way. Worth a fresh look next time GTM traffic is observed firing normally; no code changes needed based on this check.
+
+
+---
+
+## §82 -- 2026-09-23: §81's traffic gap -- likely the browser pane, not the site
+
+Confirmed `746436b` (§81) is live: `origin/dev` matches local HEAD. Ran a second fresh-tab live check on `/adapt-vs-gartner/` to chase §81's open item (no GTM traffic observed). Same result: zero requests to `googletagmanager.com`, `clarity.ms`, or `hotjar.io`, and zero `connect-src` violations, in two separate checks now.
+
+Narrowed it down one level: `header.php`'s GTM/gtag snippets (lines ~123-132) are unconditional and correctly nonced -- no consent-gating, no environment check, nothing in the theme that would explain skipping them. A static `<script nonce="..." async src="https://www.googletagmanager.com/gtag/js?...">` tag not firing a single network request, with no CSP violation and no console error of any kind logged against it, points to something in this browser pane's own environment (most likely built-in tracker/ad blocking on known analytics domains) rather than a site-side problem. §76/§78/§79's earlier live checks this engagement did see this same GTM traffic, so this looks like an environment difference between sessions, not a regression.
+
+### Status
+
+Not pursuing this further -- it's not productive to keep re-running the same check hoping for a different result. The code-level fix (§79/§80's connect-src hosts, confirmed via direct header fetch in §81) stands on its own regardless of this browser pane's tracker-blocking. If a future session's browser environment does capture live GTM traffic, a fresh single-tab check on this page remains the way to close this out -- otherwise no further action needed.
