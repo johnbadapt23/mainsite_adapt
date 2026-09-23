@@ -8702,3 +8702,33 @@ Spot-check a sample of resource/blog pages for any missing-glyph (tofu) boxes in
 
 1. `main-nofooter.min.css` (1.81MB uncompressed / 244KB transferred, sitewide single bundle) -- architectural call on single-bundle-vs-per-template-split, not started.
 2. TTFB (807ms) -- server/hosting-side, outside this repo.
+
+
+---
+
+## §70 -- 2026-09-23: font-subset deploy verified live + post-deploy glyph spot-check (§69 follow-up, closed)
+
+### Deploy verification
+
+Confirmed `e24bb52` (§69) is live: `origin/dev` matches local `dev`, working tree clean. Fetched `assets/fonts/HelveticaNeue.woff2` directly from staging with a cache-busting param -- **17,536 bytes**, matching the subsetted size exactly, with a `last-modified` of today (vs. the pre-deploy original at 113,444 bytes). First fetch attempt used a guessed theme path (`/wp-content/themes/adapt/...`) and wrongly appeared to still be the old file -- the live theme directory is actually `adapt_optimize` (confirmed by reading the loaded page's actual `document.styleSheets` hrefs), not `adapt`. Re-checked against the correct path before concluding anything.
+
+### Missing-glyph spot check (the one risk flagged as unverifiable from this environment)
+
+Ran the recommended post-deploy check: scanned live page HTML for any character outside the subsetted Unicode range (Basic Latin, Latin-1 Supplement, the Latin-Extended-A/punctuation/symbol extras included in the subset). Checked **163 live pages**:
+
+- All 92 `customer-stories` pages (full set) -- these are the highest-risk category (external people's names, many likely non-English).
+- All 41 `news` pages (full set).
+- 30 randomly sampled pages from the 748-page `post-sitemap.xml` (blog/resource content).
+
+Used a whitelist regex (`/[^\x00-\xFFıŒœ...]/g`) against each page's rendered body text (scripts/styles stripped), run in the browser pane against the live site directly.
+
+**Result: 0 of 163 pages contained any character outside the subsetted range.** No missing-glyph risk found in this sample. This isn't exhaustive (30 of 748 blog posts were sampled, not all), but combined with the two full categories most likely to carry international names (customer-stories, news) coming back completely clean, the residual risk from §69 is now substantially de-risked rather than just theoretical.
+
+### Status
+
+No code changes -- verification only. Closes out the last open item from §69.
+
+### Remaining from §67 (still open, needs user input)
+
+1. `main-nofooter.min.css` (1.81MB uncompressed / 244KB transferred, sitewide single bundle) -- architectural call on single-bundle-vs-per-template-split, not started; asked the user to weigh in given the caching tradeoff.
+2. TTFB (807ms) -- server/hosting-side, outside this repo.
