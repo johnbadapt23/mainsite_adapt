@@ -1496,4 +1496,35 @@ function adapt_noindex_staging_header() {
 }
 add_action( 'send_headers', 'adapt_noindex_staging_header' );
 
+// SECURITY 2026-09-23 (follow-up to §72): Content-Security-Policy in
+// REPORT-ONLY mode. Deliberately not enforcing -- the Report-Only variant
+// of this header never blocks anything, it only logs violations to the
+// browser console (and to a reporting endpoint, if one is configured,
+// which this doesn't set up yet). This exists purely to observe, over a
+// real period of staging/production traffic, whether the allowlist below
+// is actually complete before anyone considers switching to an enforcing
+// policy.
+//
+// Origins below are everything found by grepping this theme's own PHP for
+// external script/iframe/style URLs (cdnjs, unpkg, HubSpot forms/tracking,
+// GTM, Vimeo, formcrafts). Two things this grep can't see, which is
+// exactly why this stays Report-Only rather than enforcing: (1) ACF fields
+// like 'formcrafts_code' let a content editor paste arbitrary third-party
+// embed HTML/JS from wp-admin -- there is no way to enumerate every origin
+// that could ever appear there from the theme code alone; (2) this theme
+// uses inline <script>/<style> blocks throughout (GTM's own snippet,
+// event handlers, the skip-link style added in §72), so 'unsafe-inline'
+// is included for both directives below rather than attempting a nonce/
+// hash-based policy blind.
+function adapt_csp_report_only_header() {
+    $csp = "default-src 'self'; "
+        . "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://unpkg.com https://js.hsforms.net https://js.hs-scripts.com https://www.googletagmanager.com https://formcrafts.com; "
+        . "style-src 'self' 'unsafe-inline'; "
+        . "img-src 'self' data: https:; "
+        . "font-src 'self' data:; "
+        . "frame-src 'self' https://player.vimeo.com https://vimeo.com https://formcrafts.com https://www.googletagmanager.com; "
+        . "connect-src 'self' https://js.hsforms.net;";
+    header( "Content-Security-Policy-Report-Only: {$csp}" );
+}
+add_action( 'send_headers', 'adapt_csp_report_only_header' );
 ?>
