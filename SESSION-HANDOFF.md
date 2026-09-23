@@ -8617,3 +8617,37 @@ Claude in Chrome (the browser extension) wasn't reachable this session ("Browser
 2. Decide on the `main-nofooter.min.css` single-bundle-vs-per-template-split tradeoff before touching it -- real savings, but an architectural call, not a quick fix.
 3. Check whether `HelveticaNeue.woff2`/`HelveticaNeue-Medium.woff2` are already glyph-subsetted; if not, subsetting is a solid, low-risk win once the source font file and required glyph ranges are confirmed.
 4. TTFB of 807ms is server/hosting-side, not theme code -- worth a look at PHP opcode caching / object caching / hosting tier if it's a priority, but outside this theme repo's scope.
+
+
+---
+
+## §68 -- 2026-09-23: GSAP 3.15.0 bump verified live post-deploy (§67 item 1's open follow-up, closed)
+
+### Context
+
+§67's GSAP CDN bump (`3.8.0` -> `3.15.0`) was pushed and deployed. Following up on that section's own "not yet visually verified live" flag by actually checking it on staging, using the built-in browser pane (Claude in Chrome wasn't reachable this session).
+
+### Stale full-page cache initially masked the deploy
+
+Direct navigation to 4 of the 8 `adapt_page_needs_gsap()` pages (`/adapt-vs-gartner/`, `/ecosystem-consulting-partners/`, `/executive-advisors/`, `/custom-partnered-research/` -- found via the Yoast page sitemap and confirmed by checking which pages actually load `gsap-js`) initially still showed `gsap/3.8.0/...` in the served HTML, `x-cache: HIT`, and a `last-modified` timestamp several hours before the deploy commit. This was a false alarm, not a broken deploy: a cache-busting query string (forces `x-cache: MISS`) on all 4 pages confirmed the origin is correctly serving `gsap/3.15.0/...` -- the earlier reads were WP Rocket/nginx's full-page cache serving pages generated before the deploy, not yet naturally regenerated. No action taken/needed here; the cache will catch up on its own as pages are revisited, same as any WP full-page-cache setup after a deploy.
+
+Also hit the site's maintenance-mode page (standard WP "Briefly unavailable for scheduled maintenance" screen) once mid-check -- coincidental timing with what looks like another deploy running concurrently, resolved itself within ~10 seconds on retry. Unrelated to this work.
+
+### Runtime verification (the real check)
+
+Loaded `/adapt-vs-gartner/` with a cache-busting param to force the actual `3.15.0` bundle to run, then checked in-page:
+
+- `window.gsap.version` / `window.ScrollTrigger.version` -- confirmed `3.15.0` at runtime (not just present in HTML source).
+- **The compatibility-layer check that actually matters for this codebase**: `source/js/main.js` doesn't use GSAP 3's modern API -- it calls the GSAP 2-era globals `TweenLite.defaultEase`, `new TimelineMax()`, `Linear.easeNone` directly (guarded lazily inside `if ($scrollContainers.length && ...)` blocks specifically because GSAP is now conditionally enqueued -- see the code comment at `main.js` ~1033). Confirmed at runtime: `TweenLite`, `TimelineMax`, and `Linear` are all still defined and functional under `gsap@3.15.0` (GSAP 3's bundle keeps these as backward-compatible aliases; this has been true since 3.0 and still holds at 3.15) -- `TweenLite.defaultEase = Linear.easeNone` executes with no error.
+- Console errors: found one pre-existing `Uncaught TypeError: getComputedStyle... parameter 1 is not of type 'Element'` and one `503` resource load error on `/adapt-vs-gartner/`. Before treating either as caused by this change, reproduced the exact same two errors on `/ecosystem-consulting-partners/` while it was still serving the **old, cached `gsap/3.8.0` bundle** (confirmed via `window.gsap.version` on that load) -- proves both are pre-existing site issues, not introduced by the version bump. Not investigated further; out of scope for this section.
+- Checked the actual sticky/scroll-driven DOM this page uses (`.sticky-slider-cards`, not `.fixed-scroller-inner` -- that selector is specific to the Customer Events template's different scene, per `main.js`'s "// Customer events scroll magic" block) -- rendered with expected card positions, no thrown errors during scroll.
+
+### Status
+
+No code changes this section -- verification only, confirming §67's GSAP bump is safe and live. `functions.php`/`SESSION-HANDOFF.md` need no further edits for this item.
+
+### Remaining from §67's list (still open)
+
+1. `main-nofooter.min.css` (1.81MB uncompressed / 244KB transferred, sitewide single bundle) -- architectural call on single-bundle-vs-per-template-split, not started.
+2. Font-subsetting check on `HelveticaNeue.woff2`/`HelveticaNeue-Medium.woff2` -- not started, needs the source font file and required glyph ranges confirmed first.
+3. TTFB (807ms) -- server/hosting-side, outside this repo.
