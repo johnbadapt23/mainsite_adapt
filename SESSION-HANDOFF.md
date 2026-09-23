@@ -8949,3 +8949,31 @@ The other two script-src violations §76 found -- HubSpot's `js-ap1.hsforms.net`
 ### Status
 
 Committed to `dev` (not pushed). Once pushed, expect the violation count on `/adapt-vs-gartner/` to drop from §76's 33 to roughly 31 (the 2 connect-src + ~1 font-src entries -- exact count depends on how many duplicate connect-src calls the page makes). The remaining violations are the already-documented, accepted gaps: the ~37 other un-nonced inline `<script>` tags elsewhere in the template tree, `main-js`'s `wp_localize_script()` extra tag, and the two script-src loads above that strict-dynamic can't reach.
+
+
+---
+
+## §78 -- 2026-09-23: §77 live verification -- correcting §76's violation count (caching + timing artifact)
+
+### What I checked
+
+Confirmed `eea19e8` (§77) is live: `origin/dev` matches local HEAD. First repeated §74/§76's method (fetch the response header, read the console) and got what looked like a stale result -- the CSP header's nonce matched §76's exact old nonce value, and font-src/connect-src still showed the pre-§77 allowlist. A follow-up fetch with a cache-busting query string and `x-cache: MISS` confirmed why: this site's page cache (WP Rocket + nginx, `server: nginx`, `x-cache` header present) captures the full response including the PHP-generated CSP header, and serves that same snapshot -- same nonce and all -- until the cache entry is regenerated. So a plain reload can show yesterday's header. Re-ran with a cache-busting query string to force a genuinely fresh, uncached response and confirmed `eea19e8`'s font-src/connect-src additions are live there.
+
+Then re-checked the console violation count the same way, in a single fresh tab with one cache-busted navigation (earlier attempts that reused a tab across two navigations mixed two different nonces' worth of console output together and gave a misleading partial count -- worth flagging so a future check doesn't repeat it: always use one fresh tab per count).
+
+### Correction: the real count is ~42, not 33 -- and most of it is connect-src, which 'strict-dynamic' never touched
+
+§76 reported 33 violations and stated that "every one of the GTM-injected ad-tech/analytics violations... is gone." That was wrong, or at least incomplete -- most likely because that check's console read happened before GTM's deferred analytics/ad beacons had all fired (they're async and some are delayed), and/or was itself affected by the same caching behavior discovered above. A clean, single fresh-tab load this time shows:
+
+- Script-src: still just 2 host violations (HubSpot's `js-ap1.hsforms.net` loader, plus a newly-observed one -- the theme's own `modernizr-2.7.1.min.js`, evidently served through a WP Rocket delay/defer mechanism that also doesn't inherit nonce trust) plus the same ~15 un-nonced inline-script/event-handler violations already documented as the accepted gap. **This part of §75/§76's finding holds up**: 'strict-dynamic' really did eliminate every *script-src* violation from GTM's dynamically injected vendor scripts (no more doubleclick.net, connect.facebook.net, etc. script loads).
+- Connect-src: roughly 20+ violations, all real GTM-fired beacons that were simply not caught in §76's read -- Google Ads/Analytics (`google.com/ccm`, `google.com/rmkt`, `analytics.google.com`, `google-analytics.com`), LinkedIn Insight, Reddit Pixel, Microsoft Clarity, Hotjar (including a `wss://` WebSocket), and several HubSpot API subdomains (`api-ap1.hubapi.com`, `cta-ap1.hubspot.com`, `forms-ap1.hscollectedforms.net`) beyond the one already allowlisted in §77.
+
+The important distinction: `'strict-dynamic'` is a `script-src`-only keyword in the CSP spec -- it has no equivalent for `connect-src`. So the entire connect-src gap is not fixable the way script-src was; it's back to needing either a large static host allowlist (the exact "GTM will keep adding vendors and the list goes stale" problem §74 originally identified, this time for connect-src instead of script-src) or accepting it as permanent Report-Only noise.
+
+### What I did NOT do
+
+I did not add the 8+ new connect-src hosts this run surfaced. Given §77 was framed as closing "simple, safe" gaps and this is a materially bigger allowlist commitment with the same staleness problem as before, that's a decision worth flagging rather than making unilaterally. No code changes this pass.
+
+### Status
+
+Verification only, no code changes. Correcting the record: §75's `'strict-dynamic'` change is confirmed working exactly as designed for `script-src` (GTM's dynamically injected *scripts* are fully trusted, no allowlist needed). §77's `connect-src`/`font-src` additions are confirmed live. But the *overall* Report-Only violation count is higher than §76 stated (~42, not 33), almost entirely from `connect-src` beacons that neither `'strict-dynamic'` nor §77 touched. Recommend deciding explicitly whether to build out a `connect-src` allowlist for the known GTM analytics/ad vendors, or leave this as accepted Report-Only noise going forward -- happy to do either once directed.
