@@ -364,8 +364,8 @@ function my_enqueue_scripts() {
     // Loading ~2 CDN scripts on the 60+ templates that never touch GSAP was
     // pure waste -- see adapt_page_needs_gsap().
     if ( adapt_page_needs_gsap() ) {
-        wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js', array(), null, true);
-        wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js', array(), null, true);
+        wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js', array(), null, true);
+        wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/ScrollTrigger.min.js', array(), null, true);
         // ScrollMagic + its GSAP plugin (main.js's fixed-scroller /
         // sticky-slider-cards animations) -- split out of main.min.js into
         // its own bundle 2026-09-15, same reasoning as the gsap-js/

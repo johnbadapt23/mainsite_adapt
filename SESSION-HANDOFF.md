@@ -8562,3 +8562,58 @@ Applied on the user's machine via the device bridge, not yet committed (holding 
 2. **PHP component-partial merges** (video/download two-vs-three-column pairs, `_counter-block`/`_repeatable-counter-block`) -- all confirmed live on both sides, the safer/higher-value merge target, but a real refactor (not attempted this section).
 3. **Confirmed-dead cleanup** (single-post dead-file cluster, ~7 likely-dead component files) -- blocked on live-template-assignment confirmation via wp-admin or a reachable REST endpoint, neither available from this environment.
 4. **SCSS-layer duplication** -- audit report recommends deprioritizing, architectural repetition rather than a real problem.
+
+
+---
+
+## §67 -- 2026-09-23: performance pass, items 1-3 -- GSAP CDN bump, lazy-loading audit (no change needed), real staging performance measurement
+
+### Context
+
+User asked to prioritize "optimization and speed performance," framed broadly as "update to latest, everything." Flagged before starting that a literal reading (bumping the gulp build-toolchain majors -- gulp 4->5, glob 10->13, del 6->8, etc.) is dev-tooling only, ships nothing to the browser, and carries real breaking-change risk (glob 13 is ESM-only) for zero site-speed benefit -- deliberately not touched. User then picked a concrete sequence: (1) GSAP/Lottie CDN version bump, (2) image lazy-loading audit, (3) a real performance read on staging instead of guessing from code, (4) open.
+
+### 1. GSAP/Lottie CDN version bump
+
+Checked latest versions via the npm registry (`npm view <pkg> version` -- reachable from the cloud container; direct `curl` to cdnjs/unpkg/staging.adapt.com.au is blocked by the egress proxy from both this environment and the device bridge, 403 on CONNECT):
+- GSAP: pinned at `3.8.0`, latest is `3.15.0`.
+- `@lottiefiles/lottie-player`: pinned at `2.0.12` -- **already latest**, no change.
+- `@lottiefiles/lottie-interactivity`: pinned at `1.6.2` -- **already latest**, no change.
+
+`functions.php`'s `my_enqueue_scripts()` (inside the `adapt_page_needs_gsap()` gate, lines ~367-368) updated: both `gsap-js` and `scrolltrigger-js` CDN URLs bumped `3.8.0` -> `3.15.0` (both must match -- ScrollTrigger is versioned identically to core GSAP on cdnjs). GSAP 3.x has had no breaking API changes across the whole 3.x line since 2020, so this is a minor/patch-line bump, not a major jump; the `gsap`/`ScrollTrigger` globals main.js and the ScrollMagic-GSAP bridge (`animation.gsap.js`) detect are unchanged in shape.
+
+**Verified the new URLs actually resolve** before treating this as done: `fetch()` HEAD requests from a live browser tab to both new cdnjs URLs returned `200 OK` (25,729 bytes / 16,225 bytes) -- not just "should exist," confirmed live.
+
+Diff is a 2-line, 2-character-per-line version-string change in `functions.php`, verified via `git diff` to touch nothing else.
+
+**Not yet visually verified live** -- `adapt_page_needs_gsap()` gates this to exactly 8 templates (`template-benchmarking.php`, `template-comparison.php`, `template-customer-events.php`, `template-ecosystem-advisors.php`, `template-ecosystem-consulting.php`, `template-edge-consulting.php`, `template-evr.php`, `template-partnered-research.php`) -- their GSAP-driven fixed-scroller / sticky-slider-card animations are the one thing worth a visual look after this deploys, since that's the only behavior GSAP actually drives on this site.
+
+### 2. Image lazy-loading audit -- no changes made
+
+Counted `<img>` tags vs `loading="lazy"` coverage across `templates/*.php` (8 files with any gap, 1 missing image each) and `templates/components/*.php` (53 total img tags, 11 missing). Inspected every single "missing" case by hand rather than assuming a gap = a bug:
+
+- `single-event.php`: the one non-lazy `<img>` is a `visibility:hidden; position:absolute; top:-10000px` off-screen preload trick, not a rendered image -- correctly excluded.
+- `template-home-nov.php`: the loading-screen spinner logo, shown before the page paints -- must be eager, correctly excluded.
+- `template-insights.php`, `_video-block*.php`, `_open-positions.php`, `_market-form.php`, `_thank-you-banner-block.php`, `_related-articles-taxonomies*.php`: every remaining gap is a small decorative SVG icon (arrow, play button, podcast badge, corner overlay) 1-5KB each -- `loading="lazy"` has no measurable payload-timing benefit on assets this small, and the codebase already applies it inconsistently-but-harmlessly across repeated copies of the same icon (e.g. the first of several identical podcast-badge icons in `_related-articles-taxonomies.php` lacks it, the rest have it).
+
+**Verdict: no real gap found.** The theme's lazy-loading coverage on actual content/media images is already complete; deliberately-eager exceptions (LCP hero, logo, one off-screen preload trick) are all correct by design. Did not make any edits here -- adding `loading="lazy"` to a handful of 1KB icons would be pure diff noise with no speed benefit, which isn't worth the risk-for-no-reward given the "do not make mistakes" instruction this session.
+
+### 3. Real performance measurement on staging (not code-reading guesses)
+
+Claude in Chrome (the browser extension) wasn't reachable this session ("Browser extension is not connected"); used the built-in browser pane instead. Navigated to `https://staging.adapt.com.au/` and pulled real Navigation/Resource Timing API data via `javascript_tool` (not a full Lighthouse run -- no reachable path to the PageSpeed Insights API or a Lighthouse CLI from either environment, same egress-proxy block noted above):
+
+- TTFB: 807ms, DOMContentLoaded: 2520ms, load event: 3802ms.
+- 31 resources, 689KB total transferred.
+- **Largest single asset: `main-nofooter.min.css` -- 1.81MB uncompressed on disk, 244KB transferred** (compressed via WP Rocket's background-css delivery, non-render-blocking). This is the single sitewide bundle -- every template's compiled SCSS concatenated into one file, shipped on every page. That's a real architectural tradeoff (one bundle cached once across the whole site for repeat visitors, vs. smaller per-template bundles that fragment the cache) rather than an obvious bug -- flagging it as the biggest number on the page, not proposing to split it without discussing the caching tradeoff first.
+- Two self-hosted fonts: `HelveticaNeue.woff2` (113KB) and `HelveticaNeue-Medium.woff2` (47KB), both took ~1-1.2s to load. `font-display: swap` is already set on every `@font-face` rule (`source/scss/global/_fonts.scss`, `_icons.scss`) -- confirmed, no fix needed there. 113KB for one font file is on the larger side; if it isn't already subsetted to just the glyph ranges the site actually uses, subsetting could cut it significantly, but that needs the original font file and a proper glyph-coverage check, not a guess -- not attempted this section.
+- The other slow entries (`ServerRenderer-*.js`, HubSpot's `react-combined.mjs`/`island-runtime.mjs`, `js.hsforms.net`) are third-party embed scripts (the homepage's HubSpot form), outside theme control; `wp-rocket`'s own `lazyload.min.js` and WP core's `jquery.min.js` are plugin/core, not theme code.
+
+### Status
+
+`functions.php`'s GSAP bump applied on the user's machine via the device bridge, committed to `dev` (not yet pushed -- see commit for hash). Items 2 and 3 were investigation only, no files changed.
+
+### Recommended next steps (item 4, not started)
+
+1. Push + deploy the GSAP bump, then visually check the 8 `adapt_page_needs_gsap()` templates' scroll animations.
+2. Decide on the `main-nofooter.min.css` single-bundle-vs-per-template-split tradeoff before touching it -- real savings, but an architectural call, not a quick fix.
+3. Check whether `HelveticaNeue.woff2`/`HelveticaNeue-Medium.woff2` are already glyph-subsetted; if not, subsetting is a solid, low-risk win once the source font file and required glyph ranges are confirmed.
+4. TTFB of 807ms is server/hosting-side, not theme code -- worth a look at PHP opcode caching / object caching / hosting tier if it's a priority, but outside this theme repo's scope.
