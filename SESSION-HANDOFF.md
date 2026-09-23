@@ -8977,3 +8977,33 @@ I did not add the 8+ new connect-src hosts this run surfaced. Given §77 was fra
 ### Status
 
 Verification only, no code changes. Correcting the record: §75's `'strict-dynamic'` change is confirmed working exactly as designed for `script-src` (GTM's dynamically injected *scripts* are fully trusted, no allowlist needed). §77's `connect-src`/`font-src` additions are confirmed live. But the *overall* Report-Only violation count is higher than §76 stated (~42, not 33), almost entirely from `connect-src` beacons that neither `'strict-dynamic'` nor §77 touched. Recommend deciding explicitly whether to build out a `connect-src` allowlist for the known GTM analytics/ad vendors, or leave this as accepted Report-Only noise going forward -- happy to do either once directed.
+
+
+---
+
+## §79 -- 2026-09-23: connect-src allowlist for GTM's ad-tech/analytics beacons
+
+### Context
+
+§78 corrected the record: ~42 CSP Report-Only violations remained after §77, almost all `connect-src` beacons that `'strict-dynamic'` (a `script-src`-only keyword) never touched. User was asked whether to build a `connect-src` allowlist for these known vendors or leave it as accepted noise, and chose to build it now.
+
+### What changed
+
+`functions.php`'s `adapt_csp_report_only_header()` -- `connect-src` now also allows, alongside the existing `js.hsforms.net`/`forms-ap1.hsforms.com`:
+
+- Google Ads / Analytics: `www.google.com`, `stats.g.doubleclick.net`, `ad.doubleclick.net`, `analytics.google.com`, `www.google-analytics.com`
+- LinkedIn Insight: `px.ads.linkedin.com`
+- Reddit Pixel: `pixel-config.reddit.com`, `alb.reddit.com`
+- Microsoft Clarity: `r.clarity.ms`
+- Hotjar: `content.hotjar.io`, `wss://ws.hotjar.com` (its WebSocket connection needs the `wss:` scheme explicitly, not `https:`)
+- HubSpot APIs beyond the form-embed host already added in §77: `api-ap1.hubapi.com`, `cta-ap1.hubspot.com`, `forms-ap1.hscollectedforms.net`
+
+All 14 hosts came directly from §78's live console read on `/adapt-vs-gartner/` -- nothing speculative or guessed from vendor documentation. Same verify-before-write pattern as every other edit this engagement: anchor found exactly once, every new host string asserted present, PHP open/close-tag counts unchanged, `git diff` shows a single clean line change, closing `?>` still last and unique.
+
+### Known limitation (openly accepted, not a defect)
+
+Unlike `script-src`, there's no `'strict-dynamic'`-equivalent for `connect-src` in the CSP spec -- this is a plain static allowlist, so it carries the same maintenance burden §74 originally flagged: if GTM's tag configuration changes (a new pixel, a vendor migrating to a new subdomain, HubSpot's per-portal regional API subdomain changing), new violations will appear here and need a future addition. This is expected and fine under Report-Only; it's the reason this stays Report-Only rather than enforcing.
+
+### Status
+
+Committed to `dev` (not pushed). Once pushed, recommend a fresh single-tab, cache-busted console check on `/adapt-vs-gartner/` (same method §78 used to get an accurate read) to confirm the connect-src violations from these 14 hosts are gone. Remaining, still-accepted gaps after this: the ~15 un-nonced inline `<script>` tags elsewhere in the template tree, `main-js`'s `wp_localize_script()` extra tag, and the 2 script-src loads (`js-ap1.hsforms.net`, `modernizr-2.7.1.min.js`) that don't inherit strict-dynamic trust.

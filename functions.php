@@ -1555,7 +1555,7 @@ function adapt_csp_report_only_header() {
         . "img-src 'self' data: https:; "
         . "font-src 'self' data: https://fonts.gstatic.com; "
         . "frame-src 'self' https://player.vimeo.com https://vimeo.com https://formcrafts.com https://www.googletagmanager.com; "
-        . "connect-src 'self' https://js.hsforms.net https://forms-ap1.hsforms.com;";
+        . "connect-src 'self' https://js.hsforms.net https://forms-ap1.hsforms.com https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://analytics.google.com https://www.google-analytics.com https://px.ads.linkedin.com https://pixel-config.reddit.com https://alb.reddit.com https://r.clarity.ms https://content.hotjar.io wss://ws.hotjar.com https://api-ap1.hubapi.com https://cta-ap1.hubspot.com https://forms-ap1.hscollectedforms.net;";
     header( "Content-Security-Policy-Report-Only: {$csp}" );
 }
 add_action( 'send_headers', 'adapt_csp_report_only_header' );
