@@ -8815,3 +8815,26 @@ User asked for a broad audit pass: accessibility, SEO, a security pass, overall 
 ### Status
 
 Not yet committed -- next step. Will commit `functions.php` + `header.php` together, then ask for the usual push+deploy confirmation before live-verifying the three fixes (response headers, staging noindex, skip-link tab-order) the same way §68/§70 verified their changes.
+
+
+---
+
+## §73 -- 2026-09-23: §72 follow-ups -- nav landmark + CSP (Report-Only)
+
+### Context
+
+User asked to continue on the two items §72 flagged but didn't fix: the missing `<nav>` landmark and a Content-Security-Policy.
+
+### Nav landmark
+
+Added `role="navigation"` plus a distinct `aria-label` to the existing `.main-nav` (desktop) and `.main-nav-mobile` divs in `templates/partials/_mega-main-menu.php` / `_mega-main-menu-mobile.php` -- attribute-only, no tag/class/structure change. Checked before touching anything: `.main-nav` turned out to be the subject of a dedicated build-time script (`source/gulp/fix-float-none-display.js`) written specifically around a past CSS-specificity bug on that exact class, so this got extra caution. Confirmed via grep that both the SCSS and every JS file select `.main-nav`/`.main-nav-mobile` purely by class (never by tag), and that no JS file references either element at all (the menu is CSS-driven, no JS hooks on it) -- so adding two ARIA attributes had nothing to interact with.
+
+### Content-Security-Policy -- Report-Only, not enforcing
+
+Added `Content-Security-Policy-Report-Only` (not `Content-Security-Policy`) -- the Report-Only variant never blocks anything, it only logs violations to the browser console. This is deliberate: building the allowlist by grepping this theme's own PHP for every external script/iframe URL found cdnjs, unpkg, HubSpot (forms + tracking script), GTM, Vimeo, and formcrafts -- but also surfaced a real gap that grep alone can't close: `templates/landing-components/_delegation.php` echoes ACF fields (`formcrafts_code`, `formcrafts_button_code`) whose content editors control from wp-admin, so arbitrary third-party embed HTML/JS could appear there that no static code review can enumerate. Combined with this theme's heavy use of inline `<script>`/`<style>` throughout (GTM's own snippet, this session's own skip-link style), a real enforcing policy needs a nonce/hash strategy, not a static allowlist. Report-Only lets the policy be validated against real traffic before anyone considers promoting it.
+
+Current allowlist (script-src): `'self' 'unsafe-inline' 'unsafe-eval' cdnjs.cloudflare.com unpkg.com js.hsforms.net js.hs-scripts.com www.googletagmanager.com formcrafts.com`. frame-src covers Vimeo, formcrafts, GTM. Full policy is in `functions.php`'s `adapt_csp_report_only_header()`.
+
+### Status
+
+Committed to `dev` (not pushed). Once pushed, violations (if any) will show up in the browser devtools console on any page that triggers one -- no reporting endpoint is configured, so nothing is captured centrally yet. Recommend a spot-check of a few different template types (one with Vimeo, one with a formcrafts embed, one with GSAP) after deploy to look for console CSP violations, same spirit as the font-subsetting glyph check in §70.
