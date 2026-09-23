@@ -1528,6 +1528,29 @@ function adapt_add_nonce_to_enqueued_scripts( $tag, $handle ) {
 }
 add_filter( 'script_loader_tag', 'adapt_add_nonce_to_enqueued_scripts', 10, 2 );
 
+// SECURITY 2026-09-23 (follow-up to S75/S80, closing the known
+// wp_localize_script gap documented since S75): the filter above only
+// covers <script src="..."> tags WordPress renders for
+// wp_enqueue_script()-registered handles. wp_localize_script('main-js',
+// 'ajaxobject', ...) instead prints a separate INLINE <script
+// id="main-js-js-extra"> tag (the localized data itself), via a
+// different WordPress core code path (WP_Scripts::print_extra_script()
+// -> wp_print_inline_script_tag(), added in WP 5.7) that
+// script_loader_tag never touches -- so that one tag has been shipping
+// without a nonce since S75, a real (if narrow -- WordPress-generated,
+// not attacker-influenced) gap in the CSP Report-Only script-src
+// coverage. wp_inline_script_attributes is core's dedicated filter for
+// exactly this: it fires for every inline <script> WordPress prints via
+// the modern API, main-js's ajaxobject data included, with $id carrying
+// the "{handle}-js-extra" identifier.
+function adapt_add_nonce_to_inline_scripts( $attributes, $id ) {
+    if ( ! isset( $attributes['nonce'] ) ) {
+        $attributes['nonce'] = adapt_csp_nonce();
+    }
+    return $attributes;
+}
+add_filter( 'wp_inline_script_attributes', 'adapt_add_nonce_to_inline_scripts', 10, 2 );
+
 // SECURITY 2026-09-23 (follow-up to §72): Content-Security-Policy in
 // REPORT-ONLY mode. Deliberately not enforcing -- the Report-Only variant
 // of this header never blocks anything, it only logs violations to the

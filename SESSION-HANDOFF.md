@@ -9054,3 +9054,26 @@ Narrowed it down one level: `header.php`'s GTM/gtag snippets (lines ~123-132) ar
 ### Status
 
 Not pursuing this further -- it's not productive to keep re-running the same check hoping for a different result. The code-level fix (§79/§80's connect-src hosts, confirmed via direct header fetch in §81) stands on its own regardless of this browser pane's tracker-blocking. If a future session's browser environment does capture live GTM traffic, a fresh single-tab check on this page remains the way to close this out -- otherwise no further action needed.
+
+
+---
+
+## §83 -- 2026-09-23: closing the wp_localize_script nonce gap (main-js's ajaxobject)
+
+### Context
+
+Since S75, `main-js`'s `wp_localize_script('main-js', 'ajaxobject', ...)` call has been a known, explicitly-accepted gap: it prints a separate inline `<script id="main-js-js-extra">` tag via a WordPress core code path (`WP_Scripts::print_extra_script()` -> `wp_print_inline_script_tag()`, added in WP 5.7) that the `script_loader_tag` filter covering every other enqueued script never touches. With the connect-src allowlist work (S79/S80) settled and confirmed, this was the next well-scoped, low-risk item on the accepted-gaps list -- a single, narrow addition, unlike the ~15 scattered inline `<script>`/event-handler instances elsewhere in the template tree (still out of scope: that's a much bigger, multi-file undertaking that would need its own scoping pass).
+
+### What changed
+
+`functions.php`: added `adapt_add_nonce_to_inline_scripts()`, hooked to WordPress core's `wp_inline_script_attributes` filter (the dedicated hook for exactly this -- every inline `<script>` WordPress prints via the modern core API passes through it, `$attributes` array plus an `$id` identifying the tag). Adds the same shared per-request nonce (`adapt_csp_nonce()`) used everywhere else in this CSP effort, only if not already present. This is unconditional and additive -- it doesn't change what any script does, only adds a `nonce="..."` attribute WordPress prints on the tag.
+
+Verify-before-write pattern, same as every PHP edit this engagement: anchor (the existing `script_loader_tag` add_filter line) found exactly once, function name and filter name asserted present the expected number of times, `<?php`/`?>` tag counts unchanged (this addition sits inside the file's single existing PHP block, so unlike header.php's S75 edit there's no new open/close tag), `git diff` shows one clean insertion, closing `?>` still last and unique. No `php -l` available on this device to lint syntax directly -- relied on the structural checks above plus a manual read of the diff (single function, balanced braces, matches the exact shape of the adjacent `adapt_add_nonce_to_enqueued_scripts` function already live and working).
+
+### Assumption made explicit
+
+`wp_inline_script_attributes` requires WP 5.7+ (released March 2021). Did not verify the live WP core version directly (this repo is theme-only, no `wp-includes` present to check), but treating this as safe given the site is clearly on a modern, actively-maintained core (WP Rocket, ACF, current plugin versions throughout `functions.php`) -- if this assumption is wrong, the filter simply never fires (older WP core doesn't have this hook), which fails safe: `ajaxobject`'s inline script keeps rendering exactly as it did before this change, still unnoticed, no functional breakage either way.
+
+### Status
+
+Committed to `dev`, not yet pushed. Once pushed, plan is the same verification method as every prior section: confirm `origin/dev` matches, then a live check on `/adapt-vs-gartner/` (or any page using `main-js`, which is enqueued sitewide) for the `main-js-js-extra` tag's nonce, either via the console violation count or by reading `document.getElementById('main-js-js-extra').nonce` directly against the header's nonce value.
