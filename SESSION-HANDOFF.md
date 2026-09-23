@@ -8732,3 +8732,43 @@ No code changes -- verification only. Closes out the last open item from §69.
 
 1. `main-nofooter.min.css` (1.81MB uncompressed / 244KB transferred, sitewide single bundle) -- architectural call on single-bundle-vs-per-template-split, not started; asked the user to weigh in given the caching tradeoff.
 2. TTFB (807ms) -- server/hosting-side, outside this repo.
+
+
+---
+
+## §71 -- 2026-09-23: main-nofooter.min.css bundle-split -- decision: keep single bundle (§67 item 3, closed)
+
+### The question
+
+§67 flagged `main-nofooter.min.css` (1.81MB uncompressed, sitewide single bundle) as a possible architectural split into per-template bundles, to cut per-page CSS weight. Explicitly held for a decision rather than acted on, since it's a real tradeoff, not a bug. Asked to use my own judgment on this one ("do what you think is best overall").
+
+### What I checked before deciding
+
+Pulled the actual live response headers for the bundle from staging:
+
+- `cache-control: public, max-age=31536000` (1 year)
+- `content-encoding: gzip`, `vary: Accept-Encoding` -- already gzip-compressed in transit (1.81MB decompressed -> ~244KB over the wire, matching the figure measured in §67's Resource Timing pull)
+- Served with a `?ver=` cache-busting query string tied to the build, so a redeploy invalidates it correctly
+
+So the two obvious "quick win" angles (enable compression, add long-lived caching) are both already done. The only lever actually on the table is the split-vs-single-bundle structural question itself.
+
+### Decision: keep the single bundle -- do not split
+
+Reasoning:
+
+1. **This bundle is already cached for a full year after the first request.** For any visitor who views more than one page in a session, the CSS cost is paid exactly once; every subsequent page on the site is free. A per-template split would trade that away -- visitors moving between different template types (e.g. a resource page -> a customer-story page -> another resource page) would pay a new CSS fetch at each template boundary instead of reusing one cached file.
+2. **This site's own structure argues for multi-page sessions being the common case, not the exception.** 748 blog/resource posts, 92 customer-story pages, dozens of "peer insights"/"expert presentations" categories, cross-linked topic and expertise taxonomies -- this is content-marketing/resource-library structure, built for visitors to browse several related pieces per visit, not a single-landing-page funnel. That's exactly the traffic shape where one cached bundle beats several smaller ones.
+3. **The risk side is real and asymmetric.** Splitting a 1.81MB compiled SCSS output that's been flagged in this engagement's own duplication audit as having architectural layer repetition (i.e., it's not cleanly modularized today) means manually tracing which selectors are template-scoped vs. shared/global, and getting that wrong shows up as silent visual regressions (wrong cascade order, a shared rule left out of one bundle) rather than a build error -- exactly the failure mode this environment can't fully regression-test across every template and viewport. A multi-page-cached 244KB-over-the-wire CSS file, once, is not the kind of cost that justifies that risk.
+4. **The actual first-load benefit would be smaller than it looks.** Because it's gzip'd and cached a year, the split would only help the *first* page of a *first* visit in a session -- and even then only by the delta between "full bundle" and "that one template's slice," not the full 244KB, since a meaningful amount of the CSS (layout primitives, typography, header/nav/footer, grid system) is genuinely shared across every template and would stay in a common chunk either way.
+
+Net: for this site's traffic pattern, the single cached bundle is the better architecture, not just the safer one to leave alone. No code change made.
+
+### Status
+
+Decision closed. No further action planned on this item within this engagement.
+
+### Remaining from §67
+
+1. TTFB (807ms) -- server/hosting-side, outside this repo. No further action planned.
+
+All items originally raised in §67's performance pass are now closed (bundle-split: decided to keep as-is; TTFB: out of repo scope; font subsetting: shipped and verified in §69/§70; GSAP bump: shipped and verified in §68; lazy-loading: audited, already complete).
