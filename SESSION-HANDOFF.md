@@ -8838,3 +8838,28 @@ Current allowlist (script-src): `'self' 'unsafe-inline' 'unsafe-eval' cdnjs.clou
 ### Status
 
 Committed to `dev` (not pushed). Once pushed, violations (if any) will show up in the browser devtools console on any page that triggers one -- no reporting endpoint is configured, so nothing is captured centrally yet. Recommend a spot-check of a few different template types (one with Vimeo, one with a formcrafts embed, one with GSAP) after deploy to look for console CSP violations, same spirit as the font-subsetting glyph check in §70.
+
+
+---
+
+## §74 -- 2026-09-23: CSP Report-Only live verification -- confirms the report-only call was right
+
+### What I checked
+
+Confirmed `Content-Security-Policy-Report-Only` is live on staging (checked the actual response header on `/adapt-vs-gartner/`, matches what §73 shipped). Then read the browser console on that page to see what the policy actually catches in real traffic -- the whole point of shipping it as Report-Only instead of guessing.
+
+### Result: 66 violations on a single page load, none of them broke anything
+
+All 66 are logged at `[info]` level with "The policy is report-only, so the violation has been logged but no further action has been taken" -- confirmed separately that the console's actual `[error]` entries (a handful of pre-existing 401/403/404/500s from third-party resources, unrelated to CSP) are the same kind of pre-existing noise already seen and dismissed in §68's GSAP verification, not caused by this policy.
+
+The violations themselves are exactly why this stayed Report-Only rather than shipping as an enforcing header. Google Tag Manager, once it fires on a live page, dynamically injects a whole marketing/analytics stack that is invisible to a static code grep because it's configured in GTM's own admin console, not in this repo: Google Ads conversion tracking and remarketing (`doubleclick.net`, `google.com/rmkt`, `google-analytics.com`), LinkedIn Insight (`snap.licdn.com`, `px.ads.linkedin.com`), Facebook Pixel (`connect.facebook.net`), Bing Ads (`bat.bing.com`), Reddit Pixel, Microsoft Clarity session recording, Hotjar, and HubSpot's actual runtime footprint (a dozen-plus subdomains beyond the two script tags visible in `functions.php`/`header.php` -- `hs-analytics.net`, `hs-banner.com`, `hsadspixel.net`, `hscollectedforms.net`, `hubspot.com`'s interactive-embeds service, `hsforms.com`'s form-submission API, etc.), plus the formcrafts widget's own loader (`app.formcrafts.com/embed.js`) and a Google Fonts request from one of these third-party widgets.
+
+If this had shipped as an enforcing `Content-Security-Policy` instead of Report-Only, it would have broken Google Ads conversion tracking, all the social/ad pixels, Clarity/Hotjar, and much of HubSpot's actual form and analytics functionality -- all real business-critical marketing infrastructure that the static-grep-based allowlist in §73 had no way to see. This is the concrete evidence for why §73 explicitly declined to enforce.
+
+### Recommendation for anyone who wants to pursue this further
+
+A static allowlist isn't the right long-term shape for this site -- GTM will keep adding new vendor tags over time and the list would always be stale. The standard modern fix is a nonce on the GTM container script plus `'strict-dynamic'` in `script-src`: everything GTM itself injects at runtime inherits trust from the nonce, without needing each individual ad-tech vendor enumerated by hand. That's a real, scoped follow-up if the business wants to move toward an enforcing policy -- not something to attempt as a drive-by edit.
+
+### Status
+
+Verification only, no code changes. §73's CSP decision (Report-Only, not enforcing) is validated by real traffic data. No further action planned unless requested.
