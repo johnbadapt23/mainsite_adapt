@@ -8651,3 +8651,54 @@ No code changes this section -- verification only, confirming §67's GSAP bump i
 1. `main-nofooter.min.css` (1.81MB uncompressed / 244KB transferred, sitewide single bundle) -- architectural call on single-bundle-vs-per-template-split, not started.
 2. Font-subsetting check on `HelveticaNeue.woff2`/`HelveticaNeue-Medium.woff2` -- not started, needs the source font file and required glyph ranges confirmed first.
 3. TTFB (807ms) -- server/hosting-side, outside this repo.
+
+
+---
+
+## §69 -- 2026-09-23: font subsetting -- HelveticaNeue/Medium/Bold woff2 (§67 item 2, closed)
+
+### Context
+
+Closing out §67's last open item: `HelveticaNeue.woff2`/`HelveticaNeue-Medium.woff2`/`HelveticaNeue-Bold.woff2` were flagged as unusually large (113KB/47KB/115KB) and worth checking for glyph subsetting. Investigated, proposed a specific subset to the user with real measured numbers and a documented risk (dynamic DB content I can't scan for non-Latin characters), and got explicit go-ahead before touching the committed font files.
+
+### What was actually in the fonts
+
+Inspected via `fontTools` (installed `brotli` via pip to decode woff2 -- not previously available): all three files carried **2,101 codepoints across 153 Unicode ranges** (Regular/Bold) or 1,096/106 (Medium) -- full Latin Extended, Greek, and Cyrillic coverage. No source TTF/OTF exists for HelveticaNeue anywhere in the repo (`source/fonts/` only has TTF/OTF for the theme's *other* fonts -- Apercu, GTWalsheim, GothamNarrow, etc., which `build:fonts`/gulp-fontgen actually processes via `source/fonts/*.{ttf,otf}` -> `assets/fonts/`); HelveticaNeue's `.woff2` files are pre-committed binaries, outside that build pipeline entirely. Confirmed this before touching anything: editing them directly and committing is correct, no build step will regenerate or overwrite them.
+
+### Subset chosen, and how it was checked against real risk
+
+Used `pyftsubset` with a range matching Google Fonts' own "latin + latin-ext" methodology: Basic Latin, Latin-1 Supplement, Latin Extended-A essentials, General Punctuation (covers `wptexturize()`'s curly quotes/em-dashes/ellipsis), Euro/trademark signs, and (defensively) the arrow/math/misc-technical/misc-symbol blocks.
+
+Before trusting "English B2B site, should be safe": scanned every hardcoded string in the theme's own PHP/JSON (`templates/**/*.php`, root `*.php`, `includes/**/*.php`, `acf-json/*.json`) for characters outside the proposed range. Found two real hits -- a play (▶ U+25B6) and pause (⏸ U+23F8) symbol in `single-post.php`'s video-player button. Checked whether the **original, unsubsetted** font even contained those glyphs before assuming a regression -- it didn't. That button already renders via the browser's fallback font today; subsetting changes nothing for it. Nothing else in the theme's own markup fell outside the range.
+
+**Residual, unresolvable-from-here risk, disclosed to the user before proceeding**: this font renders arbitrary WordPress database content (blog posts, resource pages) this environment has no access to (no wp-admin, no reachable REST API). If any live content anywhere on the site uses non-Latin-1 characters the original font supported (Cyrillic, Greek, etc.), subsetting will show a missing-glyph box for just that character on whatever page has it. User approved proceeding with this known, disclosed limitation.
+
+### Applied, with a verify-before-replace pattern
+
+Generated subsets to `/tmp/subset-*` first (never wrote over the real files blind), then ran an explicit verification pass before replacing anything: each new file must be (a) substantially smaller but not empty/corrupted (5KB-to-original-size sanity band), (b) a structurally valid, loadable font via `fontTools`, and (c) still contain a required-character checklist (space, basic Latin, curly apostrophe, en/em-dash, é, €, ™, ©, ®). All three passed before any real file was touched. Only then copied the verified `/tmp` outputs over the real `assets/fonts/*.woff2` paths, and re-verified the same checklist reading back from the actual repo path (not the `/tmp` copy) to rule out a copy-step mistake.
+
+### Results
+
+| File | Before | After | Reduction |
+|---|---:|---:|---:|
+| `HelveticaNeue.woff2` | 113,444 B | 17,536 B | -84.5% |
+| `HelveticaNeue-Medium.woff2` | 46,504 B | 16,340 B | -64.9% |
+| `HelveticaNeue-Bold.woff2` | 114,600 B | 17,712 B | -84.5% |
+| **Total** | **274,548 B** | **51,588 B** | **-81.2% (~223KB saved)** |
+
+`git status`/`git diff --stat` confirmed exactly these 3 binary files changed, nothing else. Ran a `dart-sass` compile of `_fonts.scss` through the theme's normal `--load-path` chain as a final sanity gate (not because any SCSS was touched, but to confirm the build pipeline itself is undisturbed) -- exit 0, 0 errors, all 3 `@font-face` rules present in the compiled output.
+
+**Not touched**: the `.woff` fallback files referenced in `_fonts.scss` (`HelveticaNeue.woff`, `HelveticaNeue-Medium.woff`) -- out of scope for this request (the woff2 files are what's actually loaded; the live Resource Timing data pulled in §67 showed zero `.woff` requests). Noted in passing: `_fonts.scss`'s `.woff` `src` fallback paths for Regular/Medium are already inconsistent with Bold's (missing a `fonts/` path segment -- `'../HelveticaNeue-Medium.woff'` vs `'../fonts/HelveticaNeue-Bold.woff'`), a pre-existing issue unrelated to this change, not fixed here since it wasn't asked for and the woff2-only modern-browser path this site actually serves isn't affected by it.
+
+### Status
+
+Applied on the user's machine via the device bridge, committed to `dev`, not yet pushed.
+
+### Recommended verification after deploy
+
+Spot-check a sample of resource/blog pages for any missing-glyph (tofu) boxes in body text, particularly any content that might include non-English names, quotes, or technical symbols -- this is the one thing that couldn't be verified from this environment (no CMS/DB access). If anything shows a missing glyph, the fix is either widening the subset range (cheap, no re-investigation needed) or reverting this commit.
+
+### Remaining from §67 (still open)
+
+1. `main-nofooter.min.css` (1.81MB uncompressed / 244KB transferred, sitewide single bundle) -- architectural call on single-bundle-vs-per-template-split, not started.
+2. TTFB (807ms) -- server/hosting-side, outside this repo.
