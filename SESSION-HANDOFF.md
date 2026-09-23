@@ -9007,3 +9007,24 @@ Unlike `script-src`, there's no `'strict-dynamic'`-equivalent for `connect-src` 
 ### Status
 
 Committed to `dev` (not pushed). Once pushed, recommend a fresh single-tab, cache-busted console check on `/adapt-vs-gartner/` (same method §78 used to get an accurate read) to confirm the connect-src violations from these 14 hosts are gone. Remaining, still-accepted gaps after this: the ~15 un-nonced inline `<script>` tags elsewhere in the template tree, `main-js`'s `wp_localize_script()` extra tag, and the 2 script-src loads (`js-ap1.hsforms.net`, `modernizr-2.7.1.min.js`) that don't inherit strict-dynamic trust.
+
+
+---
+
+## §80 -- 2026-09-23: §79 live verification + two more connect-src hosts (h.clarity.ms, vc.hotjar.io)
+
+### What I checked
+
+Confirmed `74dfade` (§79) is live: `origin/dev` matches local HEAD, and a fresh single-tab, cache-busted fetch of `/adapt-vs-gartner/` showed the full 14-host `connect-src` allowlist in the actual response header. Read the console the same clean way §78 established (one fresh tab, one navigation, one read).
+
+### Result: ~42 -> 23 total violations, all 14 newly-allowlisted hosts confirmed silent
+
+None of the vendors added in §79 (Google Ads/Analytics, LinkedIn, Reddit, HubSpot APIs, and the `r.clarity.ms`/`content.hotjar.io`/`wss://ws.hotjar.com` hosts) appear in the violation list anymore. What's left: the already-accepted script-src gap (2 host loads -- `js-ap1.hsforms.net`, `modernizr-2.7.1.min.js` -- plus ~15 un-nonced inline scripts/event handlers), and two *new* connect-src violations from subdomains of vendors already approved but not fully enumerated: `vc.hotjar.io` (Hotjar uses more than one collection host) and `h.clarity.ms` (Microsoft Clarity likewise). Since these are the same vendor families the user already approved building an allowlist for, added both rather than treating it as a new decision.
+
+### What changed
+
+`functions.php`'s `connect-src`: added `https://h.clarity.ms` and `https://vc.hotjar.io` alongside the existing `r.clarity.ms`/`content.hotjar.io`. Same verify-before-write pattern: anchor found once, both new hosts asserted present exactly once, PHP tag counts unchanged, `git diff` shows one clean line, closing `?>` still last and unique.
+
+### Status
+
+Committed to `dev` (not pushed). Once pushed and reverified, expect these last 2 connect-src violations gone, leaving only the long-documented, deliberately-out-of-scope gaps: ~15 un-nonced inline `<script>`/event-handler attributes elsewhere in the template tree, `main-js`'s `wp_localize_script()` extra tag, and the 2 script-src loads that don't inherit strict-dynamic trust. No further connect-src work is expected unless a future check turns up something new.
