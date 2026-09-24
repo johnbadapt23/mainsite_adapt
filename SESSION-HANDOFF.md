@@ -9077,3 +9077,18 @@ Verify-before-write pattern, same as every PHP edit this engagement: anchor (the
 ### Status
 
 Committed to `dev`, not yet pushed. Once pushed, plan is the same verification method as every prior section: confirm `origin/dev` matches, then a live check on `/adapt-vs-gartner/` (or any page using `main-js`, which is enqueued sitewide) for the `main-js-js-extra` tag's nonce, either via the console violation count or by reading `document.getElementById('main-js-js-extra').nonce` directly against the header's nonce value.
+
+
+---
+
+## §84 -- 2026-09-24: §83 live verification (confirmed) + a stale git lock cleared
+
+### What I checked
+
+Confirmed `4247ef9` (S83) is live: `origin/dev` matches local HEAD. Before verifying the code, found and cleared a stale `.git/index.lock` in this working copy that was silently blocking `git add`/`git commit` (fetch/status/log all still worked, which is why it went unnoticed until an actual `git add` hit `fatal: Unable to create '.git/index.lock': File exists.`). Removing it needed delete permission on the connected folder (this device_bash environment blocks `rm`/`unlink` by default) -- requested it, user approved, cleared the lock, confirmed `git add` works cleanly again. Noting this here in case a future session hits the same "everything reads fine but commit fails" symptom.
+
+For the actual verification: navigated fresh to `/adapt-vs-gartner/` and read `document.getElementById('main-js-js-extra').nonce` (the DOM IDL property, not `getAttribute('nonce')`, which browsers deliberately blank) directly against the same response's `Content-Security-Policy-Report-Only` header nonce. They matched exactly (`Y472tdMpl6jnMdwzr2gscg==` both places). No console violation referencing `ajaxobject` or `main-js-js-extra` either. This is about as direct a confirmation as this fix can get -- the tag that's been missing its nonce since S75 now carries the correct, live, per-request nonce.
+
+### Status
+
+S83 confirmed working exactly as designed. With this, every script-src-eligible gap this engagement identified as fixable without a much larger undertaking is now closed: enqueued scripts (S75's `script_loader_tag` filter), the 5 hand-nonced raw tags in `header.php` (S75), and now the one `wp_localize_script` inline tag (S83). What remains, unchanged and still explicitly out of scope: the ~15 un-nonced inline `<script>`/event-handler instances scattered across ~20 other template files, and the 2 script-src loads (`js-ap1.hsforms.net`, `modernizr-2.7.1.min.js`) that don't inherit `strict-dynamic` trust because they're loaded by third-party/WP Rocket mechanisms outside this theme's control. Still Report-Only throughout.
