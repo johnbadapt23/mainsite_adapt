@@ -9463,3 +9463,36 @@ Same result: all three preload links promoted to `stylesheet`, zero remaining in
 Both real breaks found and introduced by enforcement (S95) are now confirmed fixed and stable: the HubSpot `connect-src` gap (S96) and the inline-event-handler-attribute misconception, which took two attempts to get right (S96's after-`wp_head()` listener had a load-event race; S97's early capture-phase listener does not, confirmed by the complete absence of "preloaded but not used" warnings this time). No corruption, no new gaps found on either page checked.
 
 Remaining out-of-scope items, unchanged from S96: the Vimeo `media-src` violation on `/adapt-vs-gartner/` (not yet confirmed to be real breakage vs. harmless), and `query-monitor.js` (admin-only debug plugin, not a real-visitor concern). Neither touched this session.
+
+
+---
+
+## §98 -- 2026-09-24: added media-src for Vimeo-hosted <video> elements
+
+Followed up on the `media-src` violation for `player.vimeo.com/progressive_redirect/...`, seen live on `/adapt-vs-gartner/` in S94, again in S96/S97's checks, and again in the console dump the user pasted directly -- deferred each time as "not yet confirmed real breakage vs. harmless" pending investigation.
+
+### What it actually is
+
+Grepped the codebase for `vimeo` and found the real cause: `templates/components/_video-block.php`, `_video-block-two-columns.php`, `_video-block-three-columns.php`, `templates/landing-components/_intro-video-block.php`, `templates/event-components/_video-block.php`, `templates/gtm-components/_three-column-with-video.php`, and `templates/market-buyer-components/_video-block.php` all render a genuine `<video><source src="...">` element, populated directly from an ACF field (`vimeo_code` or `auto_play_video`) that live content has set to a `player.vimeo.com/progressive_redirect/...` file URL at least once. This is a real `<video>` element in the parent document, not an iframe -- `frame-src` (which already allowlists `player.vimeo.com` for the popup-lightbox use of the same host) doesn't cover it. With no `media-src` directive set, `default-src 'self'` was the fallback, and under enforcement that blocks it outright.
+
+### Could not reproduce live this time -- fixed from the code anyway
+
+Re-checked `/adapt-vs-gartner/` in a fresh tab specifically to confirm this before touching anything, following the same discipline as every other fix this engagement. This time: zero occurrences of "vimeo" anywhere in the page's raw HTML, no `<video>` element, nothing in `performance.getEntriesByType('resource')`. The content block simply isn't on that page right now -- ACF content on a live site can change between sessions, and this repo doesn't control it. But the code pattern itself is unambiguous, it's not something a live check timing out could explain away, and it repeats across seven templates, not one -- and the exact violation URL shape has now been seen three separate times (S94, S96/97, and the user's own pasted console). Fixing from the confirmed code finding rather than waiting to catch it live on whatever page happens to use it next.
+
+### Fix
+
+Added one line: `media-src 'self' https://player.vimeo.com;`, directly analogous to the existing `frame-src` entry for the same host. Placed between `font-src` and `frame-src` in the directive ordering.
+
+### A note on this commit's own message
+
+First commit attempt (`718f46d`) had a stray double-quote in the message body (`Added "media-src..."`) -- the exact class of bug documented back when the CI double-quote-in-commit-message break was fixed earlier in this engagement. Caught by the standing `grep -c '"' <message-file>` check *after* committing rather than before (a process slip, not a content one -- the check is supposed to run before every commit). Amended immediately, before anything was pushed, to `3cf727a` with a quote-free message. Flagging this here so it doesn't quietly become "the time the check was skipped and nobody noticed."
+
+### Verification before commit
+
+Verify-before-write, whole-file brace/paren/`<?php`-`?>` balance checked against the pre-edit baseline (zero deltas -- this is a pure single-line addition), `git diff` reviewed and matches intent exactly.
+
+### Status
+
+Committed to `dev` as `3cf727a`, not yet pushed. Not live-verifiable right now since the triggering content block isn't on any page currently checked -- next time it (or any of the other six templates using the same pattern) is confirmed live on a page, re-check that the `<video>` element actually plays rather than being blocked.
+
+`query-monitor.js` (admin-only debug plugin) remains the one deliberately untouched item -- doesn't affect real visitors, not treated as CSP-effort scope.
