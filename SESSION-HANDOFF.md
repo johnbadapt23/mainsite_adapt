@@ -9582,3 +9582,51 @@ Mechanically: add a new gulp build target that compiles each split-off template 
 ### Status
 
 Pure investigation and planning -- **no build pipeline or enqueue code was touched**. Documented here so the next session (or a resumed one) doesn't have to re-derive the scoping analysis. Estimated Phase 1 savings: meaningful (helps every page that ISN'T one of the ~15 templates in the Phase 1 split-off list, at the cost of a small amount of extra requests on the pages that ARE), but not precisely quantified yet -- that needs the actual gulp build to run and the resulting file sizes measured, not just source `.scss` file sizes (minification/compression ratios aren't 1:1 across files).
+
+---
+
+## §102 -- 2026-09-24: §101's Phase 1 plan corrected -- the "zero leaked selectors" check was methodologically flawed, real risk is much higher
+
+Before doing anything else with §101's plan, went back and verified it properly instead of taking the manual spot-check at face value. Glad I did: the "zero leaked selectors" claim for six of the seven Phase 1 files was wrong, not because of new information, but because the check itself was broken.
+
+### What was wrong with §101's check
+
+§101 scanned each template file for "top-level unscoped selectors" using a regex that only matched lines starting with `body.` or a bare `.class`. That's blind to compound selectors like `section.events-title-block.services-introduction` -- a real, unscoped, potentially-shared selector that simply doesn't start with `.` or `body.`. Several files (`_gtm.scss`, `_landing.scss`, `_services.scss`, `_benchmarks-maturity.scss`, `_benchmarking.scss`, `_market-buyer.scss`) use exactly this compound-selector pattern instead of body-class wrapping, and the flawed regex reported "0 unscoped selectors" for all of them -- not because they were clean, but because the check couldn't see their selectors at all.
+
+### The corrected check
+
+Rebuilt this properly with actual tooling instead of eyeballing SCSS source:
+
+1. Compiled the real bundle with `dart-sass` (replicating the project's custom glob-import behavior standalone, since the `sass` CLI doesn't understand it) two ways: the full current `main-nofooter.scss`, and the same file with the 7 Phase-1 candidate template partials removed from the glob.
+2. Diffed the two compiled outputs with `postcss` to get the exact set of selectors that exist only because of the 7 candidate files: 2,115 selectors (of 8,176 total).
+3. For each of those 2,115 selectors, took the rightmost compound (the actual target element -- e.g. for `.foo .bar`, that's `.bar`) and checked it against every literal element+class combination that actually appears in the other 242 non-Phase-1 PHP template files (9,177 classed elements scanned; excluded `_archive/` as confirmed dead/unreferenced code). A compound "leaks" only if its **full class set** (not just one token) co-occurs on some element outside the Phase-1 template family.
+
+This is a real, if still conservative, check -- it doesn't (yet) verify ancestor context for descendant selectors, so it's an upper bound on safety, not a lower one. It errs toward flagging things as risky, not toward false confidence.
+
+### Result: none of the 7 files are actually zero-risk
+
+| File | Real compound-selector leaks found |
+|---|---|
+| `_customer-events.scss` | 205 |
+| `_gtm.scss` | 75 |
+| `_landing.scss` | 73 |
+| `_market-buyer.scss` | 69 |
+| `_benchmarking.scss` | 60 |
+| `_benchmarks-maturity.scss` | 59 |
+| `_services.scss` | 52 |
+
+(A given leaked selector can count toward more than one file if the same compound is independently defined in more than one of them -- e.g. generic-looking rules like `.container`, `.icon-container`, `.column`, `.image-container` that read like template-specific styles but are actually reused all over the site as ad hoc utility classes.)
+
+`_customer-events.scss` was already known to be the risky one (§101 flagged 2 of its own 3 unscoped selectors as leaking). The real finding here is that the other six files, which §101's flawed check called clean, are not clean at all -- they carry 52-75 genuinely shared selectors each. 274 total unique compound-level leaks were found across the 7-file set out of 829 unique rightmost compounds checked (a further 532 individual class-name tokens looked like leaks under a cruder token-only check but turned out to be false alarms once checked as full compounds).
+
+### What this means for the plan
+
+**§101's "Phase 1: split these 7 files, zero/near-zero risk" recommendation does not hold.** A naive per-template split at the SCSS-partial level would, if shipped as originally scoped, silently drop working styles on dozens of components on pages outside each file's own template family. This isn't a reason to abandon performance work on this bundle, but it does mean the splitting approach needs either a lot more surgical work (duplicating every genuinely shared selector into the core bundle -- doable, but a much bigger and slower-to-verify job than "move 7 files") or a different strategy entirely.
+
+### A lower-risk alternative worth considering instead
+
+The codebase already has a working pattern for exactly this problem: `adapt_defer_pagenavi_css()` / `adapt_defer_footer_css()` (see the CSP work, S96-S97) already load non-critical CSS via `<link rel="preload" as="style">` + a swap to `rel="stylesheet"` once loaded, so it doesn't block rendering. The same pattern could be applied to `main-nofooter.min.css` itself: inline a small amount of critical above-the-fold CSS directly in `<head>`, and load the full 228KB bundle non-render-blocking the same way the footer CSS already is. This doesn't reduce the total bytes downloaded per page (unlike splitting), but it removes the file from the critical rendering path entirely, which is what was actually driving the slow `domContentLoaded`/`load` numbers measured in §101. It requires no selector-scoping analysis, no build-pipeline changes beyond what already exists, and carries a small fraction of the regression risk of splitting -- the CSP work already proved out and live-verified this exact mechanism (including catching and fixing its non-bubbling-`load`-event race condition in S97), so it's a known-safe pattern here, not a new one.
+
+### Status
+
+Still pure investigation -- no build pipeline, enqueue logic, or SCSS files touched. This entry supersedes §101's Phase 1 recommendation; §101 itself is left as-written above for the record, but should be read together with this correction, not on its own.
