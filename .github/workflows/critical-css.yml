@@ -1,19 +1,24 @@
 name: Generate Critical CSS
 
-# Generates per-page critical CSS (SESSION-HANDOFF.md S111/S112) and
+# Generates per-page critical CSS (SESSION-HANDOFF.md S111-S114) and
 # uploads it directly to staging's assets/critical/ directory -- NOT
 # through the normal git-tracked deploy.yml pipeline. assets/critical/ is
 # gitignored on purpose (see .gitignore): these are generated artifacts,
-# not source, and routing them through a git commit would mean every
-# content publish on the live site creates an automated commit in this
-# repo's history.
+# not source, and routing them through a git commit would mean every run
+# creates an automated commit in this repo's history.
 #
-# NOT yet wired to a live trigger. The plan (S112) is a WordPress
-# save_post/ACF-options hook firing GitHub's repository_dispatch API, which
-# needs a GitHub PAT stored in wp-config.php on the server -- that PAT does
-# not exist yet, so `repository_dispatch` never fires today. This workflow
-# can be exercised manually right now via workflow_dispatch to validate the
-# generation + upload pieces independently of the still-unbuilt trigger.
+# Runs on a schedule and self-discovers what to generate by querying
+# staging's own WP REST API (see tools/critical-css/generate.js) -- no
+# WordPress-side hook, no webhook, no new credential of any kind. An
+# earlier version of this plan (S112) used a WordPress save_post hook
+# calling a GitHub repository_dispatch API, which needed a GitHub PAT
+# stored in wp-config.php on the server; that was dropped (S114) once a
+# page-count check showed only ~42 pages actually need this (the 17
+# flexible-content templates from S110), small enough that a full regen
+# every run is simpler and safer than incremental change-tracking, and it
+# means an ACF Options-page edit (sitewide header/footer fields) is picked
+# up automatically on the next run instead of needing its own detection
+# hook.
 #
 # Deliberately isolated from the theme's own package.json: this workflow's
 # `npm ci` runs inside tools/critical-css/, which has its own
@@ -23,14 +28,19 @@ name: Generate Critical CSS
 # they don't need.
 
 on:
-  repository_dispatch:
-    types: [critical-css-regen]
+  schedule:
+    # Every 30 minutes. ~42 pages x 2 viewports each run; adjust the
+    # interval based on observed run time and how quickly editors expect
+    # content changes to show up deferred -- the fallback in functions.php
+    # (adapt_get_critical_css_path()) means a page between runs just keeps
+    # loading its CSS fully blocking, never broken, only not-yet-optimized.
+    - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
-      items_json:
-        description: 'JSON array of {"post_id":123,"url":"https://staging.adapt.com.au/..."} objects to generate critical CSS for'
+      payload_json:
+        description: 'Optional: JSON array of {"post_id":123,"url":"https://staging.adapt.com.au/..."} to generate for specific pages instead of the full discovered set (leave blank for a normal full run)'
         type: string
-        required: true
+        required: false
 
 jobs:
   generate-and-deploy:
@@ -51,15 +61,17 @@ jobs:
         working-directory: tools/critical-css
         run: npm ci --no-audit --no-fund
 
-      # repository_dispatch payloads arrive as JSON already (client_payload
-      # is an object, not a string), so it's re-serialized here with
-      # toJSON() to hand the script the same --payload string shape either
-      # way this workflow is triggered.
       - name: Generate critical CSS
         working-directory: tools/critical-css
         env:
-          ITEMS_JSON: ${{ github.event.inputs.items_json || toJSON(github.event.client_payload.items) }}
-        run: node generate.js --payload "$ITEMS_JSON"
+          PAYLOAD_JSON: ${{ github.event.inputs.payload_json }}
+          STAGING_BASE_URL: https://${{ vars.STAGING_PUBLIC_HOST || 'staging.adapt.com.au' }}
+        run: |
+          if [ -n "$PAYLOAD_JSON" ]; then
+            node generate.js --payload "$PAYLOAD_JSON"
+          else
+            node generate.js --base-url "$STAGING_BASE_URL"
+          fi
 
       # sync: 'full' is required here, not 'delta' -- delta mode determines
       # what changed via `git diff` against this repo's git history (see
