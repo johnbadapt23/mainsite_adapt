@@ -510,7 +510,7 @@
                 <div class="titleBlock">
                     <h3 role="heading" aria-level="2">Access the full article.</h3>
                     <div class="portal-link-container">
-                        <a class="std-button red-button portal-link" href="<?php echo get_field( 'portal_url' ); ?>" target="_blank">Article</a>
+                        <a class="std-button red-button portal-link" href="<?php echo esc_url( get_field( 'portal_url' ) ); ?>" target="_blank">Article</a>
                     </div>
                 </div>
                 </div>
