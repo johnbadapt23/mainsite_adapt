@@ -9496,3 +9496,28 @@ Verify-before-write, whole-file brace/paren/`<?php`-`?>` balance checked against
 Committed to `dev` as `3cf727a`, not yet pushed. Not live-verifiable right now since the triggering content block isn't on any page currently checked -- next time it (or any of the other six templates using the same pattern) is confirmed live on a page, re-check that the `<video>` element actually plays rather than being blocked.
 
 `query-monitor.js` (admin-only debug plugin) remains the one deliberately untouched item -- doesn't affect real visitors, not treated as CSP-effort scope.
+
+
+---
+
+## §99 -- 2026-09-24: S98's media-src fix was incomplete -- vimeocdn.com redirect target
+
+Went looking for a live instance of the S98 code finding rather than waiting for one to surface on its own, since the pattern repeats across seven templates. Fetched the sitemaps (page, customer_stories, event -- 143+ URLs) and grepped each page's raw HTML for `progressive_redirect`. Found it immediately on the homepage itself: the exact `<video><source data-autoplay-src="https://player.vimeo.com/progressive_redirect/playback/771856615/...">` element from S98's code trace, sitting about 5350px down the homepage.
+
+### Still blocked after S98
+
+Scrolled it into view (its play is presumably triggered by an IntersectionObserver on `data-autoplay-src`, not the `autoplay` attribute) and waited. The video never actually played: `readyState` stayed `0` (`HAVE_NOTHING`), `networkState` was `3` (`NETWORK_NO_SOURCE`). Console showed why: `https://player.vimeo.com/progressive_redirect/...` issues an HTTP redirect to `https://download-video-ak.vimeocdn.com/v3-1/playback/...` -- Vimeo's actual CDN delivery host for the video bytes, a different domain entirely from `player.vimeo.com`. Chrome checks `media-src` against the post-redirect URL, so S98's allowlist entry (`https://player.vimeo.com` only) never covered the request that actually mattered.
+
+### Fix
+
+Broadened `media-src` to `'self' https://player.vimeo.com https://*.vimeocdn.com` -- a wildcard on the CDN parent domain rather than hardcoding `download-video-ak.vimeocdn.com` specifically, since Akamai-style edge-node naming (the `-ak` suffix) strongly implies other edge hostnames exist under the same parent that a different request/region could just as easily hit.
+
+### Verification before commit
+
+Verify-before-write, whole-file brace/paren/`<?php`-`?>` balance checked against the pre-edit baseline (zero deltas -- single-directive edit), `git diff` reviewed and matches intent exactly.
+
+### Status
+
+Committed to `dev` as `0b911f7`, not yet pushed. Unlike S98, this one IS backed by a genuine live reproduction (found via a sitemap-wide sweep, not a lucky page hit) -- once pushed, re-check the same homepage video: scroll it into view, confirm `readyState` advances past 0 and `currentTime` actually progresses, not just that the console violation disappears (S96's first attempt taught this lesson: a missing console error is not proof of success, functional confirmation is).
+
+`query-monitor.js` remains the one deliberately untouched, admin-only item.
