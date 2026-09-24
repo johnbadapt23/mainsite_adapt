@@ -9630,3 +9630,35 @@ The codebase already has a working pattern for exactly this problem: `adapt_defe
 ### Status
 
 Still pure investigation -- no build pipeline, enqueue logic, or SCSS files touched. This entry supersedes §101's Phase 1 recommendation; §101 itself is left as-written above for the record, but should be read together with this correction, not on its own.
+
+---
+
+## §103 -- 2026-09-24: first real CSS split shipped -- _services.scss, pilot for the plan in §101/§102
+
+Picked up "which of the 7 candidates is actually safe" where §102 left off, using the same objective tooling rather than more manual inspection. Went file by file checking each candidate's TOP-LEVEL wrapper selectors (not individual class tokens) for exclusivity outside their own template -- a stronger, more direct check than §102's rightmost-compound-token method, which (caught mid-investigation this session, before it reached any commit) still had a real gap: it didn't verify that a selector's ANCESTOR context actually exists outside phase-1 pages, only that the innermost class name does, which produced further false positives for any nested rule under an exclusive wrapper (e.g. a generic-looking `.container` nested inside `section.events-title-block.services-introduction` was flagged as a "leak" purely because bare `.container` exists elsewhere on the site -- ignoring that the wrapper itself, which the descendant selector actually requires, does not).
+
+`_services.scss` turned out to be exhaustively verifiable: all 8 of its top-level wrapper selectors (`section.events-title-block.services-introduction`, `section.services-two-column-image-text`, `section.three-column-icon-services`, `section.services-cards-module`, `section.two-column-switch-module`, `section.background-image-stats`, `section.two-column-acordion`, `section.animation-icon-module`) were confirmed, via exact class-token search across all 255 other PHP templates in the repo, to appear nowhere outside `templates/services-components/`. That means the entire file is safe to move as one unit -- no per-selector surgery, no shared content left behind.
+
+### What shipped (`c3335a5`)
+
+- `_services.scss` moved out of the `templates/**/*.scss` glob main-nofooter.scss pulls in, into `source/scss/templates-split/_services.scss`.
+- New `source/scss/template-services.scss` entry point (mixins + variables only, same pattern as the existing `footer-only.scss` split).
+- New `build:styles-template-services` gulp task, added to the existing `build:styles-split` parallel group -- both CI deploy workflows already run that group, so no workflow step needed adding, just the force-include fix below.
+- `functions.php`: conditional enqueue via `is_page_template('template-services.php')`.
+- **Caught before it became a live bug**: both deploy workflows' `sync-delta-includes` lists force-include `main-nofooter.min.css`/`footer.min.css` because CI regenerates but never re-commits them, so a plain git-diff delta sync would silently skip them on source-only commits. The new `template-services.min.css` needed the same treatment or it would never actually reach the server despite building fine in CI -- added to both `deploy.yml` and `deploy-production.yml`.
+
+### Verification before committing
+
+Not manual spot-checking -- compiled the real bundle twice (original full `main-nofooter.scss`, and the same file with `_services.scss` removed from the glob) plus the new standalone `template-services.scss`, and diffed the actual selector sets with postcss: 8,176 selectors in the original, 8,009 in the new core, 167 in the new split file, and (new core) ∪ (new split) = exactly the original 8,176 -- zero dropped, zero added. This is the same kind of objective, compiled-output proof §102 used to disprove §101's original claims, now used positively to prove this specific split is correct rather than just assumed safe.
+
+### One honest caveat
+
+This checkout's local `node_modules` has a pre-existing, unrelated breakage (`vinyl-fs` and `clean-css` both fail to load -- confirmed via `npx gulp build:styles-split` erroring on module resolution before any of this session's changes were involved), so gulp itself won't run here. The committed `assets/css/main-nofooter.min.css` and `assets/css/template-services.min.css` were rebuilt locally via `dart-sass` directly (valid, complete, correct CSS -- confirmed via the selector-diff above) rather than the full pipeline, so they're missing autoprefixer's vendor prefixes and clean-css's cross-rule merging. Don't read their current file sizes as the real before/after number. CI's own build step rebuilds both with the full pipeline on the next deploy, exactly the same relationship `main-nofooter.min.css`/`footer.min.css` already had with CI before this change (per `deploy.yml`'s own comment).
+
+### What's still open
+
+The other 6 candidates from §101/§102 (`_gtm.scss`, `_landing.scss`, `_benchmarks-maturity.scss`, `_benchmarking.scss`, `_market-buyer.scss`, `_customer-events.scss`) need this same top-level-wrapper-exclusivity check before any of them move -- and at least one real complication is already known: `_gtm.scss` contains a `body.template-benchmarking { ... }` block, meaning it has content specific to a *different* candidate template mixed into it. These 7 files aren't independent of each other, so the remaining ones need to go one at a time, each verified the same way and each gated on a clean selector-diff before commit, not moved in a batch.
+
+### Status
+
+Live verification (build actually running in CI, real page load on `staging.adapt.com.au`'s services template, checking the page renders identically) is still needed before this is considered done -- not yet performed, waiting on push + deploy per the usual loop.
