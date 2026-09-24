@@ -9542,3 +9542,43 @@ Learned the lesson from S96 explicitly rather than repeating it: a quiet console
 This closes out the Vimeo `media-src` chain: S98 found the real code pattern but couldn't reproduce it live and only allowlisted `player.vimeo.com`; S99 found it live on the homepage itself via a sitemap sweep and fixed the actual redirect-target host (`*.vimeocdn.com`); this confirms S99's fix works end to end, not just "no error in console" but genuine video playback.
 
 Everything opened in this CSP enforcement effort (S90 investigation through S95 enforcement switch, S96-S99's three rounds of post-enforcement fixes) is now confirmed closed and working live: HubSpot forms (connect-src), inline event handler attributes (moved to capture-phase JS, race-free), and Vimeo video playback (media-src, correct redirect target). The only remaining known, deliberately untouched item is `query-monitor.js` being blocked for logged-in admins with that debug plugin active -- does not affect real visitors, not treated as in scope for this effort.
+
+
+---
+
+## §101 -- 2026-09-24: performance investigation -- CSS bundle splitting plan (not yet implemented)
+
+User asked for a performance/optimization pass. Live-measured the homepage: 146 requests, 622KB transferred, `domContentLoaded` at 3.5s, `load` at 7s. Reviewed `functions.php`'s existing enqueue logic first -- there's already substantial prior perf work here (conditional GSAP/ScrollMagic/lottie loading via `is_page_template()` gating, the footer CSS preload+swap split, block-library CSS dequeue, `filemtime()`-based cache-busting, `font-display: swap` on every `@font-face`, gzip + 1-year cache headers already correctly configured) -- so this wasn't a neglected theme, the easy wins were already taken.
+
+### The finding
+
+`main-nofooter.min.css` -- the main stylesheet, loaded render-blocking on every single page -- is **1.72MB uncompressed, 228KB gzipped over the wire**, and took 853ms to load on its own in the live check. Traced the cause to `source/scss/main-nofooter.scss`: `@import "templates/**/*.scss";` globs in all 29 per-template SCSS partials (2.0MB of source) unconditionally, regardless of which of the 60+ PHP page templates a given request is actually rendering. Every page pays for the CSS of every other page.
+
+Asked the user how to handle it (`AskUserQuestion`) given a full split is a real refactor with regression risk I can't safely finish and verify in one pass. **User chose: scope it as its own effort -- investigate and come back with a plan, don't touch the build pipeline or enqueue logic yet.**
+
+### Investigation: is a clean split actually possible?
+
+Checked each of the 29 `source/scss/templates/_*.scss` files for how they're scoped, since a naive per-file split would be dangerous if files mix page-specific and shared component styles. Two real scoping patterns found:
+
+1. **Body-class-wrapped files (the good case):** most files wrap nearly everything in `body.template-xxx { ... }` (WordPress's default per-template body class), which maps 1:1 to `is_page_template()` checks functions.php already uses elsewhere (e.g. `adapt_page_needs_gsap()`). Checked the top-level (unindented, i.e. NOT nested inside a body-class wrapper) selectors in each file as a proxy for "shared, not template-specific" risk:
+   - `_customer-events.scss` (360KB, the single biggest file): 10,734 lines, spans 7 templates (`template-comparison`, `template-customer-events`, `template-ecosystem-advisors`, `template-ecosystem-consulting`, `template-ecosystem-partners`, `template-evr`, `template-partnered-research`), only 3 top-level unscoped selectors. Checked all 3 (`.column-container`, `.background-true-black`, `.sticky-slider-cards`) against every `.php` file in the repo -- confirmed `.column-container` and `.background-true-black` are also used by `benchmark-components/`, `benchmarks-maturity-components/`, and other component partials well outside this file's 7 templates, so those two classes would need to stay in (or be duplicated into) the shared/core bundle, not move with the rest of the file. `.sticky-slider-cards` only appears in this file's own template family plus `functions.php`'s gating logic -- safe to move.
+   - `_events.scss` (232KB, `body.about-us`), `_registrations.scss` (148KB, `body.registration`), `_customer-stories.scss` (124KB, 2 body classes), `_post.scss` (108KB, `body.post`) -- all similarly clean (1-4 top-level selectors each, not yet individually checked the way `_customer-events.scss`'s 3 were).
+   - `_gtm.scss` (60KB), `_landing.scss` (52KB), `_services.scss` (48KB, though scoped via component selectors like `section.events-title-block.services-introduction` rather than a body class -- same idea, different wrapper), `_benchmarks-maturity.scss` (40KB), `_benchmarking.scss` (36KB), `_market-buyer.scss` (32KB) -- zero top-level unscoped selectors detected, the cleanest candidates.
+
+2. **Files with no clean scoping (the risky case):**
+   - `_flexible.scss` (292KB, the *second*-biggest file): only shows `body.template-home` / `body.template-partnered-research` at the body level, but this is misleading -- it's the SCSS for the ACF flexible-content block system, and per `functions.php`'s own `adapt_page_needs_gsap()`/`adapt_page_needs_lottie()` field-by-template tables, those flexible-content layouts (`introduction_with_animation`, `values_full_screen_blocks`, etc.) are shared across **6 different top-level templates** (`template-flexible.php`, `template-home.php`, `template-gtm.php`, `template-market-buyer.php`, `template-services.php`, `template-thank-you-new.php`). Its component-level classes (`.home-component-progress` and similar) are almost certainly reused broadly and not something the simple body-class check can see. High complexity, likely needs to stay in the core bundle rather than be split off, or needs the most careful selector-by-selector review of anything here.
+   - `_resources-types.scss` (172KB, the *fourth*-biggest): zero body-class scoping detected at all. Spot-checked its actual selectors (`.subscribe-sidebar-form`, `.icon-container`) -- generic-sounding names that read like shared sidebar/component widgets, not page-specific styles. Not a safe phase-1 candidate without a proper usage audit.
+
+### Recommended phased plan (not started)
+
+**Phase 1 (lowest risk, meaningful win):** split off the cleanly body-class-scoped files with zero or fully-accounted-for unscoped leakage -- starting with `_gtm.scss`, `_landing.scss`, `_services.scss`, `_benchmarks-maturity.scss`, `_benchmarking.scss`, `_market-buyer.scss` (zero leaked selectors each) plus `_customer-events.scss` (leaked selectors identified and can be duplicated into core). Combined, these are roughly 628KB of the 2.0MB template source -- a meaningful first cut without touching the two hardest files.
+
+Mechanically: add a new gulp build target that compiles each split-off template file (plus its own template-specific `templates/*-components/` partials, not yet inventoried) into its own `.min.css`, enqueue each conditionally via `is_page_template()` in `functions.php` (same pattern as `adapt_page_needs_gsap()`), and verify with a selector-set diff between old-bundle and new-(core+split) output before any live check -- catches an accidentally-dropped selector before a human ever has to spot it visually. Live-verify each affected template afterward the same way S94-S100 verified CSP changes: real page load, real DOM/style checks, not just "no console error."
+
+**Phase 2 (harder, do later if Phase 1 goes well):** `_events.scss`, `_registrations.scss`, `_customer-stories.scss`, `_post.scss` -- need the same per-file "check every top-level selector against the whole repo" treatment `_customer-events.scss` already got here, not yet done for these four.
+
+**Deferred / needs its own investigation:** `_flexible.scss` and `_resources-types.scss` -- both likely need to stay in the core bundle, or need a proper usage audit (which components/classes are genuinely template-exclusive vs. shared) before anything is moved.
+
+### Status
+
+Pure investigation and planning -- **no build pipeline or enqueue code was touched**. Documented here so the next session (or a resumed one) doesn't have to re-derive the scoping analysis. Estimated Phase 1 savings: meaningful (helps every page that ISN'T one of the ~15 templates in the Phase 1 split-off list, at the cost of a small amount of extra requests on the pages that ARE), but not precisely quantified yet -- that needs the actual gulp build to run and the resulting file sizes measured, not just source `.scss` file sizes (minification/compression ratios aren't 1:1 across files).
