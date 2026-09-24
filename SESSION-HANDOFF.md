@@ -9720,3 +9720,23 @@ Treat `_services.scss` as the one confirmed, low-risk win from this investigatio
 ### Status
 
 No further split attempted or committed this round. `_market-buyer.scss` and the other 5 candidates are untouched.
+
+---
+
+## §106 -- 2026-09-24: S103 confirmed live with real production numbers, and a correction to the S102 defer recommendation before it was ever built
+
+### S103 live-verified, homepage
+
+Checked staging directly (fresh load, no cache): `main-nofooter.min.css` is now 1,685,953 bytes decompressed / 228,562 bytes over the wire, down from 1,810,391 bytes decompressed before S103 -- a genuine ~124KB (6.9%) reduction in what every non-services, non-market-buyer page decompresses and parses, and about 10.7KB less over the wire per page (gzip already captured a lot of the same redundancy, so the wire-size win is smaller in proportion than the raw-byte win, but it's real). `template-services.min.css` loads separately at 36,800 bytes decompressed / 5,282 bytes gzipped -- confirms the CI build picked up the new `build:styles-template-services` task correctly and produced a real, properly-minified file, not just my local dart-sass placeholder. Zero console errors on the homepage load.
+
+### Correcting my own S102 recommendation before building it
+
+Went to implement S102's "defer the whole main-nofooter.min.css the same way footer.min.css is deferred" suggestion next. Stopped before writing any code: that pattern is safe for `footer.min.css` specifically because the footer is *structurally guaranteed* to never be in the initial viewport (WordPress always renders it last), so deferring it can never cause a visible flash. `main-nofooter.min.css` is different -- it's what styles the header and every page's hero content, both visible immediately on load. Deferring the *entire* file the same way would mean every page renders unstyled HTML (no layout, no nav styling, raw text) for however long the deferred stylesheet takes to arrive -- a real, visible regression on every single page load, not a theoretical one. S102's write-up mentioned "inline a small amount of critical above-the-fold CSS" as part of the idea but never actually scoped what that critical subset would be or how big it is -- that gap makes the recommendation as written unsafe to implement directly, and I'm flagging it now rather than after building it.
+
+### Where this leaves the performance effort
+
+- `_services.scss` (S103) is the one confirmed, low-risk, shipped, and now live-verified win from the whole bundle-splitting investigation.
+- The other 6 candidate files are not safely splittable with the tooling used here (S105) -- would need either declaration-level diffing of every shared selector or real visual regression testing.
+- The defer-the-whole-bundle idea (S102) needs proper critical-CSS extraction (a genuinely separate, nontrivial sub-effort -- determining what's actually above-the-fold per template, extracting and inlining just that, and defer-loading the rest) before it's safe to build, not a straightforward extension of the existing footer pattern.
+
+None of this was implemented -- this entry is verification of what already shipped, plus a course-correction caught before it became a mistake, not new code.
