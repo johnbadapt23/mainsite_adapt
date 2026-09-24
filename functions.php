@@ -1602,16 +1602,40 @@ add_filter( 'wp_inline_script_attributes', 'adapt_add_nonce_to_inline_scripts', 
 // this technique (the same one WordPress CSP-nonce plugins take on), judged
 // acceptable against the alternative of ~40 individual, drift-prone
 // per-field patches.
+// SECURITY 2026-09-24 (S92 fix): the first version of this (manual
+// ob_start() on template_redirect, manual ob_get_clean() on shutdown at
+// PHP_INT_MAX) shipped and deployed but, live-checked, never actually
+// modified anything -- the original un-nonced HTML was passing straight
+// through untouched. Root cause: that approach assumes MY 'shutdown'
+// callback is the one that ends up popping MY buffer off PHP's output-
+// buffer stack, which depends on hook-priority ordering against whatever
+// else on the site also touches output buffering (a caching or
+// minification plugin doing its own full-page buffering is the likely
+// culprit, though it can't be confirmed without access to what else is
+// active) -- if anything else's shutdown-hooked code calls
+// ob_get_clean()/ob_end_flush() on the stack before this theme's handler
+// runs, it pops this buffer's raw content without ever invoking the nonce
+// regex, and this handler's own ob_get_clean() afterward just gets back
+// `false` (no buffer left), which the old code silently treated as a
+// no-op. Exactly what was observed live.
+//
+// Fixed by using PHP's callback form of ob_start() instead of manually
+// pairing start/end hooks: ob_start( $callback ) attaches the callback TO
+// the buffer itself, so it fires automatically whenever that buffer is
+// flushed by ANYONE -- WordPress core's own end-of-request
+// wp_ob_end_flush_all() (hooked to 'shutdown' specifically to flush any
+// buffer a theme/plugin left open), another plugin's ob_end_flush(), or
+// this buffer's own natural end -- removing the dependency on hook-
+// priority ordering against code this repo has no visibility into.
 function adapt_start_script_nonce_buffer() {
-    ob_start();
+    ob_start( 'adapt_apply_script_nonce_buffer' );
 }
-function adapt_end_script_nonce_buffer() {
-    $html = ob_get_clean();
-    if ( false === $html ) {
-        return;
+function adapt_apply_script_nonce_buffer( $html ) {
+    if ( '' === $html ) {
+        return $html;
     }
     $nonce = esc_attr( adapt_csp_nonce() );
-    echo preg_replace_callback(
+    return preg_replace_callback(
         '/<script(?![^>]*\bnonce=)([^>]*)>/i',
         function ( $matches ) use ( $nonce ) {
             return '<script nonce="' . $nonce . '"' . $matches[1] . '>';
@@ -1619,25 +1643,7 @@ function adapt_end_script_nonce_buffer() {
         $html
     );
 }
-// 'shutdown' fires on every WordPress request (admin-ajax, REST, wp-admin
-// included), but 'template_redirect' -- where the buffer actually starts,
-// above -- only fires on an actual front-end template load. Without this
-// guard, a request that never reached template_redirect would still hit
-// the shutdown handler, which would call ob_get_clean() with no buffer of
-// its own on the stack: at best a silent no-op, at worst popping and
-// rewriting some unrelated buffer another plugin started for its own
-// purposes. did_action() reliably reports whether template_redirect has
-// already fired earlier in this same request, so this makes the end
-// handler a no-op on every request type where the buffer was never
-// started.
-function adapt_maybe_end_script_nonce_buffer() {
-    if ( ! did_action( 'template_redirect' ) ) {
-        return;
-    }
-    adapt_end_script_nonce_buffer();
-}
 add_action( 'template_redirect', 'adapt_start_script_nonce_buffer', 0 );
-add_action( 'shutdown', 'adapt_maybe_end_script_nonce_buffer', PHP_INT_MAX );
 
 function adapt_csp_report_only_header() {
     $csp = "default-src 'self'; "

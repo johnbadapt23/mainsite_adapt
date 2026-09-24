@@ -9335,3 +9335,24 @@ Whole-file brace/paren/`<?php`-`?>` balance deltas checked against the pre-edit 
 ### Status
 
 Committed to `dev`, not yet pushed. This is a bigger, riskier change than anything else in this whole engagement -- it touches every page's full output, not a single file or a scoped pair of hooks -- so it needs its own careful live verification pass before anything else happens: confirm the HubSpot embed on `/adapt-vs-gartner/` is now nonced and the form still renders correctly, confirm nothing on any checked page looks visually or functionally different (the regex should be a no-op everywhere except adding attributes to un-nonced `<script>` tags, but this is exactly the kind of change where "should be a no-op" needs to be proven, not assumed), and only after that comes back clean does flipping to an enforcing header become worth reconsidering.
+
+
+---
+
+## §93 -- 2026-09-24: S92's buffer shipped but did nothing live -- fixed with PHP's callback-form ob_start()
+
+Live-verified S92 properly this time (fresh tab, single-page-load console read, confirmed single nonce value throughout -- no repeat of the stale-tab mistake from the previous check). Result: **the fix didn't work.** `cookie-notice/front.min.js`, `download-monitor/dlm-xhr.min.js`, and the `js-ap1.hsforms.net` embed were all still live-violating script-src, completely unchanged from before S91/S92 -- confirmed via direct DOM inspection (`hasNonceAttr: false` on all three). The 30 scripts nonced by the *existing* filters (`script_loader_tag`, `wp_inline_script_attributes`, hand-nonced tags) were all still correctly nonced, so nothing broke -- the new buffer just never did anything.
+
+### Root cause
+
+S92's approach paired two separate hooks: `ob_start()` on `template_redirect` (priority 0) and a manual `ob_get_clean()` + regex on `shutdown` (priority `PHP_INT_MAX`). This implicitly assumes *this theme's* shutdown callback is the one that ends up popping this buffer off PHP's output-buffer stack -- which depends on hook-priority ordering against whatever else on the site also does output buffering. If anything else (a caching or minification plugin doing its own full-page buffering is the likely culprit, though nothing definitive was confirmed without access to what else is active) calls `ob_get_clean()`/`ob_end_flush()` on the stack before this theme's handler runs, it pops this buffer's raw, un-processed content first -- and this handler's own `ob_get_clean()` afterward just gets back `false` (no buffer left), which the code correctly, but silently, treated as a no-op. Exactly what was observed live: the page rendered fine, just with none of the intended nonce injection.
+
+### Fix
+
+Replaced the manual start/end hook pairing with PHP's callback form of `ob_start()`: `ob_start( 'adapt_apply_script_nonce_buffer' )`. A callback attached this way fires automatically whenever *that specific buffer* is flushed, by anyone -- WordPress core's own end-of-request `wp_ob_end_flush_all()` (hooked to `shutdown` specifically to flush any buffer a theme/plugin left open), another plugin's own `ob_end_flush()`, or the buffer's natural end -- which removes the dependency on hook-priority ordering against code this repo has no visibility into. Only one hook needed now (`template_redirect`, priority 0, to start it); the `shutdown`/`did_action()` guard from S92 is gone since there's no longer a second hook to guard.
+
+Verify-before-write and whole-file brace/paren/`<?php`-`?>` balance checks as always; `git diff` reviewed in full and matches intent. Same `php -l` unavailability as S91/S92 (no PHP binary on this device).
+
+### Status
+
+Committed to `dev`, not yet pushed. This is the second attempt at the same mechanism, so it gets the same "prove it, don't assume it" treatment as the first: push, then live-verify in a fresh tab that `cookie-notice`, `download-monitor`, and the HubSpot embed are actually nonced this time, before going anywhere near reconsidering enforcement.
