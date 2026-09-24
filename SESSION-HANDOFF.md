@@ -10006,3 +10006,47 @@ Against that, the S103 split has a real, live-confirmed cost/benefit (S106): non
 ### Starting the in-theme audit
 
 New direction (S115): stay within the theme, find and remove redundant files/code, modernize, combine genuinely duplicate assets, and bring the codebase in line with WordPress Coding Standards where practical. Beginning with a redundant-files sweep.
+
+---
+
+## §117 -- 2026-09-24: redundant-files audit -- ~13MB and 1,166 files removed, all confirmed dead against the actual build manifest
+
+In-theme cleanup, per the new direction (S115). Every removal below was verified against `source/gulp/paths.js` (the build's own file list) and/or a repo-wide reference search before deleting anything -- nothing was removed on assumption.
+
+### Accidental/leftover files (not theme code at all)
+
+- **`Claude outputs/`** -- a directory of session-summary markdown and a duplicate old `deploy.yml` snapshot, clearly a prior AI session's local scratch output committed to the repo by mistake. Not referenced anywhere, not excluded from the SFTP deploy sync-delta-excludes list either -- this was being uploaded to the live server on every deploy. Removed.
+- **`assets/css/main.min.css`** (1.7MB) -- already established as a dead rollback artifact in an earlier session (`functions.php` never enqueues it, and `build:styles` -- the only task that regenerates it -- was already dropped from `deploy.yml` on 2026-09-15). It was simply never actually deleted from git until now.
+
+### Dead "-old"/"-march"/"-oldie" files (zero references confirmed via repo-wide grep)
+
+`templates/template-events-old.php`, `templates/old-template-resource-type.php`, `templates/benchmark-components/_old-sticky-cards.php`, `templates/components/_related-articles-grid-block-old.php`, `templates/components/_related-articles-taxonomies-old.php`, `templates/components/_related-articles-grid-block-march.php`, `source/scss/templates/_thank-you-old.scss`, `source/js/includes/_maps-oldie.js`.
+
+### 4 duplicate SVG images (zero references)
+
+`linked-in-grey copy.svg`, `linked-in-red copy.svg`, `Linkedin copy.svg`, `linkedin-black copy.svg`.
+
+### 8 dead source/js includes (confirmed via the build config, not just grep)
+
+`source/js/main.js` only pulls in other files via gulp-file-include's `@@include()` directive, and it has exactly ONE such include (`includes/_maps.js`). Every other file in `source/js/includes/` -- `_ajax.js`, `_carousel.js`, `_common.js`, `_expanding-blocks.js`, `_functions.js`, `_isotope.js`, `_slider.js` (plus `_maps-oldie.js` above) -- is never pulled into the build at all. Confirmed against the compiled bundle too: `grep -c "flexslider" assets/js/main.min.js` and the same for `owlCarousel` both return 0 -- these files' code has never shipped to a live page. Left these in place for now (removing them needs its own pass since some contain real, possibly-still-wanted logic that was simply never wired up -- flagging as a candidate for a follow-up, not deleting blind).
+
+### 15 entirely unused vendor directories (~11MB) -- confirmed against `paths.js` and cross-checked for any other reference
+
+`source/components/{FlexSlider, OwlCarousel2, desandro-matches-selector, ev-emitter, fizzy-ui-utils, fullpage.js, get-size, gsap, jQuery-viewport-checker, jquery, lightbox2, macy, masonry-layout, outlayer, packery}`. None of these paths appear anywhere in `paths.js`'s `scripts`/`scriptsScrollmagic`/`styles` arrays -- the single source of truth for what gulp actually builds -- and a repo-wide search (`templates/`, `includes/`, `functions.php`, `header.php`, `footer.php`, `gulpfile.js`, `source/gulp/`) turned up no other reference either. `gsap` specifically is loaded from CDN in `functions.php` (`adapt_page_needs_gsap()`), not from this vendored copy; `jquery` specifically is WordPress core's own bundled jQuery that `main-js` already depends on (documented in an earlier session) -- the vendored copy was never loaded at all.
+
+### 13 used vendor directories trimmed to just their built output (~13.5MB freed)
+
+`select2`, `magnific-popup`, `isotope`, `slick-carousel`, `jquery.scrollTo`, `jquery.localScroll`, `aos`, `js-cookie`, `jquery.scrollbar-master`, `perfect-scrollbar`, `matchHeight`, `scrollmagic`, `hover` were each carrying their FULL upstream repo -- tests, docs, demo pages, build configs (Gruntfile.js, karma.conf.js, webpack.config.js), unpackaged source, alternate minified/unminified variants -- when `paths.js` only ever references one or two specific built files from each. Trimmed each down to exactly its referenced file(s) plus its license file, e.g. `select2/` (2.1MB -> 732KB, kept `dist/` + `LICENSE.md`), `hover/` (1.3MB -> kept `css/` + `license.txt` only), `scrollmagic/` (kept only the `uncompressed/` build that's actually referenced, dropped the unused `minified/` one).
+
+**Verification**: every single literal file path in `paths.js`'s `scripts`, `scriptsScrollmagic`, and `styles` arrays was checked to still exist after trimming (23 paths, all confirmed present). Checked every kept CSS file (`aos.css`, `magnific-popup.css`, `select2.css`, `perfect-scrollbar.css`, `jquery.scrollbar.css`, `slick.css`, `slick-theme.css`, `hover-min.css`) for relative `url()` references to anything that might have been removed -- `slick-theme.css` references `../fonts/*` and `./ajax-loader.gif`, both kept alongside it; everything else uses only inline base64 data URIs or no `url()` at all.
+
+Could not run the actual `gulp build:scripts`/`build:styles-split` tasks locally to double-verify -- the local gulp CLI is broken independent of this change (pre-existing `vinyl-fs`/`Cannot find module './lib/src'` error, documented in an earlier session, confirmed still present and unrelated to anything touched here). Since no referenced file's *contents* were touched, only unreferenced sibling files removed, this needs the usual "confirm deploy, then check staging" pass rather than a from-scratch functional risk -- but flagging that the actual CI build (which does work, unlike this local checkout) is the first real test of this.
+
+### Net result
+
+~13MB+ removed from the repository (main.min.css, 15 fully-dead vendor dirs, 13 trimmed vendor dirs, plus the small stuff), 1,166 files deleted, zero effect on any file the live build actually references. Nothing here changes site behavior -- it only removes things that were never shipped or already confirmed dead -- so the live-verification bar is "the site still looks and works exactly the same," not a new feature to check.
+
+### Not done yet (flagged, not forgotten)
+
+- The 7 dead `source/js/includes/*.js` files (beyond `_maps-oldie.js`) -- left in place pending a closer read of what they contain, in case any represents wanted-but-disconnected functionality rather than pure cruft.
+- Whether `isotope`, `jquery.scrollTo`, `jquery.localScroll`, `js-cookie`, and `jquery.scrollbar-master` are actually *called* anywhere despite being built into the live bundle -- `main.js` itself never calls their APIs (checked), and the files that would have called some of them (`_isotope.js`) are among the dead includes above. If confirmed unused at runtime too, removing them from `paths.js`'s `scripts`/`styles` arrays would shrink the live, shipped `main.min.css`/`main.min.js` further -- a real "optimize for speed" win, not just a repo-cleanliness one. Needs its own careful pass (checking inline `<script>` blocks across all PHP templates, not just `main.js`) before touching the build config.
