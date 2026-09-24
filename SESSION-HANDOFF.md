@@ -9440,3 +9440,26 @@ Verify-before-write (exact byte-string match assertions, single-occurrence check
 Committed to `dev` as `190b9a7`, not yet pushed. **Not yet live-verified** -- unlike every other fix this whole CSP effort, this one hasn't been confirmed working against a real deploy yet, because it was made in direct response to the user's live report rather than after its own push/deploy/verify cycle. Once pushed and deployed, still needs: (1) confirm HubSpot forms actually render and submit on the homepage and on `/adapt-vs-gartner/`; (2) confirm the three preload links actually flip to `rel="stylesheet"` (check the DOM `.rel` property, not just absence of console errors) on a fresh page load; (3) confirm the search Clear button actually clears the search fields when clicked; (4) re-check console for the exact violation strings quoted above to confirm they're gone, not just reduced.
 
 Also noted but **not yet investigated or fixed**, out of scope for this pass: a `media-src` violation on `/adapt-vs-gartner/` for `https://player.vimeo.com/progressive_redirect/...` (no `media-src` directive is set, so it falls back to `default-src 'self'`) -- unclear yet whether this is a real break (an actual `<video>` element pulling the file directly) or Vimeo's player doing something harmless inside its own sandboxed iframe that doesn't actually need `media-src` on the parent page. And a `query-monitor.js` script-src block, which only affects logged-in admins with that debug plugin active, not real visitors. Both should get the same "confirm before fixing" treatment as everything else in this effort, not a reflexive policy loosening.
+
+
+---
+
+## §97 -- 2026-09-24: S97 confirmed working live -- both S96 breaks genuinely fixed
+
+Confirmed `0bc0ec0` (S97) is live: `origin/dev` matched local HEAD. Live-checked two pages in a fresh tab each.
+
+### Homepage
+- `connect-src` fix holds: the HubSpot v4 form (`data-form-id="fb9276c9-f87b-4831-9afe-fe009b819497"`) now renders as a real `<form>` element with 4 child fields -- the exact form whose `render-definition` request was being blocked before S96.
+- All three preload links (skelet-icons, wp-pagenavi, footer-styles) show `rel="stylesheet"`, not stuck on `rel="preload"` -- the S97 capture-phase fix works, no "preloaded but not used" warnings in the console this time (there were 15 of them before S97, both in my own check and in the console dump the user pasted live).
+- Zero remaining `onclick`/`onload`/etc. attributes anywhere in the DOM.
+- Functional test, not just attribute presence: set both search fields to a value, added the `active` class, called `.click()` on the actual `<a class="search-clear">` element (not the JS function directly) -- both fields cleared and the class was removed, proving the delegated `addEventListener` listener genuinely fires on a real click.
+- Zero console errors except the already-known, out-of-scope Vimeo `media-src` one.
+
+### `/adapt-vs-gartner/`
+Same result: all three preload links promoted to `stylesheet`, zero remaining inline handlers, zero new console errors.
+
+### Status
+
+Both real breaks found and introduced by enforcement (S95) are now confirmed fixed and stable: the HubSpot `connect-src` gap (S96) and the inline-event-handler-attribute misconception, which took two attempts to get right (S96's after-`wp_head()` listener had a load-event race; S97's early capture-phase listener does not, confirmed by the complete absence of "preloaded but not used" warnings this time). No corruption, no new gaps found on either page checked.
+
+Remaining out-of-scope items, unchanged from S96: the Vimeo `media-src` violation on `/adapt-vs-gartner/` (not yet confirmed to be real breakage vs. harmless), and `query-monitor.js` (admin-only debug plugin, not a real-visitor concern). Neither touched this session.
