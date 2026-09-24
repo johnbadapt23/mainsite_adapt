@@ -10067,3 +10067,36 @@ Closes out S115-S117. The critical-CSS detour is fully reverted and the redundan
 ### Next
 
 Per S117's flagged follow-ups: a closer read of the 7 remaining dead `source/js/includes/*.js` files, and checking whether `isotope`/`jquery.scrollTo`/`jquery.localScroll`/`js-cookie`/`jquery.scrollbar-master` are ever actually called at runtime (beyond the dead includes) -- if not, trimming them from `paths.js` would shrink the live bundle further, a real speed win rather than just repo cleanliness.
+
+---
+
+## §119 -- 2026-09-24: removed 5 vendor libraries and 7 dead JS files that were shipping but never called -- a real live-bundle reduction, not just repo cleanliness
+
+Closing out S117's two flagged follow-ups.
+
+### The 7 dead `source/js/includes/*.js` files -- read closely, then removed
+
+`_ajax.js`, `_carousel.js`, `_common.js`, `_expanding-blocks.js`, `_functions.js`, `_isotope.js`, `_slider.js` (the 7 remaining after `_maps-oldie.js` was already removed in S117). Each binds to a `[data-*]` attribute selector (`[data-pagination]`, `[data-carousel]`, `[data-toggle]`/`[data-close]`, `[data-blocks]`, generic helpers, `[data-isotope]`/`[data-filter] a`, `[data-slider]`). Checked whether any of those attributes still exist in current templates before removing:
+
+- `data-pagination` exists in exactly one place, `templates/partials/_pagination.php` -- but that partial itself is never called by `get_template_part()` anywhere in the theme. The markup that would trigger `_ajax.js` is itself unreachable.
+- `data-carousel`, `data-toggle`, `data-close`, `data-blocks`, `data-isotope`, `data-slider` -- zero matches anywhere in current templates.
+- `data-filter` does exist (3 places in `functions.php`, rendering speaker-item cards) -- but only as an item-level tagging attribute, not the `[data-filter] a` clickable filter-button wrapper `_isotope.js`'s handler actually binds to. No such wrapper exists in any template. This looks like the remnant of a since-removed speaker-filtering feature: the filter buttons were removed from the templates at some point, but the item-level attribute was left behind. Not a live bug (there's no missing button for a user to click), just leftover markup from a retired feature -- left as-is since removing it is a separate, lower-value change to `functions.php`'s speaker-rendering code.
+- `getParameterByName`/`escapeHtml` (`_functions.js`) and the `data-*` selectors above: confirmed none of these names or attributes appear anywhere in `main.js` either, so nothing already duplicates this logic -- it's just gone, not superseded.
+
+All 7 confirmed to have no reachable trigger in the current theme. Removed.
+
+### 5 vendor libraries shipping in the live bundle but never called at runtime -- removed from the build and deleted
+
+`isotope`, `jquery.scrollTo`, `jquery.localScroll`, `js-cookie`, `jquery.scrollbar-master`. Unlike S117's 15 removed libraries (which weren't in the build at all), these ARE pulled into `main.min.js`/`main-nofooter.min.css` today -- but a repo-wide search (`main.js`, every template, every inline `<script>` block, `acf-json/`, `download-monitor/`, `includes/`, root-level PHP) for their actual APIs (`.isotope(`, `.scrollTo(`, `localScroll(`, `Cookies.`, `.scrollbar(`) turned up zero calls anywhere. The one file that used to call isotope (`_isotope.js`, above) was itself dead code with no reachable trigger.
+
+**Important catch while removing this**: `source/gulp/paths.js`'s own `styles` array does NOT feed the live site -- it only feeds the old `build:styles` task (produces the already-dead `main.min.css` rollback artifact, established in S117). The list that actually produces the deployed `main-nofooter.min.css` lives separately in `source/gulp/tasks/build/styles-split.js` (`mainNoFooterSrc`, its own comment says explicitly "kept separate from paths.js on purpose"). Removing `jquery.scrollbar.css` from `paths.js` alone would have changed nothing about the live site -- found and fixed the *actual* live-feeding list too, catching this before it became a "looked like a fix, wasn't" mistake.
+
+Removed from both lists, plus `build:scripts`'s script list (`paths.js`'s `scripts` array -- confirmed this one IS the real source for `build:scripts`, no separate duplicate exists for JS the way there was for CSS). Deleted the 5 vendor directories entirely (`isotope` 128KB, `jquery.scrollTo` 12KB, `jquery.localScroll` 8KB, `js-cookie` 8KB, `jquery.scrollbar-master` 80KB -- 236KB of source, ~139KB of that in JS that was being uglified into every page's `main.min.js` and 22KB of CSS into every page's `main-nofooter.min.css`).
+
+### Verification
+
+Every one of the 16 file paths still referenced in `paths.js`'s `scripts`/`scriptsScrollmagic`/`styles` arrays confirmed to still exist. `node -c` syntax-checked both edited gulp files. Repo-wide re-search after the edits confirms no remaining reference to any of the 5 removed library names outside explanatory comments. Same "cannot run gulp locally" caveat as S117 applies -- this needs the usual confirm-deploy-then-check-staging pass, same as everything else this engagement, but this one specifically needs checking that the JS/CSS byte counts actually shrank, not just that nothing broke.
+
+### Net result
+
+~236KB less vendor source, meaningfully less of it in the *actual shipped* `main.min.js`/`main-nofooter.min.css` (not just the repo) once this deploys -- unlike S117, which was purely repository hygiene with zero effect on what ships, this is a real "optimize for speed" change to the live bundle.
