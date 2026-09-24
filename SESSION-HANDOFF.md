@@ -9092,3 +9092,82 @@ For the actual verification: navigated fresh to `/adapt-vs-gartner/` and read `d
 ### Status
 
 S83 confirmed working exactly as designed. With this, every script-src-eligible gap this engagement identified as fixable without a much larger undertaking is now closed: enqueued scripts (S75's `script_loader_tag` filter), the 5 hand-nonced raw tags in `header.php` (S75), and now the one `wp_localize_script` inline tag (S83). What remains, unchanged and still explicitly out of scope: the ~15 un-nonced inline `<script>`/event-handler instances scattered across ~20 other template files, and the 2 script-src loads (`js-ap1.hsforms.net`, `modernizr-2.7.1.min.js`) that don't inherit `strict-dynamic` trust because they're loaded by third-party/WP Rocket mechanisms outside this theme's control. Still Report-Only throughout.
+
+
+---
+
+## §85 -- 2026-09-24: full survey of the remaining un-nonced inline script-src gaps (no code changes)
+
+User asked to survey this before touching anything, given it was flagged as a bigger, more invasive change than everything else this CSP effort has done. Catalogued every instance with `grep -rn` across the whole theme (`--include="*.php"`, excluding `_archive/`), then read context around each match to confirm what it actually is (a handful of regex matches turned out to be JS property assignments like `span.onclick = function(){}` inside an already-`<script>`-tagged block, not HTML attributes -- excluded those as false positives).
+
+### Headline finding: this is smaller and lower-risk than it looked
+
+Every single instance found -- both the raw `<script>` tags and the inline event-handler attributes -- can be closed with the exact same technique already shipped and proven 6 times this engagement (S75's 5 hand-nonced tags in `header.php`, S83's `wp_inline_script_attributes` filter): add `nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>"` directly onto the element. CSP Level 3 authorizes an inline event-handler attribute the same way it authorizes a `<script>` tag -- via a matching `nonce` attribute on that same element -- so `onclick`/`onchange`/`onload` attributes don't need any JS rewrite (no converting to `addEventListener`), just the same one attribute added to the tag that already carries them. This is markup-only, doesn't change what any script does, and matches the pattern already confirmed live and working in `header.php` and via S83's filter.
+
+**One thing not yet empirically confirmed**: the nonce-authorizes-event-handler mechanism is a different CSP code path in the browser than the nonce-authorizes-script-tag mechanism already proven here. Recommend a small pilot (one file, one `onclick`) verified live before rolling the technique out to all ~25 instances, rather than assuming it behaves identically without checking.
+
+### Correction: 2 of the "documented, out-of-scope, can't be fixed" script-src gaps aren't actually inherent limitations
+
+S78 documented `js-ap1.hsforms.net` and `modernizr-2.7.1.min.js` as script-src violations that don't inherit `strict-dynamic` trust, framed at the time as a WP Rocket delay/defer limitation outside this theme's control. Reading the actual source now: both are **raw, hardcoded `<script src="...">` tags directly in theme files** -- `footer.php:7` (modernizr) and `templates/template-resource-type.php:1363` (the HubSpot forms embed loader) -- not WordPress-enqueued, not dynamically injected by WP Rocket. They're un-nonced for the same reason the 5 header.php tags were before S75: nobody had hand-added a nonce to them yet. They can be closed the same way, no different technique needed. Flagging this as a correction to the earlier record, the same way S78 corrected S76.
+
+### Full inventory
+
+**Raw `<script>` tags needing a nonce attribute -- 37 instances across 24 files:**
+
+| File | Line(s) | What it is |
+|---|---|---|
+| `footer.php` | 7 | modernizr script src (see correction above) |
+| `footer.php` | 12, 16 | LinkedIn Insight Tag (tracking snippet, same treatment as header.php's GTM/gtag tags) |
+| `templates/august-single-post.php` | 197 | Web Share API button |
+| `templates/benchmark-components/_old-sticky-cards.php` | 125 | `syncTextHeights()` -- filename suggests possibly superseded by `_sticky-cards.php` below, worth confirming it's still in use before spending effort on it |
+| `templates/benchmark-components/_sticky-cards.php` | 201 | `syncTextHeights()` (current version) |
+| `templates/benchmarks-maturity-components/_auto-play-card-carousel.php` | 72 | carousel autoplay init |
+| `templates/components/_embed-block.php` | 7 | `generatePDF()` (Power BI report print) |
+| `templates/components/_text-animation-introduction-v2.php` | 513, 583 | HubSpot form postMessage listener; orbit rotation animation (this one already carries a `nowprocket` WP Rocket exclusion attribute) |
+| `templates/components/_text-animation-introduction.php` | 91 | HubSpot form postMessage listener (older version) |
+| `templates/components/_values-full-screen.php` | 31 | LottieInteractivity init |
+| `templates/customer-events-components/_advisors-carousel.php` | 83 | carousel init |
+| `templates/customer-events-components/_edge-partner-module.php` | 200 | modal open/close logic |
+| `templates/customer-story-components/_category-slider.php` | 239 | `copyJobLink()` definition |
+| `templates/customer-story-components/_category-three-column.php` | 234 | `copyJobLink()` definition |
+| `templates/gtm-components/_stats.php` | 38 | LottieInteractivity init |
+| `templates/member-single-post.php` | 10 | `goBack()` definition |
+| `templates/partials/_header.php` | 617, 724 | `copyJobLink()` definition; `ClearFields()` definition |
+| `templates/services-components/_two-column-animation.php` | 54 | LottieInteractivity init |
+| `templates/single-customer_stories.php` | 154, 362 | `copyJobLink()` definition (x2, likely two template variants/positions) |
+| `templates/single-media.php` | 18 | Web Share API button |
+| `templates/single-position.php` | 93, 124 | `copyJobLink()` definition; Web Share API button |
+| `templates/single-post-feb.php` | 10 | `goBack()` definition |
+| `templates/single-post-no-embed.php` | 8, 1992 | `goBack()` definition (x2) |
+| `templates/single-post-side-articles.php` | 8, 2054 | `goBack()` definition (x2) |
+| `templates/single-post.php` | 306, 583 | Web Share API button; audio player init |
+| `templates/template-customer-stories-categories.php` | 33, 355, 856 | scroll-into-view on load; `copyJobLink()` definition (x2) |
+| `templates/template-resource-type.php` | 1363 | HubSpot forms embed loader src (see correction above) |
+
+**Inline event-handler attributes needing a nonce attribute -- 25 instances across 14 files:**
+
+| File | Line(s) | Handler |
+|---|---|---|
+| `functions.php` | 480, 501 | `onload` on PHP-generated `<link rel="preload">` (CSS defer-swap technique, via `style_loader_tag` filters) |
+| `header.php` | 54 | `onload` on the same `<link rel="preload">` pattern, static |
+| `templates/components/_embed-block.php` | 5 | `onclick="generatePDF();"` |
+| `templates/customer-story-components/_category-slider.php` | 231 | `onclick="copyJobLink()"` |
+| `templates/customer-story-components/_category-three-column.php` | 226 | `onclick="copyJobLink()"` |
+| `templates/member-single-post.php` | 16 | `onclick="goBack()"` |
+| `templates/partials/_header.php` | 145, 609, 733 | `onclick="ClearFields();"`; `onclick="copyJobLink()"`; `onclick="ClearFields();"` |
+| `templates/single-customer_stories.php` | 146, 354 | `onclick="copyJobLink()"` (x2) |
+| `templates/single-position.php` | 85 | `onclick="copyJobLink()"` |
+| `templates/single-post-feb.php` | 16 | `onclick="goBack()"` |
+| `templates/single-post-no-embed.php` | 14, 1998 | `onclick="goBack()"` (x2) |
+| `templates/single-post-side-articles.php` | 14, 2060 | `onclick="goBack()"` (x2) |
+| `templates/template-agenda.php` | 143 | `onclick="window.print()"` |
+| `templates/template-customer-stories-categories.php` | 347, 848 | `onclick="copyJobLink()"` (x2) |
+| `templates/template-events-old.php` | 106 | `onchange="document.location.href=..."` (dropdown nav) |
+| `templates/template-insights.php` | 371, 400 | `onchange="document.location.href=..."` (x2) |
+| `templates/template-speaker.php` | 19 | `onchange="document.location.href=..."` |
+
+Excluded as false positives (JS property assignment inside an already-`<script>`-tagged block, not an HTML attribute): `templates/single-post.php:645` (`script.onload = cb;`), `templates/customer-events-components/_edge-partner-module.php:235,240` (`span.onclick = ...`, `window.onclick = ...`).
+
+### Status
+
+Survey only, no code changes. `git status` clean. Waiting on direction: whether to proceed with fixing these (and if so, whether to pilot the event-handler-nonce technique on one instance first before the full rollout, per the note above), leave it as documented/accepted, or something else.
