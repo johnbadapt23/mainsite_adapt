@@ -39,12 +39,19 @@ var error = require('../../error.js');
 // separate from paths.js/path.src.styles on purpose -- this is a
 // dev-gated, not-yet-promoted build, not part of the shared build config
 // other tasks (watch.js, etc.) read from.
+// jquery.scrollbar-master/jquery.scrollbar.css removed 2026-09-24 (S119):
+// this is the list that actually feeds the live main-nofooter.min.css
+// build (paths.js's own copy of this list only feeds the unused build:styles
+// -> main.min.css rollback task) -- confirmed via repo-wide search that
+// .scrollbar( is never called anywhere in this theme, so this 22KB of CSS
+// was shipping on every single page load for zero functional benefit. See
+// paths.js's own comment above its scripts array for the full removal
+// rationale (covers this library plus 4 others removed from the JS side).
 var mainNoFooterSrc = [
     'source/components/aos/dist/aos.css',
     'source/components/magnific-popup/dist/magnific-popup.css',
     'source/components/select2/dist/css/select2.css',
     'source/components/perfect-scrollbar/css/perfect-scrollbar.css',
-    'source/components/jquery.scrollbar-master/jquery.scrollbar.css',
     'source/components/slick-carousel/slick/slick.css',
     'source/components/slick-carousel/slick/slick-theme.css',
     'source/components/hover/css/hover-min.css',

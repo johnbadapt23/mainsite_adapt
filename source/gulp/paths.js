@@ -10,16 +10,25 @@ module.exports = {
     src: {
         html: '**/*.html',
         php: '**/*.php',
+        // isotope, jquery.scrollTo, jquery.localScroll, js-cookie, and
+        // jquery.scrollbar-master (both its .js and .css) were removed from
+        // this list 2026-09-24 (S119): confirmed via a repo-wide search --
+        // main.js, every PHP template, and every inline <script> block --
+        // that none of their APIs (.isotope(, .scrollTo(, localScroll(,
+        // Cookies., .scrollbar() are ever called anywhere in this theme.
+        // The one file that used to call isotope (source/js/includes/
+        // _isotope.js) was itself never wired into the build (main.js only
+        // @@include()s _maps.js -- see main.js), and the [data-filter] a
+        // click target its handler expected doesn't exist in any current
+        // template either -- the whole feature was already retired at the
+        // template level, this just stops shipping the JS for it. Their
+        // source/components/ vendor directories were deleted in the same
+        // commit.
         scripts: [
             'source/components/select2/dist/js/select2.js',
             'source/components/magnific-popup/dist/jquery.magnific-popup.js',
-            'source/components/isotope/dist/isotope.pkgd.js',
             'source/components/slick-carousel/slick/slick.min.js',
-            'source/components/jquery.scrollTo/jquery.scrollTo.js',
-            'source/components/jquery.localScroll/jquery.localScroll.js',
             'source/components/aos/dist/aos.js',
-            'source/components/js-cookie/src/js.cookie.js',
-            'source/components/jquery.scrollbar-master/jquery.scrollbar.js',
             'source/components/perfect-scrollbar/js/perfect-scrollbar.jquery.js',
             'source/components/matchHeight/dist/jquery.matchHeight-min.js',
             // source/components/modernizr/modernizr-2.7.1.min.js referenced
@@ -44,7 +53,6 @@ module.exports = {
             'source/components/magnific-popup/dist/magnific-popup.css',
             'source/components/select2/dist/css/select2.css',
             'source/components/perfect-scrollbar/css/perfect-scrollbar.css',
-            'source/components/jquery.scrollbar-master/jquery.scrollbar.css',
             'source/components/slick-carousel/slick/slick.css',
             'source/components/slick-carousel/slick/slick-theme.css',
             'source/components/hover/css/hover-min.css',
