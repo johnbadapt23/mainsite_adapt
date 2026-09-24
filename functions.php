@@ -576,6 +576,21 @@ function adapt_defer_cookie_notice_css( $html, $handle ) {
 }
 add_filter( 'style_loader_tag', 'adapt_defer_cookie_notice_css', 10, 2 );
 
+// The Cookie Compliance plugin (cookie-compliance.co) shows its consent
+// banner (#cookie-notice) on every page by its own design, including
+// wp-login.php -- confirmed live, nothing in this theme enqueues or
+// renders it there. There's no tracking/marketing content on the login
+// screen to consent to, so hide it there specifically: dequeue its CSS
+// (no point loading a stylesheet for an element we're about to hide) and
+// hide the banner itself with a small inline style scoped to login_head,
+// which only prints on wp-login.php. Doesn't touch the plugin itself or
+// its front-end behaviour anywhere else on the site.
+add_action( 'login_enqueue_scripts', 'adapt_hide_cookie_notice_on_login' );
+function adapt_hide_cookie_notice_on_login() {
+    wp_dequeue_style( 'cookie-notice-front' );
+    echo '<style>#cookie-notice { display: none !important; }</style>';
+}
+
 // WordPress core enqueues wp-block-library CSS (~18KB, render-blocking) on
 // every single page regardless of whether Gutenberg block markup is actually
 // present. This theme's pages are built entirely through ACF flexible
