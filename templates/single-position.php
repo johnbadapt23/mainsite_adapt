@@ -82,7 +82,7 @@
                     <span class="share-job-container desktop">
                         <span class="copy-link">
                             <input type="text" value="<?php echo the_permalink(); ?>" id="jobLink" style="display: none;">
-                            <a onclick="copyJobLink()">
+                            <a nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="copyJobLink()">
                                 <span class="image-icon-container">
                                     <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="" width="32px"/>
                                     <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="" width="32px"/>

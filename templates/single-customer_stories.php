@@ -143,7 +143,7 @@ $displayed_posts[] = get_the_ID();
                             <span class="share-links-container">
                                 <span class="copy-link share">
                                     <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
-                                    <a onclick="copyJobLink()">
+                                    <a nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="copyJobLink()">
                                         <span class="image-icon-container">
                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
@@ -351,7 +351,7 @@ $displayed_posts[] = get_the_ID();
                             <span class="share-links-container">
                                 <span class="copy-link share">
                                     <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
-                                    <a onclick="copyJobLink()">
+                                    <a nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="copyJobLink()">
                                         <span class="image-icon-container">
                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>

@@ -9190,3 +9190,43 @@ Verify-before-write pattern as always: exact old string found the expected numbe
 ### Status
 
 Committed to `dev`, not yet pushed. Once pushed, plan: fresh single-tab cache-busted check on `/adapt-vs-gartner/`, looking specifically for the "Executing inline event handler violates..." violation to confirm it's gone, plus reading the `<link>` element's `.nonce` DOM property against the header nonce the same way S84 confirmed S83. If this pilot confirms the technique works live, the remaining ~22 event-handler instances and ~37 `<script>` tag instances from S85's inventory are the same mechanical fix, file by file.
+
+
+---
+
+## §87 -- 2026-09-24: §86 pilot confirmed live -- nonce-on-event-handler works
+
+### What I checked
+
+Confirmed `ca53dae` (S86) is live: `origin/dev` matches local HEAD. Fresh single-tab, cache-busted check on `/adapt-vs-gartner/`.
+
+**Functional proof (the strongest signal):** all 3 nonced `<link>` elements (skelet-icons, wp-pagenavi, footer-styles) had already flipped from `rel="preload"` to `rel="stylesheet"` by the time the page finished loading -- meaning their `onload="this.onload=null;this.rel='stylesheet'"` handler actually executed. If CSP had blocked it, `rel` would have stayed stuck on `preload` forever (a real, visible bug: those 3 stylesheets would never apply). It didn't -- the handlers ran.
+
+**Direct read-back:** all 3 elements' `.nonce` DOM property matches the response's CSP header nonce exactly (`tsArwpdVe7majzGd7XHoJg==`), same method as S84's `main-js-js-extra` confirmation.
+
+**One imprecise signal, noted rather than glossed over:** the console still showed exactly 3 "Executing inline event handler violates..." messages, which at first looked like the fix hadn't worked. Scanned the live DOM for every element carrying an `onclick`/`onload`/`onchange`/etc. attribute: only 2 un-nonced instances exist on this page -- the `onclick="ClearFields();"` anchors in `partials/_header.php` (desktop + mobile search clear buttons), both still correctly un-nonced since S86 didn't touch them. The 3 pilot elements all show `hasNonceAttr: true` with a matching `.nonce`. So the browser's console violation count doesn't appear to map 1:1 to un-nonced element instances (it showed "3" both before S75-era work started and now, despite different element counts each time) -- not a reliable precise counter, unlike the functional/DOM checks above, which are unambiguous.
+
+### Status
+
+Pilot confirmed: nonce-authorizes-event-handler works exactly like nonce-authorizes-script-tag. Proceeding with the rest of S85's inventory using the same technique -- the 2 `ClearFields()` instances found still un-nonced above are next, then the remaining event handlers and `<script>` tags file by file.
+
+
+---
+
+## §88 -- 2026-09-24: nonced all remaining inline event-handler attributes (22 instances, 15 files)
+
+Following S87's confirmation that nonce-on-event-handler works live, worked through the rest of S85's event-handler inventory (everything except the 3 `<link onload>` instances S86 already covered): `generatePDF()`, `copyJobLink()` (x7), `goBack()` (x5), `ClearFields()` (x2 -- the ones flagged as still-pending at the end of S87), `window.print()`, and the category-dropdown `onchange` (x4). 22 total insertions across 15 files, one `nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>"` attribute added to each element already carrying the handler, no JS changes anywhere.
+
+### One correction while doing this
+
+`templates/template-events-old.php`'s dropdown (the line S85 catalogued) turned out to be sitting inside an HTML comment (`<!-- <div class="filter"> ... </div> -->`) -- dead markup, never rendered to the DOM, so it was never a real CSP violation source in the first place. Still nonced it since it cost nothing and keeps the source consistent if that block is ever un-commented later, but flagging that S85's inventory didn't distinguish live from commented-out markup for this one instance.
+
+### Process note -- a bug caught before it could write anything wrong
+
+The batch script's first draft had a self-referential substring bug: for anchors that started directly with `onclick="..."` or `onchange="..."` (no tag-name prefix), inserting the nonce attribute *before* the handler produced a new string that still contained the old string as a literal substring (since `new = NONCE + old`), so the post-write assertion `content.count(old) == 0` would have failed -- and did, on the first affected file (`_embed-block.php`), before any file was written. Caught and fixed by widening those anchors to include leading tag context (`<button onclick=...>` instead of bare `onclick=...`), the same pattern already used safely everywhere else. Re-ran clean afterward with no corrupted intermediate state -- `git status` was clean at the point of failure, confirmed before retrying.
+
+Verify-before-write throughout: each file's old anchor count checked against an expected count (1 or 2, hand-verified via `grep -c` beforehand for every file with a repeated anchor), `<?php`/`?>` delta checked per file (1 open + 1 close per insertion, matching the fresh self-contained `<?php echo ... ?>` block pattern), full `git diff` read end-to-end afterward -- 22 insertions/22 deletions across exactly the 15 expected files, nothing else touched.
+
+### Status
+
+Committed to `dev`, not yet pushed. Once pushed, plan: fresh live check on `/adapt-vs-gartner/` (covers the `ClearFields()` anchors already confirmed still-unfixed in S87) plus spot checks on a couple of the other templates (e.g. `single-position.php` for `copyJobLink()`, `template-insights.php` for the sort/filter dropdowns) via the same DOM `.nonce`-property method. Remaining from S85's inventory: the ~37 raw `<script>` tag instances across ~24 files -- same technique, next.

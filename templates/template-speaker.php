@@ -16,7 +16,7 @@ get_header();
         </div>
         <div class="filter">
             <span class="dropDown">
-                <select name="event-dropdown" onchange='document.location.href=this.options[this.selectedIndex].value;'>
+                <select name="event-dropdown" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onchange='document.location.href=this.options[this.selectedIndex].value;'>
                     <option value=""><?php echo esc_attr(__('Select Category')); ?></option>
 
                     <?php

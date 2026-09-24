@@ -368,7 +368,7 @@ $filterBy = array();
                 <div class="sortContainer desktop">
                     <div id="sortby">
                         <span class="select-label">Sort By:</span>
-                        <select class="dropdown-class" name="sort-posts" id="sortbox" onchange="document.location.href=location.href+this.options[this.selectedIndex].value;">
+                        <select class="dropdown-class" name="sort-posts" id="sortbox" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onchange="document.location.href=location.href+this.options[this.selectedIndex].value;">
                             <?php
                             if ($sortBy != '') {
                                 if ($sortBy == 'date') {
@@ -397,7 +397,7 @@ $filterBy = array();
                     </div>
                     <div id="filterBy">
                         <span class="select-label">Filter By:</span>
-                        <select class="dropdown-class" name="filter-posts" id="filterBox" onchange="document.location.href=location.href+this.options[this.selectedIndex].value;">
+                        <select class="dropdown-class" name="filter-posts" id="filterBox" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onchange="document.location.href=location.href+this.options[this.selectedIndex].value;">
                              <?php $terms = $filterTypeTerms; // computed once above, reused here and by the mobile dropdown below ?>
 
                             <option value="<?php if ($filterTopics != '' || $sortBy != '' || $filterType != '' || $keyword != '' ) { ?>&<?php } else if (isset($keyword)) { ?>&<?php } else { ?>?<?php } ?>filterType=all">All</option>

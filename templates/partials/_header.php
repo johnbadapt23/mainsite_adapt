@@ -142,7 +142,7 @@
 					<input class="searchInput" type="text" name="searchWords" id="mobilesearch" placeholder="Search" aria-label="Search" value="" />
 					<button type="submit" class="search-button-mobile" aria-label="Search"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify-placeholder.svg" alt="" width="20"/></button>
 					<input type="hidden" value="1" name="sentence" />
-					<a class="search-clear" onclick="ClearFields();" aria-label="Clear search"></a>
+					<a class="search-clear" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="ClearFields();" aria-label="Clear search"></a>
 				</form>
 				<div class="resources-nav">
 					<ul>
@@ -606,7 +606,7 @@
 							<span class="share-links-container">
 								<span class="copy-link share">
 		                            <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
-		                            <a onclick="copyJobLink()">
+		                            <a nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="copyJobLink()">
 										<span class="image-icon-container">
 		                                    <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
 		                                    <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
@@ -730,7 +730,7 @@
 		</script>
 		<span class="close-clear-container" id="searchClear">
 			<button type="button" class="search-close" aria-label="Close search"></button>
-			<a class="search-clear" onclick="ClearFields();">Clear</a>
+			<a class="search-clear" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="ClearFields();">Clear</a>
 		</span>
 	</div>
 </div>

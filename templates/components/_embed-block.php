@@ -2,7 +2,7 @@
     <div class="container">
         <?php the_sub_field( 'embed' ); ?>
     </div>
-    <button onclick="generatePDF();">Generate PDF</button>
+    <button nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="generatePDF();">Generate PDF</button>
 
     <script>
     function generatePDF() {
