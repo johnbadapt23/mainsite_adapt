@@ -9846,3 +9846,75 @@ Checked for any existing WordPress `save_post`/`transition_post_status` hook or 
 Technically buildable -- nothing above is a hard blocker, and Puppeteer-in-CI critical-CSS generation is a standard, well-understood pattern elsewhere. But it's a genuinely separate infrastructure project layered on top of the theme: a new credential, a new non-git delivery path to the live server, a new CI workflow, and a new silent-failure mode to monitor -- not a natural extension of the theme-code changes made in this engagement so far, and not something to fold into the existing "commit locally, you push, I verify on staging" loop this session has been running. It needs its own explicit scope and sign-off (particularly the GitHub PAT in WordPress and the non-git SFTP write path) before any of it gets built, separate from this pass's day-to-day performance work.
 
 No code changed this entry -- scoping and documentation only.
+
+---
+
+## §112 -- 2026-09-24: Implementation plan for the critical-CSS infra project (planning only -- nothing built, awaiting sign-off)
+
+Following S111's scoping, this is a concrete build plan: exact hooks, exact new files, exact fallback behaviour, and the specific decisions that need your sign-off before any of it gets written. No code changed this entry.
+
+### Scope correction that shrinks the problem
+
+Checked two things that narrow this from S111's estimate:
+
+- This theme has no `archive.php`/`taxonomy.php`/`search.php` at the theme root -- every page-like view here is a custom ACF page template (`template-search-results.php`, `template-resources.php`, etc.), already covered by the same content_blocks-vs-fixed split from S110. There's no separate "archive/taxonomy keying scheme" needed -- one less moving part than S111 flagged.
+- There's a single, global ACF Options page (`acf_add_options_page()` in `includes/_setup.php`, used for site-wide header/footer fields like the logo and form scripts). Confirmed as the only options-page source in the theme, so the "full-site regen" trigger has exactly one hook to watch, not several.
+- Since S110 already showed the automated pipeline is only *necessary* for the 17 flexible-content templates (the other ~34 have deterministic markup a static, hand-built, git-tracked critical file can safely cover -- same technique and rigor as the `_services.scss` split, reviewable in normal commits), the dynamic per-page pipeline below only needs to run for published pages/posts using those 17 templates. That's a meaningfully smaller live surface than "every URL on the site."
+
+### Piece 1: trigger (new, in `functions.php` or a small must-use plugin)
+
+- Hook `save_post`, filtered to `get_post_status() === 'publish'`, `! wp_is_post_revision()`, `! wp_is_post_autosave()`, and `is_page_template()` matching one of the 17 flexible-content templates.
+- Debounce via WP-Cron rather than firing the GitHub API on every save: the hook just records the post ID in an option (`adapt_critical_css_pending_ids`); a `wp_schedule_event` cron running every 5 minutes reads that list, fires one `repository_dispatch` call with the batch, then clears it. Avoids hammering GitHub's API when an editor saves a page repeatedly while working on it, and avoids needing per-save rate-limiting logic.
+- Separately, hook `acf/save_post` filtered to the Options page's post ID -> sets a single `adapt_critical_css_regen_all` flag instead of a post ID list; the same cron checks that flag first and, if set, dispatches a full-site regen instead of the batch.
+- Auth: `wp_remote_post()` to `https://api.github.com/repos/johnbadapt23/mainsite_adapt/dispatches` with an `Authorization: token <PAT>` header. **The PAT itself has to live in `wp-config.php` as a constant** (the standard place WordPress keeps secrets, alongside DB credentials) -- `wp-config.php` is on the server, not in this git repo, so I cannot add it myself; it needs to be added directly on the server (hosting file manager or FTP, since shell access is disabled) by you or whoever manages hosting access.
+
+### Piece 2: generation (new file, `.github/workflows/critical-css.yml`)
+
+- Triggers: `repository_dispatch` (types: `critical-css-regen`), plus `workflow_dispatch` for a manual full run.
+- New devDependency: `critical` (Puppeteer-based; well-established for exactly this). Chromium download in CI is a known, working pattern on `ubuntu-latest` -- adds to install time (~1-2min) and cache size, no other blocker found.
+- For each URL in the dispatch payload (or every flexible-template page, on a full regen): launch headless Chromium against **staging**, not production -- matching this engagement's standing rule that nothing touches `main`/production without your separate explicit confirmation. This pipeline stays scoped to `dev`/staging the same way everything else here has.
+- Extract critical CSS at two viewports (mobile 375x667, desktop 1920x1080), merge into one file, write to `assets/critical/{post_id}.css`.
+
+### Piece 3: delivery
+
+- Same new workflow, a second step reusing `milanmk/actions-file-deployer` (already proven, already configured for this account) to upload just `assets/critical/` to the server, using the same `staging` GitHub environment secrets `deploy.yml` already has -- no new hosting credential needed for this part.
+- **This path does not go through git.** `assets/critical/*.css` are generated artifacts, gitignored, uploaded directly. That's a deliberate break from how everything else in this engagement has worked (every change so far is a git commit you can diff, verify, and that I can point to by hash) -- these files would only be inspectable by downloading them from the live server or re-running the workflow. Flagging this explicitly since it changes the audit trail this engagement has relied on.
+
+### Piece 4: consumption (`functions.php`)
+
+- The deferred-loading decision has to be made once, in `my_enqueue_scripts()`, and reused by both the inline-critical-CSS step and the defer-main-bundle step -- if those two ever disagree (one defers, the other doesn't inline), that's a guaranteed flash-of-unstyled-content bug on a live page. Sketch:
+
+```php
+function adapt_get_critical_css_path() {
+    $post_id = get_queried_object_id();
+    if ( ! $post_id ) return false;
+    $path = get_template_directory() . '/assets/critical/' . $post_id . '.css';
+    return file_exists( $path ) ? $path : false;
+}
+
+// in my_enqueue_scripts():
+$critical = adapt_get_critical_css_path();
+if ( $critical ) {
+    add_filter( 'style_loader_tag', 'adapt_defer_main_css', 10, 2 ); // same preload+onload pattern as footer/pagenavi/cookie-notice
+}
+// in wp_head, priority 1 (before wp_head's own output):
+if ( $critical ) {
+    echo '<style id="adapt-critical-css">' . file_get_contents( $critical ) . '</style>';
+}
+```
+
+- **Fallback, the one non-negotiable safety property**: no critical file for this page ID (fresh publish before the cron/workflow has run, or the workflow failed) -> `$critical` is `false` -> `main-nofooter.min.css` stays exactly as it is today, a normal blocking stylesheet. Never partially defer. A missed optimization, never a visual regression -- same bar as every change shipped in this engagement so far.
+
+### What still needs monitoring (flagged, not solved here)
+
+Because the fallback is silent, a broken PAT, a failed Chromium install, or a GitHub API rate limit doesn't break anything visibly -- it just means pages quietly stop getting the optimization. Proposing (not building yet) a simple admin-visible count: on a normal admin page load, check how many published flexible-template pages have no matching `assets/critical/*.css`, and show it as a small notice if the number is high or growing. Minimal, not a full monitoring system -- enough that a stalled pipeline gets noticed within a reasonable time instead of silently forever.
+
+### Sign-off checklist before any of this gets built
+
+1. **A new GitHub PAT**, scoped as narrowly as GitHub allows (fine-grained token, `repository_dispatch` only, this one repo) -- who creates it and adds it to `wp-config.php` on the server (I can't do this myself; no shell/file access to the live server, and it shouldn't go through git anyway).
+2. **A non-git delivery path** to the server (`assets/critical/*.css` uploaded directly by CI, not committed) -- confirms you're okay with that specific file set living outside the normal git-diff-verifiable history this engagement has used everywhere else.
+3. **Staging-only**, matching the existing main/production rule -- confirms this pipeline should never target production without the same separate explicit confirmation everything else here requires.
+4. **New devDependency** (`critical`, pulling in Puppeteer/Chromium) -- confirms the CI time/cache-size increase is acceptable.
+5. **Scope**: automated dynamic pipeline for the 17 flexible-content templates' real pages only; the other ~34 fixed templates get a separate, smaller, static/git-tracked critical-CSS effort (same technique as the `_services.scss` split) if you want them covered too -- confirms that split is the right shape rather than trying to force everything through one mechanism.
+
+Nothing above is built. This is the plan to review; I'll wait for direction on the checklist before writing any of it.
