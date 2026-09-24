@@ -9686,3 +9686,37 @@ S103's enqueue only fired on `is_page_template('template-services.php')`. A mark
 ### Status
 
 S103's code correctness is proven (selector-diff, §103). S103's live-serving correctness could not be visually confirmed because no page currently renders it -- that verification stays open until either a page gets the Services Template assigned, or someone confirms none ever will (worth asking rather than assuming). S104's fix is committed locally, not yet pushed.
+
+---
+
+## §105 -- 2026-09-24: stopping the per-file split after one file -- the other 6 don't share _services.scss's structure
+
+Went to apply S103's method (check top-level wrapper selectors for exclusivity, move the whole file if clean) to the next candidate and picked `_market-buyer.scss` first, since S104 had just connected it to `_services.scss` via the shared `services-components` directory.
+
+### What's different about this file
+
+`_market-buyer.scss` has a bare, unqualified `section.stats { ... }` top-level rule. Checked where `.stats` markup comes from: there are **four independent PHP components** rendering a `<section class="stats ...">` wrapper -- `event-components/_stats.php` (used by `template-event-partner.php` / `template-event-partner-landing.php`, neither a split candidate), `gtm-components/_stats.php` (`template-gtm.php`), `market-buyer-components/_stats.php` (`template-market-buyer.php`), plus `services-components/_background-stats.php` (already handled by S104). And there are **three separate SCSS files** with their own `section.stats` rule: `_events.scss`, `_gtm.scss`, and `_market-buyer.scss`.
+
+That's a fundamentally different shape of risk than `_services.scss` had. `_services.scss`'s 8 wrappers were compound, multi-class selectors (`section.events-title-block.services-introduction`) that only one specific component file anywhere in the repo ever rendered -- checking "does this exact combination exist outside services" was a clean yes/no. `section.stats` is a generic, single-class selector that multiple unrelated template files independently style for their own, differently-classed instances of a shared naming convention. Whether removing `_market-buyer.scss`'s copy from core is safe depends on whether `_events.scss`'s own `section.stats` rule (which stays in core regardless) already fully covers what event-partner pages need on its own, or whether event-partner pages are unknowingly relying on some declaration from market-buyer's copy winning the cascade today. That's not a question a selector-set diff can answer -- it needs either a declaration-by-declaration comparison of the two rules or an actual visual regression check against live event-partner pages, neither of which I've done.
+
+### This isn't a one-off -- checked the other candidates too
+
+Before committing to anything, checked whether the other candidates share this shape. They do, extensively:
+
+- `_gtm.scss`, `_benchmarking.scss`, `_customer-events.scss`, and `_benchmarks-maturity.scss` all independently define rules for shared component class names -- `gtm-cards-module` (in both `_gtm.scss` and `_benchmarking.scss`), `customer-events-faqs` and `customer-events-slider` (in both `_benchmarking.scss` and `_customer-events.scss`), `full-suite-slider-module` (in both `_customer-events.scss` and `_benchmarks-maturity.scss`).
+- `_gtm.scss` also literally contains a `body.template-benchmarking { ... }` block -- content for a *different* candidate template, mixed directly into this file (noted in S103's write-up, still unresolved).
+- `_landing.scss` has confirmed real leaks from S102's corrected analysis (`section.about-block`, `main.edge-events-partner`, `section.sponsor-block` -- `sponsor-block` also appears inside `_customer-events.scss`).
+
+`_services.scss` turning out to be a clean, fully self-contained file was the exception in this set, not the norm. Every other candidate has real, confirmed cross-file component sharing.
+
+### Decision: not splitting any of the other 6 the same way
+
+Doing this safely for any of them would need either a declaration-level diff of every shared selector across the files that define it (to prove the copies are truly redundant, not each covering a different case) or an actual visual regression pass against every live page that could render the shared markup -- neither of which this session's tooling does, and both of which are a meaningfully bigger job than S103 turned out to be. Pushing ahead with the same "move the whole file, trust the selector diff" recipe here would be building on a false sense of safety the diff can't actually provide for this shape of coupling -- that's the mistake to actively avoid, not just a risk to note.
+
+### Recommendation
+
+Treat `_services.scss` as the one confirmed, low-risk win from this investigation and stop the per-file splitting approach here rather than force the remaining ~1.9MB through a technique that doesn't fit its structure. For the CSS still in the core bundle, the defer/async-load alternative from S102 (extend the already-proven preload+swap pattern used for the footer CSS to `main-nofooter.min.css` itself) doesn't have this problem at all -- it doesn't care which selectors are shared across which templates, since nothing about it depends on knowing what's exclusive to what. It remains the better next step for the bulk of the remaining bundle size.
+
+### Status
+
+No further split attempted or committed this round. `_market-buyer.scss` and the other 5 candidates are untouched.
