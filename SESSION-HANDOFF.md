@@ -9766,3 +9766,16 @@ Confirmed unused via grep (no Modernizr-style `.no-*`/`.js` feature-detection cl
 ### Status
 
 Both committed locally, not yet pushed. Neither has been live-verified yet (same "confirm deploy, then check staging" loop as everything else this engagement).
+
+---
+
+## §109 -- 2026-09-24: S107/S108 confirmed live
+
+Fresh, cache-busted load of staging homepage, checked the raw server-rendered HTML (not just the post-JS DOM, which the capture-phase swap mutates) plus console and a visual check.
+
+- `cookie-notice-front-css` renders server-side as `rel="preload" as="style"` with its `<noscript>` fallback immediately after (confirmed via the actual HTML source, not the DOM after the swap already ran) -- the filter is working exactly as designed, chaining correctly alongside the existing wp-pagenavi/footer deferrals with no interference between them.
+- `modernizr-2.7.1.min.js` is gone from the page entirely; `window.Modernizr` is `undefined`.
+- `dlm-frontend-css` (Download Monitor) is still a plain blocking `rel='stylesheet'`, confirming it was correctly left alone as decided.
+- Zero console errors. Homepage renders correctly, no visual regression, cookie banner still present in the DOM and functional.
+
+This closes out S107/S108. Combined with S103's confirmed ~124KB/page reduction (S106) and this round's two smaller, verified wins, the performance effort for this pass is done: one real CSS-bundle-split win, two render-blocking-request fixes, one dead-code removal, all live-verified -- and the honest, documented reasons the remaining paths (the other 6 CSS files, deferring the full main bundle, Download Monitor's CSS, third-party tracking scripts) were deliberately not pursued further without either more tooling or a different kind of sign-off.
