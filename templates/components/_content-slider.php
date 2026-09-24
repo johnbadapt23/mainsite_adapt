@@ -44,12 +44,12 @@
                                     <h4 role="heading" aria-level="3" class="<?php echo $textColour; ?>"><?php echo get_sub_field( 'text' ); ?></h4>
                                     <span class="bottom-container">
                                         <span class="caption-sub-title text-medium-grey"><?php echo get_sub_field( 'caption_sub_title' ); ?></span>
-                                        <span class="caption-title <?php echo $textColour; ?>"><?php echo get_sub_field( 'caption_title' ); ?></span>
+                                        <span class="caption-title <?php echo $textColour; ?>"><?php $csCaptionTitle = get_sub_field( 'caption_title' ); echo $csCaptionTitle; ?></span>
                                     </span>
                                     <?php if ( have_rows( 'link' ) ) : ?>
                                         <span class="link-container">
                     						<?php while ( have_rows( 'link' ) ) : the_row(); ?>
-                                                <a href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>" class="text-link medium-link-text external-link red-text red-underline-link">
+                                                <a href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>" class="text-link medium-link-text external-link red-text red-underline-link"<?php if ( $csCaptionTitle ) { ?> aria-label="<?php echo esc_attr( trim( get_sub_field( 'link_text' ) ) . ' - ' . wp_strip_all_tags( $csCaptionTitle ) ); ?>"<?php } ?>>
                                                     <?php echo get_sub_field( 'link_text' ); ?>
                                                 </a>
                     						<?php endwhile; ?>
@@ -69,9 +69,7 @@
             <div class="progress-container">
     			<?php $slideCount = $counter - 1; ?>
                 <?php $slidePercent = 100 / $slideCount; ?>
-                <div class="home-component-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo $slidePercent;?>" style="background-size:<?php echo $slidePercent;?>%">
-                    <span class="slider__label sr-only">
-                </div>
+                <div class="home-component-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo $slidePercent;?>" aria-label="Slide progress" style="background-size:<?php echo $slidePercent;?>%"></div>
     		</div>
         </div>
     </div>

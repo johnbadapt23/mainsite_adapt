@@ -19,7 +19,7 @@
                                 <source type="video/mp4" data-autoplay-src="<?php echo get_sub_field( 'auto_play_video' ); ?>" />
                             </video>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>                                
-                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>"></a>
+                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>" aria-label="Play video"></a>
                             <?php } ?>
                             <button type="button" class="pause-autoplay" aria-label="Pause video"></button>
                         </div>
@@ -36,7 +36,7 @@
                                 ) ); ?>
                             <?php } ?>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>                                
-                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>"></a>
+                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>" aria-label="Play video"></a>
                             <?php } ?>
                         </div>
                     </div>

@@ -48,7 +48,7 @@
                             </video>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>
                                 <span class="opacity-overlay"></span>
-                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>"></a>
+                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>" aria-label="Play video"></a>
                             <?php } ?>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                             <?php } ?>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>
                                 <span class="opacity-overlay"></span>
-                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>"></a>
+                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>" aria-label="Play video"></a>
                             <?php } ?>
                         </div>
                     </div>

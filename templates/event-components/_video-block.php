@@ -25,7 +25,7 @@ $bg = get_sub_field('background_colour') ?: 'background-black';
                             </video>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>
                                 <span class="opacity-overlay"></span>
-                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>"></a>
+                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>" aria-label="Play video"></a>
                             <?php } ?>
                         </div>
                     </div>
@@ -39,7 +39,7 @@ $bg = get_sub_field('background_colour') ?: 'background-black';
                             <?= wp_get_attachment_image($image_id, 'adapt-optimized', false, array('class' => 'desktop')); ?>
                             <?php if( get_sub_field( 'vimeo_code' )) { ?>
                                 <span class="opacity-overlay"></span>
-                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>"></a>
+                                <a class="popup-vimeo" href="https://vimeo.com/<?php echo get_sub_field('vimeo_code'); ?>" aria-label="Play video"></a>
                             <?php } ?>
                         </div>
                     </div>

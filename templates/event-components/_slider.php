@@ -43,9 +43,7 @@
 		<div class="progress-container">
 			<?php $slideCount = $counter - 1; ?>
             <?php $slidePercent = 100 / $slideCount; ?>
-            <div class="keynote-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo $slidePercent;?>" style="background-size:<?php echo $slidePercent;?>%">
-                <span class="slider__label sr-only">
-            </div>
+            <div class="keynote-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?php echo $slidePercent;?>" aria-label="Slide progress" style="background-size:<?php echo $slidePercent;?>%"></div>
 		</div>
 	</div>
 </section>
