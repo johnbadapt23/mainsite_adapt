@@ -9990,3 +9990,19 @@ Reverted forward (S112/S113 were already pushed, so this is a new removal commit
 This closes out the S110-S114 critical-CSS line of work. Nothing from it remains in the theme.
 
 New direction starting now: an in-theme audit for redundant files/code, modernization, safe asset combining, and WPCS compliance -- see the following entries.
+
+---
+
+## §116 -- 2026-09-24: re-evaluated the S103 CSS split -- keeping it, with real evidence this time
+
+Checked what "combine assets" should mean given the S103 split (`template-services.min.css` separated out of `main-nofooter.min.css`) before touching it.
+
+Checked the actual protocol staging serves over, live: `performance.getEntriesByType('navigation')[0].nextHopProtocol` on the homepage returns `"h2"` -- staging is served over HTTP/2. That matters directly here: HTTP/2 multiplexes every request over one connection, so an extra `<link>` tag doesn't cost a new TCP/TLS handshake or block other requests the way it would under HTTP/1.1 -- the "fewer requests is faster" argument that motivated bundling everything into one CSS file in the first place is largely a legacy HTTP/1.1 concern on a connection like this one.
+
+Against that, the S103 split has a real, live-confirmed cost/benefit (S106): non-services/market-buyer pages download ~124KB less decompressed CSS (~10.7KB less over the wire) per load; the only cost is one additional small HTTP/2 stream on the two templates that need `template-services.min.css`. Under H2, that's a negligible cost for a real, measured byte saving on every other page on the site.
+
+**Decision: keeping the split as-is.** "Combine assets" is better aimed at genuinely redundant/duplicate files (see the audit starting below) than at undoing a verified, evidence-backed reduction for a request-count benefit that doesn't meaningfully exist on this connection. Flagging the reasoning here rather than silently overriding the new instruction -- if there's a reason to weight request count differently (e.g. if production ever serves over HTTP/1.1 unlike staging, worth confirming separately), happy to revisit.
+
+### Starting the in-theme audit
+
+New direction (S115): stay within the theme, find and remove redundant files/code, modernize, combine genuinely duplicate assets, and bring the codebase in line with WordPress Coding Standards where practical. Beginning with a redundant-files sweep.
