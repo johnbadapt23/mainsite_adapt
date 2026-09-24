@@ -9812,3 +9812,37 @@ Real critical-CSS extraction for a page-builder-driven site like this one is nor
 Consistent with the S105 decision on the remaining 6 CSS-split candidates: this is the same shape of problem (a sound-sounding technique that doesn't actually fit how this theme's content is authored) and I'm stopping at the scoping stage rather than hand-building an unsafe approximation. Recommending against manually inlining a guessed critical-CSS subset -- the failure mode is a visible, embarrassing layout break on the site's own homepage/header, which is a worse outcome than leaving the current (already-reduced, per S103) bundle fully blocking. A correct version of this is available but is a separate infrastructure project (automated per-page extraction + publish-time regeneration), not a quick follow-on to the work done in this engagement so far, and would need its own explicit scoping/sign-off given the size of that undertaking.
 
 No code changed this entry -- scoping and documentation only.
+
+---
+
+## §111 -- 2026-09-24: Scoped what an automated per-page critical-CSS pipeline would actually take -- buildable, but a genuinely separate infra project with its own new risk surface
+
+Investigation only, as directed ("Scope the automated critical-CSS infra project" -- selected after S110 concluded a static/hand-built version isn't safe). No code changed.
+
+### The hosting constraint that shapes everything else
+
+Confirmed from `deploy.yml`'s own documented history: staging (and by the same account setup, presumably production) is SFTP-only with shell access explicitly disabled ("Shell access is disabled" -- the reason `rsync` over SSH was ruled out for deploys in an earlier session). That rules out running a headless browser (Puppeteer/`critical`/`penthouse`) *on the server itself* -- there's no shell to run it in, and no Node runtime there regardless. Critical-CSS generation has to happen somewhere else (CI) and the result has to be *delivered* to the server, not computed on it.
+
+### No existing hook to build on
+
+Checked for any existing WordPress `save_post`/`transition_post_status` hook or outbound webhook call (`wp_remote_post`/`wp_remote_get`) anywhere in the theme: none exist. There's no precedent in this codebase for WordPress content changes triggering anything outside itself. This is greenfield, not an extension of something already there.
+
+### What the four pieces would actually be
+
+1. **Trigger** -- a new `save_post`/`transition_post_status` hook in `functions.php` (or a small must-use plugin) that fires on publish/update and calls GitHub's `repository_dispatch` API to kick a new workflow. Requires a GitHub Personal Access Token stored somewhere in WordPress (wp-config constant or an options field) -- a new credential the site doesn't currently hold, with its own exposure/rotation considerations.
+2. **Generation** -- a new GitHub Actions workflow (separate from `deploy.yml`, which only runs on `git push`) that runs Puppeteer/`critical` against the now-published live URL and produces a critical-CSS file keyed by post ID. Verified: no `critical`/`penthouse`/`puppeteer`/`playwright` dependency exists in `package.json` today (checked in S110) -- Chromium-in-CI is a well-trodden, working pattern on GitHub's `ubuntu-latest` runners, so this part is technically straightforward, just new.
+3. **Delivery** -- the generated file needs to reach the server. Routing it through the existing `git push` -> `deploy.yml` pipeline would mean every content publish creates an automated git commit, which pollutes the repo history this engagement has been keeping deliberately clean and legible, and would fire on every save regardless of whether a human is around to run this session's "pushed and deployed, please continue" verification loop. A direct SFTP upload of just the one generated file, from the new workflow, sidesteps that -- but is a second, independent path writing to the live server outside git entirely, which this engagement hasn't had before (everything so far goes through the git-tracked deploy pipeline).
+4. **Consumption** -- new `functions.php` logic: look up a critical-CSS file for the current page ID, inline it in `<head>`, defer the main bundle the same way footer/pagenavi/cookie-notice already are. Critical safety property: when no file exists yet for a page (the window right after a fresh publish, before generation finishes; or the generation job failed silently) the fallback must be to *not* defer -- serve today's fully-blocking bundle. That's strictly a missed optimization, never a visual regression, which is the same safety bar used for every change shipped this engagement.
+
+### Complications beyond the four pieces
+
+- **ACF Options-page edits** (global header/footer/nav content, used sitewide) would invalidate every previously generated critical-CSS file at once, not just one page's -- needs a "regenerate everything" full-site crawl path in addition to the per-page one, triggered by a different hook.
+- **Archive, search, and taxonomy pages** aren't a single `post_id` the way a page/post is, so the trigger and lookup keying needs a second scheme for those, not just "hook `save_post`, key by ID".
+- **Silent degradation risk**: because the safe fallback is "no worse than today," a broken generation job (expired PAT, a Puppeteer/Chromium update breaking the workflow, a rate limit) doesn't show up as a bug -- it shows up as the win quietly disappearing, on pages nobody's watching for it. This site has no monitoring today that would catch that.
+- **New credential surface**: a GitHub PAT living in WordPress config is a new thing to protect and rotate that doesn't exist in this engagement today.
+
+### Assessment
+
+Technically buildable -- nothing above is a hard blocker, and Puppeteer-in-CI critical-CSS generation is a standard, well-understood pattern elsewhere. But it's a genuinely separate infrastructure project layered on top of the theme: a new credential, a new non-git delivery path to the live server, a new CI workflow, and a new silent-failure mode to monitor -- not a natural extension of the theme-code changes made in this engagement so far, and not something to fold into the existing "commit locally, you push, I verify on staging" loop this session has been running. It needs its own explicit scope and sign-off (particularly the GitHub PAT in WordPress and the non-git SFTP write path) before any of it gets built, separate from this pass's day-to-day performance work.
+
+No code changed this entry -- scoping and documentation only.
