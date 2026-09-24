@@ -87,7 +87,27 @@ gulp.task('build:styles-footer', function () {
         .pipe(reload({ stream: true }));
 });
 
+
+gulp.task('build:styles-template-services', function () {
+    return gulp.src('source/scss/template-services.scss')
+        .pipe(prefixer())
+        .pipe(sassGlob())
+        .pipe(sass({
+            outputStyle: 'compressed',
+            sourceMap: false,
+            errLogToConsole: true
+        }))
+        .on('error', error.handler)
+        .pipe(cssmin({ level: { 1: { all: true }, 2: { all: true, restructureRules: true } } }))
+        .pipe(fixFloatNoneDisplay())
+        .pipe(splitOversizedRules())
+        .pipe(concat('template-services.min.css'))
+        .pipe(gulp.dest('assets/css/'))
+        .pipe(reload({ stream: true }));
+});
+
 gulp.task('build:styles-split', gulp.parallel(
     'build:styles-main-nofooter',
-    'build:styles-footer'
+    'build:styles-footer',
+    'build:styles-template-services'
 ));

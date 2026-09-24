@@ -361,6 +361,23 @@ function my_enqueue_scripts() {
         [ 'main-styles' ],
         filemtime(get_template_directory(). '/assets/css/footer.min.css')
     );
+    // Template CSS split (S103): main-nofooter.min.css used to bundle every
+    // page template's CSS into one file, so every page paid for every other
+    // page's styles. _services.scss (48KB source) is the first file moved
+    // out of that bundle into its own template-scoped stylesheet -- verified
+    // via a full selector-set diff (compiled main-nofooter.min.css minus
+    // this file, plus this file's own compiled output, produces exactly the
+    // same selector set the old single bundle did -- zero dropped, zero
+    // added) before this was enqueued. Only loaded on the one template that
+    // ever uses these selectors.
+    if ( is_page_template( 'template-services.php' ) ) {
+        wp_enqueue_style(
+            'template-services-styles',
+            get_template_directory_uri(). '/assets/css/template-services.min.css',
+            [ 'main-styles' ],
+            filemtime(get_template_directory(). '/assets/css/template-services.min.css')
+        );
+    }
     // Loading ~2 CDN scripts on the 60+ templates that never touch GSAP was
     // pure waste -- see adapt_page_needs_gsap().
     if ( adapt_page_needs_gsap() ) {
