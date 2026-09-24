@@ -10117,3 +10117,27 @@ This closes out S117's two follow-up items (S119's removal) with real confirmati
 ### Where this performance/cleanup pass stands
 
 Since redirecting to in-theme work (S115): ~13MB and 1,166 files removed from the repository (S117, confirmed zero live effect by design), plus a genuine ~51.6KB JS / ~14.8KB CSS reduction in what every page actually downloads (S119, confirmed live here). Combined with the earlier CSS-split and render-blocking work (S103-S109), this is a substantial, fully-verified set of wins with no outstanding regressions.
+
+---
+
+## §121 -- 2026-09-24: WordPress-standards pass -- escaped 21 unescaped href attribute outputs
+
+Addressing the "use WP standards" part of the direction (S115) that hadn't been touched yet. Checked whether a local PHPCS + WordPress Coding Standards setup was feasible first -- it isn't: no PHP interpreter is available in this environment (confirmed again), and no root/sudo access to install one (`apt-get`/`sudo` both refuse -- no dpkg lock permission, and this container has `no new privileges` set so sudo can't escalate even without a password). Proceeded with a manual, targeted audit instead of a blind mechanical rewrite.
+
+### What was checked
+
+A broad pass over `functions.php` for the most consequential WPCS categories: unescaped dynamic output, raw `$wpdb` query construction, and deprecated function usage.
+
+- **Unescaped output in HTML attribute context**: found `href="<?php echo get_field('...'); ?>"` -- ACF field values echoed directly into an `href` attribute with no escaping -- in `functions.php` (3 places: `linked_in_url` x1, `website_url` x2) and, once the pattern search was widened to `templates/`, in 18 more places across 17 files (`linked_in_url`, `linkedin`, `website_url`, `event_link`, `portal_url` fields). This is a genuine, if low-severity here (ACF-field, admin-authored content, not raw user input), XSS/attribute-injection risk class, and `esc_url()` is the standard, purpose-built WordPress fix for exactly this -- it's a no-op for any well-formed URL and only strips genuinely dangerous content, so this is safe to fix mechanically with zero behavior change for legitimate values. Fixed all 21 (3 + 18) via an exact-match/regex substitution that preserves each call's original field name and spacing, verified with an exact per-file replacement count and a before/after brace-and-paren balance check on every touched template file.
+- **`$wpdb` usage**: the handful of places `functions.php` builds SQL fragments (`JOIN`/`ORDER BY` clauses) use `$wpdb->posts`/`$wpdb->postmeta` table-name properties, not raw concatenated user input, and the one dynamic value (`$order_list`) is passed through `array_map('absint', ...)` before interpolation -- numeric-only, already sanitized. Nothing unsafe found here; a `$wpdb->prepare()`-purist WPCS linter would likely still flag the raw string concatenation stylistically, but there's no actual injection vector -- left alone rather than risk rewriting working SQL-fragment-building logic with no way to test it.
+- **Deprecated functions**: none found (`create_function`, `each`, `mysql_query`, `FILTER_SANITIZE_STRING` all absent).
+
+### Deliberately not touched
+
+- `get_field('speaker_details')`/`get_field('partner_details')` (functions.php) echo rich-text ACF fields directly, unescaped -- these are meant to render HTML formatting an editor entered, so `esc_html()` would visibly break them (encode the tags instead of rendering them) and `wp_kses_post()` would be the WPCS-correct fix, but that's a judgment call about which tags to allow, not a mechanical one -- left flagged rather than guessed at.
+- `get_field('speaker_form_script', 'options')`/`get_field('consulting_partners_form_script', 'options')` -- field names make clear these are meant to hold raw `<script>` embed snippets (same pattern as the HubSpot embed handling documented elsewhere in this theme), so escaping them would break the intended feature. Left alone.
+- Yoda-condition style (`if ( $x == 'foo' )` vs WPCS's preferred `if ( 'foo' == $x )`) -- purely stylistic, zero functional risk either way, but a full-file mechanical pass across ~1,750 lines of `functions.php` plus 50+ templates with no PHP linter to verify against is a large, low-value-per-unit-of-risk undertaking. Not attempted this round -- flagging as a candidate if the user wants a dedicated pass on it specifically.
+
+### Verification
+
+Every touched file's brace and paren counts confirmed balanced before/after. `git diff --stat` shows exactly one changed line per occurrence (two in the one file with two occurrences) -- no incidental changes. Still can't run a real PHP linter locally; this needs the usual confirm-deploy-then-check-staging pass, same as everything else, checking specifically that the affected LinkedIn/website/event-link buttons on speaker, partner, and event pages still link correctly.
