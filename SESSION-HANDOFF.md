@@ -9171,3 +9171,22 @@ Excluded as false positives (JS property assignment inside an already-`<script>`
 ### Status
 
 Survey only, no code changes. `git status` clean. Waiting on direction: whether to proceed with fixing these (and if so, whether to pilot the event-handler-nonce technique on one instance first before the full rollout, per the note above), leave it as documented/accepted, or something else.
+
+
+---
+
+## §86 -- 2026-09-24: pilot -- nonce-authorizing an inline event handler (the CSS preload onload= pattern)
+
+### Why this one first
+
+Per S85's survey, chose this as the pilot rather than any of the ~25 event-handler instances because it's the smallest, most self-contained one (3 occurrences total: 2 in `functions.php`'s `style_loader_tag` filters, 1 static in `header.php`), and it renders on literally every page of the site -- including `/adapt-vs-gartner/`, the page already used for every live check this engagement -- so verifying it needs no new test page. This is also the exact pattern already seen firing "Executing inline event handler violates..." live in earlier console checks (S78/S80), so a before/after comparison should be unambiguous.
+
+### What changed
+
+Both `functions.php` filters (`adapt_defer_pagenavi_css`, `adapt_defer_footer_css`) and `header.php`'s static `<link rel="preload">` tag for the skelet-icons stylesheet: added `nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>"` (or the equivalent string-concatenation form inside the PHP `preg_replace()` replacement) to the same shared per-request nonce used everywhere else, on the `<link>` element carrying the `onload="this.onload=null;this.rel='stylesheet'"` attribute. This tests whether CSP's nonce-authorizes-event-handler mechanism (a different code path than nonce-authorizes-script-tag, which is all that's been proven live so far) actually works the same way in this site's real browser traffic, per the caveat flagged in S85.
+
+Verify-before-write pattern as always: exact old string found the expected number of times (2 in `functions.php`, 1 in `header.php`), new string absent beforehand, `<?php`/`?>` tag counts checked (0 delta in `functions.php` -- addition is a string concatenation inside already-open PHP code; +1/+1 in `header.php` -- the new `<?php echo esc_attr(...); ?>` is a fresh inline block, matching the exact delta pattern from S75's header.php edit). `git diff` shows exactly the 3 expected one-line changes, closing `?>` in `functions.php` still last and unique.
+
+### Status
+
+Committed to `dev`, not yet pushed. Once pushed, plan: fresh single-tab cache-busted check on `/adapt-vs-gartner/`, looking specifically for the "Executing inline event handler violates..." violation to confirm it's gone, plus reading the `<link>` element's `.nonce` DOM property against the header nonce the same way S84 confirmed S83. If this pilot confirms the technique works live, the remaining ~22 event-handler instances and ~37 `<script>` tag instances from S85's inventory are the same mechanical fix, file by file.

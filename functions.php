@@ -477,7 +477,7 @@ function adapt_defer_pagenavi_css( $html, $handle ) {
     // quote character.
     $preload = preg_replace(
         '/rel=([\'"])stylesheet\1/',
-        'rel="preload" as="style" onload="this.onload=null;this.rel=\'stylesheet\'"',
+        'rel="preload" as="style" nonce="' . esc_attr( adapt_csp_nonce() ) . '" onload="this.onload=null;this.rel=\'stylesheet\'"',
         $html,
         1
     );
@@ -498,7 +498,7 @@ function adapt_defer_footer_css( $html, $handle ) {
     }
     $preload = preg_replace(
         '/rel=([\'"])stylesheet\1/',
-        'rel="preload" as="style" onload="this.onload=null;this.rel=\'stylesheet\'"',
+        'rel="preload" as="style" nonce="' . esc_attr( adapt_csp_nonce() ) . '" onload="this.onload=null;this.rel=\'stylesheet\'"',
         $html,
         1
     );

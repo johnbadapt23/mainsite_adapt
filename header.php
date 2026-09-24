@@ -51,7 +51,7 @@
      requests" audit) -- icon glyphs are never above-the-fold-critical the way
      main-nofooter.min.css is, so the standard preload+onload swap defers it off
      the blocking path. The <noscript> fallback keeps icons working with JS disabled. -->
-<link rel="preload" as="style" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" as="style" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>"></noscript>
 <link rel="apple-touch-icon" sizes="180x180" href="<?php echo get_template_directory_uri(); ?>/assets/images/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="<?php echo get_template_directory_uri(); ?>/assets/images/favicon-32x32.png">
