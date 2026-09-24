@@ -9952,3 +9952,29 @@ Until that's done, everything above stays exactly as inert as it is today -- con
 ### Live-verification note
 
 Nothing in this commit changes any page's rendered output, enqueued assets, or HTTP responses -- the entire change is either new files nothing references yet (`tools/critical-css/`, `.github/workflows/critical-css.yml`) or PHP gated on an undefined constant. The usual "check staging after deploy" step for this one is confirming the site still loads normally and `main-nofooter.min.css` is still a plain blocking stylesheet, exactly as before -- not a new behaviour to verify.
+
+---
+
+## §114 -- 2026-09-24: dropped the GitHub PAT/webhook trigger entirely -- you were right, it was overengineered
+
+You pushed back on whether the PAT was really necessary. It wasn't. Checked page counts instead of defending the original design.
+
+### What the check showed
+
+Queried staging's own `/wp-json/wp/v2/pages` (72 published pages total, confirmed complete -- no page 2). Of those, ~42 use one of the 17 flexible-content templates from S110 -- the only templates that actually need this pipeline. That's small enough that a scheduled job can regenerate critical CSS for every one of those 42 pages, every run, in a few minutes -- no need to track "what changed since last time" at all.
+
+### What that removes
+
+The entire trigger side built in S113 -- the `save_post`/`acf/save_post` hooks, the WP-Cron batching, `adapt_dispatch_critical_css_regen()`'s call to GitHub's `repository_dispatch` API, and the GitHub PAT that logic needed stored in `wp-config.php` -- is gone. Removed from `functions.php` (180 lines, brace-balance re-confirmed at 147/147, matching the consumption-only baseline from before S113's trigger code was added). No WordPress code change is needed at all now, no new credential, and nothing left blocked on server-side access I don't have.
+
+### What replaced it
+
+`.github/workflows/critical-css.yml` now runs on a `schedule` (`cron: '*/30 * * * *'`) instead of `repository_dispatch`, still keeping `workflow_dispatch` for manual testing. `tools/critical-css/generate.js` now self-discovers what to generate by querying staging's WP REST API directly and filtering to the 17 flexible templates (`discoverPages()`), rather than waiting for WordPress to tell it what changed. This also automatically covers the ACF Options-page case S111/S112 flagged as needing separate detection logic -- since every run regenerates everything, a sitewide header/footer field change is picked up on the very next scheduled run with no special-casing needed.
+
+### A mistake caught before it shipped
+
+Hand-writing the new workflow's top comment block, two lines used `//` instead of `#` for a YAML comment -- caught immediately by re-running the same `python3 -c "import yaml; yaml.safe_load(...)"` validation used when this file was first created, before it was ever committed. Matches this engagement's established discipline of verifying mechanically rather than by eye wherever a mechanical check exists.
+
+### Net effect
+
+Same outcome (critical CSS generated and deployed automatically, safe fallback unchanged, nothing live changes until `assets/critical/` actually has files in it), fewer moving parts, no new credential, no code I couldn't verify. The 30-minute cadence is a starting point, not a commitment -- easy to widen or narrow once real run times are observed.
