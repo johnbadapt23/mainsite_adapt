@@ -539,6 +539,43 @@ function adapt_defer_footer_css( $html, $handle ) {
 }
 add_filter( 'style_loader_tag', 'adapt_defer_footer_css', 10, 2 );
 
+// Same preload+onload deferred-load technique again (S107), applied to the
+// Cookie Notice plugin's stylesheet (registered handle
+// 'cookie-notice-front' -- confirmed live via the rendered <link
+// id="cookie-notice-front-css">). This one wasn't caught by Lighthouse the
+// way wp-pagenavi was; found it during a general render-blocking-request
+// audit -- it's a small (5.8KB) stylesheet for a cookie-consent banner
+// that isn't part of the page's actual layout: the banner is a
+// fixed-position overlay the plugin's own JS shows after page load
+// regardless, not server-rendered content sitting in the initial flow, so
+// there's nothing for its CSS arriving a few milliseconds late to visibly
+// disrupt. Deliberately NOT doing the same for Download Monitor's
+// 'dlm-frontend' stylesheet (26.9KB) even though it looked like an
+// equally easy target: unlike pagenavi/footer/this cookie banner, its
+// position on a page isn't structurally fixed -- a content editor can
+// place a "download" block anywhere in a page's ACF flexible content,
+// including first, and there's no reliable way to confirm today that no
+// current or future page ever does that. Deferring it could cause a real
+// visible flash on whichever page eventually does, with no code change to
+// flag it -- exactly the failure mode this technique should never risk,
+// so it's left alone.
+function adapt_defer_cookie_notice_css( $html, $handle ) {
+    if ( 'cookie-notice-front' !== $handle ) {
+        return $html;
+    }
+    $preload = preg_replace(
+        '/rel=([\'"])stylesheet\1/',
+        'rel="preload" as="style" nonce="' . esc_attr( adapt_csp_nonce() ) . '"',
+        $html,
+        1
+    );
+    if ( null === $preload || $preload === $html ) {
+        return $html;
+    }
+    return $preload . '<noscript>' . $html . '</noscript>';
+}
+add_filter( 'style_loader_tag', 'adapt_defer_cookie_notice_css', 10, 2 );
+
 // WordPress core enqueues wp-block-library CSS (~18KB, render-blocking) on
 // every single page regardless of whether Gutenberg block markup is actually
 // present. This theme's pages are built entirely through ACF flexible
