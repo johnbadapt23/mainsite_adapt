@@ -1,0 +1,82 @@
+name: Generate Critical CSS
+
+# Generates per-page critical CSS (SESSION-HANDOFF.md S111/S112) and
+# uploads it directly to staging's assets/critical/ directory -- NOT
+# through the normal git-tracked deploy.yml pipeline. assets/critical/ is
+# gitignored on purpose (see .gitignore): these are generated artifacts,
+# not source, and routing them through a git commit would mean every
+# content publish on the live site creates an automated commit in this
+# repo's history.
+#
+# NOT yet wired to a live trigger. The plan (S112) is a WordPress
+# save_post/ACF-options hook firing GitHub's repository_dispatch API, which
+# needs a GitHub PAT stored in wp-config.php on the server -- that PAT does
+# not exist yet, so `repository_dispatch` never fires today. This workflow
+# can be exercised manually right now via workflow_dispatch to validate the
+# generation + upload pieces independently of the still-unbuilt trigger.
+#
+# Deliberately isolated from the theme's own package.json: this workflow's
+# `npm ci` runs inside tools/critical-css/, which has its own
+# package.json/package-lock.json pinning `critical` (pulls in Puppeteer +
+# Chromium). deploy.yml's own `npm ci` at the repo root never sees this
+# dependency, so ordinary theme deploys don't pay for a Chromium download
+# they don't need.
+
+on:
+  repository_dispatch:
+    types: [critical-css-regen]
+  workflow_dispatch:
+    inputs:
+      items_json:
+        description: 'JSON array of {"post_id":123,"url":"https://staging.adapt.com.au/..."} objects to generate critical CSS for'
+        type: string
+        required: true
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: tools/critical-css/package-lock.json
+
+      - name: Install critical-css tooling
+        working-directory: tools/critical-css
+        run: npm ci --no-audit --no-fund
+
+      # repository_dispatch payloads arrive as JSON already (client_payload
+      # is an object, not a string), so it's re-serialized here with
+      # toJSON() to hand the script the same --payload string shape either
+      # way this workflow is triggered.
+      - name: Generate critical CSS
+        working-directory: tools/critical-css
+        env:
+          ITEMS_JSON: ${{ github.event.inputs.items_json || toJSON(github.event.client_payload.items) }}
+        run: node generate.js --payload "$ITEMS_JSON"
+
+      # sync: 'full' is required here, not 'delta' -- delta mode determines
+      # what changed via `git diff` against this repo's git history (see
+      # deploy.yml's own extensive comment on this action), and
+      # assets/critical/*.css is gitignored, so it never appears in git
+      # history at all. Delta would silently upload nothing, every run.
+      # Scoping local-path/remote-path to just this one directory keeps a
+      # 'full' sync fast and harmless (it only ever touches this subtree,
+      # never the rest of the theme).
+      - name: Deploy critical CSS to staging
+        uses: milanmk/actions-file-deployer@master
+        with:
+          remote-protocol: 'sftp'
+          remote-host: ${{ vars.STAGING_HOST }}
+          remote-port: ${{ vars.STAGING_PORT || 22 }}
+          remote-user: ${{ secrets.STAGING_USERNAME }}
+          remote-password: ${{ secrets.STAGING_PASS }}
+          local-path: './assets/critical/'
+          remote-path: '${{ vars.STAGING_REMOTE_PATH || secrets.STAGING_REMOTE_PATH }}/assets/critical'
+          sync: 'full'

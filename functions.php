@@ -576,6 +576,253 @@ function adapt_defer_cookie_notice_css( $html, $handle ) {
 }
 add_filter( 'style_loader_tag', 'adapt_defer_cookie_notice_css', 10, 2 );
 
+// Critical-CSS defer for the main bundle (S112 plan, not yet active -- see
+// SESSION-HANDOFF.md S110/S111/S112). Mirrors the same preload+onload
+// technique as adapt_defer_pagenavi_css()/adapt_defer_footer_css()/
+// adapt_defer_cookie_notice_css() above, but ONLY when a matching
+// critical-CSS file exists for the current page (see
+// adapt_get_critical_css_path() and adapt_inline_critical_css() below).
+// assets/critical/ does not exist on the server yet -- the generation
+// pipeline described in S111/S112 hasn't been built -- so
+// adapt_get_critical_css_path() always returns false right now, this
+// filter always returns $html unchanged, and main-nofooter.min.css keeps
+// loading exactly as it does today. This is deliberate: the fallback (no
+// critical file for this page -> never defer) is the one non-negotiable
+// safety property of this feature. It must never be possible for the main
+// bundle to be deferred without its matching critical CSS actually being
+// inlined first -- that combination is a guaranteed flash of unstyled
+// content on a live page.
+function adapt_get_critical_css_path() {
+    $post_id = get_queried_object_id();
+    if ( ! $post_id ) {
+        return false;
+    }
+    $path = get_template_directory() . '/assets/critical/' . absint( $post_id ) . '.css';
+    return file_exists( $path ) ? $path : false;
+}
+
+function adapt_defer_main_css( $html, $handle ) {
+    if ( 'main-styles' !== $handle ) {
+        return $html;
+    }
+    if ( ! adapt_get_critical_css_path() ) {
+        return $html;
+    }
+    $preload = preg_replace(
+        '/rel=([\'"])stylesheet\1/',
+        'rel="preload" as="style" nonce="' . esc_attr( adapt_csp_nonce() ) . '"',
+        $html,
+        1
+    );
+    if ( null === $preload || $preload === $html ) {
+        return $html;
+    }
+    return $preload . '<noscript>' . $html . '</noscript>';
+}
+add_filter( 'style_loader_tag', 'adapt_defer_main_css', 10, 2 );
+
+// Inlines the matching critical-CSS file (if any) as early in <head> as
+// possible -- priority 1 runs before wp_head()'s own output (the default
+// priority 10 hook called in header.php), and therefore before the <link>
+// tag adapt_defer_main_css() rewrites, so the inline styles are already
+// parsed by the time the browser reaches the deferred stylesheet. No-ops
+// completely while assets/critical/ is empty (see the comment above
+// adapt_get_critical_css_path()).
+function adapt_inline_critical_css() {
+    $path = adapt_get_critical_css_path();
+    if ( ! $path ) {
+        return;
+    }
+    $css = file_get_contents( $path );
+    if ( false === $css || '' === trim( $css ) ) {
+        return;
+    }
+    echo '<style id="adapt-critical-css">' . $css . '</style>';
+}
+add_action( 'wp_head', 'adapt_inline_critical_css', 1 );
+
+// ---------------------------------------------------------------------
+// Critical-CSS regen trigger (S112 plan). Everything below is gated on
+// ADAPT_GITHUB_CRITICAL_CSS_PAT being defined as a constant in
+// wp-config.php on the server -- it is NOT defined today, so every
+// function here returns on its very first line and none of this runs.
+// Landing it now is safe regardless of any bug in the logic below, since
+// none of that logic is reachable until the constant exists. Once it is
+// added, this needs its own first live-verification pass (checking the
+// PHP/debug log for errors on a real publish) before it's trusted -- it
+// has not been tested against a running WordPress instance.
+//
+// Flow: save_post / acf/save_post queue pending work into two options
+// (adapt_critical_css_pending_ids, adapt_critical_css_regen_all) instead
+// of calling the GitHub API directly, so an editor saving the same page
+// repeatedly while working on it doesn't fire one API call per save. A
+// WP-Cron event every 5 minutes drains the queue into a single
+// repository_dispatch call. See SESSION-HANDOFF.md S112 for the full
+// design and the remaining manual step (creating the PAT and adding it to
+// wp-config.php) needed before any of this activates.
+// ---------------------------------------------------------------------
+
+function adapt_flexible_content_templates() {
+    // The 17 templates confirmed in S110/S112 to dispatch through ACF's
+    // have_rows('content_blocks') -- these are the only templates whose
+    // above-the-fold content is chosen per-page by a content editor rather
+    // than fixed in the template's own code, so they're the only ones this
+    // dynamic pipeline needs to cover.
+    return array(
+        'templates/template-edge-events.php',
+        'templates/template-event-partner-landing.php',
+        'templates/template-event-partner.php',
+        'templates/template-executive-roundtables.php',
+        'templates/template-flexible-nov.php',
+        'templates/template-flexible.php',
+        'templates/template-home-nov.php',
+        'templates/template-home.php',
+        'templates/template-landing.php',
+        'templates/template-market-buyer.php',
+        'templates/template-market.php',
+        'templates/template-resource.php',
+        'templates/template-services.php',
+        'templates/template-subscribe.php',
+        'templates/template-thank-you-new.php',
+        'templates/template-thank-you.php',
+        'templates/template-thankyou.php',
+    );
+}
+
+function adapt_queue_critical_css_regen( $post_id, $post, $update ) {
+    if ( ! defined( 'ADAPT_GITHUB_CRITICAL_CSS_PAT' ) ) {
+        return;
+    }
+    if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+        return;
+    }
+    if ( 'publish' !== get_post_status( $post_id ) ) {
+        return;
+    }
+    if ( ! is_page_template( adapt_flexible_content_templates(), $post_id ) ) {
+        return;
+    }
+    $pending = get_option( 'adapt_critical_css_pending_ids', array() );
+    if ( ! is_array( $pending ) ) {
+        $pending = array();
+    }
+    if ( ! in_array( $post_id, $pending, true ) ) {
+        $pending[] = $post_id;
+        update_option( 'adapt_critical_css_pending_ids', $pending, false );
+    }
+}
+add_action( 'save_post', 'adapt_queue_critical_css_regen', 10, 3 );
+
+function adapt_queue_critical_css_regen_all( $post_id ) {
+    if ( ! defined( 'ADAPT_GITHUB_CRITICAL_CSS_PAT' ) ) {
+        return;
+    }
+    // ACF's options-page save_post hook fires with the literal string
+    // 'options' as $post_id, not a numeric post ID (confirmed via ACF's
+    // own documentation for acf_add_options_page() -- this theme's single
+    // global options page, registered in includes/_setup.php, uses the
+    // default 'options' id since no custom post_id was passed to that
+    // call). A change here means the sitewide header/footer/nav fields
+    // could have changed, which every previously generated critical-CSS
+    // file assumes hasn't -- so this queues a full regen rather than a
+    // single post ID.
+    if ( 'options' !== $post_id ) {
+        return;
+    }
+    update_option( 'adapt_critical_css_regen_all', true, false );
+}
+add_action( 'acf/save_post', 'adapt_queue_critical_css_regen_all', 20 );
+
+function adapt_add_critical_css_cron_schedule( $schedules ) {
+    if ( ! isset( $schedules['adapt_five_minutes'] ) ) {
+        $schedules['adapt_five_minutes'] = array(
+            'interval' => 300,
+            'display'  => __( 'Every 5 minutes (adapt critical-CSS regen)' ),
+        );
+    }
+    return $schedules;
+}
+add_filter( 'cron_schedules', 'adapt_add_critical_css_cron_schedule' );
+
+function adapt_schedule_critical_css_cron() {
+    if ( ! defined( 'ADAPT_GITHUB_CRITICAL_CSS_PAT' ) ) {
+        return;
+    }
+    if ( ! wp_next_scheduled( 'adapt_critical_css_cron_event' ) ) {
+        wp_schedule_event( time(), 'adapt_five_minutes', 'adapt_critical_css_cron_event' );
+    }
+}
+add_action( 'init', 'adapt_schedule_critical_css_cron' );
+
+function adapt_dispatch_critical_css_regen() {
+    if ( ! defined( 'ADAPT_GITHUB_CRITICAL_CSS_PAT' ) ) {
+        return;
+    }
+
+    $regen_all   = get_option( 'adapt_critical_css_regen_all', false );
+    $pending_ids = get_option( 'adapt_critical_css_pending_ids', array() );
+    if ( ! is_array( $pending_ids ) ) {
+        $pending_ids = array();
+    }
+
+    if ( ! $regen_all && empty( $pending_ids ) ) {
+        return;
+    }
+
+    $payload = array( 'event_type' => 'critical-css-regen' );
+
+    if ( $regen_all ) {
+        $payload['client_payload'] = array( 'regen_all' => true );
+    } else {
+        $items = array();
+        foreach ( $pending_ids as $id ) {
+            $url = get_permalink( $id );
+            if ( $url ) {
+                $items[] = array( 'post_id' => $id, 'url' => $url );
+            }
+        }
+        if ( empty( $items ) ) {
+            update_option( 'adapt_critical_css_pending_ids', array(), false );
+            return;
+        }
+        $payload['client_payload'] = array( 'items' => $items );
+    }
+
+    $response = wp_remote_post(
+        'https://api.github.com/repos/johnbadapt23/mainsite_adapt/dispatches',
+        array(
+            'headers' => array(
+                'Authorization' => 'token ' . ADAPT_GITHUB_CRITICAL_CSS_PAT,
+                'Accept'        => 'application/vnd.github+json',
+                'User-Agent'    => 'adapt-theme-critical-css-trigger',
+                'Content-Type'  => 'application/json',
+            ),
+            'body'    => wp_json_encode( $payload ),
+            'timeout' => 15,
+        )
+    );
+
+    // Clear the queue regardless of outcome -- a persistent GitHub API
+    // failure (expired PAT, rate limit) should not make this option grow
+    // forever; the next content save re-queues that page naturally. Errors
+    // are logged, not auto-retried (see SESSION-HANDOFF.md S111's note on
+    // this being a silent-failure risk that still needs real monitoring).
+    update_option( 'adapt_critical_css_pending_ids', array(), false );
+    update_option( 'adapt_critical_css_regen_all', false, false );
+
+    if ( is_wp_error( $response ) ) {
+        error_log( 'adapt_dispatch_critical_css_regen: wp_remote_post failed: ' . $response->get_error_message() );
+        return;
+    }
+    $code = wp_remote_retrieve_response_code( $response );
+    if ( $code < 200 || $code >= 300 ) {
+        error_log( 'adapt_dispatch_critical_css_regen: GitHub API returned HTTP ' . $code . ': ' . wp_remote_retrieve_body( $response ) );
+    }
+}
+add_action( 'adapt_critical_css_cron_event', 'adapt_dispatch_critical_css_regen' );
+
+
+
 // WordPress core enqueues wp-block-library CSS (~18KB, render-blocking) on
 // every single page regardless of whether Gutenberg block markup is actually
 // present. This theme's pages are built entirely through ACF flexible
