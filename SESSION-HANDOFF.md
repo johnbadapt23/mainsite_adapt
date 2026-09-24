@@ -9521,3 +9521,24 @@ Verify-before-write, whole-file brace/paren/`<?php`-`?>` balance checked against
 Committed to `dev` as `0b911f7`, not yet pushed. Unlike S98, this one IS backed by a genuine live reproduction (found via a sitemap-wide sweep, not a lucky page hit) -- once pushed, re-check the same homepage video: scroll it into view, confirm `readyState` advances past 0 and `currentTime` actually progresses, not just that the console violation disappears (S96's first attempt taught this lesson: a missing console error is not proof of success, functional confirmation is).
 
 `query-monitor.js` remains the one deliberately untouched, admin-only item.
+
+
+---
+
+## §100 -- 2026-09-24: S99 confirmed working live -- homepage video genuinely plays
+
+Confirmed `141f004` (S99) is live: `origin/dev` matched local HEAD. Live-checked the same homepage autoplay video in a fresh tab.
+
+### Before calling this done
+
+Learned the lesson from S96 explicitly rather than repeating it: a quiet console is not proof of success. Went past "no violation logged" to actual playback state:
+- `readyState` went from `0` (`HAVE_NOTHING`, blocked) before S99 to `4` (`HAVE_ENOUGH_DATA`, fully buffered) after.
+- `networkState` went from `3` (`NETWORK_NO_SOURCE`) to `1` (`NETWORK_IDLE` -- finished loading).
+- Called `.play()` directly and waited: `currentTime` advanced to `2.0` out of an `8.64`s clip, `paused: false`. The video is not just "not blocked" -- it genuinely plays.
+- Zero console messages matching "vimeo" this time (there were none to begin with in this check, versus the explicit `media-src` violation for `download-video-ak.vimeocdn.com` seen in S99's own investigation).
+
+### Status
+
+This closes out the Vimeo `media-src` chain: S98 found the real code pattern but couldn't reproduce it live and only allowlisted `player.vimeo.com`; S99 found it live on the homepage itself via a sitemap sweep and fixed the actual redirect-target host (`*.vimeocdn.com`); this confirms S99's fix works end to end, not just "no error in console" but genuine video playback.
+
+Everything opened in this CSP enforcement effort (S90 investigation through S95 enforcement switch, S96-S99's three rounds of post-enforcement fixes) is now confirmed closed and working live: HubSpot forms (connect-src), inline event handler attributes (moved to capture-phase JS, race-free), and Vimeo video playback (media-src, correct redirect target). The only remaining known, deliberately untouched item is `query-monitor.js` being blocked for logged-in admins with that debug plugin active -- does not affect real visitors, not treated as in scope for this effort.
