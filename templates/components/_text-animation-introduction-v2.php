@@ -605,7 +605,15 @@ section.logo-ticker-tape .band-container-backwards:after {
   var running = false;
 
   function getScrollY() {
-    return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    // S129 fix -- the previous `window.pageYOffset || document.documentElement.scrollTop || ...`
+    // chain treats 0 as falsy, so at scroll position 0 (exactly where Lighthouse audits: page
+    // just loaded, never scrolled) it fell through to document.documentElement.scrollTop and
+    // document.body.scrollTop -- both classic forced-synchronous-layout properties -- on every
+    // single animation frame, right after the previous frame's style.transform write. That was
+    // the actual forced-reflow source (not fixed by the IntersectionObserver visibility gating
+    // alone, since this hero section is visible immediately with zero scroll). pageYOffset alone
+    // is universally supported and does not force layout.
+    return window.pageYOffset || 0;
   }
 
   var lastScrollY = getScrollY();
