@@ -9356,3 +9356,22 @@ Verify-before-write and whole-file brace/paren/`<?php`-`?>` balance checks as al
 ### Status
 
 Committed to `dev`, not yet pushed. This is the second attempt at the same mechanism, so it gets the same "prove it, don't assume it" treatment as the first: push, then live-verify in a fresh tab that `cookie-notice`, `download-monitor`, and the HubSpot embed are actually nonced this time, before going anywhere near reconsidering enforcement.
+
+
+---
+
+## §94 -- 2026-09-24: S93 confirmed working live -- all known script-src gaps closed, no corruption found
+
+Confirmed `5a7336a` (S93) is live: `origin/dev` matches local HEAD. Live-checked two pages of different template types.
+
+### `/adapt-vs-gartner/`
+`cookie-notice/front.min.js`, `download-monitor/dlm-xhr.min.js`, and the `js-ap1.hsforms.net` HubSpot embed all now carry the nonce and match the header nonce exactly (41 of 66 scripts nonced, up from 30 before this fix). Zero un-nonced event-handler elements. Zero console errors. The HubSpot form itself renders correctly (7 child elements, populated iframe) -- functional proof, not just attribute presence.
+
+### Customer-story page
+Same result: `cookie-notice`/`download-monitor` both nonced and matching (37 of 58 scripts nonced). Zero un-nonced handlers, zero console errors, zero visible `nonce="` leakage into rendered body text (a check specifically for the regex-corruption risk named in S92/S93's own code comments). Checked the one element where a false-positive regex match would actually matter -- the page's JSON-LD structured-data block -- directly: still valid JSON (`JSON.parse` succeeds), all 4 expected `@graph` types present (`WebPage`, `BreadcrumbList`, `WebSite`, `Organization`), nonce harmlessly added to it same as everything else.
+
+### Status
+
+Both S91's original fixes (frame-src, connect-src) and S92/S93's full-page nonce buffer are now genuinely confirmed working live, not just deployed. No corruption found anywhere checked. Every script-src, frame-src, and connect-src gap identified across S90-S93 is closed. The known, deliberately out-of-scope gaps remain: plugin-injected inline scripts that live nowhere in this repo (HubSpot tracking's own dataLayer bootstrap, Facebook Pixel base code, etc. -- documented back in S90), and the residual small risk the S92/S93 comments already name explicitly (the regex can't distinguish a real `<script>` tag from the literal text `<script` inside a JS string/JSON value elsewhere on a page -- not something a page-by-page check can rule out for every possible page on the site, only reduce confidence in).
+
+This is the "one more live pass" the user asked for before reconsidering enforcement. Reporting back to ask whether to proceed with flipping `Content-Security-Policy-Report-Only` to enforcing `Content-Security-Policy`.
