@@ -9249,3 +9249,27 @@ Post-write verification: `git diff --stat` showed exactly 37 insertions / 37 del
 ### Status
 
 This closes S85's full inventory -- both the ~25 inline event-handler attributes (S86 pilot + S88 rollout) and the ~37 raw `<script>` tags (this entry) are now nonced. Combined with S75's original 5 `header.php` tags and S83's `wp_localize_script` filter, every gap identified across this whole multi-session CSP effort should now be closed. Committed to `dev`, not yet pushed. Next: push, then live verification on `/adapt-vs-gartner/` (and ideally one or two of the less-common template pages this batch touched, e.g. a customer-story or single-post page, since most of this batch's elements don't render on the gartner comparison page used for every check so far) -- console violation check plus spot-checking a handful of `.nonce` DOM properties against the header nonce, the same method as S84/S87.
+
+
+---
+
+## §90 -- 2026-09-24: S89 live verification -- both S85 gap categories confirmed closed
+
+Confirmed `9c3b3e9` (S89) is live: `origin/dev` matches local HEAD. Live checks on two pages: `/adapt-vs-gartner/` (used for every check this whole engagement) and, since most of S89's ~26 files don't render there, `/customer-stories/pathfindr-accelerates-growth-pipeline-through-adapt-edge-events` (exercises `single-customer_stories.php`'s `copyJobLink()` script block plus `footer.php`'s modernizr/LinkedIn tags, which render on every page).
+
+### `/adapt-vs-gartner/`
+Full-page DOM scan: 0 elements with an un-nonced event-handler attribute; 32 of 69 `<script>` tags carry a nonce, and every one of those 32 matches the response's own CSP header nonce exactly (checked via a fresh no-store fetch of the same URL, not a cached/stale header). No drift, no mismatches.
+
+### Customer-story page
+- `single-customer_stories.php`'s `copyJobLink()` `<script>` block (one of S89's 37 instances): found, `nonce` attribute present, `.nonce` DOM property matches the header nonce.
+- `footer.php`'s modernizr `<script async src>` and both LinkedIn Insight Tag inline blocks (also S89 instances): all three confirmed nonced and matching.
+- Functional proof carried over from S86/S87 still holds here: all 3 `<link rel="preload">` elements (skelet-icons, wp-pagenavi, footer-styles) had flipped to `rel="stylesheet"` by page load, confirming their nonced `onload` handlers still execute correctly on this page too.
+- All 8 elements on this page carrying an event-handler attribute (`ClearFields()` x2, `copyJobLink()` x3, the 3 preload `onload`s) show `hasNonceAttr: true` with `.nonce` matching the header nonce -- consistent with S87/S88.
+
+### One thing worth recording: remaining console violations on the customer-story page are out of theme scope, not a gap in this work
+
+The console still logged a handful of "Executing inline script" / "Executing inline event handler" violations on this page (same imprecise-counter behavior documented in S87 -- doesn't map 1:1 to actual un-nonced elements). Investigated with the same DOM-scan method as before: every element genuinely carrying an event handler is correctly nonced (see above). The un-nonced inline `<script>` blocks that remain (`_hsq.push(...)`, the GTM `dataLayer` bootstrap IIFE, the Facebook Pixel base code, a JSON-LD structured-data block, an McAfee/trust-badge snippet) were checked against the theme repo with `grep -rl` for their distinctive text and **found in none of it** -- confirming they're injected by plugins (HubSpot tracking, Facebook Pixel, an SEO plugin's JSON-LD, etc.), not theme code, and so aren't reachable by the `wp_inline_script_attributes`/`style_loader_tag`/hand-nonce techniques used throughout this effort (same category as the already-documented cookie-notice/download-monitor plugin script-src gaps). Not a regression or an oversight in S89 -- genuinely out of this repo's reach.
+
+### Status
+
+Both halves of S85's survey (event handlers: S86/S88; raw `<script>` tags: S89) are now verified live, not just committed. Per the earlier assessment, this closes out the full CSP Report-Only gap-closure effort for everything reachable from within this theme repo. Remaining known gaps are all plugin-sourced (outside this repo) and were already flagged as such in earlier sessions. Enforcing CSP (switching off Report-Only) remains explicitly out of scope pending separate sign-off.
