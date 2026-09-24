@@ -1735,6 +1735,21 @@ add_action( 'template_redirect', 'adapt_start_script_nonce_buffer', 0 );
 // header back to Content-Security-Policy-Report-Only (one-line change),
 // which immediately stops blocking anything while this gets investigated.
 function adapt_csp_header() {
+    // S123 fix -- this header was firing on every request via send_headers,
+    // including /wp-admin/ and /wp-login.php, but adapt_apply_script_nonce_buffer
+    // (the thing that adds the matching nonce= to <script> tags so this
+    // policy's strict-dynamic/nonce requirement doesn't just block them) only
+    // runs on template_redirect, a front-end-only hook. Confirmed live: this
+    // was silently blocking wp-admin's own scripts (Query Monitor's JS, and
+    // almost certainly whatever inline script WordPress core or a plugin
+    // outputs on wp-login.php for autofocus/layout), with no protective
+    // benefit there since this policy was only ever designed and verified
+    // against this theme's own front-end template output (S90-S95). Scoping
+    // it to the front end only, same as the nonce buffer already is.
+    if ( is_admin() || 'wp-login.php' === $GLOBALS['pagenow'] ) {
+        return;
+    }
+
     $csp = "default-src 'self'; "
         . "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' 'nonce-" . adapt_csp_nonce() . "' https://cdnjs.cloudflare.com https://unpkg.com https://js.hsforms.net https://js.hs-scripts.com https://www.googletagmanager.com https://formcrafts.com; "
         . "style-src 'self' 'unsafe-inline'; "
