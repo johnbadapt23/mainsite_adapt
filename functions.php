@@ -368,9 +368,22 @@ function my_enqueue_scripts() {
     // via a full selector-set diff (compiled main-nofooter.min.css minus
     // this file, plus this file's own compiled output, produces exactly the
     // same selector set the old single bundle did -- zero dropped, zero
-    // added) before this was enqueued. Only loaded on the one template that
-    // ever uses these selectors.
-    if ( is_page_template( 'template-services.php' ) ) {
+    // added) before this was enqueued.
+    // S104 correction: template-market-buyer.php's own ACF flexible-content
+    // field reuses the exact same templates/services-components/* partials
+    // as template-services.php (_introduction, _two-column-image-text,
+    // _three-column-icon-text, _services-cards, _two-column-switcher,
+    // _background-stats, _services-accordion, _two-column-animation --
+    // confirmed via grep, these are the only two templates that reference
+    // that directory at all). No live market-buyer page currently has one
+    // of those layout blocks enabled, so nothing was actually broken, but
+    // enqueueing on template-services.php alone meant a content editor
+    // enabling one of those blocks on the market-buyer page would silently
+    // ship unstyled markup with no code change to flag it. Loading this
+    // stylesheet on both templates costs the market-buyer page nothing it
+    // doesn't already need if it ever uses one of the shared layouts, and
+    // costs it nothing extra otherwise beyond one small cached file.
+    if ( is_page_template( array( 'template-services.php', 'template-market-buyer.php' ) ) ) {
         wp_enqueue_style(
             'template-services-styles',
             get_template_directory_uri(). '/assets/css/template-services.min.css',
