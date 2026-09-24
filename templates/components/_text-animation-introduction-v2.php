@@ -582,7 +582,19 @@ section.logo-ticker-tape .band-container-backwards:after {
 </section>
 <script nowprocket nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 (function () {
+  // S128 fix -- this loop used to call requestAnimationFrame(tick) forever,
+  // unconditionally, from the moment the page loaded, reading scroll
+  // position and writing style.transform on every single frame even while
+  // this section was scrolled far off-screen. That's exactly what
+  // Lighthouse's forced-reflow audit was pointing at. Now: skip it
+  // entirely for prefers-reduced-motion, and only run the loop while the
+  // art is actually visible, pausing it via IntersectionObserver rather
+  // than burning a frame budget and forcing scroll reads indefinitely.
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var orbits = document.querySelectorAll('.orbit-circle');
+  if (reducedMotion || !orbits.length) {
+    return;
+  }
 
   var rotation = 0;          // current angle, degrees
   var idleSpeed = 0.0011;     // deg/ms — baseline speed when idle, clockwise (~1.1 deg/sec)
@@ -590,6 +602,7 @@ section.logo-ticker-tape .band-container-backwards:after {
   var scrollKick = 0.0011;   // deg/ms of boost added per px scrolled (either direction)
   var maxBoost = 0.008;       // cap so a huge flick-scroll doesn't spin it out of control
   var boostHalfLife = 400;   // ms for the boost to decay back toward 0 once scrolling stops
+  var running = false;
 
   function getScrollY() {
     return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
@@ -634,6 +647,10 @@ section.logo-ticker-tape .band-container-backwards:after {
   }
 
   function tick(now) {
+    if (!running) {
+      return;
+    }
+
     var dt = Math.min(now - lastTime, 100); // clamp huge gaps (tab switch, etc.)
     lastTime = now;
 
@@ -651,6 +668,33 @@ section.logo-ticker-tape .band-container-backwards:after {
 
     requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick);
+
+  function start() {
+    if (running) {
+      return;
+    }
+    running = true;
+    lastTime = performance.now();
+    requestAnimationFrame(tick);
+  }
+
+  var visibilityTarget = document.querySelector('.art-wrap');
+  if ('IntersectionObserver' in window && visibilityTarget) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          start();
+        } else {
+          running = false;
+        }
+      });
+    });
+    observer.observe(visibilityTarget);
+  } else {
+    // No IntersectionObserver support, or the container wasn't found --
+    // fall back to the previous always-on behaviour rather than never
+    // animating at all.
+    start();
+  }
 })();
 </script>
