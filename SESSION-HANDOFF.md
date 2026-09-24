@@ -9978,3 +9978,15 @@ Hand-writing the new workflow's top comment block, two lines used `//` instead o
 ### Net effect
 
 Same outcome (critical CSS generated and deployed automatically, safe fallback unchanged, nothing live changes until `assets/critical/` actually has files in it), fewer moving parts, no new credential, no code I couldn't verify. The 30-minute cadence is a starting point, not a commitment -- easy to widen or narrow once real run times are observed.
+
+---
+
+## §115 -- 2026-09-24: removed the critical-CSS pipeline entirely -- redirected to in-theme optimization
+
+Direct instruction: stop building external infrastructure, stay within the theme, focus on speed, dead-code/file removal, modern coding practices, safe asset combining, and WordPress coding standards.
+
+Reverted forward (S112/S113 were already pushed, so this is a new removal commit, not a history rewrite): deleted `.github/workflows/critical-css.yml` and `tools/critical-css/` entirely, removed the `assets/critical/` `.gitignore` entry, and removed the three consumption-side functions from `functions.php` (`adapt_get_critical_css_path()`, `adapt_defer_main_css()`, `adapt_inline_critical_css()`). Confirmed `functions.php` is now byte-identical to `8da9235` (the commit right before S112's implementation started) via `git diff 8da9235 -- functions.php` returning empty. `_services.scss`/`template-services.min.css` (S103) is untouched -- that's a separate question, addressed next.
+
+This closes out the S110-S114 critical-CSS line of work. Nothing from it remains in the theme.
+
+New direction starting now: an in-theme audit for redundant files/code, modernization, safe asset combining, and WPCS compliance -- see the following entries.
