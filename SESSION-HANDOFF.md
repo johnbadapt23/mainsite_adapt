@@ -9918,3 +9918,37 @@ Because the fallback is silent, a broken PAT, a failed Chromium install, or a Gi
 5. **Scope**: automated dynamic pipeline for the 17 flexible-content templates' real pages only; the other ~34 fixed templates get a separate, smaller, static/git-tracked critical-CSS effort (same technique as the `_services.scss` split) if you want them covered too -- confirms that split is the right shape rather than trying to force everything through one mechanism.
 
 Nothing above is built. This is the plan to review; I'll wait for direction on the checklist before writing any of it.
+
+---
+
+## §113 -- 2026-09-24: Built the critical-CSS pipeline's inert scaffolding -- four of five sign-off items handled, one hard-blocked on server-side access I don't have
+
+Following your go-ahead on the S112 checklist. All new code is dead/inert until a manual step you (or your hosting admin) still needs to do -- nothing here changes any live page's behaviour today.
+
+### What's built
+
+- **`functions.php`**: `adapt_get_critical_css_path()`, `adapt_defer_main_css()`, `adapt_inline_critical_css()` -- the consumption side (S112 piece 4). `adapt_defer_main_css()` only defers `main-styles` when a matching file exists under `assets/critical/`; that directory doesn't exist on the server yet, so this is currently a no-op on every request, verified by re-checking `file_exists()`'s dependency (nothing else changed about how `main-nofooter.min.css` loads).
+- **`functions.php`**: `adapt_queue_critical_css_regen()` / `adapt_queue_critical_css_regen_all()` / the WP-Cron plumbing / `adapt_dispatch_critical_css_regen()` -- the trigger side (S112 piece 1), covering the 17 flexible-content templates identified in S110 plus the single global ACF Options page. Every one of these functions' first line is `if ( ! defined( 'ADAPT_GITHUB_CRITICAL_CSS_PAT' ) ) return;` -- that constant is not defined anywhere in this repo (it belongs in `wp-config.php`, which lives on the server, outside this git checkout), so none of this logic is reachable yet. **This means it hasn't been tested against a running WordPress instance** -- no PHP interpreter is available in this dev environment to lint it, only careful hand-review plus brace/paren-balance checks matching this codebase's established pre-commit discipline (174/174 braces, paren delta unchanged from baseline). Once the PAT exists, this needs its own first live-verification pass (checking the site's PHP/debug log after a real publish) before it's trusted -- flagging that now rather than after the fact.
+- **`tools/critical-css/`** -- an isolated npm project (own `package.json`/`package-lock.json`, pinning `critical` ^7.2.1) and `generate.js`, which takes a `--payload` JSON array of `{post_id, url}` and writes `assets/critical/{post_id}.css` per page using `critical`'s Puppeteer-based extraction at two viewports (375x667, 1920x1080). Deliberately isolated from the theme's own `package.json` so `deploy.yml`'s `npm ci` (every ordinary deploy) never downloads this dependency's Chromium binary -- only the new workflow below does.
+- **`.github/workflows/critical-css.yml`** -- triggers on `repository_dispatch` (type `critical-css-regen`, not yet ever fired -- see above) and `workflow_dispatch` (usable manually right now to test generation + delivery independently of the still-missing trigger). Installs `tools/critical-css`, runs `generate.js`, then uploads `assets/critical/` to staging via the same `milanmk/actions-file-deployer` action `deploy.yml` already uses, with the same `staging` environment secrets -- no new hosting credential needed for delivery.
+- **Design correction found while building this, not before**: the delivery step must use `sync: 'full'`, not `'delta'` -- `deploy.yml`'s own extensive comment on this action explains delta mode diffs against git history, and `assets/critical/*.css` is gitignored on purpose (never committed), so delta mode would silently upload nothing, every run. Caught and fixed before this was ever exercised, not after a failed deploy.
+- **`.gitignore`**: added `assets/critical/`.
+
+### What's still blocked on you
+
+**Item 1 from S112's checklist -- the GitHub PAT.** I cannot create it or add it to `wp-config.php` myself: that file lives on the live server, not in this git repo, and there's no shell/file access to the server from here (SFTP-only, shell disabled -- the same constraint noted in S111). To actually turn any of this on:
+
+1. Create a fine-grained GitHub PAT on `johnbadapt23/mainsite_adapt`, scoped to Actions/`repository_dispatch` only (not a broad personal token).
+2. Add it to `wp-config.php` on the server as `define( 'ADAPT_GITHUB_CRITICAL_CSS_PAT', '<the token>' );`.
+
+Until that's done, everything above stays exactly as inert as it is today -- confirmed safe to deploy in that state.
+
+### Not yet done
+
+- The admin-visible "how many pages are missing a critical file" monitoring notice proposed in S112 -- not built this round; flagging it's still open, not forgotten.
+- The separate static/git-tracked critical-CSS effort for the ~34 fixed (non-flexible-content) templates -- out of scope for this round, which focused on the dynamic pipeline for the 17 flexible templates.
+- Testing `workflow_dispatch` against a real staging URL end-to-end (generation + upload) -- next safe step once this is live, doesn't require the PAT.
+
+### Live-verification note
+
+Nothing in this commit changes any page's rendered output, enqueued assets, or HTTP responses -- the entire change is either new files nothing references yet (`tools/critical-css/`, `.github/workflows/critical-css.yml`) or PHP gated on an undefined constant. The usual "check staging after deploy" step for this one is confirming the site still loads normally and `main-nofooter.min.css` is still a plain blocking stylesheet, exactly as before -- not a new behaviour to verify.
