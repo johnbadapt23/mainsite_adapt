@@ -9779,3 +9779,36 @@ Fresh, cache-busted load of staging homepage, checked the raw server-rendered HT
 - Zero console errors. Homepage renders correctly, no visual regression, cookie banner still present in the DOM and functional.
 
 This closes out S107/S108. Combined with S103's confirmed ~124KB/page reduction (S106) and this round's two smaller, verified wins, the performance effort for this pass is done: one real CSS-bundle-split win, two render-blocking-request fixes, one dead-code removal, all live-verified -- and the honest, documented reasons the remaining paths (the other 6 CSS files, deferring the full main bundle, Download Monitor's CSS, third-party tracking scripts) were deliberately not pursued further without either more tooling or a different kind of sign-off.
+
+---
+
+## §110 -- 2026-09-24: Critical-CSS extraction scoped -- concluding it's not safely doable as a static/manual effort, recommending against building it that way
+
+Investigation only, as directed ("Scope critical-CSS extraction" -- selected from the options after S109). No code changed.
+
+### What would be needed
+
+To defer `main-nofooter.min.css` (2,048,004 bytes compiled, 76% of it -- 1,960,174 of ~2,570,000 source bytes -- coming from `source/scss/templates/`) without a flash of unstyled content, the above-the-fold CSS for whatever's actually visible on load would need to be inlined in `<head>`, and everything else deferred via the same preload+onload pattern already used for the footer/pagenavi/cookie-notice. That "above the fold" set is two things: the header/nav (`partials/_header.scss`, 334,600 bytes source on its own -- larger than all of `global/` combined at 155,914 bytes) and whatever renders as the first content block on the specific page being loaded.
+
+### Why the header itself isn't a clean inline-everything-or-nothing case
+
+`_header.scss` is not just the visible nav bar -- it's the nav bar PLUS every mega-menu dropdown, the mobile menu, the search overlay, and several `body.*`-scoped header-state variants (`body.template-gtm`, `body.home`, `body.post`, `body.position`, sticky/scrolled states). Only the plain visible nav bar is genuinely needed before first paint; the dropdown/overlay content is interaction-triggered and safe to defer. Splitting that by hand means manually walking ~7,900 lines of nested selectors and judging, rule by rule, which are "visible on load" versus "visible on hover/click/scroll" -- exactly the kind of manual selector-by-selector judgment call that produced three separate false-positive/false-negative bugs earlier in this same investigation (S102/S103's leak-detection corrections), except here a mistake means a real, visible layout break in the site's primary navigation on every page, not a missed edge case.
+
+### Why the per-template hero portion is the harder blocker
+
+Checked which templates use ACF's flexible `content_blocks` field (page-builder-style, content-editor-ordered blocks) versus fixed markup:
+
+- **17 of 51 templates** dispatch through `have_rows('content_blocks')`, including the highest-traffic marketing templates: home, flexible, flexible-nov, landing, market, market-buyer, services, event-partner, event-partner-landing, executive-roundtables, edge-events, subscribe, thank-you (x3), resource.
+- `template-flexible.php` alone can render any of **25+ distinct block-type partials** (`templates/components/_*.php` -- there are 86 across the theme) in **any order**, chosen per-page by a content editor in the CMS, with no template-level guarantee about what's first.
+
+This means for these 17 templates, "what CSS does this template need above the fold" isn't a property of the template's code at all -- it's a property of whatever a content editor happened to put in block position 0 on that specific page, and can change the moment someone reorders blocks in ACF. A static, hand-built critical-CSS file per template (the same technique used successfully for the `_services.scss` split) can't capture that: it would need to be either wrong for pages whose first block isn't the one assumed, or rebuilt into a full per-page (not per-template) system.
+
+### What would actually be needed to do this safely
+
+Real critical-CSS extraction for a page-builder-driven site like this one is normally done with automated per-URL tooling (e.g. `critical`, `penthouse`, or a headless-Chrome coverage pass) that renders the actual page and measures what's really painted above the fold, then would need to be re-run whenever content changes -- which for 17 flexible-content templates effectively means per-page, on publish, not once at build time. None of that tooling is present in this repo today (checked `node_modules` and `package.json` -- no `critical`/`penthouse`/`puppeteer`/`playwright`), and the local gulp pipeline is already broken independent of this (documented in earlier entries). Adding it would mean a new CI step, a new per-page or per-template critical-CSS artifact store, and a cache-invalidation story tied to content publishing -- a genuinely new piece of infrastructure, not an extension of the theme-code changes made so far in this engagement.
+
+### Conclusion
+
+Consistent with the S105 decision on the remaining 6 CSS-split candidates: this is the same shape of problem (a sound-sounding technique that doesn't actually fit how this theme's content is authored) and I'm stopping at the scoping stage rather than hand-building an unsafe approximation. Recommending against manually inlining a guessed critical-CSS subset -- the failure mode is a visible, embarrassing layout break on the site's own homepage/header, which is a worse outcome than leaving the current (already-reduced, per S103) bundle fully blocking. A correct version of this is available but is a separate infrastructure project (automated per-page extraction + publish-time regeneration), not a quick follow-on to the work done in this engagement so far, and would need its own explicit scoping/sign-off given the size of that undertaking.
+
+No code changed this entry -- scoping and documentation only.
