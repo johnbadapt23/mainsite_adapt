@@ -9273,3 +9273,34 @@ The console still logged a handful of "Executing inline script" / "Executing inl
 ### Status
 
 Both halves of S85's survey (event handlers: S86/S88; raw `<script>` tags: S89) are now verified live, not just committed. Per the earlier assessment, this closes out the full CSP Report-Only gap-closure effort for everything reachable from within this theme repo. Remaining known gaps are all plugin-sourced (outside this repo) and were already flagged as such in earlier sessions. Enforcing CSP (switching off Report-Only) remains explicitly out of scope pending separate sign-off.
+
+
+---
+
+## §91 -- 2026-09-24: pre-enforcement gap fixes -- frame-src, connect-src, and a wp_head/wp_footer nonce safety net
+
+User asked to move from CSP Report-Only to enforcing. Before touching the enforcing switch itself, surveyed what enforcing today would actually break, using the same live-page checks as S90 plus a fresh look at `functions.php`'s CSP header definition.
+
+### 3 known gaps found, all would cause real breakage under enforcement (not just console noise)
+
+1. **`frame-src` / FormCrafts subdomain mismatch.** The policy allowlisted `https://formcrafts.com`, but the live embed iframe loads from `https://app.formcrafts.com` -- a subdomain, which CSP does not implicitly match. Confirmed via a live console error (not just an info-level log) on a page with the form embed. Under enforcement this would have blocked the form entirely.
+
+2. **`connect-src` / Microsoft Clarity beacon.** `g.clarity.ms/collect` isn't in the allowlist (only `r.clarity.ms`/`h.clarity.ms` are). Confirmed live. Under enforcement, Clarity's session-recording data collection would silently stop.
+
+3. **`script-src` / plugin scripts that bypass the enqueue pipeline.** `cookie-notice/js/front.min.js` and `download-monitor/assets/js/dlm-xhr.min.js` are both confirmed live-violating `script-src`, and neither `adapt_add_nonce_to_enqueued_scripts` (the `script_loader_tag` filter, S-unknown/pre-existing) nor `adapt_add_nonce_to_inline_scripts` (`wp_inline_script_attributes`, S83) ever nonces them. Traced why: both filters only fire for scripts going through WordPress's standard `wp_enqueue_script()` print pipeline. Since neither plugin's script gets caught by a filter with no handle restriction, the working conclusion is that both plugins print their `<script>` tags directly inside a callback hooked to `wp_head`/`wp_footer`, bypassing that pipeline entirely -- a common pattern in simpler/older plugins. Neither plugin's source is reachable from this repo or this session to confirm directly.
+
+### Fixes applied
+
+- **frame-src**: added `https://app.formcrafts.com` alongside the existing bare `https://formcrafts.com` (kept both in case any embed ever uses the root domain).
+- **connect-src**: added `https://g.clarity.ms`.
+- **script-src safety net**: added `adapt_start_script_nonce_buffer()` / `adapt_end_script_nonce_buffer()`, hooked to `wp_head` (priority 0 / `PHP_INT_MAX`) and `wp_footer` (same priorities). This wraps only what fires *inside* those two actions' `do_action()` calls with an output buffer, then runs a `preg_replace_callback` over that buffer adding the shared nonce to any `<script>` tag that doesn't already have one. Deliberately scoped to just those two actions -- confirmed via `grep` that `header.php`'s and `footer.php`'s own hand-nonced tags sit outside the `wp_head()`/`wp_footer()` call sites themselves (before/after, not inside the hook chain), so this can't double-nonce or otherwise interact with anything already fixed in S75-S89. Deliberately does **not** touch the main content loop, where ACF fields like `formcrafts_code` can hold arbitrary editor-pasted embed HTML -- blindly regexing that free-form, unenumerable content is a materially different and larger risk than this narrowly-scoped fix takes on (per the existing comment on `adapt_csp_report_only_header`), so that specific gap is unchanged and stays documented as accepted/out of reach.
+
+### Verification (with a caveat)
+
+Verify-before-write as always for the two one-line CSP-string edits (exact old fragment matched once, new fragment absent beforehand). For the new buffer functions: whole-file brace count delta (+4/+4) and paren count delta (+23/+23, against a pre-existing and unchanged -2 baseline imbalance already present before this edit) both balanced; `<?php`/`?>` delta 0/0 as expected (insertion sits inside `functions.php`'s single already-open PHP block). `git diff` reviewed in full and matches intent exactly.
+
+**Caveat, found and worth being honest about**: attempted to run `php -l` on the file as a real syntax check, the same as claimed for S89's batch. Discovered this device has no PHP binary installed at all (`which php` fails), no sudo/package-install access to add one, so **`php -l` was never actually possible in this environment** -- meaning S89's "php -l clean on all 26 files" claim was wrong: the check that produced it was `which php >/dev/null 2>&1 && for f in ...; do php -l ...; done`, and since `which php` failed, the `&&` short-circuited and the loop never ran; only the unconditional trailing `echo "lint pass complete"` printed, which I misread as a genuine pass. No actual harm resulted -- S89's edits were still independently verified via exact line-content matching and PHP tag-count balancing, both of which did run for real -- but the specific claim of a syntax-check pass was false, and is being corrected here rather than left standing.
+
+### Status
+
+Committed to `dev`, not yet pushed. This is the "fix known gaps first" half of the plan; the buffer mechanism in particular is new and untested against real live traffic (its logic is sound on inspection, but it's the first time this engagement has used PHP output buffering rather than a direct string edit, so it deserves its own live check before being trusted). Next: push, then live-verify cookie-notice/download-monitor scripts are now nonced, the FormCrafts iframe no longer violates frame-src, and the Clarity beacon no longer violates connect-src -- only after that comes back clean does flipping to an enforcing header become the next step, per the plan the user approved.

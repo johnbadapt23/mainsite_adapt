@@ -1571,14 +1571,55 @@ add_filter( 'wp_inline_script_attributes', 'adapt_add_nonce_to_inline_scripts', 
 // event handlers, the skip-link style added in §72), so 'unsafe-inline'
 // is included for both directives below rather than attempting a nonce/
 // hash-based policy blind.
+// SECURITY 2026-09-24 (CSP enforcement prep, follow-up to S89/S90): some
+// plugins (confirmed live: cookie-notice's front.min.js, download-monitor's
+// dlm-xhr.min.js) print their own <script src="..."> tags directly inside
+// wp_head/wp_footer, bypassing wp_enqueue_script()'s print pipeline entirely
+// -- so neither adapt_add_nonce_to_enqueued_scripts (script_loader_tag) nor
+// adapt_add_nonce_to_inline_scripts (wp_inline_script_attributes) above ever
+// sees them, and both were confirmed violating script-src live (would be
+// blocked outright under an enforcing policy, not just logged). Since we
+// don't have access to either plugin's source and can't enumerate every
+// plugin that might do this in the future, buffer wp_head's and wp_footer's
+// raw HTML output specifically and add the shared nonce to any <script> tag
+// in that buffer that doesn't already carry one.
+//
+// Deliberately scoped to wp_head/wp_footer only -- NOT the main content
+// loop, where ACF fields like 'formcrafts_code' can hold arbitrary
+// editor-pasted embed HTML (see the comment on adapt_csp_report_only_header
+// below); blindly regexing that free-form content is a different, larger
+// risk than this narrowly-scoped fix takes on, so that gap is unchanged and
+// stays documented as unenumerable.
+function adapt_start_script_nonce_buffer() {
+    ob_start();
+}
+function adapt_end_script_nonce_buffer() {
+    $html = ob_get_clean();
+    if ( false === $html ) {
+        return;
+    }
+    $nonce = esc_attr( adapt_csp_nonce() );
+    echo preg_replace_callback(
+        '/<script(?![^>]*\bnonce=)([^>]*)>/i',
+        function ( $matches ) use ( $nonce ) {
+            return '<script nonce="' . $nonce . '"' . $matches[1] . '>';
+        },
+        $html
+    );
+}
+add_action( 'wp_head', 'adapt_start_script_nonce_buffer', 0 );
+add_action( 'wp_head', 'adapt_end_script_nonce_buffer', PHP_INT_MAX );
+add_action( 'wp_footer', 'adapt_start_script_nonce_buffer', 0 );
+add_action( 'wp_footer', 'adapt_end_script_nonce_buffer', PHP_INT_MAX );
+
 function adapt_csp_report_only_header() {
     $csp = "default-src 'self'; "
         . "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' 'nonce-" . adapt_csp_nonce() . "' https://cdnjs.cloudflare.com https://unpkg.com https://js.hsforms.net https://js.hs-scripts.com https://www.googletagmanager.com https://formcrafts.com; "
         . "style-src 'self' 'unsafe-inline'; "
         . "img-src 'self' data: https:; "
         . "font-src 'self' data: https://fonts.gstatic.com; "
-        . "frame-src 'self' https://player.vimeo.com https://vimeo.com https://formcrafts.com https://www.googletagmanager.com; "
-        . "connect-src 'self' https://js.hsforms.net https://forms-ap1.hsforms.com https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://analytics.google.com https://www.google-analytics.com https://px.ads.linkedin.com https://pixel-config.reddit.com https://alb.reddit.com https://r.clarity.ms https://h.clarity.ms https://content.hotjar.io https://vc.hotjar.io wss://ws.hotjar.com https://api-ap1.hubapi.com https://cta-ap1.hubspot.com https://forms-ap1.hscollectedforms.net;";
+        . "frame-src 'self' https://player.vimeo.com https://vimeo.com https://formcrafts.com https://app.formcrafts.com https://www.googletagmanager.com; "
+        . "connect-src 'self' https://js.hsforms.net https://forms-ap1.hsforms.com https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://analytics.google.com https://www.google-analytics.com https://px.ads.linkedin.com https://pixel-config.reddit.com https://alb.reddit.com https://r.clarity.ms https://h.clarity.ms https://g.clarity.ms https://content.hotjar.io https://vc.hotjar.io wss://ws.hotjar.com https://api-ap1.hubapi.com https://cta-ap1.hubspot.com https://forms-ap1.hscollectedforms.net;";
     header( "Content-Security-Policy-Report-Only: {$csp}" );
 }
 add_action( 'send_headers', 'adapt_csp_report_only_header' );
