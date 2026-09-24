@@ -9740,3 +9740,29 @@ Went to implement S102's "defer the whole main-nofooter.min.css the same way foo
 - The defer-the-whole-bundle idea (S102) needs proper critical-CSS extraction (a genuinely separate, nontrivial sub-effort -- determining what's actually above-the-fold per template, extracting and inlining just that, and defer-loading the rest) before it's safe to build, not a straightforward extension of the existing footer pattern.
 
 None of this was implemented -- this entry is verification of what already shipped, plus a course-correction caught before it became a mistake, not new code.
+
+---
+
+## §107/§108 -- 2026-09-24: widened the search past CSS -- two small, safe, verified wins after the CSS avenue was mined out
+
+After S106 concluded the CSS-splitting approach had one real win (`_services.scss`) and the defer-the-whole-bundle idea needed proper critical-CSS extraction first, did a live render-blocking-request audit of the homepage rather than assume CSS was the only lever left. Read every stylesheet and script actually loading, and their real handles/sizes.
+
+### What the audit found
+
+The theme's own CSS is already well-optimized for render-blocking: `wp-pagenavi.css` and `footer.min.css` are both already deferred via the proven preload+onload pattern from prior sessions. Two plugin-enqueued stylesheets weren't: Cookie Notice's `cookie-notice-front` (5.8KB) and Download Monitor's `dlm-frontend` (26.9KB). Also spotted `modernizr-2.7.1.min.js` still loading (async, so not render-blocking, but still a wasted request) -- a second, separate hardcoded include in `footer.php` that an earlier cleanup (removing Modernizr from the build's scripts array, per `source/gulp/paths.js`'s own comment) had missed.
+
+The page is also dominated by a large volume of third-party marketing/tracking scripts (HubSpot, Microsoft Clarity, Facebook Pixel, Bing, Hotjar, Google Analytics, GTM, and more) -- almost certainly the single biggest real cost on this page today, well beyond anything left in the theme's own CSS. Deliberately not touching any of it: these are business/marketing tracking decisions injected via GTM, not a theme code question, and getting one wrong risks breaking conversion tracking or ad-platform data with no easy way for me to verify the blast radius or get the right sign-off. Flagging it here as the honest answer to "what's actually still slow," not acting on it.
+
+### S107 (`cd11803`): deferred cookie-notice-front
+
+Same preload+onload technique as pagenavi/footer, new function following the same pattern. Safe because the consent banner is a fixed-position overlay the plugin's own JS shows after page load regardless -- not part of the page's initial rendered layout, so a few milliseconds of async CSS load has nothing to visibly disrupt.
+
+Deliberately did NOT defer `dlm-frontend` despite being the larger file. Traced its styled markup (`download-monitor/content-download.php`, a plain download button) to an ACF flexible-content "download" block -- unlike pagenavi/footer/cookie-notice, its position on any page is entirely content-editor controlled, not structurally guaranteed. No reliable way to confirm no page puts it first today or ever will. Left render-blocking rather than risk a real, silent flash on whichever page eventually does.
+
+### S108 (`a25341d`): removed the dead modernizr-2.7.1.min.js include
+
+Confirmed unused via grep (no Modernizr-style `.no-*`/`.js` feature-detection classes anywhere in this theme's SCSS -- the many `.no-*` classes that do exist are this codebase's own unrelated BEM modifiers), matching the existing `source/gulp/paths.js` comment that already established it's dead in the build bundle. This was a second, separate hardcoded `<script>` tag the earlier cleanup missed. One residual risk flagged in the code comment rather than hidden: a content editor could theoretically have pasted a raw third-party embed via an ACF field that calls `window.Modernizr`'s JS API directly (same pattern as the HubSpot embed found during the CSP work) -- not visible from a theme-code grep, so if something breaks, that's the first place to check.
+
+### Status
+
+Both committed locally, not yet pushed. Neither has been live-verified yet (same "confirm deploy, then check staging" loop as everything else this engagement).
