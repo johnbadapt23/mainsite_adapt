@@ -197,7 +197,7 @@
 }
 
 </style>
-<script>
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 document.addEventListener("DOMContentLoaded", function () {
     // Get modal and close button
     var modal = document.getElementById("formModal");

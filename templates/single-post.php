@@ -303,7 +303,7 @@ foreach( $theTerms1 as $theTerm ){
                                     <?php } ?>
 		                        </a>
 							</span>
-	                        <script>
+	                        <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 	                            const shareButton = document.querySelector('.share-button');
 	                            const emailButton = document.querySelector('.emailShare');
 	                            shareButton.addEventListener('click', event => {
@@ -580,7 +580,7 @@ foreach( $theTerms1 as $theTerm ){
                         <span class="current-time">0:00</span> / <span class="duration">0:00</span>
                     </div>
 
-                    <script>
+                    <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                     (function () {
                         function initPlayers() {
                             document.querySelectorAll('.audio-player:not([data-player-initialized])').forEach(function (el) {

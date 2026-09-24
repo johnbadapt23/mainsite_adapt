@@ -30,7 +30,7 @@ if ($q && $q->parent != 0) {
 
 ?>
 <?php if ( $filterType || $keyword ) : ?>
-  <script>
+  <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
     document.addEventListener('DOMContentLoaded', function() {
       const target = document.querySelector('#storiesListing');
       if (target) {
@@ -352,7 +352,7 @@ if ($q && $q->parent != 0) {
                                                                     </span>
                                                                 </a>
                                                             </span>
-                                                            <script>
+                                                            <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                                                                 function copyJobLink() {
                                                                     // Get the text field
                                                                     var copyText = document.getElementById("postLink");
@@ -853,7 +853,7 @@ if ($q && $q->parent != 0) {
                                                             </span>
                                                         </a>
                                                     </span>
-                                                    <script>
+                                                    <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                                                         function copyJobLink() {
                                                             // Get the text field
                                                             var copyText = document.getElementById("postLink");

@@ -4,16 +4,16 @@
 
 	<?php wp_footer(); ?>
 	
-	<script async src="<?php echo get_template_directory_uri(); ?>/assets/js/modernizr-2.7.1.min.js"></script>
+	<script async nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" src="<?php echo get_template_directory_uri(); ?>/assets/js/modernizr-2.7.1.min.js"></script>
 
 
 
 </body>
-<script type="text/javascript">
+<script type="text/javascript" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 _linkedin_partner_id = "8720060";
 window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
 window._linkedin_data_partner_ids.push(_linkedin_partner_id);
-</script><script type="text/javascript">
+</script><script type="text/javascript" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 (function(l) {
 if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
 window.lintrk.q=[]}

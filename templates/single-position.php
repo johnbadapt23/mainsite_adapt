@@ -90,7 +90,7 @@
                                 <span class="job-link-text">Copy Link</span>
                             </a>
                         </span>
-                        <script>
+                        <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                             function copyJobLink() {
                         		// Get the text field
                         		var copyText = document.getElementById("jobLink");
@@ -121,7 +121,7 @@
                             <img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/post-share.svg" alt="" width="32px"/>
                             <span class="job-link-text">Share</span>
                         </button>
-                        <script>
+                        <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                             const shareButton = document.querySelector('.share-button');
                             const emailButton = document.querySelector('.email-button');
                             shareButton.addEventListener('click', event => {

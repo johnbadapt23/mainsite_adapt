@@ -122,7 +122,7 @@
         </div>                       
     </div>
 </section>
-<script>
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 function syncTextHeights(attempt = 1) {
     const textWrappers = document.querySelectorAll('.text-block-wrapper');
     const images = document.querySelectorAll('.sticky-image-container');

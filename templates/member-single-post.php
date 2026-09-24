@@ -7,7 +7,7 @@
             $allowed_host = 'adapt.com.au';
             $host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
             if(substr($host, 0 - strlen($allowed_host)) == $allowed_host) { ?>
-                <script>
+                <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 
                 function goBack() {
                     window.history.back()

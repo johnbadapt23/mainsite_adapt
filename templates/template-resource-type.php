@@ -1360,7 +1360,7 @@ section.podcast-newsletter .absolute-top {
             <div class="subscribe-form" id="subscribe-form">
                 <div class="form-container">
                     <div class="form">
-                        <script src="https://js.hsforms.net/forms/embed/developer/8336221.js" defer></script>
+                        <script src="https://js.hsforms.net/forms/embed/developer/8336221.js" defer nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>"></script>
                         <div class="hs-form-html" data-region="na1" data-form-id="fb9276c9-f87b-4831-9afe-fe009b819497" data-portal-id="8336221"></div>
                     </div>
                 </div>

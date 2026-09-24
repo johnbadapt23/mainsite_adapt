@@ -80,7 +80,7 @@
     <?php endif; ?>
 </section>
 
-<script>
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
     document.addEventListener('DOMContentLoaded', function () {
         const carouselContainer = document.querySelector('.carousel-container');
         const carouselItems = carouselContainer.innerHTML;

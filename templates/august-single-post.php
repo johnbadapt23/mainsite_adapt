@@ -194,7 +194,7 @@
                                     <?php } ?>
 		                        </a>
 							</span>
-	                        <script>
+	                        <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 	                            const shareButton = document.querySelector('.share-button');
 	                            const emailButton = document.querySelector('.emailShare');
 	                            shareButton.addEventListener('click', event => {

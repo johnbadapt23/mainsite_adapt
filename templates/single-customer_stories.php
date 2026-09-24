@@ -151,7 +151,7 @@ $displayed_posts[] = get_the_ID();
                                         </span>
                                     </a>
                                 </span>
-                                <script>
+                                <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                                     function copyJobLink() {
                                         // Get the text field
                                         var copyText = document.getElementById("postLink");
@@ -359,7 +359,7 @@ $displayed_posts[] = get_the_ID();
                                         </span>
                                     </a>
                                 </span>
-                                <script>
+                                <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                                     function copyJobLink() {
                                         // Get the text field
                                         var copyText = document.getElementById("postLink");

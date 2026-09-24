@@ -510,7 +510,7 @@ section.logo-ticker-tape .band-container-backwards:after {
                             </span>
                         </apan>
                     </span>
-                   <script>
+                   <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                         window.addEventListener("message", function(event) {
                             // Only accept messages from HubSpot forms
                             if (!event.data || !event.data.formGuid || !event.data.accepted) {
@@ -580,7 +580,7 @@ section.logo-ticker-tape .band-container-backwards:after {
         </div>
     </div>
 </section>
-<script nowprocket>
+<script nowprocket nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 (function () {
   var orbits = document.querySelectorAll('.orbit-circle');
 

@@ -231,7 +231,7 @@
                                                         </span>
                                                     </a>
                                                 </span>
-                                                <script>
+                                                <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                                                     function copyJobLink() {
                                                         var copyText = document.getElementById("postLink");
                                                         copyText.select();
