@@ -1571,25 +1571,37 @@ add_filter( 'wp_inline_script_attributes', 'adapt_add_nonce_to_inline_scripts', 
 // event handlers, the skip-link style added in §72), so 'unsafe-inline'
 // is included for both directives below rather than attempting a nonce/
 // hash-based policy blind.
-// SECURITY 2026-09-24 (CSP enforcement prep, follow-up to S89/S90): some
-// plugins (confirmed live: cookie-notice's front.min.js, download-monitor's
-// dlm-xhr.min.js) print their own <script src="..."> tags directly inside
-// wp_head/wp_footer, bypassing wp_enqueue_script()'s print pipeline entirely
-// -- so neither adapt_add_nonce_to_enqueued_scripts (script_loader_tag) nor
-// adapt_add_nonce_to_inline_scripts (wp_inline_script_attributes) above ever
-// sees them, and both were confirmed violating script-src live (would be
-// blocked outright under an enforcing policy, not just logged). Since we
-// don't have access to either plugin's source and can't enumerate every
-// plugin that might do this in the future, buffer wp_head's and wp_footer's
-// raw HTML output specifically and add the shared nonce to any <script> tag
-// in that buffer that doesn't already carry one.
+// SECURITY 2026-09-24 (CSP enforcement prep, S91 -> widened here after
+// live testing): S91 originally scoped this buffer to wp_head/wp_footer
+// only, on the theory that the only non-enqueued script-src gaps were
+// plugin-printed tags (cookie-notice, download-monitor) and that the main
+// content loop's ACF-echoed embed fields (e.g. 'formcrafts_code') were too
+// numerous and free-form to safely regex.
 //
-// Deliberately scoped to wp_head/wp_footer only -- NOT the main content
-// loop, where ACF fields like 'formcrafts_code' can hold arbitrary
-// editor-pasted embed HTML (see the comment on adapt_csp_report_only_header
-// below); blindly regexing that free-form content is a different, larger
-// risk than this narrowly-scoped fix takes on, so that gap is unchanged and
-// stays documented as unenumerable.
+// Live testing after S91 found a concrete un-nonced <script> from
+// templates/subscribe-components/_two-column-subscribe.php's
+// get_sub_field('form_embed') -- a raw HubSpot embed snippet an editor
+// pasted into wp-admin, region-specific host (js-ap1.hsforms.net) and all,
+// rendered from page content at request time. Grepping for every similarly
+// unescaped raw-HTML ACF echo across the theme (form_embed, form_code,
+// hubspot_embed, hubspot_embed_code, speaker_form_script, formcrafts_code,
+// registration_form_embed, and ~35 more differently-named fields) turned up
+// the same pattern in nearly every major template file -- not one isolated
+// gap but a sitewide one, impossible to close field-by-field (new ones can
+// be added by any content editor at any time).
+//
+// So: widened from wp_head/wp_footer to the entire page response --
+// buffering from as early as template_redirect (before any theme output
+// starts) through shutdown (the last action WordPress fires, after
+// wp_footer/admin-bar/everything) -- and running the same nonce-injection
+// regex over the whole thing. This is the only tractable way to close this
+// class of gap given how many distinct ACF fields it spans. Trade-off
+// accepted deliberately: the regex can't distinguish a real <script> tag
+// from the literal text "<script" appearing inside a JS string or JSON
+// value elsewhere in the page; that's a known, small, and standard risk for
+// this technique (the same one WordPress CSP-nonce plugins take on), judged
+// acceptable against the alternative of ~40 individual, drift-prone
+// per-field patches.
 function adapt_start_script_nonce_buffer() {
     ob_start();
 }
@@ -1607,10 +1619,25 @@ function adapt_end_script_nonce_buffer() {
         $html
     );
 }
-add_action( 'wp_head', 'adapt_start_script_nonce_buffer', 0 );
-add_action( 'wp_head', 'adapt_end_script_nonce_buffer', PHP_INT_MAX );
-add_action( 'wp_footer', 'adapt_start_script_nonce_buffer', 0 );
-add_action( 'wp_footer', 'adapt_end_script_nonce_buffer', PHP_INT_MAX );
+// 'shutdown' fires on every WordPress request (admin-ajax, REST, wp-admin
+// included), but 'template_redirect' -- where the buffer actually starts,
+// above -- only fires on an actual front-end template load. Without this
+// guard, a request that never reached template_redirect would still hit
+// the shutdown handler, which would call ob_get_clean() with no buffer of
+// its own on the stack: at best a silent no-op, at worst popping and
+// rewriting some unrelated buffer another plugin started for its own
+// purposes. did_action() reliably reports whether template_redirect has
+// already fired earlier in this same request, so this makes the end
+// handler a no-op on every request type where the buffer was never
+// started.
+function adapt_maybe_end_script_nonce_buffer() {
+    if ( ! did_action( 'template_redirect' ) ) {
+        return;
+    }
+    adapt_end_script_nonce_buffer();
+}
+add_action( 'template_redirect', 'adapt_start_script_nonce_buffer', 0 );
+add_action( 'shutdown', 'adapt_maybe_end_script_nonce_buffer', PHP_INT_MAX );
 
 function adapt_csp_report_only_header() {
     $csp = "default-src 'self'; "
