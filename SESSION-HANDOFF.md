@@ -9662,3 +9662,27 @@ The other 6 candidates from §101/§102 (`_gtm.scss`, `_landing.scss`, `_benchma
 ### Status
 
 Live verification (build actually running in CI, real page load on `staging.adapt.com.au`'s services template, checking the page renders identically) is still needed before this is considered done -- not yet performed, waiting on push + deploy per the usual loop.
+
+---
+
+## §104 -- 2026-09-24: live-verification attempt on S103 found no live page uses the split template -- and surfaced a real latent bug while looking
+
+Went to live-verify S103 the same way every other change in this engagement has been verified: load the affected template on staging, check the console, confirm the new stylesheet is doing something real. Queried the REST API for every published page's assigned template (`/wp-json/wp/v2/pages?per_page=100&_fields=link,template`, confirmed it's the complete set -- no page 2). Result: no published page on staging is currently assigned `template-services.php` at all. The template exists in the codebase, is a real, selectable "Services Template" in the editor, but nothing live uses it right now. That means S103 carried no live regression risk today, but also means there's no page to visually confirm against -- the only verification available for this specific change is the selector-diff proof already done in S103.
+
+### What the search for a live page turned up instead
+
+While confirming that, read `template-services.php` itself and noticed its ACF layout options are all `get_template_part('templates/services-components/_xxx')` calls -- then checked whether any other template reuses that same directory. It does: `template-market-buyer.php` -- one of the other 6 candidates from §101/§102 -- has the identical set of `services-components` layout options in its own flexible-content field (`_introduction`, `_two-column-image-text`, `_three-column-icon-text`, `_services-cards`, `_two-column-switcher`, `_background-stats`, `_services-accordion`, `_two-column-animation`). Confirmed via grep these are the only two templates that reference that directory at all.
+
+S103's enqueue only fired on `is_page_template('template-services.php')`. A market-buyer page that enabled one of those shared ACF layout blocks would render the shared markup but load none of its CSS -- unstyled content, shipped by a content edit alone, no code change needed to trigger it. Checked the one live market-buyer page (`market-buyer-intelligence-platform-advantage`) directly in the browser via a JS class-count check: it doesn't currently use any of the shared layouts (all zero), so nothing was actually broken on staging right now -- but the condition was still wrong and needed fixing rather than relying on no editor ever touching that field.
+
+### Fix (`495effd`)
+
+`is_page_template()` now checks both `'template-services.php'` and `'template-market-buyer.php'`. Costs the market-buyer page nothing beyond one small cached stylesheet if it never uses the shared layouts, and means it's correctly styled if it ever does.
+
+### What this changes about the remaining plan
+
+`_market-buyer.scss` (one of the other 6 unstarted candidates) is now known, concretely, to share real PHP component markup with `_services.scss` -- not just a hypothetical "these files might not be independent" concern from §103's write-up, but a specific, confirmed, shared directory. When `_market-buyer.scss` itself gets split, its own top-level-wrapper check needs to explicitly account for the fact that its ACF field can render `services-components` markup too, and either share `template-services.min.css` (as now happens) or fold the relevant selectors into whatever its own split bundle becomes.
+
+### Status
+
+S103's code correctness is proven (selector-diff, §103). S103's live-serving correctness could not be visually confirmed because no page currently renders it -- that verification stays open until either a page gets the Services Template assigned, or someone confirms none ever will (worth asking rather than assuming). S104's fix is committed locally, not yet pushed.
