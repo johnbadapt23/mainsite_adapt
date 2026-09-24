@@ -144,6 +144,22 @@ jobs:
       #    deploy. Its last-built copy stays on the server harmlessly
       #    unreferenced; delete it manually there if it's ever worth the
       #    trip.)
+      # NOTE (separate gotcha from sync-delta-excludes below): this same
+      # action also unconditionally defines a send_webhook() bash function
+      # in its composite script that embeds
+      # ${{ github.event.head_commit.message }} unescaped inside a
+      # double-quoted --arg string. We don't set the webhook input, so
+      # send_webhook() is never called, but bash still has to *parse* the
+      # function definition as part of loading the whole script -- so a
+      # literal double-quote character anywhere in a commit message can
+      # break that string's quoting and corrupt the parse of the entire
+      # generated script, surfacing downstream as an unrelated-looking
+      # "syntax error near unexpected token" a few lines later. Avoid
+      # literal " characters in commit messages that will trigger this
+      # workflow. Re-running a failed run won't help -- the event payload's
+      # commit message is fixed; only a new commit with a safe message
+      # gets a clean deploy. (Confirmed by reading milanmk/actions-file-
+      # deployer's action.yml source directly.)
       - name: Deploy over SFTP
         uses: milanmk/actions-file-deployer@master
         with:
