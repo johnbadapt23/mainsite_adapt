@@ -51,7 +51,7 @@
      requests" audit) -- icon glyphs are never above-the-fold-critical the way
      main-nofooter.min.css is, so the standard preload+onload swap defers it off
      the blocking path. The <noscript> fallback keeps icons working with JS disabled. -->
-<link rel="preload" as="style" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" as="style" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 <noscript><link rel="stylesheet" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>"></noscript>
 <link rel="apple-touch-icon" sizes="180x180" href="<?php echo get_template_directory_uri(); ?>/assets/images/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="<?php echo get_template_directory_uri(); ?>/assets/images/favicon-32x32.png">
@@ -119,6 +119,24 @@
     <meta property="og:image" content="<?php echo $video_poster_image['url']; ?>" />
 <?php } ?>
 <?php wp_head(); ?>
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
+// CSP-safe replacement for the inline onload="this.rel='stylesheet'" swap
+// used on preload+as=style <link> tags (skelet-icons, wp-pagenavi,
+// footer-styles -- see adapt_defer_pagenavi_css()/adapt_defer_footer_css()
+// in functions.php and the hardcoded preload above). Inline event handler
+// attributes are NOT authorized by a matching nonce under enforcing CSP
+// (script-src-attr falls back to script-src, which requires 'unsafe-hashes'
+// for attribute-based execution even when the nonce matches -- nonces only
+// cover <script> elements, not event handler attributes). This generic
+// listener does the same job from a nonce'd <script> element instead.
+// Confirmed live (S96) that without this, these preload links never
+// promote to stylesheet under enforcing CSP -- see SESSION-HANDOFF.md.
+document.querySelectorAll( 'link[rel="preload"][as="style"]' ).forEach( function ( link ) {
+    link.addEventListener( 'load', function () {
+        this.rel = 'stylesheet';
+    } );
+} );
+</script>
 
 <!-- Google Tag Manager -->
 <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

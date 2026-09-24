@@ -142,7 +142,7 @@
 					<input class="searchInput" type="text" name="searchWords" id="mobilesearch" placeholder="Search" aria-label="Search" value="" />
 					<button type="submit" class="search-button-mobile" aria-label="Search"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/magnify-placeholder.svg" alt="" width="20"/></button>
 					<input type="hidden" value="1" name="sentence" />
-					<a class="search-clear" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="ClearFields();" aria-label="Clear search"></a>
+					<a class="search-clear" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" aria-label="Clear search"></a>
 				</form>
 				<div class="resources-nav">
 					<ul>
@@ -727,10 +727,20 @@
 			 document.getElementById("mobilesearch").value = "";
 			 document.getElementById("searchClear").classList.remove("active");
 		}
+		// CSP-safe replacement for the removed inline onclick attributes on
+		// the .search-clear links below -- see the comment above the
+		// preload+onload swap fix in header.php (S96): a matching nonce on
+		// an inline event handler attribute is not enough to authorize it
+		// under enforcing CSP, so the listener is attached here instead,
+		// from this nonce'd <script> element, once both .search-clear
+		// elements already exist earlier in the parsed document.
+		document.querySelectorAll( '.search-clear' ).forEach( function ( el ) {
+			el.addEventListener( 'click', ClearFields );
+		} );
 		</script>
 		<span class="close-clear-container" id="searchClear">
 			<button type="button" class="search-close" aria-label="Close search"></button>
-			<a class="search-clear" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="ClearFields();">Clear</a>
+			<a class="search-clear" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">Clear</a>
 		</span>
 	</div>
 </div>
