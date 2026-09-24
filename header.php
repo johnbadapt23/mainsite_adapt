@@ -6,6 +6,36 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
+// CSP-safe replacement for the inline onload="this.onload=null;this.rel=
+// 'stylesheet'" swap used on preload+as=style <link> tags (skelet-icons
+// below, wp-pagenavi and footer-styles from adapt_defer_pagenavi_css()/
+// adapt_defer_footer_css() in functions.php). A matching nonce on the
+// <link> element does not authorize that element's own inline event
+// handler attributes under enforcing CSP (script-src-attr falls back to
+// script-src, which requires 'unsafe-hashes' for attribute execution even
+// with a matching nonce -- nonces only cover elements like <script>, not
+// event handler attributes). A first attempt (S96) moved the swap into an
+// addEventListener call placed after wp_head(), but that is still a race:
+// 'load' events on <link> elements don't bubble, and for an already-cached
+// resource the load can fire before that later script tag is even parsed,
+// which is exactly what was observed live -- the preload never promoted,
+// and Chrome logged "preloaded ... but not used" for every one of them.
+// This listener is registered here instead, as early in <head> as
+// possible and before any preload+as=style link exists anywhere on the
+// page, using the capture phase: capture-phase listeners fire top-down
+// regardless of bubbling, so a single delegated listener on `document`
+// catches every current and future preload-css load event with no race
+// window at all. Confirmed live (S97) after the S96 version failed --
+// see SESSION-HANDOFF.md.
+document.addEventListener( 'load', function ( e ) {
+    var t = e.target;
+    if ( t && t.tagName === 'LINK' && t.rel === 'preload' && t.getAttribute( 'as' ) === 'style' ) {
+        t.rel = 'stylesheet';
+    }
+}, true );
+</script>
+
 <?php
     // The homepage's LCP element is a CSS background-image (not an <img>),
     // set via inline style in templates/components/_two-column-text-home-v2.php
@@ -119,24 +149,6 @@
     <meta property="og:image" content="<?php echo $video_poster_image['url']; ?>" />
 <?php } ?>
 <?php wp_head(); ?>
-<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
-// CSP-safe replacement for the inline onload="this.rel='stylesheet'" swap
-// used on preload+as=style <link> tags (skelet-icons, wp-pagenavi,
-// footer-styles -- see adapt_defer_pagenavi_css()/adapt_defer_footer_css()
-// in functions.php and the hardcoded preload above). Inline event handler
-// attributes are NOT authorized by a matching nonce under enforcing CSP
-// (script-src-attr falls back to script-src, which requires 'unsafe-hashes'
-// for attribute-based execution even when the nonce matches -- nonces only
-// cover <script> elements, not event handler attributes). This generic
-// listener does the same job from a nonce'd <script> element instead.
-// Confirmed live (S96) that without this, these preload links never
-// promote to stylesheet under enforcing CSP -- see SESSION-HANDOFF.md.
-document.querySelectorAll( 'link[rel="preload"][as="style"]' ).forEach( function ( link ) {
-    link.addEventListener( 'load', function () {
-        this.rel = 'stylesheet';
-    } );
-} );
-</script>
 
 <!-- Google Tag Manager -->
 <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
