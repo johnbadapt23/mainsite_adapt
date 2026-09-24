@@ -10171,3 +10171,33 @@ S121's 21 `esc_url()` wraps are confirmed safe and working in production: no bro
 - S121/S122: 21 unescaped `href` outputs fixed with `esc_url()`, confirmed live with zero regressions.
 
 All safe, verified, in-theme wins with no outstanding regressions. Remaining open items if the user wants them pursued: Yoda-condition style pass (large scope, low risk-adjusted value), and a considered `wp_kses_post()` decision for the two rich-text ACF fields (`speaker_details`, `partner_details`) currently left unescaped by design.
+
+---
+
+## §126 -- 2026-09-24: Live-verified the Lighthouse audit fixes (S123-S125)
+
+Confirmed `3f924c9` deployed (local HEAD matched `origin/dev`, clean tree), then verified each fix directly against staging.
+
+### CSP scoping fix (the actual bug behind the broken wp-login.php screenshot)
+
+Fetched response headers directly (not just page rendering) for three URLs:
+- `/wp-login.php` -- `content-security-policy: frame-ancestors 'self';` (WordPress core's own minimal default, our header no longer sent here)
+- `/wp-admin/` -- same, `frame-ancestors 'self';` only
+- `/` (front end) -- unchanged, the full theme CSP with script-src/style-src/img-src/font-src/media-src/frame-src/connect-src still enforced exactly as before
+
+Exactly the intended scope change: nothing removed from front-end protection, admin/login get out from under a policy that was never designed for them.
+
+### Accessibility fixes (S123)
+
+Checked the live DOM on the homepage:
+- `role="progressbar"` element: `aria-label="Slide progress"` present.
+- `a.popup-vimeo`: `aria-label="Play video"` present on the empty icon link.
+- The two-column-services "Learn More" buttons: `aria-label="Learn More - Enterprise IT Leaders & Teams"` -- confirms the nested-ACF-row title capture (`$tcsTitle`) is reading the correct row, not misattributing across rows.
+
+### Video lazy-load (S124)
+
+The homepage's autoplay background video turned out to be much further down the page than assumed (`getBoundingClientRect().top` ≈ 5968px -- well below the fold, not the hero video). Confirmed the fix is working exactly as intended: on initial load, before scrolling, the `<source>` still had no `src` attribute (data-autoplay-src only) and the video was paused/unloaded -- zero bytes spent. After scrolling to bring it within ~200px of the viewport, `src` populated, `readyState` reached `4` (HAVE_ENOUGH_DATA), `networkState` reached `1` (NETWORK_IDLE, finished loading), and the video was playing. No console errors from the new IntersectionObserver code path.
+
+### Conclusion
+
+All three fixes from this Lighthouse-driven pass (accessibility bugs, video lazy-load, CSP admin/login scoping) are confirmed live and working with no regressions. The CSP fix in particular resolved a real, previously-undiscovered site-wide bug (introduced by S95, not by anything in this pass) that was silently breaking admin/login-page JavaScript -- which is what the user's screenshot of a broken-looking wp-login.php screen turned out to be.
