@@ -9375,3 +9375,33 @@ Same result: `cookie-notice`/`download-monitor` both nonced and matching (37 of 
 Both S91's original fixes (frame-src, connect-src) and S92/S93's full-page nonce buffer are now genuinely confirmed working live, not just deployed. No corruption found anywhere checked. Every script-src, frame-src, and connect-src gap identified across S90-S93 is closed. The known, deliberately out-of-scope gaps remain: plugin-injected inline scripts that live nowhere in this repo (HubSpot tracking's own dataLayer bootstrap, Facebook Pixel base code, etc. -- documented back in S90), and the residual small risk the S92/S93 comments already name explicitly (the regex can't distinguish a real `<script>` tag from the literal text `<script` inside a JS string/JSON value elsewhere on a page -- not something a page-by-page check can rule out for every possible page on the site, only reduce confidence in).
 
 This is the "one more live pass" the user asked for before reconsidering enforcement. Reporting back to ask whether to proceed with flipping `Content-Security-Policy-Report-Only` to enforcing `Content-Security-Policy`.
+
+
+---
+
+## §95 -- 2026-09-24: switched CSP from Report-Only to ENFORCING
+
+User explicitly approved proceeding, after S90-S94's investigation and live verification: frame-src/connect-src gaps fixed and confirmed (S91), the script-src nonce buffer fixed and confirmed actually working after one false start (S92 shipped but did nothing live; S93 fixed it; S94 confirmed S93 live on two different template types with no corruption, including a direct JSON-LD parse check).
+
+### What changed
+
+`adapt_csp_report_only_header()` renamed to `adapt_csp_header()`; the `header()` call switched from `Content-Security-Policy-Report-Only` to the enforcing `Content-Security-Policy`. **The policy string itself is byte-identical to what S94 verified live** -- this is purely a header-name change, not a policy change, so everything already confirmed working under Report-Only carries over directly rather than being a new, unverified configuration.
+
+This is a real behavior change: browsers that honor this header will now actually block anything that doesn't match the policy, not just log it to the console.
+
+### Known, deliberately accepted residual risk (documented in the code itself, not just here)
+
+1. Plugin-injected inline scripts that live nowhere in this theme repo (HubSpot's own `dataLayer` bootstrap, Facebook Pixel base code, and similar -- first documented in S90). Nothing in this repo can nonce code that isn't in this repo.
+2. The full-page nonce-buffer regex (`adapt_apply_script_nonce_buffer`) can't distinguish a real `<script>` tag from the literal text `<script` inside a JS string or JSON value on some page nobody has specifically live-checked. S94's checks (including a direct JSON-LD parse) reduced but didn't eliminate this -- it isn't something a finite number of spot-checks can fully rule out across every page the site has.
+
+### Rollback path, documented up front
+
+If either of the above (or anything else) surfaces as real breakage after this goes live, the fastest safe rollback is a one-line revert of the `header()` call back to `Content-Security-Policy-Report-Only` -- immediately stops any blocking while the underlying issue gets investigated, without needing to touch anything else that was built across S75-S94.
+
+### Verification before commit
+
+Verify-before-write for both edits (the header-function rename+switch, and a small stale-comment-reference fix elsewhere in the file naming the old function name). Whole-file brace and `<?php`/`?>` balance checked against the pre-edit baseline: unchanged (134/134 braces, 57/65 tags -- this edit only changes a function name and a string literal, no new control structures). `git diff` reviewed in full, confirmed the only remaining "Report-Only" text in the file is inside the explanatory comment describing the switch and rollback path, not in any code path.
+
+### Status
+
+Committed to `dev`, not yet pushed. This is the highest-stakes single commit in this entire multi-session CSP effort -- it's the one that actually starts blocking things, not just logging them. Once pushed, needs the most careful live verification of anything done so far: not just "is everything still nonced" (already proven under Report-Only) but "does the site actually still work" -- forms submit, embeds render, no console errors, cookie-notice banner still functions, downloads still track -- checked live, not assumed from the Report-Only checks alone, since enforcement is the first time anything can actually be blocked rather than just logged.

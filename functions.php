@@ -1497,7 +1497,7 @@ function adapt_noindex_staging_header() {
 add_action( 'send_headers', 'adapt_noindex_staging_header' );
 
 // SECURITY 2026-09-23 (follow-up to §74): per-request CSP nonce, shared
-// between the header sent on 'send_headers' (adapt_csp_report_only_header,
+// between the header sent on 'send_headers' (adapt_csp_header,
 // below) and any markup rendered later in the same request that needs to
 // echo the same value into a nonce="..." attribute (the script_loader_tag
 // filter immediately below, and the raw <script> tags in header.php).
@@ -1645,7 +1645,29 @@ function adapt_apply_script_nonce_buffer( $html ) {
 }
 add_action( 'template_redirect', 'adapt_start_script_nonce_buffer', 0 );
 
-function adapt_csp_report_only_header() {
+// SECURITY 2026-09-24 (S95 -- switching to ENFORCING): after S90-S94's
+// investigation and live verification -- frame-src (app.formcrafts.com),
+// connect-src (g.clarity.ms), and the full-page script-src nonce buffer
+// (S91 through S93, S93 being the version that actually works, confirmed
+// live in S94 on two different template types with no corruption found,
+// including a direct JSON-LD parse check) -- switching this header from
+// Content-Security-Policy-Report-Only to the enforcing
+// Content-Security-Policy. This is a real behavior change: browsers that
+// honor this header will now actually block anything that doesn't match
+// the policy below, not just log it.
+//
+// Known, deliberately accepted residual risk, not closed by this work and
+// not closeable from this repo: (1) plugin-injected inline scripts that
+// live nowhere in this theme (HubSpot's own dataLayer bootstrap, Facebook
+// Pixel base code, and similar -- documented in S90); (2) the nonce-buffer
+// regex (below, adapt_apply_script_nonce_buffer) can't distinguish a real
+// <script> tag from the literal text "<script" inside a JS string or JSON
+// value elsewhere on some page nobody has specifically checked -- reduced,
+// not eliminated, by the live checks in S94. If either of these ever
+// surfaces as real breakage, the fastest safe rollback is reverting this
+// header back to Content-Security-Policy-Report-Only (one-line change),
+// which immediately stops blocking anything while this gets investigated.
+function adapt_csp_header() {
     $csp = "default-src 'self'; "
         . "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' 'nonce-" . adapt_csp_nonce() . "' https://cdnjs.cloudflare.com https://unpkg.com https://js.hsforms.net https://js.hs-scripts.com https://www.googletagmanager.com https://formcrafts.com; "
         . "style-src 'self' 'unsafe-inline'; "
@@ -1653,7 +1675,7 @@ function adapt_csp_report_only_header() {
         . "font-src 'self' data: https://fonts.gstatic.com; "
         . "frame-src 'self' https://player.vimeo.com https://vimeo.com https://formcrafts.com https://app.formcrafts.com https://www.googletagmanager.com; "
         . "connect-src 'self' https://js.hsforms.net https://forms-ap1.hsforms.com https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://analytics.google.com https://www.google-analytics.com https://px.ads.linkedin.com https://pixel-config.reddit.com https://alb.reddit.com https://r.clarity.ms https://h.clarity.ms https://g.clarity.ms https://content.hotjar.io https://vc.hotjar.io wss://ws.hotjar.com https://api-ap1.hubapi.com https://cta-ap1.hubspot.com https://forms-ap1.hscollectedforms.net;";
-    header( "Content-Security-Policy-Report-Only: {$csp}" );
+    header( "Content-Security-Policy: {$csp}" );
 }
-add_action( 'send_headers', 'adapt_csp_report_only_header' );
+add_action( 'send_headers', 'adapt_csp_header' );
 ?>
