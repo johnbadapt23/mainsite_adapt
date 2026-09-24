@@ -10050,3 +10050,20 @@ Could not run the actual `gulp build:scripts`/`build:styles-split` tasks locally
 
 - The 7 dead `source/js/includes/*.js` files (beyond `_maps-oldie.js`) -- left in place pending a closer read of what they contain, in case any represents wanted-but-disconnected functionality rather than pure cruft.
 - Whether `isotope`, `jquery.scrollTo`, `jquery.localScroll`, `js-cookie`, and `jquery.scrollbar-master` are actually *called* anywhere despite being built into the live bundle -- `main.js` itself never calls their APIs (checked), and the files that would have called some of them (`_isotope.js`) are among the dead includes above. If confirmed unused at runtime too, removing them from `paths.js`'s `scripts`/`styles` arrays would shrink the live, shipped `main.min.css`/`main.min.js` further -- a real "optimize for speed" win, not just a repo-cleanliness one. Needs its own careful pass (checking inline `<script>` blocks across all PHP templates, not just `main.js`) before touching the build config.
+
+---
+
+## §118 -- 2026-09-24: S115/S117 confirmed live -- zero regressions
+
+Fresh, cache-busted checks against staging after deploy.
+
+- `main-nofooter.min.css` and `main.min.js` both rebuilt with fresh cache-busting versions (confirming CI's build step ran cleanly against the trimmed `source/components/` and picked up nothing broken), both load HTTP 200.
+- `main.min.js` (296,312 bytes) still contains `select2`, `AOS`, and `magnificPopup` -- the vendor libraries actually used survived the trim intact and unchanged. `flexslider` is absent, consistent with it having never been in the build to begin with.
+- Homepage and `/all-resources/` (a different template, different content mix) both render correctly -- hero styling, nav, card layouts, images all intact, nothing visibly broken.
+- Console errors present on both pages are pre-existing and unrelated: a Vimeo `media-src` CSP block and several Microsoft Clarity `connect-src` CSP blocks, neither touched by anything this session did.
+
+Closes out S115-S117. The critical-CSS detour is fully reverted and the redundant-files removal is confirmed safe in production-equivalent conditions (staging), not just by local file-reference checks.
+
+### Next
+
+Per S117's flagged follow-ups: a closer read of the 7 remaining dead `source/js/includes/*.js` files, and checking whether `isotope`/`jquery.scrollTo`/`jquery.localScroll`/`js-cookie`/`jquery.scrollbar-master` are ever actually called at runtime (beyond the dead includes) -- if not, trimming them from `paths.js` would shrink the live bundle further, a real speed win rather than just repo cleanliness.
