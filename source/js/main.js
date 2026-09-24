@@ -193,9 +193,8 @@
 			return;
 		}
 
-		$('.bg-container > video > source[data-autoplay-src]').each(function () {
-			var $source = $(this);
-			var $video = $source.closest('video');
+		function loadAndPlay($video) {
+			var $source = $video.find('source[data-autoplay-src]');
 			$source.attr('src', $source.attr('data-autoplay-src'));
 			$video.get(0).load();
 			$video.attr('autoplay', 'autoplay');
@@ -206,6 +205,38 @@
 					// image stays as the fallback, same as before this change.
 				});
 			}
+		}
+
+		var $videos = $('.bg-container > video > source[data-autoplay-src]').map(function () {
+			return $(this).closest('video').get(0);
+		});
+
+		if (!('IntersectionObserver' in window)) {
+			// No IntersectionObserver support -- fall back to the previous
+			// eager-on-load behaviour rather than never loading the video.
+			$videos.each(function () {
+				loadAndPlay($(this));
+			});
+			return;
+		}
+
+		// Only fetch each background video once it is within 200px of the
+		// viewport, instead of every one of them downloading in full the
+		// moment the page loads regardless of scroll position. Above-the-
+		// fold instances still trigger effectively immediately since they
+		// are already inside that margin on load.
+		var observer = new IntersectionObserver(function (entries, obs) {
+			entries.forEach(function (entry) {
+				if (!entry.isIntersecting) {
+					return;
+				}
+				loadAndPlay($(entry.target));
+				obs.unobserve(entry.target);
+			});
+		}, { rootMargin: '200px 0px' });
+
+		$videos.each(function () {
+			observer.observe(this);
 		});
 	}
 
