@@ -10100,3 +10100,20 @@ Every one of the 16 file paths still referenced in `paths.js`'s `scripts`/`scrip
 ### Net result
 
 ~236KB less vendor source, meaningfully less of it in the *actual shipped* `main.min.js`/`main-nofooter.min.css` (not just the repo) once this deploys -- unlike S117, which was purely repository hygiene with zero effect on what ships, this is a real "optimize for speed" change to the live bundle.
+
+---
+
+## §120 -- 2026-09-24: S119 confirmed live -- real measured reduction, zero regressions
+
+Fresh, cache-busted checks against staging after deploy.
+
+- `main.min.js`: **244,732 bytes**, down from 296,312 bytes before S119 -- a real **~51.6KB (17%) reduction** in the JS every page downloads and parses, from removing 5 libraries nothing ever called.
+- `main-nofooter.min.css`: **1,659,858 bytes**, down from 1,674,655 -- a **~14.8KB reduction**, from removing `jquery.scrollbar.css`.
+- Confirmed in the live bundle: `select2`, `AOS`, `magnificPopup`, `matchHeight`, and `perfectScrollbar` (the libraries actually used) are all still present and unchanged. `isotope`, the scrollbar library, `Cookies`/js-cookie, and `localScroll` are all confirmed absent now.
+- Homepage renders identically -- hero, nav, logo ticker (still animating normally) all intact. No new console errors; the two present (Vimeo `media-src` CSP, Microsoft Clarity `connect-src` CSP) are the same pre-existing, unrelated ones seen in every check this session.
+
+This closes out S117's two follow-up items (S119's removal) with real confirmation that the byte reduction actually reached production, not just that nothing broke.
+
+### Where this performance/cleanup pass stands
+
+Since redirecting to in-theme work (S115): ~13MB and 1,166 files removed from the repository (S117, confirmed zero live effect by design), plus a genuine ~51.6KB JS / ~14.8KB CSS reduction in what every page actually downloads (S119, confirmed live here). Combined with the earlier CSS-split and render-blocking work (S103-S109), this is a substantial, fully-verified set of wins with no outstanding regressions.
