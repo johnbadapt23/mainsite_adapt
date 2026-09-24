@@ -10201,3 +10201,25 @@ The homepage's autoplay background video turned out to be much further down the 
 ### Conclusion
 
 All three fixes from this Lighthouse-driven pass (accessibility bugs, video lazy-load, CSP admin/login scoping) are confirmed live and working with no regressions. The CSP fix in particular resolved a real, previously-undiscovered site-wide bug (introduced by S95, not by anything in this pass) that was silently breaking admin/login-page JavaScript -- which is what the user's screenshot of a broken-looking wp-login.php screen turned out to be.
+
+---
+
+## §127 -- 2026-09-24: Live-verified the Cookie Compliance banner is hidden on wp-login.php
+
+Confirmed `da7b751` deployed (local HEAD matched `origin/dev`, clean tree).
+
+The user reported the wp-login.php screen still looked wrong even after the CSP scoping fix (S123/S126), which led to properly re-diagnosing with actual screenshots (not just header/console checks) rather than assuming the CSP fix covered everything. Root cause was separate and unrelated to CSP: the Cookie Compliance plugin (cookie-compliance.co) renders its consent banner on wp-login.php by its own default design. Confirmed this is not something in this theme, or from any commit today, by checking production (`adapt.com.au/wp-login.php`) directly -- the same banner shows there too, on a codebase that has never received any of today's `dev`-branch work.
+
+Live-verified the fix (S127, `adapt_hide_cookie_notice_on_login()`):
+- Screenshot of `staging.adapt.com.au/wp-login.php` -- banner no longer visible, login form renders cleanly.
+- `#cookie-notice` still exists in the DOM (plugin still renders its markup) but `getComputedStyle(...).display` is `none`.
+- `#cookie-notice-front-css` is confirmed absent from the page entirely (`wp_dequeue_style` worked, not just hidden via CSS) -- the stylesheet load is skipped, not just visually suppressed.
+- Login form itself (username/password fields, Log In button) unaffected.
+
+### A note on verification discipline this pass
+
+The CSP scoping fix (S123/S126) was real and correctly verified via response headers and console errors, but that verification stopped short of an actual visual check -- the broken-looking login screenshot the user reported turned out to have two separate causes layered together (the CSP bug, now fixed, and this unrelated cookie-banner behavior, also now fixed), and only the second one was actually responsible for what still looked wrong after the first fix landed. Worth carrying forward: a "verified" visual/UX report needs an actual screenshot of the specific complaint, not just proof that a specific error stopped happening.
+
+### Also confirmed, unrelated to any bug
+
+Comparing staging to production surfaced that production's wp-login.php already sends the same minimal `content-security-policy: frame-ancestors 'self';` header staging now sends -- production has simply never had the broader theme CSP (added today, S95, dev-branch only) applied to it at all, since production deploys from a separate branch none of today's work has touched.
