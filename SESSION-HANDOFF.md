@@ -10223,3 +10223,47 @@ The CSP scoping fix (S123/S126) was real and correctly verified via response hea
 ### Also confirmed, unrelated to any bug
 
 Comparing staging to production surfaced that production's wp-login.php already sends the same minimal `content-security-policy: frame-ancestors 'self';` header staging now sends -- production has simply never had the broader theme CSP (added today, S95, dev-branch only) applied to it at all, since production deploys from a separate branch none of today's work has touched.
+
+---
+
+## §128 -- 2026-09-25: Fixed the real forced-reflow source; investigated further performance work and deliberately stopped short of unsafe changes
+
+### Context
+
+User pasted a second, fresh Lighthouse JSON (run after S123-S127 deployed). `forced-reflow-insight` still scored 0, now pointing at different line/column numbers (2283/16, 2241/18) inside the orbit-animation script fixed in the previous session's S128 (`21b2bf0`, committed as this same section number before this one -- note the collision, that commit's message says "orbit-animation forced reflow" and predates this section). `is-crawlable` newly failed (`x-robots-tag: noindex, nofollow`) and `link-text` still listed 13 generic-link instances.
+
+### `ae60dfb`: the actual forced-reflow bug
+
+`21b2bf0` gated the orbit rAF loop behind an `IntersectionObserver`, but `.art-wrap` is the page hero -- visible immediately on load with zero scroll -- so gating on visibility did nothing for a Lighthouse run. Traced the new JSON's exact line/col numbers against the live served HTML: both point inside `getScrollY()`:
+
+```js
+return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+```
+
+`0` is falsy in JS. At scrollY 0 -- exactly Lighthouse's audit condition -- this fell through to `document.documentElement.scrollTop` and `document.body.scrollTop`, both forced-synchronous-layout properties, every animation frame, right after the previous frame's `style.transform` write. Fixed to `window.pageYOffset || 0` alone, which doesn't force layout. Verified: brace/paren balance, `node -c` on the extracted script, live `fetch()` confirming the flagged line numbers map to this function, and a live screenshot showing the homepage renders identically (hero, text-animation, orbit graphic all correct) with no new console errors.
+
+### `is-crawlable` / `x-robots-tag: noindex, nofollow` -- not a bug
+
+Traced to `adapt_noindex_staging_header()`, already in `functions.php` from an earlier session, hostname-guarded to `staging.` only. Confirmed via code reading this cannot affect production. This is intentional (prevents the public staging site from being indexed and competing with production), not something to fix. Explains the SEO score drop in isolation from the actual theme-code findings.
+
+### `link-text` -- already fixed, likely stale cache at audit time
+
+Live-checked the DOM: the "Learn More" links to `/our-services-it-leaders-teams/` and `/our-services-technology-vendors/` (fixed in an earlier session) do carry correct `aria-label`s right now. Staging was serving `x-cache: HIT` at the time of the check, so the flagged audit snapshot was likely read from a cache generation prior to that fix's deploy, not a real regression.
+
+### User then asked to push further toward a 90+/green performance score. What was investigated and NOT changed, and why
+
+**WP Rocket settings (checked directly in wp-admin, logged in):** Minify CSS/JS, Remove Unused CSS (confirmed active via the plugin's own "Used CSS ... processed" notice), Defer JS, Delay JS Execution, Lazyload (images/iframes/YouTube), local font hosting, font preloading, and link preloading are all already enabled. Nothing left to toggle there -- a previous session already did this work.
+
+**Why Remove Unused CSS isn't showing a bigger win:** fetched the actual per-page file WP Rocket serves (`wp-content/cache/background-css/.../main-nofooter.min.css`) -- 1.66MB, barely smaller than the 2.05MB raw bundle (main-nofooter.min.css bundles CSS for ~60 templates via `@import "templates/**/*.scss"` in `source/scss/main-nofooter.scss`). RUCSS's real-browser crawl is finding most selectors "used" somewhere on the page, or can't safely rule them out (hover states, JS-toggled classes, conditionally-rendered ACF blocks).
+
+**Considered splitting the largest template-specific SCSS partials out of the bundle** (same proven pattern as the existing `template-services.min.css` split), following the precedent's own verification method. Extracted every `.class`/`#id` token referenced in the 7 largest candidate files (`_customer-events.scss` 365KB, `_flexible.scss` 298KB, `_events.scss` 235KB, `_resources-types.scss` 174KB, `_registrations.scss` 149KB, `_customer-stories.scss` 126KB, `_post.scss` 109KB) and cross-checked against the full class list actually rendered in the live homepage HTML (393 classes captured via `fetch()`). Every file showed heavy overlap (26 to 106 shared class tokens each) -- these files mix genuine template-specific rules with shared utility classes (`.container`, `.column`, `.mobile`, `.desktop`, `.bg-container`, `.icon-container`, `.one-half`, etc.) in the same partial, unlike the earlier `template-services.min.css` split which was verified with a real selector-set diff against a clean boundary. A flat class-token overlap check can't distinguish a compound selector like `.foo .container` (scoped, safe to exclude) from a bare `.container` rule (not safe) -- that needs real coverage tooling (a headless-browser CSS coverage run per template, which is what WP Rocket's own RUCSS engine already attempts and only recovered ~19% with). Concluded this is not safely executable with the tools available in this session and did not touch it. This is a real, legitimate opportunity but needs either purpose-built coverage tooling or a slower, template-by-template audit with visual QA -- not something to rush under a score target.
+
+**Checked for other instances of the same falsy-zero forced-reflow anti-pattern** (`pageYOffset || ... .scrollTop`) across `source/js/main.js` and all templates -- none found, `ae60dfb` was a one-off.
+
+**Confirmed a substantial forced-reflow fix already exists** from an earlier session: `main.js`'s `rafThrottle()` helper plus deferring the homepage's HubSpot popup-form embed (`adaptActivateEmbeddedTemplate`) until the `load` event, specifically called out in the code comments as "the dominant contributor to this page's JS execution time and forced-reflow Lighthouse findings" at the time. That work already captured the largest win in this category.
+
+**Found a genuine, real, sitewide image-sizing issue, deliberately not touched this session:** `add_image_size( 'adapt-optimized', 2000, 2000, false )` in `includes/_setup.php` is the one size used by `wp_get_attachment_image()` calls across 150+ template files -- every image on the site, from a full-width hero to a 68px-wide partner logo, requests the same size (max 2000x2000) and relies on the browser/CSS to scale down. Confirmed live: a partner-logo image (`pathfindrblack-...png`) displayed at 68x68 has a natural size of 644x159. This is real waste, but fixing it properly means per-usage-context registered sizes and `srcset`/`sizes` across the whole template library -- far too broad a blast radius to attempt without dedicated, deliberate work and full visual QA. Flagged to the user as a legitimate future project, not attempted here.
+
+### Where this leaves the score
+
+`ae60dfb` is a genuine fix and is pushed. Everything else investigated in this pass was either already done by a prior session (WP Rocket config, the dominant forced-reflow source) or correctly judged too risky to execute blind (CSS bundle splitting, sitewide image-size registration) given the standing "no visual regressions" requirement. Getting further requires either real coverage-analysis tooling for the CSS/JS split, or a deliberate, scoped image-sizing project -- both are legitimate next steps if the user wants to invest the time, not something to rush for a score number.
