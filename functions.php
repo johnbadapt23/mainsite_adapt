@@ -349,27 +349,11 @@ function my_enqueue_scripts() {
     // and source/scss/footer-only.scss for the build side). main.min.css
     // itself is still built by build:styles (kept for a rollback path) but
     // is no longer enqueued anywhere.
-    // Homepage-scoped CSS trim (S134, replacing the reverted S129/S130
-    // attempt -- see SESSION-HANDOFF.md for the full incident). Only AOS
-    // rules are dropped here, never select2: a manual, non-DOM-snapshot
-    // audit of main.js confirmed the homepage's ACF flexible-content field
-    // has a closed list of layout components, none of which ever render
-    // data-aos/.aos- markup (structurally, not just "not observed"). But
-    // the homepage's hero HubSpot form embed (adaptActivateEmbeddedTemplate
-    // in main.js) renders fields controlled by HubSpot's own form builder
-    // -- which can include a <select> (main.js applies select2() to any
-    // <select> unconditionally) -- and that content is outside this
-    // codebase's control, so select2 CSS can never safely be excluded from
-    // the homepage bundle by this kind of static analysis. Falls back to
-    // the full, untrimmed file on every other template.
-    $adapt_main_styles_file = is_front_page()
-        ? '/assets/css/main-nofooter-home.min.css'
-        : '/assets/css/main-nofooter.min.css';
     wp_enqueue_style(
         'main-styles',
-        get_template_directory_uri(). $adapt_main_styles_file,
+        get_template_directory_uri(). '/assets/css/main-nofooter.min.css',
         [],
-        filemtime(get_template_directory(). $adapt_main_styles_file)
+        filemtime(get_template_directory(). '/assets/css/main-nofooter.min.css')
     );
     wp_enqueue_style(
         'footer-styles',
