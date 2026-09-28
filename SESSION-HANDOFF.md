@@ -10267,3 +10267,27 @@ Live-checked the DOM: the "Learn More" links to `/our-services-it-leaders-teams/
 ### Where this leaves the score
 
 `ae60dfb` is a genuine fix and is pushed. Everything else investigated in this pass was either already done by a prior session (WP Rocket config, the dominant forced-reflow source) or correctly judged too risky to execute blind (CSS bundle splitting, sitewide image-size registration) given the standing "no visual regressions" requirement. Getting further requires either real coverage-analysis tooling for the CSS/JS split, or a deliberate, scoped image-sizing project -- both are legitimate next steps if the user wants to invest the time, not something to rush for a score number.
+
+## S130: S129's regression reverted, deploy pipeline desync diagnosed and fixed, live-verified
+
+### What happened
+
+S129's homepage CSS trim (`dcd8384`/`00425b4`) deployed and the user reported a real visual regression ("spacing of some sections are off, alignment is off"). Reverted via `bc3b6c3` + `3e0b569` (`git revert --no-edit` against both S129 commits). Root cause of the regression itself was not identified before reverting -- the revert removed the change entirely rather than debug it live, which was the right call given the user's urgency and the standing no-regressions bar.
+
+### The revert didn't actually deploy -- a second, separate problem
+
+`git revert --no-edit` auto-generates commit messages in the form `Revert "<original subject>"`, which contain a literal `"`. `.github/workflows/deploy.yml`'s own comments already documented that this exact character breaks `milanmk/actions-file-deployer`'s generated deploy script (it unconditionally parses a `send_webhook()` function embedding the raw commit message in a double-quoted string, even though no webhook is configured) -- this session broke that already-known rule by not running the zero-double-quote commit-message check before committing revert-generated messages. The resulting CI run (`3e0b569`, run #270) failed with a syntax error before the SFTP deploy step ever ran, so **neither the `functions.php` revert nor the deleted trimmed-CSS file reached the server.**
+
+A follow-up empty commit (`e620d32`, "Retrigger deploy with a clean commit message") fixed the commit-message problem and its CI run (#271) succeeded -- but because this action's `sync: delta` mode diffs each push against the previous one, and `e620d32`'s tree was identical to `3e0b569`'s (it changed no files), the diff was empty and nothing was uploaded. The run's "success" meant "nothing to do," not "deployed." Confirmed live: the homepage kept serving `main-nofooter-home.min.css` (the trimmed file) with its original, unchanged `ver=` timestamp through both of these deploys.
+
+This is the exact drift scenario `deploy.yml`'s own `workflow_dispatch` comment anticipates ("if staging's remote content ever drifts from what git's delta diff expects"). Its prescribed fix -- a manual run with `sync_mode: full` -- is what actually resolved it (run #272, `workflow_dispatch`, triggered by the user since this session has no authenticated GitHub session in the browser pane).
+
+### Live verification (post-full-sync)
+
+- Confirmed via `fetch()` from the live page that it now serves `main-nofooter.min.css` (the original, untrimmed file) with a fresh `ver=` timestamp -- not the deleted trimmed variant.
+- Screenshot-scrolled the entire homepage (hero through footer CTA: text-animation intro, video module, accordion cards, quote slider, logo row, services section) -- all spacing/alignment correct, matching the pre-S129 baseline.
+- Checked console: all errors/warnings present (query-monitor CSP block, Clarity analytics CSP block, resource-preload warnings) are pre-existing and unrelated to this change, not new regressions.
+
+### Lesson for next time
+
+`git revert --no-edit`'s generated message must go through the same zero-double-quote check as any hand-written commit message before committing -- this check was being applied inconsistently (only to manually authored messages) and that gap caused a real production-adjacent incident. Also: this deploy pipeline's `delta` mode is push-to-push, not "diff since last successfully deployed commit" -- a failed deploy run silently breaks that assumption for every subsequent push until a manual `sync_mode: full` re-sync is run. If a deploy run ever fails partway (not just at the commit-message step), assume the server is now drifted from git history until a full re-sync confirms otherwise -- don't trust a subsequent green run's "success" alone as proof the fix landed; verify the actual served file.
