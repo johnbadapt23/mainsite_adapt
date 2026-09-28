@@ -1330,6 +1330,45 @@ add_filter( 'rocket_exclude_defer_js', function( $exclusions ) {
 //     return is_front_page() ? 0 : $value;
 // } );
 
+// 2026-09-28: this is why the homepage override above originally existed
+// (confirmed by the user). The hero "Join the Community" HubSpot form lives
+// in an inert <template> and is only injected when its Magnific popup
+// opens, so none of its markup exists when WP Rocket crawls the page.
+// RUCSS therefore dropped every HubSpot form rule (.hbspt-form, .hs-form,
+// .hs-form-field, .hs-input, .hs-submit, .hsfc-*, .inputs-list, .actions)
+// and the popup-state Magnific rules (.mfp-content, .mfp-inline-holder,
+// .mfp-hide), and the form rendered unstyled, inline in the hero. The
+// wp-admin safelist entries ("hbspt", "mfp-", ...) were not keeping them:
+// confirmed by diffing the homepage's Used CSS against main-nofooter.min.css.
+// The same popup pattern is used on inner pages (speaker/advisor enquiry
+// forms, download forms), so this applies site-wide. Patterns use WP
+// Rocket's (.*) wildcard syntax; kept in code so staging and production
+// always share the same safelist.
+function adapt_rucss_safelist( $safelist ) {
+	$patterns = array(
+		// HubSpot form embeds (legacy and new "hsfc" renderer).
+		'.hbspt-(.*)',
+		'.hs-(.*)',
+		'.hs_(.*)',
+		'.hsfc-(.*)',
+		'.inputs-list(.*)',
+		'.legal-consent-container(.*)',
+		'.submitted-message(.*)',
+		'.actions',
+		'.field',
+		'.input',
+		// Magnific Popup states only added when a popup opens.
+		'.mfp-(.*)',
+		// Theme popup and post-submit states toggled by JS.
+		'.form-popup(.*)',
+		'.thank-you(.*)',
+		'.submitted',
+	);
+
+	return array_values( array_unique( array_merge( (array) $safelist, $patterns ) ) );
+}
+add_filter( 'rocket_rucss_safelist', 'adapt_rucss_safelist' );
+
 
 add_filter('wpseo_use_page_analysis', '__return_false');
 
