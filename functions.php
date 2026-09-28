@@ -1363,6 +1363,21 @@ function adapt_rucss_safelist( $safelist ) {
 		'.form-popup(.*)',
 		'.thank-you(.*)',
 		'.submitted',
+		// WP Rocket matches safelist patterns from the START of each
+		// selector (confirmed 2026-09-28: every kept .hsfc-* selector in
+		// the homepage Used CSS began with .hsfc-/.hs-/.hbspt-/.mfp-). The
+		// theme's own form styling is written as descendant selectors, e.g.
+		// "section.text-animation-introduction ... .form-container-inner
+		// .form .hsfc-Step ... input", so the patterns above never matched
+		// them and the hero form still rendered unstyled. These leading
+		// wildcards keep any selector that contains the class anywhere.
+		'(.*).hsfc-(.*)',
+		'(.*).hs-(.*)',
+		'(.*).hs_(.*)',
+		'(.*).hbspt-(.*)',
+		'(.*).mfp-(.*)',
+		'(.*).form-container-inner(.*)',
+		'(.*).form-popup(.*)',
 	);
 
 	return array_values( array_unique( array_merge( (array) $safelist, $patterns ) ) );
