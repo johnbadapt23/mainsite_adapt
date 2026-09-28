@@ -6,7 +6,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
+<?php
+// `nowprocket` (2026-09-28): WP Rocket's "Delay JavaScript execution" was
+// rewriting this script to type="text/rocketlazyloadscript" for logged-out
+// visitors, so the capture-phase listener below was not registered until
+// the first user interaction. By then every preload+as=style <link>
+// (footer.min.css, skelet-icons, wp-pagenavi, cookie-notice) had already
+// fired its one-off 'load' event, so none of them were ever promoted to
+// rel="stylesheet" and the footer rendered unstyled. Logged-in admin views
+// are not optimised by WP Rocket, which is why S97's live check passed.
+// Same exclusion pattern as _text-animation-introduction-v2.php.
+?>
+<script nowprocket nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 // CSP-safe replacement for the inline onload="this.onload=null;this.rel=
 // 'stylesheet'" swap used on preload+as=style <link> tags (skelet-icons
 // below, wp-pagenavi and footer-styles from adapt_defer_pagenavi_css()/
