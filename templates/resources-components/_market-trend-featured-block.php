@@ -99,7 +99,7 @@
                                 <span class="bg-container">
                                     <?php $featured_image = get_field( 'featured_image' ); ?>
                                     <?php if ( $featured_image ) { ?>
-                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
+                                    	<?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-card-thumb', false, array(
                                     		'alt'     => $featured_image['alt'],
                                     		'loading' => 'lazy',
                                     	) ); ?>
@@ -108,7 +108,7 @@
                                 <span class="bg-container bg-container-hover">
                                     <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                     <?php if ( $listing_hover_image ) { ?>
-                                    	<?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-optimized', false, array(
+                                    	<?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-card-thumb', false, array(
                                     		'alt'     => $listing_hover_image['alt'],
                                     		'loading' => 'lazy',
                                     	) ); ?>
@@ -150,7 +150,7 @@
                                     <span class="bg-container">
                                         <?php $featured_image = get_field( 'featured_image' ); ?>
                                         <?php if ( $featured_image ) { ?>
-                                        	<?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
+                                        	<?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-card-thumb', false, array(
                                         		'alt'     => $featured_image['alt'],
                                         		'loading' => 'lazy',
                                         	) ); ?>
@@ -159,7 +159,7 @@
                                     <span class="bg-container bg-container-hover">
                                         <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                         <?php if ( $listing_hover_image ) { ?>
-                                        	<?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-optimized', false, array(
+                                        	<?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-card-thumb', false, array(
                                         		'alt'     => $listing_hover_image['alt'],
                                         		'loading' => 'lazy',
                                         	) ); ?>
