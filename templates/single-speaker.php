@@ -5,7 +5,7 @@
             <span class="colorBlock"></span>
             <div class="contentWrapper">
                 <div class="imageContainer">
-                    <div class="image" style="background-image: url(<?php echo get_field('speaker_image'); ?>)">
+                    <div class="image" style="background-image: url(<?php echo esc_url( get_field('speaker_image') ); ?>)">
                     </div>
                     <?php if ( get_field ( 'linked_in_url' ) ) { ?>
                         <a class="linkedIn" href="<?php echo esc_url( get_field('linked_in_url') ); ?>" target="_blank" rel="noopener noreferrer"></a>
@@ -43,7 +43,7 @@
             <?php if ( get_field ( 'logo' ) ) { ?>
                 <div class="logoWrapper">
                     <div class="logoContainer">
-                        <div class="logo" style="background-image: url(<?php echo get_field('logo'); ?>);">
+                        <div class="logo" style="background-image: url(<?php echo esc_url( get_field('logo') ); ?>);">
                         </div>
                     </div>
                 </div>
