@@ -10556,8 +10556,15 @@ section.roundtable-card-slider-module.roundtable-card-slider-module {
 
 // §11, not a new bug).
 
-section.sponsor-block.sponsor-block .container.container .table-block.table-block.mobile.mobile {
-        display: flow-root;
+// 2026-09-28: scoped to the mobile breakpoint. Unscoped, this
+// display: flow-root also overrode _landing.scss's `.table-block.mobile
+// { display: none }` on desktop, so the sponsorship packages showed both
+// the desktop table and the mobile card slider at once (live on
+// /become-a-partner/ and the */become-a-partner/ event pages).
+@media (max-width: 767px) {
+        section.sponsor-block.sponsor-block .container.container .table-block.table-block.mobile.mobile {
+            display: flow-root;
+        }
     }
 
 // section.two-column-logo-carousel: .text-inner/.button-container are

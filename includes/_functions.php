@@ -94,4 +94,47 @@ function adapt_acf_image( $field, $size = 'full', $attr = array() ) {
 	return sprintf( '<img src="%s"%s />', esc_url( $url ), $attr_html );
 }
 
+/**
+ * Keep an <img>'s height attribute in proportion when a caller overrides
+ * only its width.
+ *
+ * Several templates call wp_get_attachment_image() (directly, or through
+ * adapt_acf_image()) with an explicit 'width' attribute (for example
+ * template-app.php's 250px Edge+ icon) but no 'height'. WordPress then
+ * keeps the requested size's original height, so the tag ships as e.g.
+ * width="250" height="1443" for a square image. With the theme's
+ * img { height: auto }, browsers size the image from that attribute
+ * ratio, stretching it to 1443px tall (confirmed live on /edgeplus-app/,
+ * 2026-09-28). This recalculates the height from the attachment's real
+ * aspect ratio, and only when the caller changed the width and left the
+ * height untouched, so explicit width + height pairs are never altered.
+ *
+ * @param array        $attr       Image attributes.
+ * @param WP_Post      $attachment Attachment post.
+ * @param string|int[] $size       Requested image size.
+ * @return array
+ */
+function adapt_scale_overridden_image_height( $attr, $attachment, $size ) {
+	if ( empty( $attr['width'] ) || empty( $attr['height'] ) || ! $attachment instanceof WP_Post ) {
+		return $attr;
+	}
+
+	$src = wp_get_attachment_image_src( $attachment->ID, $size );
+	if ( ! $src || empty( $src[1] ) || empty( $src[2] ) ) {
+		return $attr;
+	}
+
+	$width  = (int) $attr['width'];
+	$height = (int) $attr['height'];
+
+	if ( $width <= 0 || $width === (int) $src[1] || $height !== (int) $src[2] ) {
+		return $attr;
+	}
+
+	$attr['height'] = (string) max( 1, (int) round( $width * (int) $src[2] / (int) $src[1] ) );
+
+	return $attr;
+}
+add_filter( 'wp_get_attachment_image_attributes', 'adapt_scale_overridden_image_height', 10, 3 );
+
 ?>

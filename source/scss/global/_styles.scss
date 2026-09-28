@@ -4961,3 +4961,21 @@ body {
                         }
                 }
         }
+
+// Slick carousel slides must float left (Slick's own slick.css rule) so the
+// track can lay them out side by side. The float-grid redesign set
+// `float: none` on several theme selectors that also target Slick slides
+// (e.g. section.sponsor-block .sponsors-slider-container .slide in
+// _landing.scss, .stories-hero-slider's slides), and because those
+// selectors are more specific than slick.css, the slides stacked
+// vertically inside a track that is still translated sideways, leaving
+// blank, very tall carousels (confirmed live 2026-09-28 on
+// /become-a-partner/, the five */become-a-partner/ event pages and
+// /customer-stories/ on mobile). This restores Slick's float for every
+// initialised horizontal carousel only. Vertical carousels keep Slick's
+// own float: none, and tracks laid out with flex or grid ignore float,
+// so they are unaffected. !important is needed to beat the refactor's
+// long, repeated-class selectors without editing each one.
+.slick-initialized:not(.slick-vertical) .slick-track > .slick-slide {
+    float: left !important;
+}
