@@ -44,6 +44,11 @@ section.position-information {
 
         .position-column-container {
             float: none;
+            // 2026-09-28: contain the floated title/overview columns. With
+            // float: none and no containment this box was 0px tall, so the
+            // pink .half-background (absolute, top/bottom 0 of the section)
+            // did not show and the sticky title column had no room to stick.
+            display: flow-root;
             width: 100%;
             height: 100%;
             position: relative;
