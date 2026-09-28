@@ -10303,3 +10303,22 @@ If that hero form renders a `<select>` field (a "how can we help" or country dro
 ### Implication for any future CSS-coverage-based split
 
 The coverage methodology needs a fourth check added to the two already in place (grep `main.js` init calls + check current DOM for any selector the plugin could ever target): also treat any element reachable via an `adaptActivateEmbeddedTemplate()` / similar deferred-activation call, or any third-party async widget (HubSpot forms chief among them), as "may render arbitrary markup after load, coverage-untestable via DOM snapshot" -- and exclude anything scoped to it from automatic removal regardless of what a snapshot shows. Not attempting this split again without that safeguard and the user's explicit sign-off on the approach, given it's already caused one live regression.
+
+## S135: homepage popup form spacing differs from production -- traced to HubSpot, not this codebase
+
+User reported the `#animationForm` popup ("Join the Community", the HubSpot embed activated by `adaptActivateEmbeddedTemplate` in main.js) looks different on staging than on production (adapt.com.au). Investigated whether this was caused by S134's AOS-only CSS trim or anything else in this session's work, before touching any code.
+
+### Ruled out as the cause, with evidence
+
+- S134's AOS trim: every one of the 244 dropped rules requires a `[data-aos]` attribute selector to match. Confirmed live via DOM query that zero `[data-aos]` elements exist anywhere inside `.mfp-content` or its descendants for this popup. There is no CSS mechanism by which removing AOS-scoped rules could affect this popup's layout.
+- select2 CSS: confirmed still served and intact on staging (S134 never touches it).
+- The theme's own CSS for this popup's wrapper -- `.mfp-content` / `.form-container` / `.form-intro` inside `.home-animation-popup`, defined in `source/scss/templates/_flexible.scss` -- is byte-for-byte identical between `origin/main` (production) and `origin/dev` (staging). None of the 107 commits `dev` is currently ahead of `main` by (which does include a real, deliberate "float-grid redesign" touching `_home.scss` and other templates) touch this specific popup's CSS.
+- The HubSpot form itself is identical on both: same `data-form-id` (`fb9276c9-f87b-4831-9afe-fe009b819497`) and `data-portal-id` (`8336221`), same visible text, same field structure (email, first name, one radio group), same computed font-size (14px) on every relevant ancestor on both sites.
+
+### What actually differs
+
+`.mfp-content` renders at 564px tall on staging vs 652px tall on production for the identical form, on repeated/stable measurement (not a one-off timing fluke). The `hsfc-*` classes visible in the rendered markup (`hsfc-Button`, `hsfc-RadioFieldGroup`, etc.) are HubSpot's own form-component library, rendered live by their externally-hosted script (`js.hsforms.net`) -- not by this theme. Since every piece of code this repo controls is confirmed identical between the two environments, the height/spacing difference must originate on HubSpot's side: progressive profiling based on browser/visitor state, an A/B test on their form renderer, or similar platform-level variance outside this codebase's control on either branch.
+
+### Decision: no code change made
+
+Did not add a CSS override to force the popup's internal spacing to match production, since that would mean patching for an effect this codebase doesn't cause and can't reliably reproduce or verify -- the exact kind of blind change that caused the S129/S130 incident. If this is worth resolving, the right place to look is the HubSpot form/portal configuration (portal 8336221, form fb9276c9-f87b-4831-9afe-fe009b819497) rather than theme code.
