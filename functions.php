@@ -1709,6 +1709,27 @@ add_filter( 'wp_inline_script_attributes', 'adapt_add_nonce_to_inline_scripts', 
 // buffer a theme/plugin left open), another plugin's ob_end_flush(), or
 // this buffer's own natural end -- removing the dependency on hook-
 // priority ordering against code this repo has no visibility into.
+// PERFORMANCE (S138): Download Monitor enqueues its 26KB frontend stylesheet
+// (handle 'dlm-frontend') as render-blocking CSS on every page. S107 left it
+// alone because a download block can sit anywhere in ACF flexible content.
+// This handles that concern exactly: every selector in that file was checked
+// and each one requires a dlm class or ID (.dlm-*, #dlm_login_form,
+// #dlm-no-access-modal) to match anything. So the stylesheet is removed only
+// when the final page markup, ignoring <script> and <link> tags, contains no
+// "dlm" at all. On any page that does render Download Monitor markup, the
+// stylesheet stays exactly as before. Pages without it cannot change visually.
+function adapt_strip_unused_dlm_css( $html ) {
+    if ( false === strpos( $html, "id='dlm-frontend-css'" ) ) {
+        return $html;
+    }
+    $markup = preg_replace( array( '#<script\b[^>]*>.*?</script>#is', '#<link\b[^>]*>#i' ), '', $html );
+    if ( null === $markup || false !== stripos( $markup, 'dlm' ) ) {
+        return $html;
+    }
+    $stripped = preg_replace( "#<link\b[^>]*\bid='dlm-frontend-css'[^>]*>\s*#i", '', $html, 1 );
+    return ( null === $stripped ) ? $html : $stripped;
+}
+
 function adapt_start_script_nonce_buffer() {
     ob_start( 'adapt_apply_script_nonce_buffer' );
 }
@@ -1716,6 +1737,7 @@ function adapt_apply_script_nonce_buffer( $html ) {
     if ( '' === $html ) {
         return $html;
     }
+    $html  = adapt_strip_unused_dlm_css( $html );
     $nonce = esc_attr( adapt_csp_nonce() );
     return preg_replace_callback(
         '/<script(?![^>]*\bnonce=)([^>]*)>/i',
