@@ -270,7 +270,7 @@ if($keyword != '') {
                                             <?php
                                             $video_poster_image = get_field( 'video_poster' );
                                             if ( $video_poster_image ) {
-                                                echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, resources_image_attrs( $video_poster_image['alt'], $postCounter == 1, $priorityImageRendered ) );
+                                                echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $video_poster_image['alt'], $postCounter == 1, $priorityImageRendered ) );
                                             }
                                             ?>
                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -322,7 +322,7 @@ if($keyword != '') {
                                             <?php
                                             $video_poster_image = get_field( 'video_poster' );
                                             if ( $video_poster_image ) {
-                                                echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, resources_image_attrs( $video_poster_image['alt'], $postCounter == 1, $priorityImageRendered ) );
+                                                echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $video_poster_image['alt'], $postCounter == 1, $priorityImageRendered ) );
                                             }
                                             ?>
                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -372,14 +372,14 @@ if($keyword != '') {
                                                 <?php
                                                 $featured_image = get_field( 'featured_image' );
                                                 if ( $featured_image ) {
-                                                    echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, resources_image_attrs( $featured_image['alt'], $postCounter == 1, $priorityImageRendered ) );
+                                                    echo wp_get_attachment_image( $featured_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $featured_image['alt'], $postCounter == 1, $priorityImageRendered ) );
                                                 }
                                                 ?>
                                             </span>
                                             <span class="bg-container bg-container-hover">
                                                 <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                                 <?php if ( $listing_hover_image ) { ?>
-                                                    <?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-optimized', false, array(
+                                                    <?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-card-thumb', false, array(
                                                     	'alt'     => $listing_hover_image['alt'],
                                                     	'loading' => 'lazy',
                                                     ) ); ?>
@@ -425,7 +425,7 @@ if($keyword != '') {
                                             <?php
                                             $featured_image = get_field( 'featured_image' );
                                             if ( $featured_image ) {
-                                                echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, resources_image_attrs( $featured_image['alt'], $postCounter == 1, $priorityImageRendered ) );
+                                                echo wp_get_attachment_image( $featured_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $featured_image['alt'], $postCounter == 1, $priorityImageRendered ) );
                                             }
                                             ?>
                                         </span>
@@ -566,7 +566,7 @@ if($keyword != '') {
                                                                                         <span class="bg-container">
                                                                                             <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                                                             <?php if ( $video_poster_image ) { ?>
-                                                                                                <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
+                                                                                                <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-card-thumb', false, array(
                                                                                                 	'alt'     => $video_poster_image['alt'],
                                                                                                 	'loading' => 'lazy',
                                                                                                 ) ); ?>
@@ -588,7 +588,7 @@ if($keyword != '') {
                                                                                         <span class="bg-container">
                                                                                             <?php $featured_image = get_field( 'featured_image' ); ?>
                                                                                             <?php if ( $featured_image ) { ?>
-                                                                                                <?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
+                                                                                                <?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-card-thumb', false, array(
                                                                                                 	'alt'     => $featured_image['alt'],
                                                                                                 	'loading' => 'lazy',
                                                                                                 ) ); ?>
@@ -648,7 +648,7 @@ if($keyword != '') {
                                                                         <?php
                                                                         $video_poster_image = get_field( 'video_poster' );
                                                                         if ( $video_poster_image ) {
-                                                                            echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, resources_image_attrs( $video_poster_image['alt'], true, $priorityImageRendered ) );
+                                                                            echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $video_poster_image['alt'], true, $priorityImageRendered ) );
                                                                         }
                                                                         ?>
                                                                         <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -669,14 +669,14 @@ if($keyword != '') {
                                                                         <?php
                                                                         $featured_image = get_field( 'featured_image' );
                                                                         if ( $featured_image ) {
-                                                                            echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, resources_image_attrs( $featured_image['alt'], true, $priorityImageRendered ) );
+                                                                            echo wp_get_attachment_image( $featured_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $featured_image['alt'], true, $priorityImageRendered ) );
                                                                         }
                                                                         ?>
                                                                     </span>
                                                                     <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                                                     <?php if ( $listing_hover_image ) { ?>
                                                                         <span class="bg-container bg-container-hover">
-                                                                            <?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-optimized', false, array(
+                                                                            <?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-card-thumb', false, array(
                                                                             	'alt'     => $listing_hover_image['alt'],
                                                                             	'loading' => 'lazy',
                                                                             ) ); ?>
@@ -812,7 +812,7 @@ if($keyword != '') {
                                                                             <span class="bg-container">
                                                                                 <?php $video_poster_image = get_field( 'video_poster' ); ?>
                                                                                 <?php if ( $video_poster_image ) { ?>
-                                                                                    <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, array(
+                                                                                    <?php echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-card-thumb', false, array(
                                                                                     	'alt'     => $video_poster_image['alt'],
                                                                                     	'loading' => 'lazy',
                                                                                     ) ); ?>
@@ -834,7 +834,7 @@ if($keyword != '') {
                                                                             <span class="bg-container">
                                                                                 <?php $featured_image = get_field( 'featured_image' ); ?>
                                                                                 <?php if ( $featured_image ) { ?>
-                                                                                    <?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, array(
+                                                                                    <?php echo wp_get_attachment_image( $featured_image['ID'], 'adapt-card-thumb', false, array(
                                                                                     	'alt'     => $featured_image['alt'],
                                                                                     	'loading' => 'lazy',
                                                                                     ) ); ?>
@@ -884,7 +884,7 @@ if($keyword != '') {
                                                                             <?php
                                                                             $video_poster_image = get_field( 'video_poster' );
                                                                             if ( $video_poster_image ) {
-                                                                                echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, resources_image_attrs( $video_poster_image['alt'], true, $priorityImageRendered ) );
+                                                                                echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $video_poster_image['alt'], true, $priorityImageRendered ) );
                                                                             }
                                                                             ?>
                                                                             <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -905,7 +905,7 @@ if($keyword != '') {
                                                                             <?php
                                                                             $featured_image = get_field( 'featured_image' );
                                                                             if ( $featured_image ) {
-                                                                                echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, resources_image_attrs( $featured_image['alt'], true, $priorityImageRendered ) );
+                                                                                echo wp_get_attachment_image( $featured_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $featured_image['alt'], true, $priorityImageRendered ) );
                                                                             }
                                                                             ?>
                                                                         </span>
@@ -913,7 +913,7 @@ if($keyword != '') {
                                                                     <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                                                     <?php if ( $listing_hover_image ) { ?>
                                                                         <span class="bg-container bg-container-hover">
-                                                                            <?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-optimized', false, array(
+                                                                            <?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-card-thumb', false, array(
                                                                             	'alt'     => $listing_hover_image['alt'],
                                                                             	'loading' => 'lazy',
                                                                             ) ); ?>
@@ -1002,14 +1002,14 @@ if($keyword != '') {
                                                     <?php
                                                     $featured_image = get_field( 'featured_image' );
                                                     if ( $featured_image ) {
-                                                        echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, resources_image_attrs( $featured_image['alt'], $postCounter == 1, $priorityImageRendered ) );
+                                                        echo wp_get_attachment_image( $featured_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $featured_image['alt'], $postCounter == 1, $priorityImageRendered ) );
                                                     }
                                                     ?>
                                                 </span>
                                                 <span class="bg-container bg-container-hover">
                                                     <?php $listing_hover_image = get_field( 'listing_hover_image' ); ?>
                                                     <?php if ( $listing_hover_image ) { ?>
-                                                    	<?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-optimized', false, array(
+                                                    	<?php echo wp_get_attachment_image( $listing_hover_image['ID'], 'adapt-card-thumb', false, array(
                                                     		'alt'     => $listing_hover_image['alt'],
                                                     		'loading' => 'lazy',
                                                     	) ); ?>
@@ -1082,7 +1082,7 @@ if($keyword != '') {
                                                     <?php
                                                     $best_practice_listing_image = get_field( 'best_practice_listing_image' );
                                                     if ( $best_practice_listing_image ) {
-                                                        echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'adapt-optimized', false, resources_image_attrs( $best_practice_listing_image['alt'], $posts->current_post === 0, $priorityImageRendered ) );
+                                                        echo wp_get_attachment_image( $best_practice_listing_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $best_practice_listing_image['alt'], $posts->current_post === 0, $priorityImageRendered ) );
                                                     }
                                                     ?>
                                                 </span>
@@ -1131,7 +1131,7 @@ if($keyword != '') {
                                                 <?php
                                                 $video_poster_image = get_field( 'video_poster' );
                                                 if ( $video_poster_image ) {
-                                                    echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, resources_image_attrs( $video_poster_image['alt'], $posts->current_post === 0, $priorityImageRendered ) );
+                                                    echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $video_poster_image['alt'], $posts->current_post === 0, $priorityImageRendered ) );
                                                 }
                                                 ?>
                                                 <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -1192,7 +1192,7 @@ if($keyword != '') {
                                                 <?php
                                                 $video_poster_image = get_field( 'video_poster' );
                                                 if ( $video_poster_image ) {
-                                                    echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-optimized', false, resources_image_attrs( $video_poster_image['alt'], $postCounter == 1, $priorityImageRendered ) );
+                                                    echo wp_get_attachment_image( $video_poster_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $video_poster_image['alt'], $postCounter == 1, $priorityImageRendered ) );
                                                 }
                                                 ?>
                                                 <?php if ( get_field( 'video_opacity_overlay' ) == 'overlay-opacity') { ?>
@@ -1261,7 +1261,7 @@ if($keyword != '') {
                                                     <?php
                                                     $featured_image = get_field( 'featured_image' );
                                                     if ( $featured_image ) {
-                                                        echo wp_get_attachment_image( $featured_image['ID'], 'adapt-optimized', false, resources_image_attrs( $featured_image['alt'], $postCounter == 1, $priorityImageRendered ) );
+                                                        echo wp_get_attachment_image( $featured_image['ID'], 'adapt-card-thumb', false, resources_image_attrs( $featured_image['alt'], $postCounter == 1, $priorityImageRendered ) );
                                                     }
                                                     ?>
                                                 </span>
