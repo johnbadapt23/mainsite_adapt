@@ -1315,12 +1315,20 @@ add_filter( 'rocket_exclude_defer_js', function( $exclusions ) {
 } );
 
 
-add_filter( 'pre_get_rocket_option_remove_unused_css', function( $value ) {
-    if ( is_front_page() ) {
-        return 0;
-    }
-    return $value;
-} );
+// 2026-09-28: the front-page-only override that forced WP Rocket's "Remove
+// Unused CSS" (RUCSS) off (added 0123758, 2026-08-06, no recorded reason)
+// has been removed so the homepage gets per-page Used CSS like every other
+// page. Lighthouse (mobile, 2026-09-28) showed ~119 KiB of the ~171 KiB
+// main-nofooter.min.css unused on the homepage. The RUCSS safelist in
+// wp-admin (Settings -> WP Rocket -> File Optimization) already covers the
+// JS/interaction-only classes the homepage relies on (home-animation-popup,
+// scrolled-*, menu-open, slick-, mfp-, etc.). If a homepage style goes
+// missing after Used CSS regenerates, add its class to that safelist first;
+// only restore the override below as a last resort:
+//
+// add_filter( 'pre_get_rocket_option_remove_unused_css', function( $value ) {
+//     return is_front_page() ? 0 : $value;
+// } );
 
 
 add_filter('wpseo_use_page_analysis', '__return_false');
