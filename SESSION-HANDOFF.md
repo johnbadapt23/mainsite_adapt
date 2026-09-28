@@ -10267,37 +10267,3 @@ Live-checked the DOM: the "Learn More" links to `/our-services-it-leaders-teams/
 ### Where this leaves the score
 
 `ae60dfb` is a genuine fix and is pushed. Everything else investigated in this pass was either already done by a prior session (WP Rocket config, the dominant forced-reflow source) or correctly judged too risky to execute blind (CSS bundle splitting, sitewide image-size registration) given the standing "no visual regressions" requirement. Getting further requires either real coverage-analysis tooling for the CSS/JS split, or a deliberate, scoped image-sizing project -- both are legitimate next steps if the user wants to invest the time, not something to rush for a score number.
-
----
-
-## §129 -- 2026-09-28: Built real CSS-coverage tooling; shipped a verified 54KB homepage-only CSS trim
-
-### Context
-
-User pushed back on the previous session's conclusion (couldn't safely split the CSS bundle without "real coverage tooling") by asking directly why not build that tooling, and separately pointed out WordPress's body-class convention could be used to scope the cut. Both points were correct and led directly to this section's approach.
-
-### The tooling
-
-No Playwright/Puppeteer available (cloud container's egress proxy blocks `staging.adapt.com.au`; the device shell can reach npm's registry but not the public site at all). Used what was actually available instead: the live built-in browser pane already has full access to staging, and modern Chrome exposes the CSSOM directly to page JavaScript. Built a real coverage check using `new CSSStyleSheet()` + `.replaceSync(cssText)` to parse the live `main-nofooter.min.css` off-DOM (zero visual side effects, nothing attached to the page), then tested every rule's selector with `document.querySelectorAll()` against the actual rendered homepage DOM -- this is the same fundamental approach Chrome DevTools' own coverage tooling and tools like PurgeCSS use, just implemented directly in-browser via `javascript_exec` rather than a separate headless-browser pipeline.
-
-### The trap, caught before it shipped
-
-A raw DOM snapshot at page-load time can't see JS-injected markup. First pass flagged huge amounts of MagnificPopup (`.mfp-*`) and Select2 (`.select2-*`) CSS as "unused" -- correct for the snapshot, wrong for reality: MagnificPopup only creates its `.mfp-wrap`/`.mfp-container`/etc. DOM when a popup is actually opened, and the homepage has a live `.popup-vimeo` trigger (confirmed: `document.querySelectorAll('.popup-vimeo').length === 1`) that would open one. Cutting `.mfp-*` CSS on that basis would have shipped a broken-looking video popup the first time a visitor clicked it -- exactly the kind of regression a static crawl or a naive selector-overlap check can't catch. Also caught, on a second pass: Perfect Scrollbar (`.ps`, `.ps__*`) looked unused (0 `.ps` elements at load) but `main.js` calls `.perfectScrollbar()` on `.mobileMenuResources` when the mobile "Resources" nav item is clicked -- a sitewide header element present on every template including home -- so `.ps` CSS had to stay too, regardless of what the load-time snapshot showed. (Incidentally found, not touched: `main.js` line 303 actually targets `.mobileMenuResource` -- singular -- which doesn't match the real markup's `.mobileMenuResources` class, so that specific `perfectScrollbar()` call is a pre-existing dead call unrelated to anything in this pass; noted here in case it's worth a separate look.)
-
-Fixed by requiring TWO independent signals before treating any vendor-CSS block as safe to cut: (1) the DOM coverage test says unused, AND (2) no JS init call in `main.js` targets a selector that exists in the page's DOM (even one not yet carrying the vendor library's own injected classes). Slick carousel (32 elements present) and MagnificPopup/Perfect Scrollbar (confirmed triggers) all failed condition (2) or (1) and were left untouched. Only AOS (animate-on-scroll) and Select2 passed both: zero `[data-aos]` elements anywhere in the homepage markup (AOS, unlike the other three, only ever targets elements that already carry that attribute server-side -- there's no dynamic-injection path that could need it later), and zero `<select>` elements (`select2()` is a documented no-op with none to attach to).
-
-### What shipped (`dcd8384`)
-
-`assets/css/main-nofooter-home.min.css`: the same compiled `main-nofooter.min.css`, built with a small postcss-based Node script (`css@3` package, scratch-installed, not committed) that walks the parsed AST and drops any rule whose selectors ALL match the AOS or Select2 patterns -- 410 rules removed, ~54KB of the 2MB file, re-parsed afterward to confirm valid CSS syntax. `functions.php`'s `my_enqueue_scripts()` now enqueues this file instead of the full one only when `is_front_page()` is true; every other template's enqueue is byte-for-byte unchanged.
-
-### Live verification before shipping
-
-Applied the exact same trim live to the real homepage via `document.adoptedStyleSheets` (disabling the original `<link>`, no page reload, no server round-trip needed) and checked:
-- Screenshot of the hero section: pixel-identical to the untouched baseline.
-- A blank-white area further down the page initially looked like a regression -- turned out to be present identically on a freshly-loaded, completely untouched page at the same scroll position (verified via a clean reload with no trim applied), so not caused by this change at all.
-- `.popup-vimeo` clicked programmatically (`dispatchEvent(new MouseEvent('click', ...))`): `.mfp-wrap` (`position: absolute`), `.mfp-bg`, and `.mfp-close` (`display: block`) all render with correct computed styles -- MagnificPopup fully intact.
-- `a.navResources` clicked: `.mobileMenuResources` correctly receives `.active`, `header` correctly receives `.menu-open` -- the JS-driven mobile menu toggle behavior is unaffected (expected, since none of the rules it depends on were touched).
-
-### Honest sizing
-
-54KB out of 2MB (~2.6%) is a real, fully-verified, zero-risk win -- not the dramatic reduction hoped for. The rigorous, two-signal verification process is what kept this modest: the vast majority of what a naive coverage tool calls "unused" on this site turns out to be legitimately needed for popups, carousels, and menu interactions that only render after a user acts, which a static snapshot can't see. That's the actual, evidence-based reason the bundle can't be aggressively cut without much deeper interaction-simulating tooling than was practical to build in this session.
