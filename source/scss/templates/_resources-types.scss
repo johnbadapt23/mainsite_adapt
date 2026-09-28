@@ -3548,6 +3548,12 @@ section.filter-title-block.filter-title-block {
 
 section.filter-listing.filter-listing {
                 float: none;
+                // 2026-09-28: contain floated children (e.g. the
+                // .article-container-three-post block on /topic/* pages).
+                // Without its old float this section stopped containing
+                // them, the block hung into the footer and stretched it
+                // (/topic/applications footer 1048px vs 872px elsewhere).
+                display: flow-root;
         }
 
 // line 299
