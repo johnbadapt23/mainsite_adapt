@@ -49,8 +49,8 @@
                                     <?php if ( have_rows( 'link' ) ) : ?>
                                         <span class="link-container">
                     						<?php while ( have_rows( 'link' ) ) : the_row(); ?>
-                                                <a href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>" class="text-link medium-link-text external-link red-text red-underline-link"<?php if ( $csCaptionTitle ) { ?> aria-label="<?php echo esc_attr( trim( get_sub_field( 'link_text' ) ) . ' - ' . wp_strip_all_tags( $csCaptionTitle ) ); ?>"<?php } ?>>
-                                                    <?php echo get_sub_field( 'link_text' ); ?>
+                                                <a href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>" class="text-link medium-link-text external-link red-text red-underline-link">
+                                                    <?php echo get_sub_field( 'link_text' ); ?><?php if ( $csCaptionTitle ) { ?><span class="adapt-sr-only"> - <?php echo esc_html( wp_strip_all_tags( $csCaptionTitle ) ); ?></span><?php } ?>
                                                 </a>
                     						<?php endwhile; ?>
                                         </span>

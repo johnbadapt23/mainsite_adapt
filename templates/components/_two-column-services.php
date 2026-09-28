@@ -18,7 +18,7 @@
                             <span class="links-container desktop">
                         		<?php if ( have_rows( 'button' ) ) : ?>
                         			<?php while ( have_rows( 'button' ) ) : the_row(); ?>
-                        				<a class="std-button red-button" href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>"<?php if ( $tcsTitle ) { ?> aria-label="<?php echo esc_attr( trim( get_sub_field( 'link_text' ) ) . ' - ' . wp_strip_all_tags( $tcsTitle ) ); ?>"<?php } ?>><?php echo get_sub_field( 'link_text' ); ?></a>
+                        				<a class="std-button red-button" href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>"><?php echo get_sub_field( 'link_text' ); ?><?php if ( $tcsTitle ) { ?><span class="adapt-sr-only"> - <?php echo esc_html( wp_strip_all_tags( $tcsTitle ) ); ?></span><?php } ?></a>
                         			<?php endwhile; ?>
                         		<?php else : ?>
                         			<?php // no rows found ?>
@@ -74,7 +74,7 @@
                     <span class="links-container mobile">
                         <?php if ( have_rows( 'button' ) ) : ?>
                             <?php while ( have_rows( 'button' ) ) : the_row(); ?>
-                                <a class="std-button red-button" href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>"<?php if ( $tcsTitle ) { ?> aria-label="<?php echo esc_attr( trim( get_sub_field( 'link_text' ) ) . ' - ' . wp_strip_all_tags( $tcsTitle ) ); ?>"<?php } ?>><?php echo get_sub_field( 'link_text' ); ?></a>
+                                <a class="std-button red-button" href="<?php echo get_sub_field( 'link' ); ?>" target="<?php echo get_sub_field( 'link_target' ); ?>"><?php echo get_sub_field( 'link_text' ); ?><?php if ( $tcsTitle ) { ?><span class="adapt-sr-only"> - <?php echo esc_html( wp_strip_all_tags( $tcsTitle ) ); ?></span><?php } ?></a>
                             <?php endwhile; ?>
                         <?php else : ?>
                             <?php // no rows found ?>

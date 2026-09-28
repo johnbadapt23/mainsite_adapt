@@ -219,6 +219,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         .adapt-skip-link:focus {
             top: 0;
         }
+        /* Visually hidden, still read by screen readers and counted in the
+           link's text. Used to give generic CTA links ("Learn More",
+           "Read More") descriptive text. Lighthouse's link-text audit reads
+           the link's own text and ignores aria-label, so the earlier
+           aria-label approach did not clear it. */
+        .adapt-sr-only {
+            position: absolute !important;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            clip-path: inset(50%);
+            white-space: nowrap;
+            border: 0;
+        }
     </style>
     <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NHF4ZRS"
