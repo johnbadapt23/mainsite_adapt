@@ -349,33 +349,11 @@ function my_enqueue_scripts() {
     // and source/scss/footer-only.scss for the build side). main.min.css
     // itself is still built by build:styles (kept for a rollback path) but
     // is no longer enqueued anywhere.
-    // S129: main-nofooter.min.css bundles every page template's CSS,
-    // including two vendor libraries (AOS animate-on-scroll, Select2
-    // dropdown) that the homepage never triggers -- confirmed via a real
-    // in-browser coverage check (CSSStyleSheet + querySelectorAll against
-    // the live rendered DOM, cross-checked against main.js's own init
-    // calls): the homepage has zero [data-aos] elements anywhere in its
-    // markup (AOS only ever applies to elements that already carry that
-    // attribute server-side, so there's no dynamic-injection risk the way
-    // there is for e.g. MagnificPopup or Select2's own dropdown UI) and
-    // zero <select> elements (select2() is a documented no-op with none to
-    // attach to). main-nofooter-home.min.css is that same compiled file
-    // with only those two vendor blocks' rules removed -- nothing else
-    // touched, verified via a full CSS-rule diff -- and is live-verified
-    // to render the homepage identically (screenshot-checked, plus the
-    // .popup-vimeo/MagnificPopup and mobile-menu interactions explicitly
-    // exercised afterward to confirm nothing else was affected). Every
-    // other template keeps loading the exact same main-nofooter.min.css
-    // as before -- this swap is scoped to is_front_page() only, so no
-    // other page's CSS changes at all.
-    $adapt_main_styles_file = is_front_page()
-        ? '/assets/css/main-nofooter-home.min.css'
-        : '/assets/css/main-nofooter.min.css';
     wp_enqueue_style(
         'main-styles',
-        get_template_directory_uri() . $adapt_main_styles_file,
+        get_template_directory_uri(). '/assets/css/main-nofooter.min.css',
         [],
-        filemtime(get_template_directory() . $adapt_main_styles_file)
+        filemtime(get_template_directory(). '/assets/css/main-nofooter.min.css')
     );
     wp_enqueue_style(
         'footer-styles',
