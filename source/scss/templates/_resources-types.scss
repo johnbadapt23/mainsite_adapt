@@ -4660,6 +4660,18 @@ section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wr
         float: none;
     }
 
+// 2026-09-28: on mobile every column is width:100%, so the flex row above
+// squeezed them side by side at ~160px each, and the equal-height script
+// then stretched both to that tall height (media/news listings roughly
+// 1.7x taller than production). Stacking them as blocks matches the old
+// float layout; verified /media/ at 375px: 3227px vs production 3262px.
+// The .external-press-release variant gets the same rule below.
+@media (max-width: 767px) {
+        .item.item.press-release-item.press-release-item .container.container {
+                display: block;
+        }
+}
+
 // .external-press-release variant: same .container, but only 2
 
 // columns (no .press-date-container in this variant's markup).
@@ -4668,6 +4680,12 @@ section.filter-listing.filter-listing .container.container .grid-wrapper.grid-wr
         display: flex;
         align-items: flex-start;
     }
+
+@media (max-width: 767px) {
+        .item.item.press-release-item.press-release-item.external-press-release.external-press-release .container.container {
+                display: block;
+        }
+}
 
 .item.item.press-release-item.press-release-item.external-press-release.external-press-release .item-content-container.item-content-container {
         float: none;

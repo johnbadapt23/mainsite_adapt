@@ -6212,6 +6212,18 @@ section.partner-form.partner-form {
                 }
         }
 
+// 2026-09-28: below 1024px this box switches from display:flex to
+// display:block with floated columns. Without its own float it no longer
+// contained them, so the pink panel collapsed to ~143px and the content
+// spilled into the footer (live on /event-partner/ and the event
+// partnership pages on mobile). flow-root contains the floats again;
+// verified 828px on staging, matching production's 828px at 375px.
+@media (max-width: 1023px) {
+        section.partner-form.partner-form .container.container .form-text-container.form-text-container {
+                display: flow-root;
+        }
+}
+
 // line 3546
 
 section.partner-form.partner-form {
