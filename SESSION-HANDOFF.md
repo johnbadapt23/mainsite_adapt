@@ -10335,24 +10335,3 @@ Corrected in `b660b0f`: applied the same swap to the 62 genuinely live call site
 Per-file swap counts: 21 in `template-resource-type.php`, 17 in `template-resource-type-pre-media.php`, 20 in `template-podcast.php`. Verified via python brace/paren-balance diffs against pre-edit backups on the device (identical counts each time, confirming only the target string literals changed) since no local `php` binary is available in the device shell for `php -l`.
 
 Still pending: same liveness check has not yet been done on `template-resource-type-pre-media.php`'s and `template-podcast.php`'s OWN inline sections beyond what's covered above -- both files were fully swept this pass (grep for every `'adapt-optimized'` occurrence in each file, not just the ones reachable from their `get_template_part()` includes), so this is believed complete, but has not yet been confirmed live via post-deploy class-name inspection the way `/resource-type/articles/` was checked for the previous, broken commit. Verify `/resource-type/*` (peer-insights, podcast, expert-presentations, market-trend-reports, best-practices-guides) after next deploy: expect `attachment-adapt-card-thumb size-adapt-card-thumb` classes on card images, `attachment-adapt-optimized size-adapt-optimized` still on the featured-hero images only.
-
-## S137: S136 live-verified on all /resource-type/* pages; Clarity CSP beacon fix
-
-### S136 verification (b660b0f, live on staging)
-
-Fetched each page fresh (`cache: no-store`, cache-busting query, `x-cache: MISS`) and tallied every content image by size class and card container, with header/nav/mega-menu images excluded. Note for future checks: the WebP converter wraps images in `<picture>`, and the `attachment-* size-*` classes move onto the `<picture>` element, not the inner `<img>`. Counting `img` classes alone under-reports and looks like a regression when it is not.
-
-- articles: 11 `.item.one-third` cards + 1 `.image-column` on `adapt-card-thumb`
-- peer-insights: 8 cards + 3 `.resources-side-posts-inner` on `adapt-card-thumb`; 1 `.insights-featured-column` hero on `adapt-optimized` (as intended)
-- podcast: 9 cards on `adapt-card-thumb`
-- expert-presentations: 8 cards on `adapt-card-thumb`
-- market-trend-reports: 10 `.item.market-trend-reports` + 1 `.image-column` on `adapt-card-thumb`
-- best-practices-guides: renders zero cards. Checked production (`adapt.com.au/resource-type/best-practices-guides/`): also zero cards. Pre-existing content state, not a regression. Flag to content team if the page is meant to list guides.
-
-No broken images, no 404 resources, WebP `srcset` candidates loading (for example `-768x512.jpg.webp` at a 587px slot). Visual spot-check of peer-insights clean. S136 is closed.
-
-### Clarity CSP fix
-
-Console on staging showed the enforcing CSP blocking `https://l.clarity.ms/collect` (connect-src). This is the fourth Clarity subdomain after `r.`, `h.` and `g.` were each added one at a time. Replaced the three explicit hosts with `https://*.clarity.ms` in `adapt_csp_header()` (same wildcard pattern already used for `*.vimeocdn.com` in media-src). Scope stays limited to the already-approved vendor's domain. `php -l` (PHP 8.4) clean.
-
-After deploy, verify: response `Content-Security-Policy` header contains `https://*.clarity.ms`, and no `clarity.ms` connect-src violations in the console on a fresh page load.

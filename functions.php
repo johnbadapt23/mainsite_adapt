@@ -1765,12 +1765,6 @@ add_action( 'template_redirect', 'adapt_start_script_nonce_buffer', 0 );
 // surfaces as real breakage, the fastest safe rollback is reverting this
 // header back to Content-Security-Policy-Report-Only (one-line change),
 // which immediately stops blocking anything while this gets investigated.
-// S137 -- Microsoft Clarity rotates its collection beacon across several
-// single-letter clarity.ms subdomains (r., h., g. were added one at a time in
-// S79/S80/S90; l.clarity.ms/collect was then found blocked live under the
-// enforcing policy). Replaced the per-host entries with *.clarity.ms so the
-// next rotation does not silently drop session data again. Scope is still
-// limited to the already-approved vendor's own domain.
 function adapt_csp_header() {
     // S123 fix -- this header was firing on every request via send_headers,
     // including /wp-admin/ and /wp-login.php, but adapt_apply_script_nonce_buffer
@@ -1794,7 +1788,7 @@ function adapt_csp_header() {
         . "font-src 'self' data: https://fonts.gstatic.com; "
         . "media-src 'self' https://player.vimeo.com https://*.vimeocdn.com; "
         . "frame-src 'self' https://player.vimeo.com https://vimeo.com https://formcrafts.com https://app.formcrafts.com https://www.googletagmanager.com; "
-        . "connect-src 'self' https://js.hsforms.net https://forms.hsforms.com https://forms-ap1.hsforms.com https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://analytics.google.com https://www.google-analytics.com https://px.ads.linkedin.com https://pixel-config.reddit.com https://alb.reddit.com https://*.clarity.ms https://content.hotjar.io https://vc.hotjar.io wss://ws.hotjar.com https://api-ap1.hubapi.com https://cta-ap1.hubspot.com https://forms-ap1.hscollectedforms.net;";
+        . "connect-src 'self' https://js.hsforms.net https://forms.hsforms.com https://forms-ap1.hsforms.com https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://analytics.google.com https://www.google-analytics.com https://px.ads.linkedin.com https://pixel-config.reddit.com https://alb.reddit.com https://r.clarity.ms https://h.clarity.ms https://g.clarity.ms https://content.hotjar.io https://vc.hotjar.io wss://ws.hotjar.com https://api-ap1.hubapi.com https://cta-ap1.hubspot.com https://forms-ap1.hscollectedforms.net;";
     header( "Content-Security-Policy: {$csp}" );
 }
 add_action( 'send_headers', 'adapt_csp_header' );
