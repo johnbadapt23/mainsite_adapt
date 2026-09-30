@@ -18,7 +18,7 @@
     width: 100%;
     height: auto;
     min-height: 100dvh;
-    transform: translateY(-110px);
+    transform: translateY(-140px);
 }
 
 .art-wrap:after {
