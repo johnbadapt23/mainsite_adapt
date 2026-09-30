@@ -71,9 +71,9 @@ section.text-animation-introduction-v2 .container .introduction-content-containe
 .heading-v2 span s svg{
     position: absolute;
     top: 50%;
-    left: 10px;
+    left: 20px;
     transform: translateY(-50%);
-    width: 100%;
+    width: 85%;
 }
 section.logo-ticker-tape .band-container-backwards:before, section.logo-ticker-tape .band-container-backwards:after {
     content: '';
@@ -124,6 +124,11 @@ section.logo-ticker-tape .band-container-backwards:after {
 
     .text-animation-introduction-v2 .introduction-content-container {
         padding-top: 20dvh;
+    }
+
+    .heading-v2 span s svg {
+        left: 14px;
+        width: 80%;
     }
 }
 </style>
