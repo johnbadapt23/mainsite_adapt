@@ -5888,7 +5888,9 @@ section.expanding-form-module {
                 }
 
                 &.info-column {
+                    padding-top: 70px;
                     padding-right: 60px;
+                    padding-bottom: 70px;
 
                     @media (max-width:1023px) {
                         padding-right: 24px;
@@ -5897,6 +5899,10 @@ section.expanding-form-module {
                     @media (max-width:767px) {
                         padding-right: 0px;
                     }
+                }
+
+                &.form-column {
+                    align-self: stretch;
                 }
 
                 .form-embed {
