@@ -990,8 +990,9 @@ span.select2 {
 		font-size: 14px !important;
 		color: #000;
 		font-weight: 500 !important;
-		height: 18px !important;
-		line-height: 18px !important;
+		padding: 0 10px !important;
+		height: 38px !important;
+		line-height: 38px !important;
 		background-color: #f5f8fa !important;
 	}
 }
@@ -1981,6 +1982,21 @@ input.hs-input {
 		width: 100%;
 		text-align: left;
 	}
+}
+
+.hsfc-CheckboxFieldGroup .hsfc-CheckboxFieldGroup__Options,
+.hsfc-CheckboxFieldGroup .hsfc-RadioFieldGroup__Options,
+.hsfc-RadioFieldGroup .hsfc-CheckboxFieldGroup__Options,
+.hsfc-RadioFieldGroup .hsfc-RadioFieldGroup__Options {
+	margin-bottom: 0;
+}
+
+.hsfc-CheckboxFieldGroup {
+	margin-bottom: 0;
+}
+
+.hsfc-RadioFieldGroup {
+	margin-top: 15px;
 }
 
 .hsfc-PostSubmit {
