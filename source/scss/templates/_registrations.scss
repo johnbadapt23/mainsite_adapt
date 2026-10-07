@@ -4218,6 +4218,14 @@ section.registration-agenda-block.registration-agenda-block .container.container
         float: none;
     }
 
+// Stretch the right column to match the first column's flex-row height,
+// scoped to webinar-article only (not the other 5 section roots sharing
+// the float-none conversion above -- the user asked for this section
+// specifically).
+.webinar-article .container .column.right-column {
+    align-self: stretch;
+}
+
 @media only screen and (max-width: 767px) {
         section.registration-agenda-block.registration-agenda-block .container.container .column.column.second-column.second-column.right-column.right-column,
         section.webinar-article.webinar-article .container.container .column.column.second-column.second-column.right-column.right-column,
