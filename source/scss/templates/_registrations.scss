@@ -1723,6 +1723,18 @@ section.webinar-article {
     }
 }
 
+// Force full-width stacking and flex layout for the speaker-popup
+// trigger link specifically (the nested .speaker rule above floats
+// it at 50% two-up, and .speaker-container-inner only flexes when
+// the .flex-container modifier class is present).
+.webinar-article a.speaker-popup .speaker {
+    width: 100% !important;
+}
+
+.webinar-article a.speaker-popup .speaker-container-inner {
+    display: flex !important;
+}
+
 section.topicBanner.webinarBanner {
     .container {
         .column {
@@ -1777,6 +1789,13 @@ section.topicBanner.webinarBanner {
             background-color: rgba(0,0,0,0.5);
         }
     }
+}
+
+// Keep the tag visible as inline-block regardless of the
+// float-grid-conversion override generated elsewhere in this file
+// from the nested .roundtable rule above.
+.topicBanner span.roundtable {
+    display: inline-block !important;
 }
 
 section.registration-agenda-block {
