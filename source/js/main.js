@@ -2571,6 +2571,24 @@
 			$(this).addClass('active');
 		});
 
+		// ADAPT Intelligence "Use Case by Function" tabs
+		// (templates/intelligence-components/_use-case-tabs.php). Own
+		// class names and listener, not reusing .module-switch-button /
+		// .switch-content-container above -- that one targets
+		// 'a.module-switch-button' while its own template renders a
+		// <button>, so it never actually attaches/fires anywhere it's
+		// used today. Scoping this to its own classes gets a working
+		// tab switcher without changing that pre-existing (broken)
+		// behaviour on other pages.
+		$('.intelligence-tab-button').on( 'click', function(e){
+			e.preventDefault();
+			var $index = $(this).index();
+			$('.intelligence-tab-button').removeClass('active');
+			$(this).addClass('active');
+			$('.intelligence-tab-panel').removeClass('active');
+			$('.intelligence-tab-panel').eq($index).addClass('active');
+		});
+
 
 		if($('.scrolling-card').length){
 			$(window).on('scroll', rafThrottle(function() {
