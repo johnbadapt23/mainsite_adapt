@@ -11,6 +11,8 @@ get_header();
         <?php while ( have_rows( 'content' ) ) : the_row(); ?>
             <?php if ( get_row_layout() == 'intelligence_hero' ) : ?>
                 <?php get_template_part( 'templates/intelligence-components/_hero-ask' ); ?>
+            <?php elseif ( get_row_layout() == 'animated_text_with_logos' ) : ?>
+                <?php get_template_part( 'templates/customer-events-components/_animated-text-logos' ); ?>
             <?php elseif ( get_row_layout() == 'pain_vs_promise' ) : ?>
                 <?php get_template_part( 'templates/intelligence-components/_pain-vs-promise' ); ?>
             <?php elseif ( get_row_layout() == 'use_case_by_function' ) : ?>
