@@ -20,140 +20,16 @@
                 "layout_1d270da1f750a": {
                     "key": "layout_1d270da1f750a",
                     "name": "intelligence_hero",
-                    "label": "ADAPT Intelligence Hero (Ask Bar)",
+                    "label": "ADAPT Intelligence Hero (Image)",
                     "display": "block",
                     "sub_fields": [
                         {
-                            "key": "field_337266e047f85",
-                            "label": "Badge Text",
-                            "name": "badge_text",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "Small tag next to the heading, e.g. BETA. Leave blank to hide.",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "BETA",
-                            "maxlength": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": ""
-                        },
-                        {
-                            "key": "field_5dfe4476e5ece",
-                            "label": "Heading",
-                            "name": "heading",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "e.g. ADAPT Intelligence",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "",
-                            "maxlength": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": ""
-                        },
-                        {
-                            "key": "field_55bf314cd8c8a",
-                            "label": "Sub Heading",
-                            "name": "sub_heading",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "",
-                            "maxlength": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": ""
-                        },
-                        {
-                            "key": "field_0d0209a19b26c",
-                            "label": "Ask Bar Placeholder",
-                            "name": "ask_bar_placeholder",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "Placeholder text inside the search/ask input.",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "Ask about a topic, persona, or a sector...",
-                            "maxlength": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": ""
-                        },
-                        {
-                            "key": "field_0b6c99e61779f",
-                            "label": "Suggested Prompts",
-                            "name": "suggested_prompts",
-                            "aria-label": "",
-                            "type": "repeater",
-                            "instructions": "The clickable example-question chips shown under the ask bar.",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "layout": "row",
-                            "min": 0,
-                            "max": 0,
-                            "collapsed": "",
-                            "button_label": "Add Prompt",
-                            "rows_per_page": 20,
-                            "sub_fields": [
-                                {
-                                    "key": "field_80f23db826215",
-                                    "label": "Prompt Text",
-                                    "name": "prompt_text",
-                                    "aria-label": "",
-                                    "type": "text",
-                                    "instructions": "",
-                                    "required": 0,
-                                    "conditional_logic": 0,
-                                    "wrapper": {
-                                        "width": "",
-                                        "class": "",
-                                        "id": ""
-                                    },
-                                    "default_value": "",
-                                    "maxlength": "",
-                                    "placeholder": "",
-                                    "prepend": "",
-                                    "append": "",
-                                    "parent_repeater": "field_0b6c99e61779f"
-                                }
-                            ]
-                        },
-                        {
-                            "key": "field_9ef04b30f8d94",
-                            "label": "Side Image",
-                            "name": "side_image",
+                            "key": "field_6acc954fcb976",
+                            "label": "Hero Image",
+                            "name": "hero_image",
                             "aria-label": "",
                             "type": "image",
-                            "instructions": "The image shown bottom-left under the ask bar.",
+                            "instructions": "The single Figma-exported hero image (red background, full-bleed).",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
@@ -172,26 +48,6 @@
                             "mime_types": "",
                             "allow_in_bindings": 0,
                             "preview_size": "medium"
-                        },
-                        {
-                            "key": "field_86c14aec95fcd",
-                            "label": "Most Popular Title",
-                            "name": "most_popular_title",
-                            "aria-label": "",
-                            "type": "text",
-                            "instructions": "Heading above the auto-populated most-viewed-posts list (by post_views_count -- same query templates/resources-components/_most-popular-posts.php already uses elsewhere in this theme).",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "default_value": "Most Popular",
-                            "maxlength": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": ""
                         }
                     ],
                     "min": "",
@@ -1092,5 +948,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1791788534
+    "modified": 1791792762
 }
