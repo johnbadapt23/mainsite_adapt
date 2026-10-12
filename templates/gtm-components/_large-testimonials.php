@@ -42,9 +42,11 @@
                                     </span>
                                 </span>
                             </span>
-                            <span class="link-container">
-                                <a class="red-text text-link large-link-text red-underline-link external-link" href="<?php echo get_sub_field( 'link' ); ?>" target="_self">Read full story</a>
-                            </span>
+                            <?php if ( get_sub_field( 'link' ) ) { ?>
+                                <span class="link-container">
+                                    <a class="red-text text-link large-link-text red-underline-link external-link" href="<?php echo get_sub_field( 'link' ); ?>" target="_self">Read full story</a>
+                                </span>
+                            <?php } ?>
                         </div>
                     </div>
 				<?php endwhile; ?>
