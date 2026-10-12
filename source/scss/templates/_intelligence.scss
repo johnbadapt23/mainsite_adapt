@@ -85,6 +85,19 @@ section.pain-vs-promise {
                     font-weight: 600;
                 }
             }
+
+            .text-container {
+                // .labelXL has no colour of its own in the global
+                // typography styles (source/scss/global/_styles.scss)
+                // -- it inherits from the page body, which on this
+                // template resolves to white. Figma shows a bold dark
+                // heading on this section's light-grey background, so
+                // it needs its own explicit colour rather than relying
+                // on inheritance.
+                .labelXL {
+                    color: $heading-color;
+                }
+            }
         }
     }
 }

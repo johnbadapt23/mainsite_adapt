@@ -274,6 +274,128 @@
                     "min": "",
                     "max": ""
                 },
+                "layout_6accf40235182": {
+                    "key": "layout_6accf40235182",
+                    "name": "map_with_numbers",
+                    "label": "Map with Numbers",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6accf41335184",
+                            "label": "Heading",
+                            "name": "text",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "e.g. \"The Australian datasets powering ADAPT Intelligence\"",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "allow_in_bindings": 0,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_6accf43535185",
+                            "label": "Background Image",
+                            "name": "background_image",
+                            "aria-label": "",
+                            "type": "image",
+                            "instructions": "Optional -- the map/world-dot graphic behind the stat columns.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "return_format": "array",
+                            "library": "all",
+                            "min_width": "",
+                            "min_height": "",
+                            "min_size": "",
+                            "max_width": "",
+                            "max_height": "",
+                            "max_size": "",
+                            "mime_types": "",
+                            "preview_size": "medium"
+                        },
+                        {
+                            "key": "field_6accf46035186",
+                            "label": "Numbers",
+                            "name": "numbers",
+                            "aria-label": "",
+                            "type": "repeater",
+                            "instructions": "One row per stat column (Figma shows 6: 80,000+ / 2,100+ / 3,000+ / 66% / 15 / 1,200+).",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "layout": "block",
+                            "pagination": 0,
+                            "min": 0,
+                            "max": 0,
+                            "collapsed": "",
+                            "button_label": "Add Number",
+                            "rows_per_page": 20,
+                            "sub_fields": [
+                                {
+                                    "key": "field_6accf48735187",
+                                    "label": "Number",
+                                    "name": "number",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "e.g. \"80,000+\"",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "allow_in_bindings": 0,
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "parent_repeater": "field_6accf46035186"
+                                },
+                                {
+                                    "key": "field_6accf4b635188",
+                                    "label": "Text",
+                                    "name": "text",
+                                    "aria-label": "",
+                                    "type": "text",
+                                    "instructions": "e.g. \"data points across A/NZ\"",
+                                    "required": 0,
+                                    "conditional_logic": 0,
+                                    "wrapper": {
+                                        "width": "",
+                                        "class": "",
+                                        "id": ""
+                                    },
+                                    "default_value": "",
+                                    "maxlength": "",
+                                    "allow_in_bindings": 0,
+                                    "placeholder": "",
+                                    "prepend": "",
+                                    "append": "",
+                                    "parent_repeater": "field_6accf46035186"
+                                }
+                            ]
+                        }
+                    ]
+                },
                 "layout_a45260eeb0ade": {
                     "key": "layout_a45260eeb0ade",
                     "name": "pain_vs_promise",
@@ -1161,5 +1283,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1791810799
+    "modified": 1791817009
 }

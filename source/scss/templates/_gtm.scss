@@ -751,6 +751,14 @@ section.overlapping-cards {
 }
 
 section.large-testimonial-slider {
+    // Fallback colour behind the quote -- the quote/name text is set
+    // (white) assuming a dark background_image always covers this
+    // section. When no background_image is uploaded for a slide there
+    // is nothing behind the text at all, so it renders white-on-white.
+    // This fallback never conflicts with a real image: the image sits
+    // on top of it via .background-container (absolute, inset 0).
+    background-color: $color-black;
+
     .container {
         .background-container {
             position: absolute;

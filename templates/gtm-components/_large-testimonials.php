@@ -24,7 +24,9 @@
                                 <?php } ?>
                             </span>
                             <span class="quote-container">
-                                <span class="tag-container medium-grey"><?php the_sub_field( 'tag' ); ?></span>
+                                <?php if ( get_sub_field( 'tag' ) ) { ?>
+                                    <span class="tag-container medium-grey"><?php the_sub_field( 'tag' ); ?></span>
+                                <?php } ?>
                                 <span class="quote header-large"><?php the_sub_field( 'quote' ); ?></span>
                                 <span class="name-image-container">
                                     <span class="image-column">
