@@ -4,15 +4,34 @@
 // Figma file -- layout/behaviour only (spacing, colours, type scale
 // still need a pass against the actual design tokens before ship).
 
-section.intelligence-hero {
-    // Figma builds this entire section as one flat image on a red
-    // background (see templates/intelligence-components/_hero-ask.php) --
-    // not a text/search layout, so this is deliberately minimal.
-    padding: 0;
+section.intro-statement {
+    padding: 100px 0 64px;
+    text-align: center;
 
-    &.background-red {
-        background-color: $color-red;
+    .text-container {
+        width: 100%;
+        max-width: 760px;
+        margin: 0 auto;
+
+        h1 {
+            margin-bottom: 16px;
+        }
+
+        .sub-text {
+            display: block;
+            width: 100%;
+            color: $color-medium-grey;
+            margin-bottom: 32px;
+        }
     }
+}
+
+section.intelligence-hero {
+    // Figma builds this entire section as one flat product-screenshot
+    // image with a red backdrop baked into the PNG itself (see
+    // templates/intelligence-components/_hero-ask.php) -- not a
+    // text/search layout, so this is deliberately minimal.
+    padding: 0;
 
     .container {
         padding: 0;
@@ -153,6 +172,65 @@ section.intelligence-use-case {
                 border-radius: 8px;
                 overflow: hidden;
             }
+        }
+    }
+}
+
+section.closing-cta-form {
+    padding: 100px 0;
+
+    &.background-red {
+        background-color: $color-red;
+
+        h2, .sub-text, .follow-us-label {
+            color: #fff;
+        }
+    }
+
+    .cta-column-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        align-items: center;
+
+        @media (max-width: 767px) {
+            display: block;
+        }
+    }
+
+    .text-column {
+        flex: 1 1 45%;
+    }
+
+    .sub-text {
+        display: block;
+        margin: 16px 0 32px;
+    }
+
+    .follow-us {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .follow-us-label {
+            font-weight: bold;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+        }
+    }
+
+    .form-column {
+        flex: 1 1 45%;
+
+        .form-container {
+            display: block;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 32px;
         }
     }
 }
