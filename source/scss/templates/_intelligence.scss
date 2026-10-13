@@ -242,22 +242,44 @@ section.intelligence-use-case {
                 margin-bottom: 24px;
             }
 
-            .panel-heading {
+            // Figma repeats the module's own name ("Sales") as a large
+            // heading at the top of its panel, separate from and above
+            // the smaller grey question (panel_heading).
+            .panel-title {
+                display: block;
                 width: 100%;
-                font-weight: bold;
-                font-size: 20px;
+                font-weight: 700;
+                font-size: 28px;
+                color: $heading-color;
+                margin-bottom: 12px;
+            }
+
+            .panel-heading {
+                display: block;
+                width: 100%;
+                font-weight: 400;
+                font-size: 16px;
+                color: $color-medium-grey;
                 margin-bottom: 20px;
             }
 
             .prompt-examples {
+                display: block;
                 width: 100%;
 
+                // These are <span> tags (see the ACF repeater markup),
+                // which default to display:inline -- width/margin have
+                // no effect on an inline box, which is why the two
+                // examples were previously running together on one
+                // line instead of stacking as separate pill cards.
                 .prompt-example {
+                    display: block;
                     width: 100%;
                     background-color: rgba($color-red, 0.06);
                     border-radius: 8px;
                     padding: 16px 20px;
                     font-size: 14px;
+                    font-style: italic;
                     margin-bottom: 16px;
                 }
             }

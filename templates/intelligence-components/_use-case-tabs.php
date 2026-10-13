@@ -26,7 +26,7 @@
 // here, so this reuses the existing pattern rather than inventing a
 // second way to colour part of a heading.
 ?>
-<section class="switcher-module intelligence-use-case background-white">
+<section class="intelligence-use-case background-white">
     <div class="container">
         <div class="top-block">
             <span class="title-switcher-container">
@@ -35,7 +35,7 @@
                     <span class="sub-title"><?php echo get_sub_field( 'sub_title' ); ?></span>
                 <?php } ?>
                 <?php if ( have_rows( 'module' ) ) : ?>
-                    <span class="module-switcher intelligence-tab-bar">
+                    <span class="intelligence-tab-bar">
                         <?php $buttonCounter = 1; ?>
                         <?php while ( have_rows( 'module' ) ) : the_row(); ?>
                             <button type="button" class="intelligence-tab-button<?php if ( $buttonCounter == 1 ) { ?> active<?php } ?>"><?php echo get_sub_field( 'title' ); ?></button>
@@ -53,6 +53,9 @@
             <?php while ( have_rows( 'module' ) ) : the_row(); ?>
                 <div class="intelligence-tab-panel<?php if ( $counter == 1 ) { ?> active<?php } ?>">
                     <div class="column one-half text-column">
+                        <?php if ( get_sub_field( 'title' ) ) { ?>
+                            <span class="panel-title"><?php echo get_sub_field( 'title' ); ?></span>
+                        <?php } ?>
                         <?php if ( get_sub_field( 'panel_heading' ) ) { ?>
                             <span class="panel-heading"><?php echo get_sub_field( 'panel_heading' ); ?></span>
                         <?php } ?>

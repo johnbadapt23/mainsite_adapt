@@ -27,6 +27,12 @@ get_header();
                 <?php get_template_part( 'templates/components/_call-to-action-block' ); ?>
             <?php elseif ( get_row_layout() == 'closing_cta_form' ) : ?>
                 <?php get_template_part( 'templates/intelligence-components/_closing-cta-form' ); ?>
+            <?php elseif ( get_row_layout() == 'form_module' ) : ?>
+                <?php // Closing form section -- reuses the same Form Module
+                // component already used on the GTM template pages (e.g.
+                // /services/it-research-advisory), rather than the bespoke
+                // closing_cta_form layout above. ?>
+                <?php get_template_part( 'templates/customer-events-components/_form-module' ); ?>
             <?php endif; ?>
         <?php endwhile; ?>
     <?php else: ?>
