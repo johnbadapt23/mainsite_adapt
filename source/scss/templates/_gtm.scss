@@ -827,6 +827,35 @@ section.large-testimonial-slider {
                     }
 
                     .quote-container {
+                        position: relative;
+                        // Figma shows a decorative open-quote mark above the
+                        // testimonial text. This matches the same
+                        // background-image convention already used for the
+                        // quote-slider-inner::before in _market-buyer.scss.
+                        padding-top: 56px;
+
+                        &:before {
+                            content: '';
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            width: 40px;
+                            height: 34px;
+                            background-size: 40px 34px;
+                            background-image: url(../images/red-quote-open.svg);
+                            background-repeat: no-repeat;
+                        }
+
+                        @media (max-width:767px) {
+                            padding-top: 40px;
+
+                            &:before {
+                                width: 28px;
+                                height: 24px;
+                                background-size: 28px 24px;
+                            }
+                        }
+
                         .tag-container {
                             float: none;
                             width: 100%;
