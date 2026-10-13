@@ -960,6 +960,22 @@ section.animated-text-logos.animated-text {
     }
 }
 
+// Requested override: on the true-black ticker usage (e.g. the ADAPT
+// Intelligence page), match the mask gradient to the actual #0A0A0A
+// background under it instead of this component's default rgb(18,18,18)
+// (a visibly lighter grey against a true-black section).
+section.animated-text-logos.animated-text {
+    background: #0A0A0A;
+}
+
+section.animated-text-logos.animated-text .container .inner .logo-container-inner .pre-mask {
+    background: linear-gradient(90deg, rgb(10 10 10) 0px, rgba(10, 10, 10, 0) 100%);
+}
+
+section.animated-text-logos.animated-text .container .inner .logo-container-inner .post-mask {
+    background: linear-gradient(270deg, rgb(10, 10, 10) 0px, rgba(10, 10, 10, 0) 100%);
+}
+
 section.fixed-scroller {
     position: relative;
     min-height: 100svh;

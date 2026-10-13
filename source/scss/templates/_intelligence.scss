@@ -87,6 +87,19 @@ section.intelligence-hero {
     }
 }
 
+// Requested override: the section itself stays white (not full red),
+// and the :before overlap strip is near-black (#0A0A0A, matching the
+// Animated Text with Logos ticker directly below it) rather than red
+// or white, with no extra top padding.
+section.intelligence-hero.background-red::before {
+    background: #0A0A0A;
+}
+
+section.intelligence-hero {
+    background: white;
+    padding-top: 0;
+}
+
 section.pain-vs-promise {
     padding: 100px 0;
 
