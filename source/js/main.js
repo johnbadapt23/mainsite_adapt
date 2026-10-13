@@ -2583,10 +2583,31 @@
 		$('.intelligence-tab-button').on( 'click', function(e){
 			e.preventDefault();
 			var $index = $(this).index();
-			$('.intelligence-tab-button').removeClass('active');
+			var $buttons = $('.intelligence-tab-button');
+			var $panels = $('.intelligence-tab-panel');
+			var $currentPanel = $panels.filter('.active');
+			var $nextPanel = $panels.eq($index);
+
+			if ($(this).hasClass('active') || $currentPanel.is($nextPanel)) {
+				return;
+			}
+
+			$buttons.removeClass('active');
 			$(this).addClass('active');
-			$('.intelligence-tab-panel').removeClass('active');
-			$('.intelligence-tab-panel').eq($index).addClass('active');
+
+			// Softens the tab switch: the outgoing panel fades out first
+			// (tab-panel-leaving, see _intelligence.scss) instead of being
+			// yanked straight to display:none the instant a new tab is
+			// clicked, which read as an abrupt hard cut. The timeout below
+			// matches that fade-out's duration.
+			if ($currentPanel.length) {
+				$currentPanel.removeClass('tab-panel-entering').addClass('tab-panel-leaving');
+			}
+
+			setTimeout(function() {
+				$panels.removeClass('active tab-panel-leaving tab-panel-entering');
+				$nextPanel.addClass('active tab-panel-entering');
+			}, 200);
 		});
 
 

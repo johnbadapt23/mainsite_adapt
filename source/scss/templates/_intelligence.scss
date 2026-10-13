@@ -266,12 +266,22 @@ section.intelligence-use-case {
             flex-wrap: wrap;
             align-items: unset;
             // align-items: center;
-            // AOS only computes an element's position once -- it can't see
-            // this panel while it's display:none, so it would never fire
-            // for anything but the first (already-active) tab. This is a
-            // plain CSS entrance instead, replayed every time a tab is
-            // switched rather than only once on scroll.
-            animation: tab-panel-fade-in 0.5s ease forwards;
+        }
+
+        // AOS only computes an element's position once -- it can't see this
+        // panel while it's display:none, so it would never fire for
+        // anything but the first (already-active) tab. These are plain CSS
+        // entrance/exit animations instead, applied as their own classes by
+        // the tab-switch script (main.js) rather than tied directly to
+        // .active, so the outgoing panel gets a chance to fade out first
+        // instead of being yanked straight to display:none -- a softer,
+        // less abrupt switch than an instant cut.
+        &.tab-panel-entering {
+            animation: tab-panel-fade-in 0.45s ease-out forwards;
+        }
+
+        &.tab-panel-leaving {
+            animation: tab-panel-fade-out 0.2s ease-in forwards;
         }
 
         .column.one-half {
@@ -449,16 +459,29 @@ section.closing-cta-form {
     }
 }
 
-// Entrance animation for .intelligence-tab-panel -- see the .active rule
-// above for why this can't just be an AOS data-aos attribute.
+// Entrance/exit animations for .intelligence-tab-panel -- see the
+// .tab-panel-entering / .tab-panel-leaving rules above for why these
+// can't just be AOS data-aos attributes.
 @keyframes tab-panel-fade-in {
     from {
         opacity: 0;
-        transform: translateY(16px);
+        transform: translateY(10px);
     }
 
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes tab-panel-fade-out {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-6px);
     }
 }
