@@ -117,6 +117,8 @@ section.pain-vs-promise {
 
         h2.bold-red {
             color: $heading-color;
+            font-size: 52px;
+            line-height: 62px;
         }
     }
 
@@ -144,8 +146,9 @@ section.pain-vs-promise {
                 .number {
                     display: block;
                     color: $color-medium-grey;
-                    font-size: 13px;
-                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 19px;
+                    font-weight: 400;
                     margin-bottom: 8px;
 
                     &:after {
@@ -169,7 +172,18 @@ section.pain-vs-promise {
                 .labelXL {
                     display: block;
                     color: $heading-color;
+                    font-size: 26px;
+                    font-weight: 700;
+                    line-height: 32px;
                     margin-bottom: 8px;
+                }
+
+                // The body copy's .p-small class sets a looser 16px/28px
+                // by default -- Figma specs this copy at 18px/21px, a
+                // noticeably tighter paragraph.
+                p.p-small {
+                    font-size: 18px;
+                    line-height: 21px;
                 }
             }
         }
@@ -195,6 +209,8 @@ section.intelligence-use-case {
 
             h2.title.bold-red {
                 color: $heading-color;
+                font-size: 52px;
+                line-height: 62px;
                 margin-bottom: 12px;
             }
 
@@ -216,10 +232,11 @@ section.intelligence-use-case {
         border-bottom: 1px solid $color-medium-light-grey;
 
         .intelligence-tab-button {
-            color: $color-medium-grey;
+            color: #5f5f5f;
             padding: 0 0 12px;
             margin: 0;
             font-size: 16px;
+            line-height: 19px;
             font-weight: 400;
             background: none;
             border: none;
@@ -275,7 +292,8 @@ section.intelligence-use-case {
                 display: block;
                 width: 100%;
                 font-weight: 700;
-                font-size: 28px;
+                font-size: 34px;
+                line-height: 42px;
                 color: $heading-color;
                 margin-bottom: 12px;
             }
@@ -284,7 +302,8 @@ section.intelligence-use-case {
                 display: block;
                 width: 100%;
                 font-weight: 400;
-                font-size: 16px;
+                font-size: 20px;
+                line-height: 24px;
                 color: #5f5f5f;
                 margin-bottom: 27px;
             }
