@@ -243,7 +243,8 @@ section.intelligence-use-case {
         &.active {
             display: flex;
             flex-wrap: wrap;
-            align-items: center;
+            align-items: unset;
+            // align-items: center;
         }
 
         .column.one-half {
@@ -325,6 +326,10 @@ section.intelligence-use-case {
                 width: 100%;
                 border-radius: 4px;
                 overflow: hidden;
+
+                .bg-container{
+                    position: unset;
+                }
 
                 // The ACF image field renders a <picture><img> pair
                 // (see _use-case-tabs.php), both inline by default --
