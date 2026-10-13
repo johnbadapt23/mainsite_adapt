@@ -177,7 +177,14 @@ section.pain-vs-promise {
 }
 
 section.intelligence-use-case {
+    // The section's own class switched from background-white to
+    // background-lightest-grey (see _use-case-tabs.php) to match the
+    // Figma background colour -- that global class only sets a
+    // background-color, not the color:#000!important that
+    // .background-white provides, so this needs its own explicit
+    // text colour or it falls back to the template body's white.
     padding: 100px 0;
+    color: $heading-color;
 
     .top-block {
         margin-bottom: 40px;
@@ -285,14 +292,17 @@ section.intelligence-use-case {
                 // no effect on an inline box, which is why the two
                 // examples were previously running together on one
                 // line instead of stacking as separate pill cards.
+                // Figma shows these centred, in regular (non-italic)
+                // weight -- the quote marks around the text are what
+                // signal it's a prompt example, not an italic treatment.
                 .prompt-example {
                     display: block;
                     width: 100%;
-                    background-color: rgba($color-red, 0.06);
+                    background-color: #FDF1F1;
                     border-radius: 8px;
                     padding: 16px 20px;
                     font-size: 14px;
-                    font-style: italic;
+                    text-align: center;
                     margin-bottom: 16px;
                 }
             }

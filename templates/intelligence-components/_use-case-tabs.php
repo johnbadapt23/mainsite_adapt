@@ -26,7 +26,7 @@
 // here, so this reuses the existing pattern rather than inventing a
 // second way to colour part of a heading.
 ?>
-<section class="intelligence-use-case background-white">
+<section class="intelligence-use-case background-lightest-grey">
     <div class="container">
         <div class="top-block">
             <span class="title-switcher-container">
