@@ -48,6 +48,35 @@
                             "mime_types": "",
                             "allow_in_bindings": 0,
                             "preview_size": "medium"
+                        },
+                        {
+                            "key": "field_6acd8c77c252b",
+                            "label": "Background Colour",
+                            "name": "background_colour",
+                            "aria-label": "",
+                            "type": "select",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "choices": {
+                                "background-white": "White",
+                                "background-red": "Red"
+                            },
+                            "default_value": "background-red",
+                            "return_format": "value",
+                            "multiple": 0,
+                            "allow_null": 0,
+                            "allow_in_bindings": 0,
+                            "ui": 0,
+                            "ajax": 0,
+                            "placeholder": "",
+                            "create_options": 0,
+                            "save_options": 0
                         }
                     ],
                     "min": "",
@@ -598,8 +627,8 @@
                             "label": "Title",
                             "name": "title",
                             "aria-label": "",
-                            "type": "text",
-                            "instructions": "",
+                            "type": "wysiwyg",
+                            "instructions": "Bold for red text",
                             "required": 0,
                             "conditional_logic": 0,
                             "wrapper": {
@@ -608,10 +637,11 @@
                                 "id": ""
                             },
                             "default_value": "",
-                            "maxlength": "",
-                            "placeholder": "",
-                            "prepend": "",
-                            "append": ""
+                            "allow_in_bindings": 0,
+                            "tabs": "all",
+                            "toolbar": "basic",
+                            "media_upload": 0,
+                            "delay": 0
                         },
                         {
                             "key": "field_e301a84823c53",
@@ -746,6 +776,48 @@
                                     "preview_size": "medium"
                                 }
                             ]
+                        },
+                        {
+                            "key": "field_6acd8cd3c252c",
+                            "label": "Sub Title",
+                            "name": "sub_title",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "allow_in_bindings": 0,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
+                        },
+                        {
+                            "key": "field_6acd8cefc252d",
+                            "label": "Footer Note",
+                            "name": "footer_note",
+                            "aria-label": "",
+                            "type": "text",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "default_value": "",
+                            "maxlength": "",
+                            "allow_in_bindings": 0,
+                            "placeholder": "",
+                            "prepend": "",
+                            "append": ""
                         }
                     ],
                     "min": "",
@@ -1283,5 +1355,5 @@
     "active": true,
     "description": "",
     "show_in_rest": 0,
-    "modified": 1791817009
+    "modified": 1791855952
 }
