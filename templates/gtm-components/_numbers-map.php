@@ -2,6 +2,10 @@
     <div class="container">
         <span class="title-container">
             <span class="labelXXL primary-white"><?php echo get_sub_field( 'text' ); ?></span>
+            <?php $subtext = get_sub_field( 'subtext' ); ?>
+            <?php if ( $subtext ) { ?>
+                <span class="sub-text"><?php echo $subtext; ?></span>
+            <?php } ?>
         </span>
         <span class="map-outer">
             <span class="background-container">
