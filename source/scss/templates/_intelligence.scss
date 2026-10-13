@@ -315,6 +315,17 @@ section.intelligence-use-case {
                 width: 100%;
                 border-radius: 4px;
                 overflow: hidden;
+
+                // The ACF image field renders a <picture><img> pair
+                // (see _use-case-tabs.php), both inline by default --
+                // without this they collapse to 0 height and the
+                // device-frame never shows the screenshot at all.
+                img,
+                picture {
+                    display: block;
+                    width: 100%;
+                    height: auto;
+                }
             }
         }
     }
