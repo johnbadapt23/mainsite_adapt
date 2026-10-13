@@ -141,7 +141,7 @@ section.pain-vs-promise {
 
             .number-container {
                 width: 100%;
-                margin-bottom: 16px;
+                margin-bottom: 24px;
 
                 .number {
                     display: block;
@@ -151,11 +151,14 @@ section.pain-vs-promise {
                     font-weight: 400;
                     margin-bottom: 8px;
 
+                    // Figma specs this divider as a dark rule (#0A0A0A),
+                    // not the light card-border grey -- it reads as a
+                    // deliberate black tick mark under the number.
                     &:after {
                         content: '';
                         display: block;
                         width: 20px;
-                        border-top: 1px solid $color-medium-light-grey;
+                        border-top: 1px solid $heading-color;
                         margin-top: 8px;
                     }
                 }
@@ -175,7 +178,7 @@ section.pain-vs-promise {
                     font-size: 26px;
                     font-weight: 700;
                     line-height: 32px;
-                    margin-bottom: 8px;
+                    margin-bottom: 16px;
                 }
 
                 // The body copy's .p-small class sets a looser 16px/28px
