@@ -20,6 +20,94 @@
 		};
 	}
 
+	// Counts a stat element (e.g. "80,000+", "66%", "15") up from 0 to its
+	// real value once it scrolls into view, instead of it just appearing
+	// already at full value. Reads the target straight out of the
+	// element's own text rather than needing a separate data attribute in
+	// the markup -- splits off any leading/trailing non-numeric characters
+	// ("+", "%", etc.) so they're preserved untouched throughout and
+	// re-applied to the final value, and keeps the thousands separator
+	// (",") if the original text had one.
+	function animateCountUp($el, duration) {
+		var original = $.trim($el.text());
+		var match = original.match(/^(\D*)([\d,]*\d(?:\.\d+)?)(\D*)$/);
+		if (!match) {
+			return; // Not a recognisable number -- leave the text as-is.
+		}
+
+		var prefix = match[1];
+		var numberText = match[2];
+		var suffix = match[3];
+		var hasThousandsSeparator = numberText.indexOf(',') !== -1;
+		var decimalMatch = numberText.match(/\.(\d+)$/);
+		var decimalPlaces = decimalMatch ? decimalMatch[1].length : 0;
+		var target = parseFloat(numberText.replace(/,/g, ''));
+
+		if (isNaN(target)) {
+			return;
+		}
+
+		duration = duration || 1500;
+
+		function formatValue(value) {
+			var formatted = value.toFixed(decimalPlaces);
+			if (hasThousandsSeparator) {
+				var parts = formatted.split('.');
+				parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+				formatted = parts.join('.');
+			}
+			return formatted;
+		}
+
+		var startTime = null;
+
+		function step(timestamp) {
+			if (startTime === null) {
+				startTime = timestamp;
+			}
+			var progress = Math.min((timestamp - startTime) / duration, 1);
+			// easeOutQuad: fast start, gentle settle -- reads better than a
+			// flat linear count for this kind of "counting up" stat.
+			var eased = 1 - (1 - progress) * (1 - progress);
+			$el.text(prefix + formatValue(target * eased) + suffix);
+			if (progress < 1) {
+				window.requestAnimationFrame(step);
+			}
+		}
+
+		window.requestAnimationFrame(step);
+	}
+
+	// Wires up animateCountUp() for the Map with Numbers stats
+	// (templates/gtm-components/_numbers-map.php), triggering each one
+	// the first time it scrolls into view. Kept independent of the AOS
+	// library already used for this section's fade-up (rather than
+	// hooking into it) since this AOS build doesn't expose an "entered
+	// view" event to hook into -- only CSS class toggling.
+	function initNumbersCountUp() {
+		var $numbers = $('.map-with-numbers .numbers-text');
+		if (!$numbers.length) {
+			return;
+		}
+
+		if (!('IntersectionObserver' in window)) {
+			return; // Leave the static values as-is on unsupported browsers.
+		}
+
+		var observer = new IntersectionObserver(function(entries) {
+			entries.forEach(function(entry) {
+				if (entry.isIntersecting) {
+					animateCountUp($(entry.target), 1500);
+					observer.unobserve(entry.target);
+				}
+			});
+		}, { threshold: 0.5 });
+
+		$numbers.each(function() {
+			observer.observe(this);
+		});
+	}
+
 	// The homepage's HubSpot popup form (#animationForm) used to have its
 	// HubSpot embed snippet (a <script src="//js.hsforms.net/..."> plus a
 	// hbspt.forms.create() call) echoed straight into the live page HTML,
@@ -248,6 +336,7 @@
 		match();
 		outsideContainer();
 		aos();
+		initNumbersCountUp();
 		adaptGateAutoplayVideos();
 
 		if($('.progress-container').length ){

@@ -1761,6 +1761,11 @@ section.map-with-numbers {
                         font-size: 80px;
                         line-height: 1;
                         font-weight: 300;
+                        // Keeps digit widths consistent while the count-up
+                        // script (initNumbersCountUp in main.js) ticks the
+                        // value up from 0, so the text doesn't jitter
+                        // sideways as it counts.
+                        font-variant-numeric: tabular-nums;
 
                         @media (max-width: 1023px) {
                             font-size: 32px;
