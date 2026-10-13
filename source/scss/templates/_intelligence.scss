@@ -27,25 +27,62 @@ section.intro-statement {
 }
 
 section.intelligence-hero {
-    // Figma builds this entire section as one flat product-screenshot
-    // image with a red backdrop baked into the PNG itself (see
-    // templates/intelligence-components/_hero-ask.php) -- not a
-    // text/search layout, so this is deliberately minimal.
-    padding: 0;
+    // Figma shows the browser-window screenshot floating inside a red
+    // section (padding on all sides, rounded corners, drop shadow) and
+    // bleeding down into the white section below it -- the red is this
+    // section's own background colour (background_colour sub field,
+    // default background-red), not part of the uploaded image. The
+    // overlap is the same technique already used on the Careers page
+    // (section.introduction-block.background-black in
+    // _flexible.scss): the section is coloured across its top portion
+    // only, a white rectangle covers its own bottom portion via
+    // :before, and the image straddles that boundary.
+    position: relative;
+    padding: 100px 0 0;
+    overflow: visible;
+
+    &.background-white {
+        background-color: #fff;
+    }
+
+    &.background-red {
+        &:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 220px;
+            background-color: #fff;
+
+            @include responsive(1023) {
+                height: 140px;
+            }
+
+            @include responsive(767) {
+                height: 80px;
+            }
+        }
+    }
 
     .container {
-        padding: 0;
-        max-width: none;
+        position: relative;
+        z-index: 1;
+        max-width: 1160px;
     }
 
     .hero-image {
         display: block;
         width: 100%;
+        position: relative;
+        z-index: 1;
 
         img {
             display: block;
             width: 100%;
             height: auto;
+            border-radius: 12px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
         }
     }
 }
@@ -53,11 +90,21 @@ section.intelligence-hero {
 section.pain-vs-promise {
     padding: 100px 0;
 
+    // Figma left-aligns this section's heading/cards (not centred like
+    // the shared three-column-video-gtm default), and the "Bold for red
+    // text" wysiwyg heading (see the field's ACF instructions, same
+    // pattern as every other bold-red heading in this field group)
+    // needs its own colour on this section's light background since
+    // .bold-red only colours the bolded run, not the rest of the text.
     .title-container {
         width: 100%;
-        text-align: center;
-        max-width: 870px;
-        margin: 0 auto 58px;
+        text-align: left;
+        max-width: 760px;
+        margin: 0 0 40px;
+
+        h2.bold-red {
+            color: $heading-color;
+        }
     }
 
     .column-container {
@@ -68,8 +115,10 @@ section.pain-vs-promise {
 
         .column.one-third {
             flex: 1 1 calc(33.33% - 16px);
+            border: 1px solid $color-medium-light-grey;
             border-top: 1px solid $color-medium-light-grey;
-            padding-top: 24px;
+            border-radius: 8px;
+            padding: 24px;
 
             @media (max-width: 767px) {
                 flex: 1 1 100%;
@@ -80,9 +129,19 @@ section.pain-vs-promise {
                 margin-bottom: 16px;
 
                 .number {
+                    display: block;
                     color: $color-medium-grey;
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 600;
+                    margin-bottom: 8px;
+
+                    &:after {
+                        content: '';
+                        display: block;
+                        width: 20px;
+                        border-top: 1px solid $color-medium-light-grey;
+                        margin-top: 8px;
+                    }
                 }
             }
 
@@ -95,7 +154,9 @@ section.pain-vs-promise {
                 // it needs its own explicit colour rather than relying
                 // on inheritance.
                 .labelXL {
+                    display: block;
                     color: $heading-color;
+                    margin-bottom: 8px;
                 }
             }
         }
@@ -103,32 +164,53 @@ section.pain-vs-promise {
 }
 
 section.intelligence-use-case {
+    padding: 100px 0;
+
+    .top-block {
+        margin-bottom: 40px;
+
+        .title-switcher-container {
+            display: block;
+            width: 100%;
+
+            h2.title.bold-red {
+                color: $heading-color;
+                margin-bottom: 12px;
+            }
+
+            .sub-title {
+                display: block;
+                color: $color-medium-grey;
+                margin-bottom: 32px;
+            }
+        }
+    }
+
+    // Figma uses plain text tabs on a shared bottom rule, not the
+    // bordered pill/button look -- the active tab is bold with its own
+    // red underline.
     .intelligence-tab-bar {
-        display: inline-block;
-        margin: 0 auto;
-        border: 1px solid $color-medium-grey;
-        border-radius: 14px;
+        display: flex;
+        gap: 32px;
+        border-bottom: 1px solid $color-medium-light-grey;
 
         .intelligence-tab-button {
             color: $color-medium-grey;
-            float: left;
-            padding: 8px 18px;
-            border-radius: 14px;
+            padding: 0 0 12px;
+            margin: 0;
+            font-size: 16px;
             font-weight: 400;
             background: none;
             border: none;
-            margin: 0;
+            border-bottom: 2px solid transparent;
             cursor: pointer;
             -webkit-appearance: none;
             appearance: none;
 
             &.active {
-                background-color: $color-red;
-                color: #fff;
-
-                &:hover {
-                    background-color: $color-red-hover;
-                }
+                color: $heading-color;
+                font-weight: 700;
+                border-bottom-color: $color-red;
             }
         }
     }
@@ -136,10 +218,12 @@ section.intelligence-use-case {
     .intelligence-tab-panel {
         width: 100%;
         display: none;
+        padding-top: 40px;
 
         &.active {
             display: flex;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .column.one-half {
@@ -180,12 +264,34 @@ section.intelligence-use-case {
         }
 
         .image-column {
-            .image-container {
+            // CSS-only device frame (Figma shows the screenshot inset
+            // in a laptop-style black bezel) so this doesn't depend on
+            // a separate bezel image asset.
+            .device-frame {
+                display: block;
                 width: 100%;
-                border-radius: 8px;
+                background-color: #000;
+                border-radius: 16px;
+                padding: 14px 14px 22px;
+            }
+
+            .image-container {
+                display: block;
+                width: 100%;
+                border-radius: 4px;
                 overflow: hidden;
             }
         }
+    }
+
+    .footer-note {
+        display: block;
+        width: 100%;
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid $color-medium-light-grey;
+        color: $color-medium-grey;
+        font-size: 14px;
     }
 }
 

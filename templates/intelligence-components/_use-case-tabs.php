@@ -19,17 +19,26 @@
 // Each tab's panel also has a different content shape than
 // _switch-module.php's generic two-column icon+text grid: a heading,
 // a repeater of prompt-example boxes, and a single screenshot image.
+//
+// Title is wysiwyg with the same "Bold for red text" convention as
+// pain_vs_promise's title field (see that layout's instructions) --
+// Figma uses the same black-heading / bolded-red-phrase treatment
+// here, so this reuses the existing pattern rather than inventing a
+// second way to colour part of a heading.
 ?>
 <section class="switcher-module intelligence-use-case background-white">
     <div class="container">
         <div class="top-block">
             <span class="title-switcher-container">
-                <h2 class="title"><?php echo get_sub_field( 'title' ); ?></h2>
+                <h2 class="title bold-red"><?php echo get_sub_field( 'title' ); ?></h2>
+                <?php if ( get_sub_field( 'sub_title' ) ) { ?>
+                    <span class="sub-title"><?php echo get_sub_field( 'sub_title' ); ?></span>
+                <?php } ?>
                 <?php if ( have_rows( 'module' ) ) : ?>
                     <span class="module-switcher intelligence-tab-bar">
                         <?php $buttonCounter = 1; ?>
                         <?php while ( have_rows( 'module' ) ) : the_row(); ?>
-                            <button type="button" class="intelligence-tab-button std-button<?php if ( $buttonCounter == 1 ) { ?> active<?php } ?>"><?php echo get_sub_field( 'title' ); ?></button>
+                            <button type="button" class="intelligence-tab-button<?php if ( $buttonCounter == 1 ) { ?> active<?php } ?>"><?php echo get_sub_field( 'title' ); ?></button>
                             <?php $buttonCounter++; ?>
                         <?php endwhile; ?>
                     </span>
@@ -60,12 +69,14 @@
                     <div class="column one-half image-column">
                         <?php $screenshot = get_sub_field( 'screenshot' ); ?>
                         <?php if ( $screenshot ) { ?>
-                            <span class="image-container">
-                                <span class="bg-container">
-                                    <?php echo wp_get_attachment_image( $screenshot['ID'], 'adapt-optimized', false, array(
-                                        'alt'     => $screenshot['alt'],
-                                        'loading' => 'lazy',
-                                    ) ); ?>
+                            <span class="device-frame">
+                                <span class="image-container">
+                                    <span class="bg-container">
+                                        <?php echo wp_get_attachment_image( $screenshot['ID'], 'adapt-optimized', false, array(
+                                            'alt'     => $screenshot['alt'],
+                                            'loading' => 'lazy',
+                                        ) ); ?>
+                                    </span>
                                 </span>
                             </span>
                         <?php } ?>
@@ -76,5 +87,9 @@
         <?php else : ?>
             <?php // no rows found ?>
         <?php endif; ?>
+
+        <?php if ( get_sub_field( 'footer_note' ) ) { ?>
+            <span class="footer-note"><?php echo get_sub_field( 'footer_note' ); ?></span>
+        <?php } ?>
     </div>
 </section>
