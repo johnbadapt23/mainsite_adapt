@@ -266,6 +266,12 @@ section.intelligence-use-case {
             flex-wrap: wrap;
             align-items: unset;
             // align-items: center;
+            // AOS only computes an element's position once -- it can't see
+            // this panel while it's display:none, so it would never fire
+            // for anything but the first (already-active) tab. This is a
+            // plain CSS entrance instead, replayed every time a tab is
+            // switched rather than only once on scroll.
+            animation: tab-panel-fade-in 0.5s ease forwards;
         }
 
         .column.one-half {
@@ -440,5 +446,19 @@ section.closing-cta-form {
             border-radius: 8px;
             padding: 32px;
         }
+    }
+}
+
+// Entrance animation for .intelligence-tab-panel -- see the .active rule
+// above for why this can't just be an AOS data-aos attribute.
+@keyframes tab-panel-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

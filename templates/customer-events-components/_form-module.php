@@ -7,7 +7,7 @@ $youtubeLink = get_field( 'you_tube', 'options'  );
     <div class="container">        
         <div class="column-container background-red">
             <span class="grow-container"></span>
-            <div class="column info-column">
+            <div class="column info-column" data-aos="fade-up" data-aos-duration="600">
                <h2 class="white-text<?php if(get_sub_field( 'main_text' )){ ?> mobile-margin-small<?php } ?>"><?php echo get_sub_field( 'title' ); ?></h2>
                <?php if(get_sub_field( 'main_text' )){ ?> 
                     <span class="text white-text p-large"><?php echo get_sub_field( 'main_text' ); ?></span>
@@ -51,7 +51,7 @@ $youtubeLink = get_field( 'you_tube', 'options'  );
                     </span>
                 </span>
             </div>
-            <div class="column form-column">
+            <div class="column form-column" data-aos="fade-up" data-aos-duration="600" data-aos-delay="150">
                 <span class="form-embed">
                     <?php echo get_sub_field( 'form_embed' ); ?>
                 </span>

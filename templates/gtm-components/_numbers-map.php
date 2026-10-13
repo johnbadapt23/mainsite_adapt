@@ -1,6 +1,6 @@
 <section class="map-with-numbers background-black">
     <div class="container">
-        <span class="title-container">
+        <span class="title-container" data-aos="fade-up" data-aos-duration="600">
             <span class="labelXXL primary-white"><?php echo get_sub_field( 'text' ); ?></span>
             <?php // Subtext under the heading (Figma: 15 years of trusted A/NZ research copy) ?>
             <?php $subtext = get_sub_field( 'subtext' ); ?>

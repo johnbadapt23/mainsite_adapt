@@ -9,7 +9,7 @@
                 ) ); ?>
             <?php } ?>
         </div>  
-        <div class="large-quote-slide-container">
+        <div class="large-quote-slide-container" data-aos="fade-up" data-aos-duration="600">
             <?php if ( have_rows( 'slides' ) ) : ?>
 				<?php while ( have_rows( 'slides' ) ) : the_row(); ?>
                     <div class="slide">

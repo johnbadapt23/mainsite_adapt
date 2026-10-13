@@ -28,7 +28,7 @@
 ?>
 <section class="intelligence-use-case background-light-grey">
     <div class="container">
-        <div class="top-block">
+        <div class="top-block" data-aos="fade-up" data-aos-duration="600">
             <span class="title-switcher-container">
                 <h2 class="title bold-red"><?php echo get_sub_field( 'title' ); ?></h2>
                 <?php if ( get_sub_field( 'sub_title' ) ) { ?>
