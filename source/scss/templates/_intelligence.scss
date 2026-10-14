@@ -266,6 +266,11 @@ section.intelligence-use-case {
             flex-wrap: wrap;
             align-items: unset;
             // align-items: center;
+
+            @media (max-width: 767px) {
+                flex-direction: column-reverse;
+                gap: 30px;
+            }
         }
 
         // AOS only computes an element's position once -- it can't see this
