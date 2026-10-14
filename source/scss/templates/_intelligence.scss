@@ -498,11 +498,12 @@ section.closing-cta-form {
 // body.template-benchmarking in _benchmarking.scss).
 body.template-adapt-intelligence {
     .large-testimonial-slider {
-        // Mirrors the sitewide .background-true-black utility class's
-        // own declaration (source/scss/templates/_customer-events.scss)
-        // without adding that class to the shared PHP partial, which
-        // would also affect template-gtm.php's testimonial slider.
-        background: #000;
+        // #121212 per design -- not the sitewide .background-true-black
+        // utility class's pure #000 (see $color-black in
+        // _variables.scss), and not added as a class to the shared PHP
+        // partial, which would also affect template-gtm.php's
+        // testimonial slider.
+        background: #121212;
     }
 
     .expanding-form-module {
