@@ -40,15 +40,15 @@
                                 <?php } ?>
                                 <span class="quote header-large"><?php the_sub_field( 'quote' ); ?></span>
                                 <span class="name-image-container">
-                                    <span class="image-column">
-                                        <?php $quote_image = get_sub_field( 'quote_image' ); ?>
-                                        <?php if ( $quote_image ) { ?>
+                                    <?php $quote_image = get_sub_field( 'quote_image' ); ?>
+                                    <?php if ( $quote_image ) { ?>
+                                        <span class="image-column">
                                             <?php echo wp_get_attachment_image( $quote_image['ID'], 'adapt-optimized', false, array(
                                                 'alt'     => $quote_image['alt'],
                                                 'loading' => 'lazy',
                                             ) ); ?>
-                                        <?php } ?>
-                                    </span>
+                                        </span>
+                                    <?php } ?>
                                     <?php if ( get_sub_field( 'tag' ) && $is_adapt_intelligence_template ) { ?>
                                         <span class="tag-container medium-grey"><?php the_sub_field( 'tag' ); ?></span>
                                     <?php } ?>
