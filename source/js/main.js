@@ -108,6 +108,69 @@
 		});
 	}
 
+	// HubSpot's new-style embedded forms (the ones that render hsfc-*
+	// classes, as opposed to the older hbspt.forms.create() widget) draw
+	// the phone field's country flag as a literal emoji character (e.g.
+	// "\ud83c\uddf5\ud83c\udded") inside .hsfc-PhoneInput__FlagAndCaret__Flag,
+	// not an image or CSS background-sprite. Windows has no built-in
+	// colour font for regional-indicator flag emoji (macOS/iOS/Android
+	// do), so on Windows that span renders as a blank box or nothing at
+	// all -- this isn't a CSS bug, there's no flag glyph installed to draw.
+	// Twemoji (Twitter's open-source emoji set) is the standard fix:
+	// twemoji.parse() walks an element's text nodes and swaps any emoji
+	// character for an <img> pointing at Twemoji's own SVG asset, which
+	// renders identically on every OS. HubSpot's form is a React widget
+	// that re-renders the flag span's text (not just its image) whenever
+	// the visitor changes the selected country, so a MutationObserver
+	// re-parses the span on every change rather than running once on load.
+	function initHubspotPhoneFlags() {
+		if (typeof twemoji === 'undefined') {
+			return;
+		}
+
+		function parseFlag(el) {
+			twemoji.parse(el, { folder: 'svg', ext: '.svg' });
+		}
+
+		document.querySelectorAll('.hsfc-PhoneInput__FlagAndCaret__Flag').forEach(parseFlag);
+
+		if (!('MutationObserver' in window)) {
+			return; // Flags present on initial load are still fixed above --
+			        // only the re-render-on-country-change case is skipped.
+		}
+
+		var observer = new MutationObserver(function(mutations) {
+			mutations.forEach(function(mutation) {
+				var target = mutation.target;
+				var flagEl = null;
+
+				if (target.nodeType === 1 && target.classList && target.classList.contains('hsfc-PhoneInput__FlagAndCaret__Flag')) {
+					flagEl = target;
+				} else if (target.parentElement && target.parentElement.classList && target.parentElement.classList.contains('hsfc-PhoneInput__FlagAndCaret__Flag')) {
+					flagEl = target.parentElement;
+				}
+
+				if (flagEl) {
+					parseFlag(flagEl);
+				}
+
+				mutation.addedNodes.forEach(function(node) {
+					if (node.nodeType !== 1) {
+						return;
+					}
+					if (node.classList && node.classList.contains('hsfc-PhoneInput__FlagAndCaret__Flag')) {
+						parseFlag(node);
+					}
+					if (node.querySelectorAll) {
+						node.querySelectorAll('.hsfc-PhoneInput__FlagAndCaret__Flag').forEach(parseFlag);
+					}
+				});
+			});
+		});
+
+		observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+	}
+
 	// The homepage's HubSpot popup form (#animationForm) used to have its
 	// HubSpot embed snippet (a <script src="//js.hsforms.net/..."> plus a
 	// hbspt.forms.create() call) echoed straight into the live page HTML,
@@ -337,6 +400,7 @@
 		outsideContainer();
 		aos();
 		initNumbersCountUp();
+		initHubspotPhoneFlags();
 		adaptGateAutoplayVideos();
 
 		if($('.progress-container').length ){

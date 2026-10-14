@@ -438,6 +438,20 @@ function my_enqueue_scripts() {
         wp_enqueue_script('hubspot-forms-embed', 'https://js.hsforms.net/forms/embed/developer/8336221.js', array(), null, true);
     }
 
+    // HubSpot's new-style embedded forms (.hsfc-* classes) draw the phone
+    // field's country flag as a literal emoji character, not an image --
+    // Windows has no built-in colour font for flag emoji, so it renders
+    // blank there. Twemoji swaps the emoji character for an <img> at
+    // runtime (see initHubspotPhoneFlags() in source/js/main.js) so the
+    // flag shows on every OS. These form embeds are pasted into an ACF
+    // field by content editors (see templates/customer-events-components/
+    // _form-module.php's form_embed field) and can appear on any of the
+    // dozen templates that reuse that component, so -- like
+    // utm-form-fields.js below -- this loads site-wide rather than trying
+    // to detect the embed per-template; main-js depends on it so the
+    // library is ready before initHubspotPhoneFlags() runs.
+    wp_enqueue_script('twemoji-js', 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/twemoji.min.js', array(), '14.0.2', true);
+
     // Prefills hidden UTM fields on embedded HubSpot forms (.hs-form-html)
     // from the current page's query string, and hides the row once filled.
     // No-op on pages without a HubSpot form embed, so safe to load site-wide.
@@ -456,7 +470,7 @@ function my_enqueue_scripts() {
     // scrolltrigger-js) to already be loaded. Declaring it as a dependency
     // here (rather than relying on enqueue-call order, as before
     // 2026-09-15's ScrollMagic bundle split) guarantees that ordering.
-    $main_js_deps = array( 'jquery' );
+    $main_js_deps = array( 'jquery', 'twemoji-js' );
     if ( adapt_page_needs_gsap() ) {
         $main_js_deps[] = 'scrollmagic-js';
     }
