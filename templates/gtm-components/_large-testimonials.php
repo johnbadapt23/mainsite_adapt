@@ -9,6 +9,17 @@
                 ) ); ?>
             <?php } ?>
         </div>  
+        <?php
+        // Whether the tag field should render beside the name/role block
+        // (ADAPT Intelligence only) instead of above the quote, per the
+        // updated design for that template. Mirrors the same
+        // _wp_page_template postmeta check custom_body_classs() in
+        // includes/_customisations.php uses, so this stays scoped to this
+        // one template and never changes the testimonial slider on
+        // template-gtm.php or any other template reusing this partial.
+        global $post;
+        $is_adapt_intelligence_template = $post && get_post_meta( $post->ID, '_wp_page_template', true ) === 'templates/template-adapt-intelligence.php';
+        ?>
         <div class="large-quote-slide-container" data-aos="fade-up" data-aos-duration="600">
             <?php if ( have_rows( 'slides' ) ) : ?>
 				<?php while ( have_rows( 'slides' ) ) : the_row(); ?>
@@ -24,6 +35,9 @@
                                 <?php } ?>
                             </span>
                             <span class="quote-container">
+                                <?php if ( get_sub_field( 'tag' ) && ! $is_adapt_intelligence_template ) { ?>
+                                    <span class="tag-container medium-grey"><?php the_sub_field( 'tag' ); ?></span>
+                                <?php } ?>
                                 <span class="quote header-large"><?php the_sub_field( 'quote' ); ?></span>
                                 <span class="name-image-container">
                                     <span class="image-column">
@@ -35,7 +49,7 @@
                                             ) ); ?>
                                         <?php } ?>
                                     </span>
-                                    <?php if ( get_sub_field( 'tag' ) ) { ?>
+                                    <?php if ( get_sub_field( 'tag' ) && $is_adapt_intelligence_template ) { ?>
                                         <span class="tag-container medium-grey"><?php the_sub_field( 'tag' ); ?></span>
                                     <?php } ?>
                                     <span class="name-role">

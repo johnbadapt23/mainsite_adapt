@@ -509,4 +509,31 @@ body.template-adapt-intelligence {
     .expanding-form-module {
         padding-top: 150px;
     }
+
+    // The tag field (e.g. "Interactive") moves from above the quote to
+    // sit beside the name/role block, restyled from the shared partial's
+    // uppercase/red-bullet label into a small bordered box, per the
+    // updated design -- the PHP partial only renders the tag in this
+    // alternate position when $is_adapt_intelligence_template is true
+    // (see templates/gtm-components/_large-testimonials.php), so this
+    // override only ever applies to the markup this template renders.
+    .large-testimonial-slider .name-image-container .tag-container {
+        float: none;
+        display: inline-block;
+        width: auto;
+        margin-bottom: 0;
+        padding: 6px 12px;
+        border: 1px solid #3a3a3a;
+        border-radius: 4px;
+        font-size: 12px;
+        line-height: 15px;
+        letter-spacing: normal;
+        text-transform: none;
+        color: #9a9a9a;
+        white-space: nowrap;
+
+        &:before {
+            content: none;
+        }
+    }
 }

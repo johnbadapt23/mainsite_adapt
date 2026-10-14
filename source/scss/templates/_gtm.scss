@@ -856,6 +856,30 @@ section.large-testimonial-slider {
                             }
                         }
 
+                        .tag-container {
+                            float: none;
+                            width: 100%;
+                            margin-bottom: 24px;
+                            padding-left: 16px;
+                            position: relative;
+                            font-size: 12px;
+                            line-height: 15px;
+                            letter-spacing: 0.24em;
+                            text-transform: uppercase;
+                            color: #9a9a9a;
+                            display: block;
+
+                            &:before {
+                                content: '';
+                                background-color: $color-red;
+                                width: 8px;
+                                height: 8px;
+                                position: absolute;
+                                display: block;
+                                left: 0;
+                                top: 3.5px;
+                            }
+                        }
                     }
 
                     .link-container {
@@ -904,23 +928,6 @@ section.large-testimonial-slider {
                                 border-radius: 4px;
                                 border: 1px solid #222222;
                             }
-                        }
-
-                        // Replaces the old uppercase / red-bullet label
-                        // treatment -- now a small bordered tag sitting
-                        // beside the name/role block instead of above the
-                        // quote text.
-                        .tag-container {
-                            float: none;
-                            display: inline-block;
-                            width: auto;
-                            padding: 6px 12px;
-                            border: 1px solid #3a3a3a;
-                            border-radius: 4px;
-                            font-size: 12px;
-                            line-height: 15px;
-                            color: #9a9a9a;
-                            white-space: nowrap;
                         }
 
                         .name-role {
