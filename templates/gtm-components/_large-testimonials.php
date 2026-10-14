@@ -24,9 +24,6 @@
                                 <?php } ?>
                             </span>
                             <span class="quote-container">
-                                <?php if ( get_sub_field( 'tag' ) ) { ?>
-                                    <span class="tag-container medium-grey"><?php the_sub_field( 'tag' ); ?></span>
-                                <?php } ?>
                                 <span class="quote header-large"><?php the_sub_field( 'quote' ); ?></span>
                                 <span class="name-image-container">
                                     <span class="image-column">
@@ -38,6 +35,9 @@
                                             ) ); ?>
                                         <?php } ?>
                                     </span>
+                                    <?php if ( get_sub_field( 'tag' ) ) { ?>
+                                        <span class="tag-container medium-grey"><?php the_sub_field( 'tag' ); ?></span>
+                                    <?php } ?>
                                     <span class="name-role">
                                         <span class="name labelMedium primary-white"><?php the_sub_field( 'name' ); ?></span>
                                         <span class="name labelMedium medium-grey"><?php the_sub_field( 'role' ); ?></span>
