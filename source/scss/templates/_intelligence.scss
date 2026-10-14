@@ -510,30 +510,35 @@ body.template-adapt-intelligence {
         padding-top: 150px;
     }
 
-    // The tag field (e.g. "Interactive") moves from above the quote to
-    // sit beside the name/role block, restyled from the shared partial's
-    // uppercase/red-bullet label into a small bordered box, per the
-    // updated design -- the PHP partial only renders the tag in this
-    // alternate position when $is_adapt_intelligence_template is true
-    // (see templates/gtm-components/_large-testimonials.php), so this
-    // override only ever applies to the markup this template renders.
-    .large-testimonial-slider .name-image-container .tag-container {
-        float: none;
-        display: inline-block;
-        width: auto;
-        margin-bottom: 0;
-        padding: 6px 12px;
-        border: 1px solid #3a3a3a;
-        border-radius: 4px;
-        font-size: 12px;
-        line-height: 15px;
-        letter-spacing: normal;
-        text-transform: none;
-        color: #9a9a9a;
-        white-space: nowrap;
+}
 
-        &:before {
-            content: none;
-        }
-    }
+// The tag field (e.g. "Interactive") moves from above the quote to sit
+// beside the name/role block, restyled from the shared partial's
+// uppercase/red-bullet label into a small bordered box, per the updated
+// design -- the PHP partial only renders the tag in this alternate
+// position when $is_adapt_intelligence_template is true (see
+// templates/gtm-components/_large-testimonials.php). The selector below
+// repeats the shared partial's full nesting chain from _gtm.scss (with
+// body.template-adapt-intelligence prefixed) rather than a shorter one,
+// so this reliably outranks _gtm.scss's own .quote-container .tag-container
+// rule on specificity -- the two rules tie on class count otherwise, which
+// made the override lose silently depending on @import glob order.
+body.template-adapt-intelligence .large-testimonial-slider .container .large-quote-slide-container .slide .slide-inner .name-image-container .tag-container {
+    float: none;
+    display: inline-block;
+    width: auto;
+    margin-bottom: 0;
+    padding: 6px 12px;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 15px;
+    letter-spacing: normal;
+    text-transform: none;
+    color: #9a9a9a;
+    white-space: nowrap;
+}
+
+body.template-adapt-intelligence .large-testimonial-slider .container .large-quote-slide-container .slide .slide-inner .name-image-container .tag-container:before {
+    content: none;
 }
