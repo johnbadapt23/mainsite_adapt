@@ -116,23 +116,62 @@
 	// colour font for regional-indicator flag emoji (macOS/iOS/Android
 	// do), so on Windows that span renders as a blank box or nothing at
 	// all -- this isn't a CSS bug, there's no flag glyph installed to draw.
-	// Twemoji (Twitter's open-source emoji set) is the standard fix:
-	// twemoji.parse() walks an element's text nodes and swaps any emoji
-	// character for an <img> pointing at Twemoji's own SVG asset, which
-	// renders identically on every OS. HubSpot's form is a React widget
-	// that re-renders the flag span's text (not just its image) whenever
-	// the visitor changes the selected country, so a MutationObserver
-	// re-parses the span on every change rather than running once on load.
+	// HubSpot's React widget re-renders the flag span's text (not just its
+	// image) whenever the visitor changes the selected country, so a
+	// MutationObserver re-parses the span on every change rather than
+	// running once on load.
 	function initHubspotPhoneFlags() {
-		if (typeof twemoji === 'undefined') {
-			return;
+		// Dependency-free flag renderer: converts the regional-indicator-symbol
+		// emoji text HubSpot renders into an <img> pointing at Twemoji's SVG CDN,
+		// computed from the characters' Unicode codepoints. This deliberately
+		// avoids loading the twemoji.js script -- after extensive live-site
+		// debugging, script-src (strict-dynamic + per-request nonce
+		// enforcement, WP Rocket's JS pipeline, CSP) proved to be an unreliable
+		// path for this one external script. img-src is far more permissive
+		// ('self' data: https:) and needs no nonce, so sourcing only an image
+		// asset sidesteps the entire problem.
+		var TWEMOJI_SVG_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/';
+
+		function codePointsToTwemojiFilename(text) {
+			var codePoints = [];
+			for (var i = 0; i < text.length; i++) {
+				var codePoint = text.codePointAt(i);
+				if (codePoint > 0xFFFF) {
+					i++; // surrogate pair consumes two UTF-16 units
+				}
+				codePoints.push(codePoint.toString(16));
+			}
+			if (!codePoints.length) {
+				return null;
+			}
+			return codePoints.join('-');
 		}
 
-		function parseFlag(el) {
-			twemoji.parse(el, { folder: 'svg', ext: '.svg' });
+		function renderFlag(el) {
+			if (!el || el.getAttribute('data-flag-rendered') === 'true') {
+				return;
+			}
+			var text = (el.textContent || '').trim();
+			if (!text) {
+				return;
+			}
+			var filename = codePointsToTwemojiFilename(text);
+			if (!filename) {
+				return;
+			}
+			var img = document.createElement('img');
+			img.src = TWEMOJI_SVG_BASE + filename + '.svg';
+			img.alt = el.getAttribute('aria-label') || 'flag';
+			img.setAttribute('draggable', 'false');
+			img.style.width = '1em';
+			img.style.height = '1em';
+			img.style.verticalAlign = 'middle';
+			el.setAttribute('data-flag-rendered', 'true');
+			el.textContent = '';
+			el.appendChild(img);
 		}
 
-		document.querySelectorAll('.hsfc-PhoneInput__FlagAndCaret__Flag').forEach(parseFlag);
+		document.querySelectorAll('.hsfc-PhoneInput__FlagAndCaret__Flag').forEach(renderFlag);
 
 		if (!('MutationObserver' in window)) {
 			return; // Flags present on initial load are still fixed above --
@@ -151,7 +190,8 @@
 				}
 
 				if (flagEl) {
-					parseFlag(flagEl);
+					flagEl.removeAttribute('data-flag-rendered');
+					renderFlag(flagEl);
 				}
 
 				mutation.addedNodes.forEach(function(node) {
@@ -159,10 +199,10 @@
 						return;
 					}
 					if (node.classList && node.classList.contains('hsfc-PhoneInput__FlagAndCaret__Flag')) {
-						parseFlag(node);
+						renderFlag(node);
 					}
 					if (node.querySelectorAll) {
-						node.querySelectorAll('.hsfc-PhoneInput__FlagAndCaret__Flag').forEach(parseFlag);
+						node.querySelectorAll('.hsfc-PhoneInput__FlagAndCaret__Flag').forEach(renderFlag);
 					}
 				});
 			});
@@ -170,6 +210,7 @@
 
 		observer.observe(document.body, { childList: true, subtree: true, characterData: true });
 	}
+
 
 	// The homepage's HubSpot popup form (#animationForm) used to have its
 	// HubSpot embed snippet (a <script src="//js.hsforms.net/..."> plus a
