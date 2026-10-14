@@ -485,3 +485,27 @@ section.closing-cta-form {
         transform: translateY(-6px);
     }
 }
+
+// templates/gtm-components/_large-testimonials.php and
+// templates/customer-events-components/_form-module.php are shared
+// components -- the former also renders on template-gtm.php, the
+// latter on a dozen other page templates (see functions.php's
+// get_template_part() calls). Scoped to body.template-adapt-intelligence
+// here rather than editing those shared partials, so neither change
+// leaks onto any other page that reuses the same component. This
+// matches the same body.template-X scoping convention already used
+// for .expanding-form-module on other templates (see
+// body.template-benchmarking in _benchmarking.scss).
+body.template-adapt-intelligence {
+    .large-testimonial-slider {
+        // Mirrors the sitewide .background-true-black utility class's
+        // own declaration (source/scss/templates/_customer-events.scss)
+        // without adding that class to the shared PHP partial, which
+        // would also affect template-gtm.php's testimonial slider.
+        background: #000;
+    }
+
+    .expanding-form-module {
+        padding-top: 150px;
+    }
+}
