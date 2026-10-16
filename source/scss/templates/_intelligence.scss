@@ -533,6 +533,20 @@ body.template-adapt-intelligence {
         max-width: 780px;
     }
 
+    // templates/gtm-components/_numbers-map.php is also shared (reused on
+    // template-gtm.php and template-market-buyer.php too -- see the
+    // grep-confirmed template list above), so this shift is scoped to this
+    // template only, same rationale as the overrides above. Desktop-only
+    // on purpose: the mobile layout (see _gtm.scss's existing
+    // @media (max-width: 767px) override on this same img, which switches
+    // object-fit/object-position) already repositions this image
+    // differently, and this nudge isn't wanted there.
+    @media (min-width: 768px) {
+        section.map-with-numbers .container .map-outer .background-container img {
+            transform: translateX(70px);
+        }
+    }
+
 }
 
 // The tag field (e.g. "Interactive") moves from above the quote to sit
