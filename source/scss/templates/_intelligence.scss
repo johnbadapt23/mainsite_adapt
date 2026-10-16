@@ -148,7 +148,7 @@ section.pain-vs-promise {
         gap: 80px;
 
         .column.one-third {
-            width: calc(33.3% - 40px);
+            width: calc(33.333% - 53.333px);
             display: flex;
             flex-direction: column;
             align-items: flex-start;
@@ -211,26 +211,25 @@ section.pain-vs-promise {
                 // .labelXL has no colour of its own in the global
                 // typography styles (source/scss/global/_styles.scss)
                 // -- it inherits from the page body, which on this
-                // template resolves to white. Figma shows a bold dark
-                // heading on this section's light-grey background, so
-                // it needs its own explicit colour rather than relying
-                // on inheritance.
+                // template resolves to white, so it needs its own
+                // explicit colour. Font-size/weight/line-height are left
+                // unset here on purpose, same as the reference component
+                // (section.three-column-icon-text-ecosystems on
+                // adapt.com.au/services/technology-vendors doesn't
+                // override them either) -- both fall back to the global
+                // .labelXL default (20px/500/24.42px), confirmed against
+                // that page's live computed styles.
                 .labelXL {
                     display: block;
                     color: $heading-color;
                     max-width: 265px;
-                    font-size: 26px;
-                    font-weight: 700;
-                    line-height: 32px;
                     margin-bottom: 16px;
                 }
 
-                // The body copy's .p-small class sets a looser 16px/28px
-                // by default -- Figma specs this copy at 18px/21px, a
-                // noticeably tighter paragraph.
+                // Reference component's p.p-small is likewise unstyled
+                // beyond layout -- falls back to the global 16px/28px,
+                // confirmed against the live page's computed styles.
                 p.p-small {
-                    font-size: 18px;
-                    line-height: 21px;
                     margin-bottom: 0;
                     width: 100%;
                     float: none;
