@@ -250,6 +250,22 @@ section.pain-vs-promise {
     }
 }
 
+// Chained on both classes (the section's actual markup is
+// <section class="three-column-video-gtm pain-vs-promise ...">, see
+// templates/intelligence-components/_pain-vs-promise.php) rather than
+// wrapped in body.template-adapt-intelligence -- .pain-vs-promise is
+// already unique to this template (only used via that one component),
+// same reasoning as section.pain-vs-promise above, and chaining on
+// three-column-video-gtm too keeps this from ever matching the bare
+// shared .three-column-video-gtm wrapper class on its own.
+.three-column-video-gtm.pain-vs-promise {
+    background: #fff;
+
+    .title-container {
+        margin-bottom: 100px;
+    }
+}
+
 section.intelligence-use-case {
     // The section's own class switched from background-white to
     // background-lightest-grey (see _use-case-tabs.php) to match the
