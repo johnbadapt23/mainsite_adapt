@@ -14,14 +14,14 @@ section.intro-statement {
         margin: 0 auto;
 
         h1 {
-            margin-bottom: 16px;
+            margin-bottom: 32px;
         }
 
         .sub-text {
             display: block;
             width: 100%;
             color: #5F5F5F;
-            margin-bottom: 32px;
+            margin-bottom: 56px;
             font-size: 20px;
             max-width: 653px;
             margin-left: auto;
@@ -104,20 +104,33 @@ section.intelligence-hero {
     padding-top: 0;
 }
 
+// Restyled to match section.three-column-video-gtm.three-column-icon-
+// text-ecosystems.three-column-partnered-research (see _gtm.scss --
+// that's the component live on adapt.com.au/services/technology-vendors)
+// per explicit request: same background colour and column layout
+// (centred header, wide column gap, thin vertical divider between
+// columns instead of this section's previous individual bordered/
+// rounded cards), minus that component's video/image block, which this
+// section never had. Content and copy are unchanged -- still the
+// number-container 01/02/03 markup from templates/intelligence-
+// components/_pain-vs-promise.php, not that component's icon-container,
+// since no icon assets were part of this request. The bespoke type
+// sizes below (h2, .labelXL, p.p-small) are this section's own
+// previously Figma-sourced values, kept as-is -- only layout/colour
+// changed, not typography.
 section.pain-vs-promise {
-    padding: 100px 0;
+    background-color: #F8F8F8;
+    padding: 144px 0;
 
-    // Figma left-aligns this section's heading/cards (not centred like
-    // the shared three-column-video-gtm default), and the "Bold for red
-    // text" wysiwyg heading (see the field's ACF instructions, same
-    // pattern as every other bold-red heading in this field group)
-    // needs its own colour on this section's light background since
-    // .bold-red only colours the bolded run, not the rest of the text.
+    @media (max-width: 767px) {
+        padding: 80px 0;
+    }
+
     .title-container {
         width: 100%;
-        text-align: left;
-        max-width: 760px;
-        margin: 0 0 40px;
+        text-align: center;
+        max-width: 795px;
+        margin: 0 auto 32px;
 
         h2.bold-red {
             color: $heading-color;
@@ -130,22 +143,44 @@ section.pain-vs-promise {
         width: 100%;
         display: flex;
         flex-wrap: wrap;
-        gap: 24px;
+        align-items: flex-start;
+        margin-bottom: 0;
+        gap: 80px;
 
         .column.one-third {
-            flex: 1 1 calc(33.33% - 16px);
-            border: 1px solid $color-medium-light-grey;
-            border-top: 1px solid $color-medium-light-grey;
-            border-radius: 8px;
-            padding: 24px;
+            width: calc(33.3% - 40px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            text-align: left;
+            gap: 40px;
+            position: relative;
 
             @media (max-width: 767px) {
-                flex: 1 1 100%;
+                width: 100%;
+            }
+
+            // Vertical divider between columns, matching the reference
+            // component's &:after treatment, instead of this section's
+            // previous per-column border/radius/padding box.
+            &:not(:last-child):after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: -40px;
+                bottom: 0;
+                width: 1px;
+                background: linear-gradient(180deg, #E4E4E4 0, #E4E4E4 50%, #E4E4E4 100%);
+
+                @include responsive(767) {
+                    display: none;
+                }
             }
 
             .number-container {
                 width: 100%;
-                margin-bottom: 24px;
+                margin-bottom: 0;
 
                 .number {
                     display: block;
@@ -169,6 +204,10 @@ section.pain-vs-promise {
             }
 
             .text-container {
+                text-align: left;
+                float: none;
+                width: 100%;
+
                 // .labelXL has no colour of its own in the global
                 // typography styles (source/scss/global/_styles.scss)
                 // -- it inherits from the page body, which on this
@@ -179,6 +218,7 @@ section.pain-vs-promise {
                 .labelXL {
                     display: block;
                     color: $heading-color;
+                    max-width: 265px;
                     font-size: 26px;
                     font-weight: 700;
                     line-height: 32px;
@@ -191,6 +231,20 @@ section.pain-vs-promise {
                 p.p-small {
                     font-size: 18px;
                     line-height: 21px;
+                    margin-bottom: 0;
+                    width: 100%;
+                    float: none;
+                }
+            }
+
+            // Matches the reference component's last-column treatment --
+            // nothing to the right to make room for, so the heading can
+            // use the column's full width.
+            &:last-child {
+                .text-container {
+                    .labelXL {
+                        max-width: 100%;
+                    }
                 }
             }
         }
