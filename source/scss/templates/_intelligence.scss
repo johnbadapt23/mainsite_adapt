@@ -349,9 +349,10 @@ section.intelligence-use-case {
                 // no effect on an inline box, which is why the two
                 // examples were previously running together on one
                 // line instead of stacking as separate pill cards.
-                // Figma shows these centred, in regular (non-italic)
-                // weight -- the quote marks around the text are what
-                // signal it's a prompt example, not an italic treatment.
+                // Text is left-aligned per updated spec (originally
+                // centred to match an earlier Figma pass) -- regular
+                // (non-italic) weight either way, the quote marks around
+                // the text are what signal it's a prompt example.
                 .prompt-example {
                     display: block;
                     width: 100%;
@@ -359,7 +360,7 @@ section.intelligence-use-case {
                     border-radius: 8px;
                     padding: 16px 20px;
                     font-size: 17px;
-                    text-align: center;
+                    text-align: left;
                     margin-bottom: 16px;
                     color: #0A0A0A;
                 }
@@ -521,6 +522,15 @@ body.template-adapt-intelligence {
 
     .expanding-form-module {
         padding-top: 150px;
+    }
+
+    // templates/customer-events-components/_animated-text-logos.php is
+    // another shared component (reused on template-gtm.php and others --
+    // see the grep-confirmed template list above). Widened here, scoped to
+    // this template only, same rationale as .large-testimonial-slider and
+    // .expanding-form-module above.
+    section.animated-text .container .inner .animated-text-container {
+        max-width: 780px;
     }
 
 }
