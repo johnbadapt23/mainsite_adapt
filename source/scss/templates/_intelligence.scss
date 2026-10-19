@@ -653,3 +653,33 @@ body.template-adapt-intelligence .large-testimonial-slider .container .large-quo
 body.template-adapt-intelligence .large-testimonial-slider .container .large-quote-slide-container .slide .slide-inner .name-image-container .tag-container:before {
     content: none;
 }
+
+// The "Cards" layout (templates/gtm-components/_cards-dark.php, registered
+// as layout_0da62bb93485 on this template's flexible content field) is the
+// real, shared GTM Cards component reused as-is -- same partial, same
+// fields, same markup -- not an imitation. Its wrapper hardcodes
+// "background-black" in the PHP, since on the GTM page it's meant to stay
+// black. On this template it immediately follows another black section
+// (Map with Numbers), so two black sections would run back to back.
+// Rather than touch the shared partial (which would also repaint it on
+// template-gtm.php), this repaints just this instance white, reusing the
+// exact values the site's own .background-white utility already applies
+// elsewhere (see global/_styles.scss) rather than inventing new ones. The
+// dark .card tiles are left untouched -- they already read fine against a
+// white page background and that keeps the override minimal.
+body.template-adapt-intelligence .cards-module.gtm-cards-module.background-black {
+    background-color: #fff;
+    color: #000;
+
+    .top-content h2 p {
+        color: #000;
+    }
+
+    .top-content h2 p strong {
+        color: #5F5F5F;
+    }
+
+    .top-content > span {
+        color: #000;
+    }
+}
