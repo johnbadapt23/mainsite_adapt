@@ -104,20 +104,27 @@ section.intelligence-hero {
     padding-top: 0;
 }
 
-// Restyled to match section.three-column-video-gtm.three-column-icon-
-// text-ecosystems.three-column-partnered-research (see _gtm.scss --
-// that's the component live on adapt.com.au/services/technology-vendors)
-// per explicit request: same background colour and column layout
-// (centred header, wide column gap, thin vertical divider between
-// columns instead of this section's previous individual bordered/
-// rounded cards), minus that component's video/image block, which this
-// section never had. Content and copy are unchanged -- still the
-// number-container 01/02/03 markup from templates/intelligence-
-// components/_pain-vs-promise.php, not that component's icon-container,
-// since no icon assets were part of this request. The bespoke type
-// sizes below (h2, .labelXL, p.p-small) are this section's own
-// previously Figma-sourced values, kept as-is -- only layout/colour
-// changed, not typography.
+// Column layout restyled again to match section.cards-module.gtm-
+// cards-module (see adapt.com.au/services/technology-vendors, the
+// "#1 / Maintain market leadership..." dark card row further down that
+// page) per explicit request to switch to that card's layout and type
+// sizes -- replaces the earlier three-column-icon-text-ecosystems-style
+// divided columns. Each .column.one-third is now a bordered card with a
+// fixed min-height, content anchored to the bottom (margin-top: auto on
+// .text-container, same effect as that component's absolutely
+// positioned, bottom-anchored .content-container-inner), and a "+"
+// indicator (../images/red-plus.svg, the same asset that reference
+// component uses) below the title. Content/copy still unchanged -- the
+// number-container 01/02/03 markup, not that component's icon-container.
+// Card background/border use this section's own light colours rather
+// than the reference's dark #222-on-#121212 card-on-section scheme,
+// since this section's background was explicitly set to white in a
+// separate request and wasn't part of this one. Title stays at the
+// global .labelXL default (20px/500/24.42px, unchanged, already matched
+// this reference too); card-text bumped to 18px/28px to match this
+// reference's own card-text override (confirmed via its live computed
+// styles), rather than the plain global .p-small 16px/28px used by the
+// previous reference.
 section.pain-vs-promise {
     background-color: #F8F8F8;
     padding: 144px 0;
@@ -145,37 +152,29 @@ section.pain-vs-promise {
         flex-wrap: wrap;
         align-items: flex-start;
         margin-bottom: 0;
-        gap: 80px;
+        gap: 32px;
 
         .column.one-third {
-            width: calc(33.333% - 53.333px);
+            // calc((100% - 2 * 32px gap) / 3), same formula/reasoning as
+            // the previous layout, just against this card row's own
+            // 32px gap (matches the reference's card width exactly:
+            // calc(33.33% - 21.33px), confirmed against its live
+            // computed styles).
+            width: calc(33.333% - 21.333px);
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             justify-content: flex-start;
             text-align: left;
-            gap: 40px;
+            background-color: #F8F8F8;
+            border: 1px solid #E4E4E4;
+            padding: 48px 48px 56px;
+            min-height: 330px;
             position: relative;
 
             @media (max-width: 767px) {
                 width: 100%;
-            }
-
-            // Vertical divider between columns, matching the reference
-            // component's &:after treatment, instead of this section's
-            // previous per-column border/radius/padding box.
-            &:not(:last-child):after {
-                content: '';
-                position: absolute;
-                top: 0;
-                right: -40px;
-                bottom: 0;
-                width: 1px;
-                background: linear-gradient(180deg, #E4E4E4 0, #E4E4E4 50%, #E4E4E4 100%);
-
-                @include responsive(767) {
-                    display: none;
-                }
+                min-height: 0;
             }
 
             .number-container {
@@ -203,7 +202,11 @@ section.pain-vs-promise {
                 }
             }
 
+            // Pinned to the bottom of the card, same effect as the
+            // reference's absolutely positioned, bottom-anchored
+            // .content-container-inner.
             .text-container {
+                margin-top: auto;
                 text-align: left;
                 float: none;
                 width: 100%;
@@ -212,39 +215,49 @@ section.pain-vs-promise {
                 // typography styles (source/scss/global/_styles.scss)
                 // -- it inherits from the page body, which on this
                 // template resolves to white, so it needs its own
-                // explicit colour. Font-size/weight/line-height are left
-                // unset here on purpose, same as the reference component
-                // (section.three-column-icon-text-ecosystems on
-                // adapt.com.au/services/technology-vendors doesn't
-                // override them either) -- both fall back to the global
-                // .labelXL default (20px/500/24.42px), confirmed against
-                // that page's live computed styles.
+                // explicit colour. Font-size/weight/line-height left
+                // unset -- falls back to the global .labelXL default
+                // (20px/500/24.42px), which already matches this
+                // reference's own card-title (confirmed against its
+                // live computed styles), just with its own margin-bottom
+                // (8px here, matching the reference, not the previous
+                // layout's 16px).
                 .labelXL {
                     display: block;
                     color: $heading-color;
                     max-width: 265px;
-                    margin-bottom: 16px;
+                    margin-bottom: 8px;
                 }
 
-                // Reference component's p.p-small is likewise unstyled
-                // beyond layout -- falls back to the global 16px/28px,
-                // confirmed against the live page's computed styles.
+                // This reference's card-text is 18px/28px specifically
+                // (not the plain global .p-small 16px/28px the previous
+                // reference used) -- confirmed against its live computed
+                // styles.
                 p.p-small {
+                    font-size: 18px;
                     margin-bottom: 0;
                     width: 100%;
                     float: none;
                 }
             }
 
-            // Matches the reference component's last-column treatment --
-            // nothing to the right to make room for, so the heading can
-            // use the column's full width.
-            &:last-child {
-                .text-container {
-                    .labelXL {
-                        max-width: 100%;
-                    }
-                }
+            // "+" indicator below the title, same asset as the
+            // reference's card::after (../images/red-plus.svg). Always
+            // visible here rather than a hover reveal -- the reference
+            // only shows it as a hover affordance on an interactive
+            // card, but this section's content has no hover
+            // interaction, so there's nothing for it to be an
+            // affordance for.
+            &:after {
+                content: '';
+                display: block;
+                width: 24px;
+                height: 24px;
+                margin-top: 16px;
+                background-image: url('../images/red-plus.svg');
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
             }
         }
     }
