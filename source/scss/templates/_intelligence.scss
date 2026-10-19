@@ -662,24 +662,45 @@ body.template-adapt-intelligence .large-testimonial-slider .container .large-quo
 // black. On this template it immediately follows another black section
 // (Map with Numbers), so two black sections would run back to back.
 // Rather than touch the shared partial (which would also repaint it on
-// template-gtm.php), this repaints just this instance white, reusing the
-// exact values the site's own .background-white utility already applies
-// elsewhere (see global/_styles.scss) rather than inventing new ones. The
-// dark .card tiles are left untouched -- they already read fine against a
-// white page background and that keeps the override minimal.
+// template-gtm.php), this repaints just this instance, scoped to
+// body.template-adapt-intelligence, using the exact values the site's own
+// .background-white utility already applies elsewhere (see
+// global/_styles.scss) rather than inventing new ones.
 body.template-adapt-intelligence .cards-module.gtm-cards-module.background-black {
     background-color: #fff;
+    color: #000 !important;
+
+    .text-secondary {
+        color: #5F5F5F !important;
+    }
+}
+
+// The title (h2.bold-grey) carries the shared partial's .text-white class,
+// which would otherwise leave it light-grey on the new white background.
+// Repainted the same way .text-black already does sitewide (see
+// global/_styles.scss), scoped to this template/instance only.
+body.template-adapt-intelligence .cards-module.gtm-cards-module.background-black .top-content h2.bold-grey {
     color: #000;
 
-    .top-content h2 p {
+    p {
         color: #000;
     }
+}
 
-    .top-content h2 p strong {
-        color: #5F5F5F;
-    }
+// The dark .card tiles are left untouched -- they already read fine
+// against a white page background. But .card-title.labelXL's own hover
+// state (in _gtm.scss) turns it black, on the assumption the card itself
+// flips to a light background on hover; here the card stays dark, so black
+// text on hover would disappear. Keep it white instead, scoped to this
+// template/instance only.
+body.template-adapt-intelligence .cards-module.gtm-cards-module .card-container .card:hover .card-title.labelXL {
+    color: #fff;
+}
 
-    .top-content > span {
-        color: #000;
-    }
+// Within this template's white-background instance of the Cards section,
+// the "anywhere but here" <strong> inside the title should read as brand
+// red rather than plain black, same as _intelligence.scss's own
+// pain-vs-promise h2.bold-red pattern elsewhere on this page.
+body.template-adapt-intelligence .cards-module.gtm-cards-module.background-black .top-content h2 p strong {
+    color: $color-red;
 }
