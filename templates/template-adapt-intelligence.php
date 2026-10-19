@@ -19,6 +19,17 @@ get_header();
                 <?php get_template_part( 'templates/gtm-components/_numbers-map' ); ?>
             <?php elseif ( get_row_layout() == 'pain_vs_promise' ) : ?>
                 <?php get_template_part( 'templates/intelligence-components/_pain-vs-promise' ); ?>
+            <?php elseif ( get_row_layout() == 'cards' ) : ?>
+                <?php // Reuses the actual GTM "Cards" component as-is (same
+                // partial, same fields: Title, Sub title, a Cards repeater of
+                // Icon/Hover Icon/Card Title/Card Text, plus the optional Icon
+                // Slider rows) -- already used on template-gtm.php (see
+                // adapt.com.au/services/technology-vendors' dark card row).
+                // Registered as its own layout on this template's flexible
+                // content field (layout_0da62bb93485 in
+                // acf-json/group_f32c19feddec4.json) rather than imitated with
+                // bespoke CSS. ?>
+                <?php get_template_part( 'templates/gtm-components/_cards-dark' ); ?>
             <?php elseif ( get_row_layout() == 'use_case_by_function' ) : ?>
                 <?php get_template_part( 'templates/intelligence-components/_use-case-tabs' ); ?>
             <?php elseif ( get_row_layout() == 'large_testimonial_slider' ) : ?>
