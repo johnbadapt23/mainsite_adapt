@@ -657,29 +657,22 @@ body.template-adapt-intelligence .large-testimonial-slider .container .large-quo
 // The "Cards" layout (templates/gtm-components/_cards-dark.php, registered
 // as layout_0da62bb93485 on this template's flexible content field) is the
 // real, shared GTM Cards component reused as-is -- same partial, same
-// fields, same markup -- not an imitation. Its wrapper hardcodes
-// "background-black" in the PHP, since on the GTM page it's meant to stay
-// black. On this template it immediately follows another black section
-// (Map with Numbers), so two black sections would run back to back.
-// Rather than touch the shared partial (which would also repaint it on
-// template-gtm.php), this repaints just this instance, scoped to
-// body.template-adapt-intelligence, using the exact values the site's own
-// .background-white utility already applies elsewhere (see
-// global/_styles.scss) rather than inventing new ones.
-body.template-adapt-intelligence .cards-module.gtm-cards-module.background-black {
-    background-color: #fff;
-    color: #000 !important;
-
-    .text-secondary {
-        color: #5F5F5F !important;
-    }
-}
+// fields, same markup -- not an imitation. The partial itself now renders
+// this section with the real "background-white" class (instead of its
+// default "background-black") when $is_adapt_intelligence_template is true
+// -- see _cards-dark.php -- so this follows another black section (Map
+// with Numbers) without two black sections running back to back. That
+// class swap is what gets the background/base text color for free from
+// the site's existing .background-white utility (global/_styles.scss);
+// everything below here just covers what .background-white doesn't reach.
 
 // The title (h2.bold-grey) carries the shared partial's .text-white class,
-// which would otherwise leave it light-grey on the new white background.
-// Repainted the same way .text-black already does sitewide (see
+// which would otherwise leave it light-grey even on background-white
+// (.text-white sets its own color directly on the h2, so it isn't
+// overridden by the inherited color .background-white puts on the
+// section). Repainted the same way .text-black already does sitewide (see
 // global/_styles.scss), scoped to this template/instance only.
-body.template-adapt-intelligence .cards-module.gtm-cards-module.background-black .top-content h2.bold-grey {
+body.template-adapt-intelligence .cards-module.gtm-cards-module .top-content h2.bold-grey {
     color: #000;
 
     p {
@@ -701,6 +694,6 @@ body.template-adapt-intelligence .cards-module.gtm-cards-module .card-container 
 // the "anywhere but here" <strong> inside the title should read as brand
 // red rather than plain black, same as _intelligence.scss's own
 // pain-vs-promise h2.bold-red pattern elsewhere on this page.
-body.template-adapt-intelligence .cards-module.gtm-cards-module.background-black .top-content h2 p strong {
+body.template-adapt-intelligence .cards-module.gtm-cards-module .top-content h2 p strong {
     color: $color-red;
 }
