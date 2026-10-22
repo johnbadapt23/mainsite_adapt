@@ -13,6 +13,7 @@
         <?php if ( have_rows( 'roundtable' ) ) : ?>
             <?php $roundtableCounter=0; ?>
 			<?php while ( have_rows( 'roundtable' ) ) : the_row(); ?>
+            <?php $hidespeakersImages = get_sub_field('hide_speakers'); ?>
                 <div class="roundtable-container">
                     <div class="speaker-image-container">
                         <?php if ( have_rows( 'speakers' ) ) : ?>
@@ -23,7 +24,9 @@
                                         <?php $counter=1; ?>
                                         <?php foreach ( $speaker as $post ):  ?>
                                             <?php setup_postdata ( $post ); ?>
-                                            <a class="speaker-popup" href="#<?php echo $agendaGallery; ?>speakerPopup-<?php echo $counter;?>-<?php echo $roundtableCounter; ?>">
+
+                                            <?php if( $hidespeakersImages != 'yes' ) : ?>
+                                            <a class="speaker-popup" <?php if( get_field('about') ) : ?>href="#<?php echo $agendaGallery; ?>speakerPopup-<?php echo $counter;?>-<?php echo $roundtableCounter; ?>"<?php endif; ?>>
                                                 <?php $speaker_image = get_field( 'speaker_image' ); ?>
                                                 <span class="speaker-image">
                                                     <span class="image-container">
@@ -48,6 +51,9 @@
                                                     </span>
                                                 </span>
                                             </a>
+                                            <?php endif; ?>
+
+                                            <?php if( get_field('about') ) : ?>
                                             <div style="display: none;">
                                                 <div class="speaker-popup-container" id="<?php echo $agendaGallery; ?>speakerPopup-<?php echo $counter;?>-<?php echo $roundtableCounter; ?>">
                                                     <div class="column white-bg image-column">
@@ -110,6 +116,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <?php endif; ?>
                                             <?php $counter++; ?>
                                         <?php endforeach; ?>
                                     <?php wp_reset_postdata(); ?>
@@ -144,7 +151,7 @@
                                     <?php if ( $speaker ): ?>
                                         <?php $counterName=1; ?>
                                         <?php foreach ( $speaker as $post ):  ?>
-                                            <a class="speaker-popup-text" href="#<?php echo $agendaGallery; ?>speakerPopup-<?php echo $counterName;?>-<?php echo $roundtableCounter; ?>">
+                                            <a class="speaker-popup-text" <?php if( get_field('about') ) : ?>href="#<?php echo $agendaGallery; ?>speakerPopup-<?php echo $counterName;?>-<?php echo $roundtableCounter; ?>"<?php endif; ?>>
                                                 <span class="speaker">
                                                     <?php setup_postdata ( $post ); ?>
                                                     <span class="title-container"><?php the_title(); ?></span>
