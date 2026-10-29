@@ -38,6 +38,7 @@
 					</a>
 				</span>
 			</span>
+			<?php if(get_field('hide_header_menu') != 'yes') : ?>
 			<span class="headerRight">
 				<span class="menu">
 					<?php get_template_part( 'templates/partials/_mega-main-menu' ); ?>
@@ -68,6 +69,7 @@
 		            </a>
 		    	</span>
 			</span>
+			<?php endif; ?>
 		</span>
 	</div>
 	<?php

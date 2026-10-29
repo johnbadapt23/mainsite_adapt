@@ -189,6 +189,60 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- Start of HubSpot Embed Code -->
 <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/8336221.js"></script>
 <!-- End of HubSpot Embed Code -->
+
+
+
+<?php if( get_field('simple_footer') == 'yes' ) : ?>
+<style>
+    body header .header-inner .headerRight {
+        display: none !important;
+    }
+    body footer .footer-top .footer-column:not(:last-child),
+    body footer .footer-subscribe-container,
+    body footer .footer-top .footer-column:last-child .footer-column-group > *:not(.socials-container),
+    body footer .footer-bottom .back-to-top,
+    body footer .footer-bottom .footer-bottom-right a:not(:first-child):not(:last-child) {
+        display: none !important;
+    }
+
+    body footer .footer-top {
+        padding-bottom: 0 !important;
+    }
+
+    body footer .footer-top > .footer-column-container {
+        width: 100% !important;
+        justify-content: flex-end !important;
+        margin-bottom: 0 !important;
+    }
+
+    body footer .footer-top .footer-column:last-child .footer-column-group .socials-container .follow-us-title {
+        display: none !important;
+    }
+
+    body footer .footer-top .footer-column:last-child .footer-column-group .socials-container {
+        text-align: right !important;
+        position: relative !important;
+        top: 35px !important;
+        z-index: 2;
+    }
+
+    @media (max-width: 767px){
+        footer .container .footer-top .footer-column-container .column.one-third .socials-container .social-links{
+            position: relative;
+            top: 15px;
+        }
+    }
+</style>
+<?php endif; ?>
+
+<?php if(get_field('hide_header_menu') == 'yes') : ?>
+<style>
+
+body header span.headerRight {
+    display: none;
+}
+</style>
+<?php endif; ?>
 </head>
 <body <?php body_class(''); ?> data-page-id="<?= the_ID(); ?>" rel="<?php if ( is_404() ): echo 'notFound'; endif; ?>">
     <?php
@@ -237,6 +291,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             border: 0;
         }
     </style>
+
+
+
+
     <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NHF4ZRS"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
