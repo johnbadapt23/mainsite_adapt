@@ -1,3 +1,24 @@
+<?php if ( ! function_exists( 'adapt_sticky_card_prompt_list' ) ) :
+function adapt_sticky_card_prompt_list( $text ) {
+    // ADAPT Intelligence's "Text" field content is a set of short prompt
+    // examples, one per line in the editor -- render each line as its own
+    // pill, matching the .prompt-example chips on this page's Use Case by
+    // Function tab switcher (same #FDF1F1 background/padding/radius, see
+    // _intelligence.scss) rather than running them together as one
+    // paragraph.
+    $lines = preg_split( '/\r\n|\r|\n/', trim( $text ) );
+    echo '<div class="text-points">';
+    foreach ( $lines as $line ) {
+        $line = trim( $line );
+        if ( $line === '' ) {
+            continue;
+        }
+        echo '<span class="text-point">' . esc_html( $line ) . '</span>';
+    }
+    echo '</div>';
+}
+endif;
+?>
 <section class="benchmarking-sticky-cards background-light-grey">
     <div class="container">
         <div class="top-content">
@@ -85,7 +106,11 @@
                         <div class="text-block-wrapper">
                             <div class="text-block">
                                 <h4 role="heading" aria-level="3" class="header-medium"><?php echo get_sub_field( 'title' ); ?></h4>
+                                <?php if ( is_page_template( 'templates/template-adapt-intelligence.php' ) ) {
+                                    adapt_sticky_card_prompt_list( get_sub_field( 'text' ) );
+                                } else { ?>
                                 <p class="p-large text-dark-grey"><?php the_sub_field( 'text' ); ?></p>
+                                <?php } ?>
                             </div>
                         </div>
                     <?php endwhile; ?>
@@ -117,7 +142,11 @@
                         <div class="text-block-wrapper">
                             <div class="text-block">
                                 <h4 class="header-medium"><?php echo get_sub_field( 'title' ); ?></h4>
+                                <?php if ( is_page_template( 'templates/template-adapt-intelligence.php' ) ) {
+                                    adapt_sticky_card_prompt_list( get_sub_field( 'text' ) );
+                                } else { ?>
                                 <p class="p-medium text-dark-grey"><?php the_sub_field( 'text' ); ?></p>
+                                <?php } ?>
                             </div>
                         </div>
                         <?php $image = get_sub_field( 'image' ); ?>

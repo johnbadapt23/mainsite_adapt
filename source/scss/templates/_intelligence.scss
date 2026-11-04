@@ -814,3 +814,36 @@ body.template-adapt-intelligence {
         overflow-x: hidden;
     }
 }
+
+// "Text" field content on the shared Sticky Text Image Columns component
+// (templates/benchmark-components/_sticky-cards.php): on this page it's a
+// set of short prompt examples rather than a paragraph of prose, so
+// adapt_sticky_card_prompt_list() in that template renders each line as
+// its own pill -- same #FDF1F1 background/padding/radius as the
+// .prompt-example chips above, for a consistent "prompt example" look
+// between the two sections. Scoped to this page's body class since the
+// component is shared with the Benchmarking template, where the "Text"
+// field is a single paragraph and keeps its original <p> styling
+// untouched.
+body.template-adapt-intelligence .benchmarking-sticky-cards {
+    .text-points {
+        display: block;
+        width: 100%;
+    }
+
+    .text-point {
+        display: block;
+        width: 100%;
+        background-color: #FDF1F1;
+        border-radius: 8px;
+        padding: 16px 20px;
+        font-size: 17px;
+        text-align: left;
+        margin-bottom: 16px;
+        color: #0A0A0A;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
