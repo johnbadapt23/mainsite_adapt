@@ -797,3 +797,20 @@ section.cards-module.gtm-cards-module.background-white .card-container .card:hov
 section.cards-module.gtm-cards-module.background-white .container .top-content h2 p strong {
     color: $color-red;
 }
+
+// The global `body { overflow-x: hidden; }` rule in global/_base.scss
+// establishes a non-"visible" overflow on <body>, which breaks
+// `position: sticky` for any descendant (including the shared
+// Sticky Text Image Columns / Sticky Cards component used on this
+// template) regardless of which axis is hidden. The Benchmarking
+// template already overrides this for the same reason (see
+// `body.template-benchmarking` in _benchmarking.scss) -- this page
+// needs the identical override so its sticky image-overlap effect
+// works the same way.
+body.template-adapt-intelligence {
+    overflow-x: initial;
+
+    @media (max-width: 767px) {
+        overflow-x: hidden;
+    }
+}
