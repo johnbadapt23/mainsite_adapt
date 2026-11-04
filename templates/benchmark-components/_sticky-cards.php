@@ -225,7 +225,23 @@ function syncTextHeights(attempt = 1) {
 }
 
 // Run once DOM is ready
-document.addEventListener('DOMContentLoaded', () => syncTextHeights());
+document.addEventListener('DOMContentLoaded', () => {
+    syncTextHeights();
+
+    // Re-sync once any lazy-loaded sticky images actually finish loading.
+    // The retry loop above gives up after ~2s, which is fine when this
+    // component sits near the top of a page (e.g. Benchmarking), but a
+    // usage further down the page (e.g. ADAPT Intelligence) can still be
+    // showing a lazyload placeholder well past that window -- leaving the
+    // text column permanently unsynced to the image height it should
+    // match. Each lazyload src swap fires a fresh 'load' event, so this
+    // catches it whenever it actually happens; img.complete covers the
+    // case where it's already loaded (e.g. cached) by the time this runs.
+    document.querySelectorAll('.sticky-image-container img').forEach((img) => {
+        img.addEventListener('load', () => syncTextHeights());
+        if (img.complete) syncTextHeights();
+    });
+});
 
 // Debounced resize
 window.addEventListener('resize', () => {
