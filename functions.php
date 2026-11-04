@@ -1850,14 +1850,32 @@ function adapt_csp_header() {
         return;
     }
 
+    // SECURITY 2026-11-04 (CSP fix): live-checked on the adapt-intelligence
+    // #bookdemo HubSpot form embed and found three gaps the S90-S95 allowlist
+    // missed, all confirmed via actual browser console CSP violations rather
+    // than guessed from the theme's own source -- that grep-based method
+    // can't see what HubSpot's own hosted form JS pulls in at runtime once
+    // it's loaded:
+    // (1) connect-src was missing formcrafts.com itself (only script-src and
+    //     frame-src had it) -- the embed's own JS fetches its sourcemap
+    //     (embed.js.map) via XHR/fetch, which is a connect-src check, not
+    //     script-src.
+    // (2) connect-src was missing static.hsappstatic.net -- HubSpot's ads
+    //     pixel script loader (loaded from an already-allowed HubSpot host)
+    //     fetches its own sourcemap from this separate static asset host.
+    // (3) frame-src was missing forms-ap1.hsforms.com -- the AP1-region
+    //     HubSpot form embed renders inside an iframe from this host
+    //     (distinct from forms.hsforms.com, which was already allowed
+    //     nowhere in frame-src either, and is also added here since any
+    //     non-AP1-region form embed would hit the same gap).
     $csp = "default-src 'self'; "
         . "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' 'nonce-" . adapt_csp_nonce() . "' https://cdnjs.cloudflare.com https://unpkg.com https://js.hsforms.net https://js.hs-scripts.com https://www.googletagmanager.com https://formcrafts.com; "
         . "style-src 'self' 'unsafe-inline'; "
         . "img-src 'self' data: https:; "
         . "font-src 'self' data: https://fonts.gstatic.com; "
         . "media-src 'self' https://player.vimeo.com https://*.vimeocdn.com; "
-        . "frame-src 'self' https://player.vimeo.com https://vimeo.com https://formcrafts.com https://app.formcrafts.com https://www.googletagmanager.com; "
-        . "connect-src 'self' https://js.hsforms.net https://forms.hsforms.com https://forms-ap1.hsforms.com https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://analytics.google.com https://www.google-analytics.com https://px.ads.linkedin.com https://pixel-config.reddit.com https://alb.reddit.com https://*.clarity.ms https://content.hotjar.io https://vc.hotjar.io https://metrics.hotjar.io wss://ws.hotjar.com https://api-ap1.hubapi.com https://cta-ap1.hubspot.com https://forms-ap1.hscollectedforms.net;";
+        . "frame-src 'self' https://player.vimeo.com https://vimeo.com https://formcrafts.com https://app.formcrafts.com https://www.googletagmanager.com https://forms-ap1.hsforms.com https://forms.hsforms.com; "
+        . "connect-src 'self' https://js.hsforms.net https://forms.hsforms.com https://forms-ap1.hsforms.com https://formcrafts.com https://static.hsappstatic.net https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://analytics.google.com https://www.google-analytics.com https://px.ads.linkedin.com https://pixel-config.reddit.com https://alb.reddit.com https://*.clarity.ms https://content.hotjar.io https://vc.hotjar.io https://metrics.hotjar.io wss://ws.hotjar.com https://api-ap1.hubapi.com https://cta-ap1.hubspot.com https://forms-ap1.hscollectedforms.net;";
     header( "Content-Security-Policy: {$csp}" );
 }
 add_action( 'send_headers', 'adapt_csp_header' );
