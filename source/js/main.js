@@ -4579,4 +4579,51 @@ if ($('.overlapping-card-wrapper').length && $(window).width() > 767) {
         adaptActivateEmbeddedTemplate('animationFormEmbed', '#animationForm .form');
     });
 
+
+	// GLOBAL SMOOTH SCROLL FOR HASH LINKS
+	// Intercepts clicks on any link pointing to "#section-id". If that
+	// section exists on the current page, smooth-scrolls to it instead of
+	// jumping instantly. If it doesn't exist on this page (or the link
+	// points to a different page), the click is left alone so normal
+	// browser navigation still happens. Vanilla JS -- no jQuery dependency.
+	document.addEventListener('DOMContentLoaded', function () {
+
+		document.addEventListener('click', function (e) {
+			var link = e.target.closest('a[href*="#"]');
+			if (!link) return;
+
+			var href = link.getAttribute('href');
+			if (!href || href === '#') return;
+
+			var hashIndex = href.indexOf('#');
+			var path = href.substring(0, hashIndex);
+			var hash = href.substring(hashIndex + 1);
+
+			if (!hash) return;
+
+			// Only intercept same-page links
+			var isSamePage = path === '' || path === window.location.pathname || path === window.location.href.split('#')[0];
+			if (!isSamePage) return;
+
+			var target = document.getElementById(hash) || document.querySelector('[name="' + hash + '"]');
+
+			// Section not on this page -- let the browser handle it normally
+			if (!target) return;
+
+			e.preventDefault();
+
+			target.scrollIntoView({
+				behavior: 'smooth',
+				block: 'start'
+			});
+
+			if (history.pushState) {
+				history.pushState(null, '', '#' + hash);
+			} else {
+				window.location.hash = hash;
+			}
+		});
+
+	});
+
 })(window.jQuery);
