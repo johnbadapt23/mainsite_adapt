@@ -57,10 +57,16 @@ section.intro-statement.intro-statement-split {
         display: flex;
         align-items: center;
         background-color: #0A0A0A;
-        padding: 80px 72px;
+        // Left inset matches where .container's left edge actually
+        // falls (container is centred with a $site-max-width cap),
+        // not a flat padding value, so the heading lines up with the
+        // logo/nav above it instead of looking randomly indented.
+        padding: 80px 72px 80px max(20px, calc((100vw - #{$site-max-width}) / 2));
 
         @include responsive(1200) {
-            padding: 64px 40px;
+            padding-top: 64px;
+            padding-bottom: 64px;
+            padding-right: 40px;
         }
 
         @include responsive(767) {
