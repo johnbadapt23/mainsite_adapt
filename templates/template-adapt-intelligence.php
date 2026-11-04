@@ -32,6 +32,17 @@ get_header();
                 <?php get_template_part( 'templates/gtm-components/_cards-dark' ); ?>
             <?php elseif ( get_row_layout() == 'use_case_by_function' ) : ?>
                 <?php get_template_part( 'templates/intelligence-components/_use-case-tabs' ); ?>
+            <?php elseif ( get_row_layout() == 'sticky_text_image_columns' ) : ?>
+                <?php // Reuses the actual Benchmarking "Sticky Text Image
+                // Columns" component as-is (same partial, same fields: Title
+                // Position, Title, Sub Title, Button Position, an optional
+                // Button, and the Sticky Content repeater of
+                // Title/Text/Image/Add Shadow) -- already used on
+                // template-benchmarking.php. Registered as its own layout on
+                // this template's flexible content field (layout_6d8e576f01c521
+                // in acf-json/group_f32c19feddec4.json) rather than imitated
+                // with bespoke CSS, same pattern as the 'cards' layout above. ?>
+                <?php get_template_part( 'templates/benchmark-components/_sticky-cards' ); ?>
             <?php elseif ( get_row_layout() == 'large_testimonial_slider' ) : ?>
                 <?php get_template_part( 'templates/gtm-components/_large-testimonials' ); ?>
             <?php elseif ( get_row_layout() == 'call_to_action_block' ) : ?>
