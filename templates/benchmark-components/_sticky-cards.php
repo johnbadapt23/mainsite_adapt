@@ -6,6 +6,13 @@ function adapt_sticky_card_prompt_list( $text ) {
     // Function tab switcher (same #FDF1F1 background/padding/radius, see
     // _intelligence.scss) rather than running them together as one
     // paragraph.
+    // ACF's own "New Lines" setting for this textarea field already
+    // converts each line break into a literal "<br />" before this
+    // function ever sees the value (ACF's default "br" formatting) --
+    // strip those back out first, otherwise esc_html() below turns them
+    // into visible "<br />" text instead of an actual line break, and
+    // splitting still has to happen on the newline either way.
+    $text  = preg_replace( '/<br\s*\/?>/i', '', $text );
     $lines = preg_split( '/\r\n|\r|\n/', trim( $text ) );
     echo '<div class="text-points">';
     foreach ( $lines as $line ) {
