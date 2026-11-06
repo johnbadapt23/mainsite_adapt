@@ -32,6 +32,53 @@ get_header();
                 // with bespoke CSS, same pattern as the 'cards' and
                 // 'sticky_text_image_columns' layouts above. ?>
                 <?php get_template_part( 'templates/customer-events-components/_three-column-text' ); ?>
+            <?php elseif ( get_row_layout() == 'three_column_cards_benchmark' ) : ?>
+                <?php // Temporary, for layout comparison only: reuses
+                // templates/benchmark-components/_three-column-cards.php as-is
+                // (same partial/fields as its "Three Column Image and Text
+                // Cards" layout on template-benchmarking.php /
+                // template-benchmarks-maturity.php). Image field in each card
+                // is optional (if ($image) guard in the partial) and left
+                // empty for this comparison, per explicit request. ?>
+                <?php get_template_part( 'templates/benchmark-components/_three-column-cards' ); ?>
+            <?php elseif ( get_row_layout() == 'three_column_cards_events' ) : ?>
+                <?php // Temporary, for layout comparison only: reuses
+                // templates/customer-events-components/_three-column-cards.php
+                // as-is (same partial/fields as its "Three Column Image and
+                // Text Cards" layout on template-comparison.php and others).
+                // Image field in each card is optional and left empty. ?>
+                <?php get_template_part( 'templates/customer-events-components/_three-column-cards' ); ?>
+            <?php elseif ( get_row_layout() == 'three_column_icon_and_text_events' ) : ?>
+                <?php // Temporary, for layout comparison only: reuses
+                // templates/customer-events-components/_three-column-icon-text.php
+                // as-is (same partial/fields as its "Three Column Icon and
+                // Text" layout on template-comparison.php and others). Icon
+                // field is optional and left empty. ?>
+                <?php get_template_part( 'templates/customer-events-components/_three-column-icon-text' ); ?>
+            <?php elseif ( get_row_layout() == 'three_column_icon_text_services' ) : ?>
+                <?php // Temporary, for layout comparison only: reuses
+                // templates/services-components/_three-column-icon-text.php
+                // as-is (same partial/fields as its "Three Column Icon Text"
+                // layout on template-services.php / template-market-buyer.php).
+                // Icon field is optional and left empty. ?>
+                <?php get_template_part( 'templates/services-components/_three-column-icon-text' ); ?>
+            <?php elseif ( get_row_layout() == 'three_column_icon_text_subscribe' ) : ?>
+                <?php // Temporary, for layout comparison only: reuses
+                // templates/subscribe-components/_three-column-icon-text.php
+                // as-is (same partial/fields as its "Three Column Icon Text"
+                // layout on template-subscribe.php). Icon field is optional
+                // and left empty. ?>
+                <?php get_template_part( 'templates/subscribe-components/_three-column-icon-text' ); ?>
+            <?php elseif ( get_row_layout() == 'three_column_with_video_gtm' ) : ?>
+                <?php // Temporary, for layout comparison only: reuses
+                // templates/gtm-components/_three-column-with-video.php as-is
+                // (same partial/fields as its "Title, Video and Three Column
+                // Icon and Text" layout on template-gtm.php). Poster
+                // image/video fields are optional (if ($image)/
+                // if (autoplay_video) guards) and left empty for this
+                // comparison, per explicit request -- only the title/
+                // sub_title/column text is filled in. ?>
+                <?php get_template_part( 'templates/gtm-components/_three-column-with-video' ); ?>
             <?php elseif ( get_row_layout() == 'cards' ) : ?>
                 <?php // Reuses the actual GTM "Cards" component as-is (same
                 // partial, same fields: Title, Sub title, a Cards repeater of
