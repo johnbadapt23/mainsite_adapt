@@ -165,18 +165,77 @@ section.intelligence-hero {
         max-width: 1160px;
     }
 
+    // CSS-only monitor frame around the product GIF: a dark bezel
+    // "case" (background + padding on .hero-image itself, same
+    // no-extra-asset approach as .image-column .device-frame on
+    // section.intelligence-use-case above), a soft diagonal glass
+    // glare over the screen area (:before, pointer-events disabled so
+    // it never blocks the GIF), and a simple stand beneath the frame
+    // (:after) so the screenshot reads as content playing inside a
+    // physical display rather than a flat rounded image. Per explicit
+    // request: "style it like the image is playing inside a computer
+    // screen."
     .hero-image {
         display: block;
         width: 100%;
         position: relative;
         z-index: 1;
+        background: linear-gradient(180deg, #2E2E2E 0%, #121212 100%);
+        border-radius: 20px;
+        padding: 18px 18px 52px;
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+
+        @include responsive(767) {
+            padding: 12px 12px 36px;
+            border-radius: 14px;
+        }
 
         img {
             display: block;
             width: 100%;
             height: auto;
-            border-radius: 12px;
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        // Glass glare across the "screen".
+        &:before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            right: 18px;
+            bottom: 52px;
+            z-index: 2;
+            border-radius: 8px;
+            background: linear-gradient(115deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 16%, rgba(255, 255, 255, 0) 36%);
+            pointer-events: none;
+
+            @include responsive(767) {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                bottom: 36px;
+            }
+        }
+
+        // Monitor stand (neck + foot), sitting just below the frame.
+        &:after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -34px;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 34px;
+            z-index: 0;
+            background: linear-gradient(180deg, #1C1C1C 0%, #0A0A0A 100%);
+            clip-path: polygon(44% 0%, 56% 0%, 56% 70%, 100% 70%, 100% 100%, 0% 100%, 0% 70%, 44% 70%);
+
+            @include responsive(767) {
+                display: none;
+            }
         }
     }
 }
