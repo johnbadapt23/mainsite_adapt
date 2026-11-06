@@ -19,6 +19,19 @@ get_header();
                 <?php get_template_part( 'templates/gtm-components/_numbers-map' ); ?>
             <?php elseif ( get_row_layout() == 'pain_vs_promise' ) : ?>
                 <?php get_template_part( 'templates/intelligence-components/_pain-vs-promise' ); ?>
+            <?php elseif ( get_row_layout() == 'three_column_text' ) : ?>
+                <?php // Temporary, for layout comparison only (per explicit
+                // request): reuses the actual "Three Column Text" component
+                // as-is (same partial, same fields: Background Colour,
+                // Title, a Column repeater of Title/Text, and an optional
+                // Button) already used on template-comparison.php,
+                // template-evr.php, template-partnered-research.php and
+                // template-benchmarking.php. Registered as its own layout on
+                // this template's flexible content field (new layout key in
+                // acf-json/group_f32c19feddec4.json) rather than imitated
+                // with bespoke CSS, same pattern as the 'cards' and
+                // 'sticky_text_image_columns' layouts above. ?>
+                <?php get_template_part( 'templates/customer-events-components/_three-column-text' ); ?>
             <?php elseif ( get_row_layout() == 'cards' ) : ?>
                 <?php // Reuses the actual GTM "Cards" component as-is (same
                 // partial, same fields: Title, Sub title, a Cards repeater of
