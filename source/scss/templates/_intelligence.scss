@@ -383,6 +383,37 @@ section.pain-vs-promise {
                     width: 100%;
                     float: none;
                 }
+
+                // Per explicit request: the column's "Text" content (the
+                // prompt examples moved over from the old Sticky Text
+                // Image Columns section, see
+                // adapt_pain_vs_promise_prompt_list() in
+                // templates/intelligence-components/_pain-vs-promise.php)
+                // renders as its own rounded pill per line -- same
+                // #FDF1F1/8px-radius/16-20px-padding treatment as
+                // .prompt-example on section.intelligence-use-case and
+                // .text-point on the old sticky cards section -- instead
+                // of one plain paragraph.
+                .prompt-points {
+                    display: block;
+                    width: 100%;
+                }
+
+                .prompt-point {
+                    display: block;
+                    width: 100%;
+                    background-color: #FDF1F1;
+                    border-radius: 8px;
+                    padding: 16px 20px;
+                    font-size: 17px;
+                    text-align: left;
+                    margin-bottom: 16px;
+                    color: #0A0A0A;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
             }
 
             // Matches the reference component's last-column treatment --
