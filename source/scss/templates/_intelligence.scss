@@ -967,4 +967,32 @@ body.template-adapt-intelligence section.video-module {
         max-width: 100%;
         padding: 0;
     }
+
+    // The shared component's pause/play button (.pause-autoplay) is
+    // only styled inside template-market-buyer.php's own scoped rules
+    // in _market-buyer.scss, so it renders unstyled here. Same
+    // treatment, repeated flat (not nested under .bg-container) since
+    // that's all this page's copy needs.
+    button.pause-autoplay {
+        width: 40px;
+        height: 40px;
+        background-image: url('../images/market-play-pause.svg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        -webkit-appearance: none;
+        appearance: none;
+        cursor: pointer;
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+
+        &.paused {
+            background-image: url('../images/gtm-play.svg');
+        }
+    }
 }
