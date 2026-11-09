@@ -832,8 +832,10 @@ foreach( $theTerms1 as $theTerm ){
                             </div>                       
                         </div>
                     <?php } ?>
+                    <!-- DEBUGMARKER-CONTENTBLOCKS-CHECK:<?php echo have_rows( "content_blocks" ) ? "true" : "false"; ?> -->
                     <?php if ( have_rows( 'content_blocks' ) ): ?>
                         <?php while ( have_rows( 'content_blocks' ) ) : the_row(); ?>
+                        <!-- DEBUGMARKER-ROW-LAYOUT:<?php echo esc_html( get_row_layout() ); ?> -->
                             <?php if ( get_row_layout() == 'article_content' ) : ?>
                                 <?php get_template_part( 'templates/post-components/_post-content' ); ?>
                             <?php elseif ( get_row_layout() == 'background_colour_list' ) : ?>
@@ -851,6 +853,7 @@ foreach( $theTerms1 as $theTerm ){
                             <?php elseif ( get_row_layout() == 'video_block' ) : ?>
                                 <?php get_template_part( 'templates/post-components/_video-block' ); ?>
                             <?php elseif ( get_row_layout() == 'cta_box' ) : ?>
+                                <!-- DEBUGMARKER-CTABOX-SINGLEPOST -->
                                 <?php get_template_part( 'templates/post-components/_cta-box' ); ?>
                             <?php endif; ?>
                         <?php endwhile; ?>
