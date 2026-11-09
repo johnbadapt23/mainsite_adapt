@@ -953,7 +953,18 @@ body.template-adapt-intelligence .benchmarking-sticky-cards {
 // body.template-market-buyer in _market-buyer.scss) -- scoped to this
 // page's body class only, so the Market & Buyer page's own video block
 // section is untouched.
-body.template-adapt-intelligence section.video-module .container {
-    max-width: 100%;
+body.template-adapt-intelligence section.video-module {
+    // Removes the shared component's own top/bottom padding (45px,
+    // 40px on mobile -- see the base `section.video-module` rule in
+    // _events.scss) so this section touches the hero image above and
+    // the next section below instead of leaving a gap, per request.
+    // template-market-buyer.php's own instance already sets its own
+    // padding: 0 directly (see _market-buyer.scss), so this mirrors
+    // that for this page without touching the shared base rule itself.
     padding: 0;
+
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
 }

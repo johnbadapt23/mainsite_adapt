@@ -1,4 +1,4 @@
-<section class="video-module">
+<section class="video-module<?php if ( get_sub_field( 'background_colour' ) ) { ?> <?php echo get_sub_field( 'background_colour' ); ?><?php } ?>">
     <div class="container">
         <div class="image-video-container">
             <div class="video-image-inner">
