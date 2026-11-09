@@ -380,7 +380,15 @@
             "type": "tab",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "==",
+                        "value": "best-practice"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -1552,7 +1560,22 @@
             "type": "tab",
             "instructions": "",
             "required": 0,
-            "conditional_logic": 0,
+            "conditional_logic": [
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "==",
+                        "value": "media"
+                    }
+                ],
+                [
+                    {
+                        "field": "field_635072dc89b42",
+                        "operator": "==",
+                        "value": "press-release"
+                    }
+                ]
+            ],
             "wrapper": {
                 "width": "",
                 "class": "",
@@ -2543,5 +2566,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1794199381
+    "modified": 1794200007
 }
