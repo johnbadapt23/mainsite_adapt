@@ -941,3 +941,19 @@ body.template-adapt-intelligence .benchmarking-sticky-cards {
         }
     }
 }
+
+// The reused "Image or Video Block" component
+// (templates/market-buyer-components/_video-block.php, registered as
+// layout_71a3f1744b3c on this template's flexible content field) keeps
+// its default contained width here -- the sitewide .container max-width
+// + side padding from global/_base.scss, same as every other section.
+// Made edge-to-edge for this page instead, per request, the same way
+// template-market-buyer.php's own copy of this component already goes
+// full width (see .container { max-width: 1920px; padding: 0; } under
+// body.template-market-buyer in _market-buyer.scss) -- scoped to this
+// page's body class only, so the Market & Buyer page's own video block
+// section is untouched.
+body.template-adapt-intelligence section.video-module .container {
+    max-width: 100%;
+    padding: 0;
+}
