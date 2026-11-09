@@ -1,0 +1,78 @@
+[
+  {
+    "name": "title",
+    "label": "Title",
+    "type": "text",
+    "default": "",
+    "required": false,
+    "locked": false,
+    "help_text": "Centered H2 heading above the two-column card."
+  },
+  {
+    "name": "section_id",
+    "label": "Section ID (for anchor links)",
+    "type": "text",
+    "default": "",
+    "required": false,
+    "locked": false,
+    "help_text": "Optional. Sets the section's id attribute so other links on the page can scroll to it with #this-value. Replaces the original ACF 'id' field."
+  },
+  {
+    "name": "list_items",
+    "label": "Column one - list items",
+    "type": "group",
+    "occurrence": {
+      "min": 0,
+      "max": null,
+      "default": 1,
+      "sorting_label_field": "list_text_title"
+    },
+    "children": [
+      {
+        "name": "list_text_title",
+        "label": "Title",
+        "type": "text",
+        "default": "",
+        "required": false,
+        "locked": false
+      },
+      {
+        "name": "list_text",
+        "label": "Text",
+        "type": "text",
+        "default": "",
+        "required": false,
+        "locked": false
+      }
+    ]
+  },
+  {
+    "name": "list_items_column_two",
+    "label": "Column two - list items",
+    "type": "group",
+    "occurrence": {
+      "min": 0,
+      "max": null,
+      "default": 1,
+      "sorting_label_field": "list_text_title"
+    },
+    "children": [
+      {
+        "name": "list_text_title",
+        "label": "Title",
+        "type": "text",
+        "default": "",
+        "required": false,
+        "locked": false
+      },
+      {
+        "name": "list_text",
+        "label": "Text",
+        "type": "text",
+        "default": "",
+        "required": false,
+        "locked": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,128 @@
+[
+  {
+    "name": "heading",
+    "label": "Heading",
+    "type": "text",
+    "default": "One survey, one score, and a clear order of work.",
+    "required": false,
+    "locked": false
+  },
+  {
+    "name": "total_weeks",
+    "label": "Total weeks shown on the ruler",
+    "type": "number",
+    "display": "text",
+    "default": 7,
+    "required": true,
+    "locked": false,
+    "help_text": "How many week columns the timeline ruler shows. Each step below is placed by its own Start week and Duration, so this just needs to be at least as large as the last step's end week."
+  },
+  {
+    "name": "steps",
+    "label": "Steps",
+    "type": "group",
+    "occurrence": {
+      "min": 1,
+      "max": 4,
+      "default": 4,
+      "sorting_label_field": "title"
+    },
+    "help_text": "Up to four, one per colour in the fixed pink-to-red ramp (step 1 lightest, step 4 full red) -- matching the live page's own steps.",
+    "children": [
+      {
+        "name": "start_week",
+        "label": "Start week",
+        "type": "number",
+        "display": "text",
+        "default": 1,
+        "required": true,
+        "locked": false,
+        "help_text": "Which week column this step's bar starts in, e.g. 2 for \"Weeks 2 to 4\"."
+      },
+      {
+        "name": "duration_weeks",
+        "label": "Duration (weeks)",
+        "type": "number",
+        "display": "text",
+        "default": 1,
+        "required": true,
+        "locked": false,
+        "help_text": "How many week columns the bar spans, e.g. 3 for \"Weeks 2 to 4\"."
+      },
+      {
+        "name": "when_label",
+        "label": "\"When\" label",
+        "type": "text",
+        "default": "",
+        "required": false,
+        "locked": false,
+        "help_text": "Shown above the step title, e.g. \"Week 1\" or \"Weeks 2 to 4\"."
+      },
+      {
+        "name": "title",
+        "label": "Title",
+        "type": "text",
+        "default": "",
+        "required": false,
+        "locked": false
+      },
+      {
+        "name": "description",
+        "label": "Description",
+        "type": "text",
+        "default": "",
+        "required": false,
+        "locked": false
+      },
+      {
+        "name": "color_step",
+        "label": "Bar colour",
+        "type": "choice",
+        "display": "select",
+        "choices": [
+          ["1", "1 – lightest"],
+          ["2", "2"],
+          ["3", "3"],
+          ["4", "4 – full red"]
+        ],
+        "default": "1",
+        "required": false,
+        "locked": false
+      }
+    ],
+    "default": [
+      {
+        "start_week": 1,
+        "duration_weeks": 1,
+        "when_label": "Week 1",
+        "title": "Scope",
+        "description": "Agree your objectives, who takes part and when.",
+        "color_step": "1"
+      },
+      {
+        "start_week": 2,
+        "duration_weeks": 3,
+        "when_label": "Weeks 2 to 4",
+        "title": "Survey",
+        "description": "Your people respond in a two to three week window.",
+        "color_step": "2"
+      },
+      {
+        "start_week": 5,
+        "duration_weeks": 2,
+        "when_label": "Weeks 5 to 6",
+        "title": "Analyse",
+        "description": "Scores and themes, with every insight reviewed by an expert.",
+        "color_step": "3"
+      },
+      {
+        "start_week": 7,
+        "duration_weeks": 1,
+        "when_label": "Week 7",
+        "title": "Report and playback",
+        "description": "Your leadership team walks through the results and agrees priorities.",
+        "color_step": "4"
+      }
+    ]
+  }
+]

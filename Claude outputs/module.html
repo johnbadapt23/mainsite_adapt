@@ -1,0 +1,220 @@
+{#
+  Module: Two Column List
+  Original WordPress layout: templates/components/_two-column-list.php
+  Section-level heading above a two-column divider card. Each column is
+  an independent repeater of title + text items. Card sits on a pink
+  section background with a white inner panel, a cut top-left corner,
+  a cut bottom-right corner and a small red square accent at the
+  bottom-left, carried over from the shared `.text-title-list`
+  component this one is chained onto in the theme (see module.css
+  notes below for the exact rule this comes from).
+  Escaping: title and all list item text are rendered with
+  |escape_html since nothing in the original markup suggests inline
+  emphasis (no "bold-red" style class on this component).
+#}
+
+<section class="text-title-list two-column-list background-pink"{% if module.section_id %} id="{{ module.section_id|escape_attr }}"{% endif %}>
+  <div class="container">
+    <div class="text-title-list-container">
+      {% if module.title %}
+        <h2 class="text-black">{{ module.title|escape_html }}</h2>
+      {% endif %}
+      <div class="text-title-list-inner">
+        <div class="list-column column column-one one-half">
+          {% for item in module.list_items %}
+            <span class="list-item text-black labelXLarge">
+              {% if item.list_text_title %}
+                <span class="title">{{ item.list_text_title|escape_html }}</span>
+              {% endif %}
+              {% if item.list_text %}
+                <span class="text">{{ item.list_text|escape_html }}</span>
+              {% endif %}
+            </span>
+          {% endfor %}
+        </div>
+        <div class="list-column column column-two one-half">
+          {% for item in module.list_items_column_two %}
+            <span class="list-item text-black labelXLarge">
+              {% if item.list_text_title %}
+                <span class="title">{{ item.list_text_title|escape_html }}</span>
+              {% endif %}
+              {% if item.list_text %}
+                <span class="text">{{ item.list_text|escape_html }}</span>
+              {% endif %}
+            </span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ==========================================================================
+   module.css — inline here for convenience; move into the module's own
+   CSS tab in the HubSpot design manager. Resolved from
+   source/scss/templates/_position.scss (both the base
+   `section.text-title-list` block and the chained
+   `section.text-title-list.two-column-list` override that this
+   component actually uses) plus the global utility classes
+   `.background-pink`, `.text-black`, `.labelXLarge` and the `h2`
+   defaults, all from source/scss/global/_styles.scss /
+   _variables.scss. No SCSS variables or mixins remain below.
+   ========================================================================== #}
+<style>
+.background-pink {
+    background-color: #FDF1F1;
+    color: #000 !important;
+}
+
+.text-black,
+.text-black p {
+    color: #000;
+}
+
+section.text-title-list {
+    float: none;
+    width: 100%;
+    padding: 88px 0;
+}
+
+@media (max-width: 1023px) {
+    section.text-title-list {
+        padding: 53px 0;
+    }
+}
+
+@media (max-width: 767px) {
+    section.text-title-list {
+        padding: 30px 0;
+    }
+}
+
+section.text-title-list .container {
+    padding: 0;
+}
+
+@media (max-width: 1023px) {
+    section.text-title-list .container {
+        padding: 0 20px;
+    }
+}
+
+section.text-title-list .text-title-list-container {
+    float: none;
+    width: 100%;
+    padding: 100px 0 45px;
+}
+
+@media (max-width: 1023px) {
+    section.text-title-list .text-title-list-container {
+        padding: 74px 0 26px;
+    }
+}
+
+section.text-title-list .text-title-list-container h2 {
+    float: none;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 65px;
+    font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 1.125;
+    color: #000;
+}
+
+@media (max-width: 1023px) {
+    section.text-title-list .text-title-list-container h2 {
+        font-size: 32px !important;
+        line-height: 38px !important;
+    }
+}
+
+/* Card: white panel, cut top-left corner (base component), cut
+   bottom-right corner (two-column variant), red accent square poking
+   out at the bottom-left. */
+section.text-title-list .text-title-list-inner {
+    float: none;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-top-left-radius: 36px;
+    border-bottom-right-radius: 36px;
+    position: relative;
+    display: flex !important;
+    flex-wrap: wrap;
+}
+
+section.text-title-list .text-title-list-inner::after {
+    content: '';
+    width: 40px;
+    height: 40px;
+    background-color: #e7534f;
+    bottom: -50px;
+    left: -50px;
+    position: absolute;
+    display: block;
+}
+
+@media (max-width: 1440px) {
+    section.text-title-list .text-title-list-inner::after {
+        width: 32px;
+        height: 32px;
+        left: 0;
+    }
+}
+
+/* Two equal columns, divider between them. */
+section.text-title-list.two-column-list .list-column {
+    float: none;
+    width: 50%;
+    height: 100%;
+    padding: 72px;
+}
+
+section.text-title-list.two-column-list .list-column:first-child {
+    border-right: 1px solid #000;
+}
+
+@media (max-width: 1200px) {
+    section.text-title-list.two-column-list .list-column {
+        padding: 72px 24px;
+    }
+}
+
+@media (max-width: 1023px) {
+    section.text-title-list.two-column-list .list-column {
+        width: 100%;
+        padding: 48px 24px;
+    }
+
+    section.text-title-list.two-column-list .list-column:first-child {
+        border-right: none;
+        border-bottom: 1px solid #000;
+        padding: 48px 24px;
+    }
+}
+
+/* List item typography. */
+.labelXLarge {
+    float: left;
+    width: 100%;
+    font-size: 20px;
+    font-weight: 500;
+    font-family: 'Helvetica Neue Medium', 'Helvetica', 'Arial', sans-serif;
+    line-height: 24.42px;
+}
+
+section.text-title-list.two-column-list .list-item .title {
+    float: none;
+    width: 100%;
+    font-weight: 500;
+    font-family: 'Helvetica Neue Medium', 'Helvetica', 'Arial', sans-serif;
+}
+
+section.text-title-list.two-column-list .list-item .text {
+    float: none;
+    width: 100%;
+}
+</style>
