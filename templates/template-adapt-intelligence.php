@@ -13,6 +13,20 @@ get_header();
                 <?php get_template_part( 'templates/intelligence-components/_intro-statement' ); ?>
             <?php elseif ( get_row_layout() == 'intelligence_hero' ) : ?>
                 <?php get_template_part( 'templates/intelligence-components/_hero-ask' ); ?>
+            <?php elseif ( get_row_layout() == 'video_block_market_buyer' ) : ?>
+                <?php // Reuses the actual Market & Buyer Intelligence "Image
+                // or Video Block" component as-is (same partial, same
+                // fields: Background Colour, Vimeo Code, Auto Play Video,
+                // Poster Image) -- already used as the full-width video
+                // section on template-market-buyer.php (see
+                // adapt.com.au/market-buyer-intelligence-platform-advantage/'s
+                // 2nd section). Registered as its own layout on this
+                // template's flexible content field (layout_71a3f1744b3c in
+                // acf-json/group_f32c19feddec4.json) rather than imitated
+                // with bespoke CSS, same pattern as the other reused
+                // components above. Placed directly below the hero image
+                // layout per explicit request. ?>
+                <?php get_template_part( 'templates/market-buyer-components/_video-block' ); ?>
             <?php elseif ( get_row_layout() == 'animated_text_with_logos' ) : ?>
                 <?php get_template_part( 'templates/customer-events-components/_animated-text-logos' ); ?>
             <?php elseif ( get_row_layout() == 'map_with_numbers' ) : ?>
