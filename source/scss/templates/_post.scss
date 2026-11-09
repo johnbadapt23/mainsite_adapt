@@ -1424,6 +1424,26 @@ div.post-content-inner.counter-title-text {
     }
 }
 
+// .subscribe-sidebar-form's own base rule (source/scss/templates/
+// _resources-types.scss) floats it left at a fixed 301px width, since
+// that's how it's normally used -- inside .sidebar-container, next to
+// the article text (see .sidebar-container .subscribe-sidebar-form
+// above in this file). Dropped in here instead as its own standalone
+// Content Block (templates/post-components/_cta-box.php), there's no
+// sidebar column or body text for it to sit beside, so it's centred
+// in the content column instead of floated, same card width/styling
+// otherwise unchanged.
+div.post-content-inner.cta-box {
+    text-align: center;
+
+    .subscribe-sidebar-form {
+        float: none;
+        display: inline-block;
+        text-align: left;
+        margin: 0 auto;
+    }
+}
+
 div.related-articles {
     float: left;
     width: 100%;

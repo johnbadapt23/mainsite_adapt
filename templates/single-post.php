@@ -850,6 +850,8 @@ foreach( $theTerms1 as $theTerm ){
                                 <?php get_template_part( 'templates/post-components/_infogram' ); ?>
                             <?php elseif ( get_row_layout() == 'video_block' ) : ?>
                                 <?php get_template_part( 'templates/post-components/_video-block' ); ?>
+                            <?php elseif ( get_row_layout() == 'cta_box' ) : ?>
+                                <?php get_template_part( 'templates/post-components/_cta-box' ); ?>
                             <?php endif; ?>
                         <?php endwhile; ?>
                     <?php else: ?>
