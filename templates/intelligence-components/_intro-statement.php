@@ -19,6 +19,20 @@
 // doesn't actually match.
 $show_image = get_sub_field( 'show_image' );
 $image = $show_image ? get_sub_field( 'image' ) : null;
+
+// Per explicit request: the button can now open a popup form instead
+// of just linking out, copying the exact pattern already used by
+// templates/components/_cta-block.php -- a "Popup Form or Link?"
+// select, an a.form-popup-button trigger pointing at a #formPopup
+// anchor, and a hidden .popupBlockOuter container holding the embed.
+// a.form-popup-button is already bound site-wide to magnificPopup
+// (source/js/main.js), so no new JS is needed here, only the markup.
+// The popup id is suffixed with get_row_index() (unique per flexible
+// content row) rather than cta-block's hardcoded "formPopup", since
+// this layout can in principle repeat on a page and a duplicate id
+// would make every trigger open only the first row's popup.
+$link_type = get_sub_field( 'popup_form_or_link' );
+$popup_id  = 'introStatementFormPopup-' . get_row_index();
 ?>
 <?php if ( $show_image && $image ) { ?>
     <section class="intro-statement intro-statement-split">
@@ -32,9 +46,15 @@ $image = $show_image ? get_sub_field( 'image' ) : null;
                 <?php } ?>
                 <?php if ( get_sub_field( 'button_text' ) ) { ?>
                     <span class="button-container">
-                        <a href="<?php echo get_sub_field( 'button_link' ); ?>" target="<?php echo get_sub_field( 'button_target' ); ?>" class="std-button red-button">
-                            <?php echo get_sub_field( 'button_text' ); ?>
-                        </a>
+                        <?php if ( $link_type == 'popup' ) { ?>
+                            <a href="#<?php echo esc_attr( $popup_id ); ?>" class="std-button red-button form-popup-button">
+                                <?php echo get_sub_field( 'button_text' ); ?>
+                            </a>
+                        <?php } else { ?>
+                            <a href="<?php echo get_sub_field( 'button_link' ); ?>" target="<?php echo get_sub_field( 'button_target' ); ?>" class="std-button red-button">
+                                <?php echo get_sub_field( 'button_text' ); ?>
+                            </a>
+                        <?php } ?>
                     </span>
                 <?php } ?>
             </div>
@@ -58,12 +78,35 @@ $image = $show_image ? get_sub_field( 'image' ) : null;
                 <?php } ?>
                 <?php if ( get_sub_field( 'button_text' ) ) { ?>
                     <span class="button-container">
-                        <a href="<?php echo get_sub_field( 'button_link' ); ?>" target="<?php echo get_sub_field( 'button_target' ); ?>" class="std-button red-button">
-                            <?php echo get_sub_field( 'button_text' ); ?>
-                        </a>
+                        <?php if ( $link_type == 'popup' ) { ?>
+                            <a href="#<?php echo esc_attr( $popup_id ); ?>" class="std-button red-button form-popup-button">
+                                <?php echo get_sub_field( 'button_text' ); ?>
+                            </a>
+                        <?php } else { ?>
+                            <a href="<?php echo get_sub_field( 'button_link' ); ?>" target="<?php echo get_sub_field( 'button_target' ); ?>" class="std-button red-button">
+                                <?php echo get_sub_field( 'button_text' ); ?>
+                            </a>
+                        <?php } ?>
                     </span>
                 <?php } ?>
             </div>
         </div>
     </section>
+<?php } ?>
+
+<?php if ( $link_type == 'popup' && get_sub_field( 'form_embed' ) ) { ?>
+    <div style="display:none;">
+        <div class="popupBlockOuter" id="<?php echo esc_attr( $popup_id ); ?>">
+            <div class="requestFormContainer">
+                <div class="container">
+                    <?php if ( get_sub_field( 'form_title' ) ) { ?>
+                        <h2 class="form-title"><?php echo get_sub_field( 'form_title' ); ?></h2>
+                    <?php } ?>
+                    <div class="form-container">
+                        <?php echo get_sub_field( 'form_embed' ); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php } ?>
