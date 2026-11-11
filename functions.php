@@ -212,14 +212,20 @@ add_action('template_redirect', function() {
 // unnecessarily in that rare case is a much smaller cost than risking a
 // false negative that silently drops a real animation on a live page.
 function adapt_page_needs_lottie() {
-    // template-home.php used to have an unconditional loading-screen
-    // <lottie-player> at the top of the template regardless of ACF content,
-    // which is why this function special-cased it to always return true.
-    // That block was commented out directly in the template (commit
-    // 0c04931, "disalbed lottie animation") -- template-home.php now only
-    // renders a <lottie-player> the same way template-flexible.php does,
-    // through its own content_blocks flexible-content field, so it's
-    // handled by the same table below instead of a hardcoded special case.
+    // template-home.php has an unconditional loading-screen <lottie-player>
+    // at the top of the template, independent of any ACF content_blocks
+    // row -- it was commented out for a while (commit 0c04931, "disalbed
+    // lottie animation"), which is why this function's special case for it
+    // was removed at the same time in favour of just the content_blocks
+    // table below. The markup was restored directly in the template, so
+    // the special case is restored here too -- otherwise the loading
+    // screen's <lottie-player> renders with no JS behind it (the
+    // lottie-player custom element script is never enqueued) and just
+    // sits inert in the DOM instead of animating.
+    if ( is_page_template( 'templates/template-home.php' ) ) {
+        return true;
+    }
+
     // IMPORTANT: this runs on wp_enqueue_scripts, i.e. BEFORE the page
     // template's own body/loop executes -- and every field below
     // ('content_blocks' or 'content') is the SAME field each of these
@@ -234,9 +240,11 @@ function adapt_page_needs_lottie() {
     // an entire flexible-content section from a live page). get_field()
     // returns the raw row array and never touches that shared loop state,
     // so it can't have this side effect.
+    // template-home.php is handled by the early return above (its
+    // unconditional loading-screen <lottie-player>), so it's deliberately
+    // left out of this table now -- it would otherwise never be reached.
     $field_by_template = array(
         'templates/template-flexible.php'      => array( 'content_blocks', array( 'introduction_with_animation', 'values_full_screen_blocks' ) ),
-        'templates/template-home.php'          => array( 'content_blocks', array( 'introduction_with_animation', 'values_full_screen_blocks' ) ),
         'templates/template-gtm.php'           => array( 'content', array( 'stats_card' ) ),
         'templates/template-market-buyer.php'  => array( 'content_blocks', array( 'two_column_animation_and_icons' ) ),
         'templates/template-services.php'      => array( 'content_blocks', array( 'two_column_animation_and_icons' ) ),
