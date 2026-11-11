@@ -1424,6 +1424,36 @@ div.post-content-inner.counter-title-text {
     }
 }
 
+// .subscribe-sidebar-form's own base rule (source/scss/templates/
+// _resources-types.scss) floats it left at a fixed 301px width, since
+// that's how it's normally used -- inside .sidebar-container, next to
+// the article text (see .sidebar-container .subscribe-sidebar-form
+// above in this file). Dropped in here instead as its own standalone
+// Content Block (templates/post-components/_cta-box.php), there's no
+// sidebar column or body text for it to sit beside, so it's left-aligned
+// (not floated) and, per the rule just below, widened to fill the
+// content column instead of keeping that fixed 301px width.
+div.post-content-inner.cta-box {
+    text-align: left;
+
+    .subscribe-sidebar-form {
+        float: none;
+        display: inline-block;
+        text-align: left;
+        margin: 0 auto;
+    }
+}
+
+// Per explicit request: the subscribe card now fills the content column's
+// width (within any .post-content-inner wrapper, not just .cta-box's)
+// rather than keeping the 301px fixed width from its sidebar-context base
+// rule (source/scss/templates/_resources-types.scss), and the standalone
+// CTA Box card itself left-aligns instead of centering.
+.post-content-inner .subscribe-sidebar-form {
+    width: 100%;
+}
+
+
 div.related-articles {
     float: left;
     width: 100%;

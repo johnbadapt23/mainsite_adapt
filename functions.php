@@ -361,11 +361,41 @@ function my_enqueue_scripts() {
         [ 'main-styles' ],
         filemtime(get_template_directory(). '/assets/css/footer.min.css')
     );
+    // Template CSS split (S103): main-nofooter.min.css used to bundle every
+    // page template's CSS into one file, so every page paid for every other
+    // page's styles. _services.scss (48KB source) is the first file moved
+    // out of that bundle into its own template-scoped stylesheet -- verified
+    // via a full selector-set diff (compiled main-nofooter.min.css minus
+    // this file, plus this file's own compiled output, produces exactly the
+    // same selector set the old single bundle did -- zero dropped, zero
+    // added) before this was enqueued.
+    // S104 correction: template-market-buyer.php's own ACF flexible-content
+    // field reuses the exact same templates/services-components/* partials
+    // as template-services.php (_introduction, _two-column-image-text,
+    // _three-column-icon-text, _services-cards, _two-column-switcher,
+    // _background-stats, _services-accordion, _two-column-animation --
+    // confirmed via grep, these are the only two templates that reference
+    // that directory at all). No live market-buyer page currently has one
+    // of those layout blocks enabled, so nothing was actually broken, but
+    // enqueueing on template-services.php alone meant a content editor
+    // enabling one of those blocks on the market-buyer page would silently
+    // ship unstyled markup with no code change to flag it. Loading this
+    // stylesheet on both templates costs the market-buyer page nothing it
+    // doesn't already need if it ever uses one of the shared layouts, and
+    // costs it nothing extra otherwise beyond one small cached file.
+    if ( is_page_template( array( 'template-services.php', 'template-market-buyer.php' ) ) ) {
+        wp_enqueue_style(
+            'template-services-styles',
+            get_template_directory_uri(). '/assets/css/template-services.min.css',
+            [ 'main-styles' ],
+            filemtime(get_template_directory(). '/assets/css/template-services.min.css')
+        );
+    }
     // Loading ~2 CDN scripts on the 60+ templates that never touch GSAP was
     // pure waste -- see adapt_page_needs_gsap().
     if ( adapt_page_needs_gsap() ) {
-        wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/gsap.min.js', array(), null, true);
-        wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.8.0/ScrollTrigger.min.js', array(), null, true);
+        wp_enqueue_script('gsap-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/gsap.min.js', array(), null, true);
+        wp_enqueue_script('scrolltrigger-js', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.15.0/ScrollTrigger.min.js', array(), null, true);
         // ScrollMagic + its GSAP plugin (main.js's fixed-scroller /
         // sticky-slider-cards animations) -- split out of main.min.js into
         // its own bundle 2026-09-15, same reasoning as the gsap-js/
@@ -407,6 +437,7 @@ function my_enqueue_scripts() {
     if ( adapt_page_needs_hubspot_forms_embed() ) {
         wp_enqueue_script('hubspot-forms-embed', 'https://js.hsforms.net/forms/embed/developer/8336221.js', array(), null, true);
     }
+
 
     // Prefills hidden UTM fields on embedded HubSpot forms (.hs-form-html)
     // from the current page's query string, and hides the row once filled.
@@ -477,7 +508,7 @@ function adapt_defer_pagenavi_css( $html, $handle ) {
     // quote character.
     $preload = preg_replace(
         '/rel=([\'"])stylesheet\1/',
-        'rel="preload" as="style" onload="this.onload=null;this.rel=\'stylesheet\'"',
+        'rel="preload" as="style" nonce="' . esc_attr( adapt_csp_nonce() ) . '"',
         $html,
         1
     );
@@ -498,7 +529,7 @@ function adapt_defer_footer_css( $html, $handle ) {
     }
     $preload = preg_replace(
         '/rel=([\'"])stylesheet\1/',
-        'rel="preload" as="style" onload="this.onload=null;this.rel=\'stylesheet\'"',
+        'rel="preload" as="style" nonce="' . esc_attr( adapt_csp_nonce() ) . '"',
         $html,
         1
     );
@@ -508,6 +539,58 @@ function adapt_defer_footer_css( $html, $handle ) {
     return $preload . '<noscript>' . $html . '</noscript>';
 }
 add_filter( 'style_loader_tag', 'adapt_defer_footer_css', 10, 2 );
+
+// Same preload+onload deferred-load technique again (S107), applied to the
+// Cookie Notice plugin's stylesheet (registered handle
+// 'cookie-notice-front' -- confirmed live via the rendered <link
+// id="cookie-notice-front-css">). This one wasn't caught by Lighthouse the
+// way wp-pagenavi was; found it during a general render-blocking-request
+// audit -- it's a small (5.8KB) stylesheet for a cookie-consent banner
+// that isn't part of the page's actual layout: the banner is a
+// fixed-position overlay the plugin's own JS shows after page load
+// regardless, not server-rendered content sitting in the initial flow, so
+// there's nothing for its CSS arriving a few milliseconds late to visibly
+// disrupt. Deliberately NOT doing the same for Download Monitor's
+// 'dlm-frontend' stylesheet (26.9KB) even though it looked like an
+// equally easy target: unlike pagenavi/footer/this cookie banner, its
+// position on a page isn't structurally fixed -- a content editor can
+// place a "download" block anywhere in a page's ACF flexible content,
+// including first, and there's no reliable way to confirm today that no
+// current or future page ever does that. Deferring it could cause a real
+// visible flash on whichever page eventually does, with no code change to
+// flag it -- exactly the failure mode this technique should never risk,
+// so it's left alone.
+function adapt_defer_cookie_notice_css( $html, $handle ) {
+    if ( 'cookie-notice-front' !== $handle ) {
+        return $html;
+    }
+    $preload = preg_replace(
+        '/rel=([\'"])stylesheet\1/',
+        'rel="preload" as="style" nonce="' . esc_attr( adapt_csp_nonce() ) . '"',
+        $html,
+        1
+    );
+    if ( null === $preload || $preload === $html ) {
+        return $html;
+    }
+    return $preload . '<noscript>' . $html . '</noscript>';
+}
+add_filter( 'style_loader_tag', 'adapt_defer_cookie_notice_css', 10, 2 );
+
+// The Cookie Compliance plugin (cookie-compliance.co) shows its consent
+// banner (#cookie-notice) on every page by its own design, including
+// wp-login.php -- confirmed live, nothing in this theme enqueues or
+// renders it there. There's no tracking/marketing content on the login
+// screen to consent to, so hide it there specifically: dequeue its CSS
+// (no point loading a stylesheet for an element we're about to hide) and
+// hide the banner itself with a small inline style scoped to login_head,
+// which only prints on wp-login.php. Doesn't touch the plugin itself or
+// its front-end behaviour anywhere else on the site.
+add_action( 'login_enqueue_scripts', 'adapt_hide_cookie_notice_on_login' );
+function adapt_hide_cookie_notice_on_login() {
+    wp_dequeue_style( 'cookie-notice-front' );
+    echo '<style>#cookie-notice { display: none !important; }</style>';
+}
 
 // WordPress core enqueues wp-block-library CSS (~18KB, render-blocking) on
 // every single page regardless of whether Gutenberg block markup is actually
@@ -868,7 +951,7 @@ function filter_speakers_callback() {
                             <span class="text">
                                 <h2><?php the_title(); ?></h2>
                                 <h3><?php echo get_field('speaker_description'); ?></h3>
-                                <a class="linkedin" href="<?php echo get_field('linked_in_url'); ?>"><img class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-new.svg" alt="LinkedIn" width="28" /></a>
+                                <a class="linkedin" href="<?php echo esc_url( get_field('linked_in_url') ); ?>"><img class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/linkedin-new.svg" alt="LinkedIn" width="28" /></a>
                             </span>
                         </span>
                         <span class="bio-bottom">
@@ -1000,7 +1083,7 @@ function filter_partners_callback() {
                             </span>
                             <span class="text">
                                 <h2><?php the_title(); ?></h2>                                                    
-                                <a class="website" href="<?php echo get_field('website_url'); ?>" target="_blank"><img class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/website.svg" alt="Website" width="28" /></a>
+                                <a class="website" href="<?php echo esc_url( get_field('website_url') ); ?>" target="_blank"><img class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/website.svg" alt="Website" width="28" /></a>
                             </span>
                         </span>
                         <span class="bio-bottom">
@@ -1099,7 +1182,7 @@ function edge_filter_partners_callback() {
                             </span>
                             <span class="text">
                                 <h2><?php the_title(); ?></h2>                                                    
-                                <a class="website" href="<?php echo get_field('website_url'); ?>" target="_blank"><img class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/website.svg" alt="Website" width="28" /></a>
+                                <a class="website" href="<?php echo esc_url( get_field('website_url') ); ?>" target="_blank"><img class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/website.svg" alt="Website" width="28" /></a>
                             </span>
                         </span>
                         <span class="bio-bottom">
@@ -1233,12 +1316,74 @@ add_filter( 'rocket_exclude_defer_js', function( $exclusions ) {
 } );
 
 
-add_filter( 'pre_get_rocket_option_remove_unused_css', function( $value ) {
-    if ( is_front_page() ) {
-        return 0;
-    }
-    return $value;
-} );
+// 2026-09-28: the front-page-only override that forced WP Rocket's "Remove
+// Unused CSS" (RUCSS) off (added 0123758, 2026-08-06, no recorded reason)
+// has been removed so the homepage gets per-page Used CSS like every other
+// page. Lighthouse (mobile, 2026-09-28) showed ~119 KiB of the ~171 KiB
+// main-nofooter.min.css unused on the homepage. The RUCSS safelist in
+// wp-admin (Settings -> WP Rocket -> File Optimization) already covers the
+// JS/interaction-only classes the homepage relies on (home-animation-popup,
+// scrolled-*, menu-open, slick-, mfp-, etc.). If a homepage style goes
+// missing after Used CSS regenerates, add its class to that safelist first;
+// only restore the override below as a last resort:
+//
+// add_filter( 'pre_get_rocket_option_remove_unused_css', function( $value ) {
+//     return is_front_page() ? 0 : $value;
+// } );
+
+// 2026-09-28: this is why the homepage override above originally existed
+// (confirmed by the user). The hero "Join the Community" HubSpot form lives
+// in an inert <template> and is only injected when its Magnific popup
+// opens, so none of its markup exists when WP Rocket crawls the page.
+// RUCSS therefore dropped every HubSpot form rule (.hbspt-form, .hs-form,
+// .hs-form-field, .hs-input, .hs-submit, .hsfc-*, .inputs-list, .actions)
+// and the popup-state Magnific rules (.mfp-content, .mfp-inline-holder,
+// .mfp-hide), and the form rendered unstyled, inline in the hero. The
+// wp-admin safelist entries ("hbspt", "mfp-", ...) were not keeping them:
+// confirmed by diffing the homepage's Used CSS against main-nofooter.min.css.
+// The same popup pattern is used on inner pages (speaker/advisor enquiry
+// forms, download forms), so this applies site-wide. Patterns use WP
+// Rocket's (.*) wildcard syntax; kept in code so staging and production
+// always share the same safelist.
+function adapt_rucss_safelist( $safelist ) {
+	$patterns = array(
+		// HubSpot form embeds (legacy and new "hsfc" renderer).
+		'.hbspt-(.*)',
+		'.hs-(.*)',
+		'.hs_(.*)',
+		'.hsfc-(.*)',
+		'.inputs-list(.*)',
+		'.legal-consent-container(.*)',
+		'.submitted-message(.*)',
+		'.actions',
+		'.field',
+		'.input',
+		// Magnific Popup states only added when a popup opens.
+		'.mfp-(.*)',
+		// Theme popup and post-submit states toggled by JS.
+		'.form-popup(.*)',
+		'.thank-you(.*)',
+		'.submitted',
+		// WP Rocket matches safelist patterns from the START of each
+		// selector (confirmed 2026-09-28: every kept .hsfc-* selector in
+		// the homepage Used CSS began with .hsfc-/.hs-/.hbspt-/.mfp-). The
+		// theme's own form styling is written as descendant selectors, e.g.
+		// "section.text-animation-introduction ... .form-container-inner
+		// .form .hsfc-Step ... input", so the patterns above never matched
+		// them and the hero form still rendered unstyled. These leading
+		// wildcards keep any selector that contains the class anywhere.
+		'(.*).hsfc-(.*)',
+		'(.*).hs-(.*)',
+		'(.*).hs_(.*)',
+		'(.*).hbspt-(.*)',
+		'(.*).mfp-(.*)',
+		'(.*).form-container-inner(.*)',
+		'(.*).form-popup(.*)',
+	);
+
+	return array_values( array_unique( array_merge( (array) $safelist, $patterns ) ) );
+}
+add_filter( 'rocket_rucss_safelist', 'adapt_rucss_safelist' );
 
 
 add_filter('wpseo_use_page_analysis', '__return_false');
@@ -1452,4 +1597,286 @@ function my_theme_apto_taxonomy_scoped_orderby( $new_orderby, $orderby, $query )
     return $new_orderby;
 }
 
+// SECURITY/SEO 2026-09-23: two low-risk fixes from a full accessibility/
+// SEO/security/performance audit pass (see SESSION-HANDOFF.md §72 for the
+// full findings list -- most items were either already fine or flagged for
+// the user rather than acted on; these were unambiguous and safe). A third
+// fix from the same pass, a skip-to-content link, lives in header.php since
+// it's markup, not a header hook.
+
+// 1) Baseline security response headers that were entirely absent from the
+//    live response (confirmed by direct header inspection on staging).
+//    Both are standard, non-breaking headers with no known compatibility
+//    risk for this theme: X-Content-Type-Options stops browsers from
+//    MIME-sniffing a response into an unintended content type, and
+//    X-Frame-Options stops this site being framed by another origin
+//    (clickjacking) -- confirmed nothing in this theme relies on being
+//    embedded via iframe on another domain. Deliberately NOT adding a
+//    Content-Security-Policy here: correctly allowlisting cdnjs, unpkg,
+//    js.hsforms.net, googletagmanager, and every inline script this theme
+//    already relies on is a much bigger, higher-risk change that needs
+//    deliberate design and testing, not a drive-by addition alongside
+//    these two.
+function adapt_security_headers() {
+    header( 'X-Content-Type-Options: nosniff' );
+    header( 'X-Frame-Options: SAMEORIGIN' );
+}
+add_action( 'send_headers', 'adapt_security_headers' );
+
+// 2) Force noindex on the staging host only. Confirmed staging.adapt.com.au
+//    is publicly reachable with no authentication and was serving
+//    "index, follow" (Yoast's default) with no X-Robots-Tag at all -- while
+//    a separate, real production site already exists and is correctly
+//    indexed at adapt.com.au. That's a live duplicate-content risk: search
+//    engines can crawl and index staging pages that compete with the
+//    production ones. The X-Robots-Tag header is the standard way to
+//    control indexing without touching Yoast's own meta-tag output (avoids
+//    ending up with two conflicting <meta name="robots"> tags on the page).
+//    Scoped strictly to a "staging." hostname prefix, so this can never
+//    affect production even though the same theme code deploys to both.
+function adapt_noindex_staging_header() {
+    if ( isset( $_SERVER['HTTP_HOST'] ) && 0 === strpos( $_SERVER['HTTP_HOST'], 'staging.' ) ) {
+        header( 'X-Robots-Tag: noindex, nofollow' );
+    }
+}
+add_action( 'send_headers', 'adapt_noindex_staging_header' );
+
+// SECURITY 2026-09-23 (follow-up to §74): per-request CSP nonce, shared
+// between the header sent on 'send_headers' (adapt_csp_header,
+// below) and any markup rendered later in the same request that needs to
+// echo the same value into a nonce="..." attribute (the script_loader_tag
+// filter immediately below, and the raw <script> tags in header.php).
+// Generated once per request via a static var so every caller gets the
+// identical nonce; base64(16 random bytes) matches the CSP nonce-source
+// grammar (base64-value characters only) with 128 bits of entropy.
+function adapt_csp_nonce() {
+    static $nonce = null;
+    if ( null === $nonce ) {
+        $nonce = base64_encode( random_bytes( 16 ) );
+    }
+    return $nonce;
+}
+
+// Adds the shared nonce to every script tag WordPress renders for a
+// wp_enqueue_script()-registered handle (gsap-js, scrolltrigger-js,
+// scrollmagic-js, lottie-player, lottie-interactivity,
+// hubspot-forms-embed, utm-form-fields, main-js). Raw <script> tags that
+// bypass the enqueue system entirely (GTM bootstrap, gtag.js, HubSpot's
+// hs-script-loader in header.php) are NOT covered by this filter and are
+// nonced by hand at their own tags instead. Guards against double-adding
+// a nonce in case a handle's tag already carries one.
+function adapt_add_nonce_to_enqueued_scripts( $tag, $handle ) {
+    if ( false === strpos( $tag, ' nonce=' ) ) {
+        $tag = str_replace( '<script ', '<script nonce="' . esc_attr( adapt_csp_nonce() ) . '" ', $tag );
+    }
+    return $tag;
+}
+add_filter( 'script_loader_tag', 'adapt_add_nonce_to_enqueued_scripts', 10, 2 );
+
+// SECURITY 2026-09-23 (follow-up to S75/S80, closing the known
+// wp_localize_script gap documented since S75): the filter above only
+// covers <script src="..."> tags WordPress renders for
+// wp_enqueue_script()-registered handles. wp_localize_script('main-js',
+// 'ajaxobject', ...) instead prints a separate INLINE <script
+// id="main-js-js-extra"> tag (the localized data itself), via a
+// different WordPress core code path (WP_Scripts::print_extra_script()
+// -> wp_print_inline_script_tag(), added in WP 5.7) that
+// script_loader_tag never touches -- so that one tag has been shipping
+// without a nonce since S75, a real (if narrow -- WordPress-generated,
+// not attacker-influenced) gap in the CSP Report-Only script-src
+// coverage. wp_inline_script_attributes is core's dedicated filter for
+// exactly this: it fires for every inline <script> WordPress prints via
+// the modern API, main-js's ajaxobject data included, with $id carrying
+// the "{handle}-js-extra" identifier.
+function adapt_add_nonce_to_inline_scripts( $attributes, $id ) {
+    if ( ! isset( $attributes['nonce'] ) ) {
+        $attributes['nonce'] = adapt_csp_nonce();
+    }
+    return $attributes;
+}
+add_filter( 'wp_inline_script_attributes', 'adapt_add_nonce_to_inline_scripts', 10, 2 );
+
+// SECURITY 2026-09-23 (follow-up to §72): Content-Security-Policy in
+// REPORT-ONLY mode. Deliberately not enforcing -- the Report-Only variant
+// of this header never blocks anything, it only logs violations to the
+// browser console (and to a reporting endpoint, if one is configured,
+// which this doesn't set up yet). This exists purely to observe, over a
+// real period of staging/production traffic, whether the allowlist below
+// is actually complete before anyone considers switching to an enforcing
+// policy.
+//
+// Origins below are everything found by grepping this theme's own PHP for
+// external script/iframe/style URLs (cdnjs, unpkg, HubSpot forms/tracking,
+// GTM, Vimeo, formcrafts). Two things this grep can't see, which is
+// exactly why this stays Report-Only rather than enforcing: (1) ACF fields
+// like 'formcrafts_code' let a content editor paste arbitrary third-party
+// embed HTML/JS from wp-admin -- there is no way to enumerate every origin
+// that could ever appear there from the theme code alone; (2) this theme
+// uses inline <script>/<style> blocks throughout (GTM's own snippet,
+// event handlers, the skip-link style added in §72), so 'unsafe-inline'
+// is included for both directives below rather than attempting a nonce/
+// hash-based policy blind.
+// SECURITY 2026-09-24 (CSP enforcement prep, S91 -> widened here after
+// live testing): S91 originally scoped this buffer to wp_head/wp_footer
+// only, on the theory that the only non-enqueued script-src gaps were
+// plugin-printed tags (cookie-notice, download-monitor) and that the main
+// content loop's ACF-echoed embed fields (e.g. 'formcrafts_code') were too
+// numerous and free-form to safely regex.
+//
+// Live testing after S91 found a concrete un-nonced <script> from
+// templates/subscribe-components/_two-column-subscribe.php's
+// get_sub_field('form_embed') -- a raw HubSpot embed snippet an editor
+// pasted into wp-admin, region-specific host (js-ap1.hsforms.net) and all,
+// rendered from page content at request time. Grepping for every similarly
+// unescaped raw-HTML ACF echo across the theme (form_embed, form_code,
+// hubspot_embed, hubspot_embed_code, speaker_form_script, formcrafts_code,
+// registration_form_embed, and ~35 more differently-named fields) turned up
+// the same pattern in nearly every major template file -- not one isolated
+// gap but a sitewide one, impossible to close field-by-field (new ones can
+// be added by any content editor at any time).
+//
+// So: widened from wp_head/wp_footer to the entire page response --
+// buffering from as early as template_redirect (before any theme output
+// starts) through shutdown (the last action WordPress fires, after
+// wp_footer/admin-bar/everything) -- and running the same nonce-injection
+// regex over the whole thing. This is the only tractable way to close this
+// class of gap given how many distinct ACF fields it spans. Trade-off
+// accepted deliberately: the regex can't distinguish a real <script> tag
+// from the literal text "<script" appearing inside a JS string or JSON
+// value elsewhere in the page; that's a known, small, and standard risk for
+// this technique (the same one WordPress CSP-nonce plugins take on), judged
+// acceptable against the alternative of ~40 individual, drift-prone
+// per-field patches.
+// SECURITY 2026-09-24 (S92 fix): the first version of this (manual
+// ob_start() on template_redirect, manual ob_get_clean() on shutdown at
+// PHP_INT_MAX) shipped and deployed but, live-checked, never actually
+// modified anything -- the original un-nonced HTML was passing straight
+// through untouched. Root cause: that approach assumes MY 'shutdown'
+// callback is the one that ends up popping MY buffer off PHP's output-
+// buffer stack, which depends on hook-priority ordering against whatever
+// else on the site also touches output buffering (a caching or
+// minification plugin doing its own full-page buffering is the likely
+// culprit, though it can't be confirmed without access to what else is
+// active) -- if anything else's shutdown-hooked code calls
+// ob_get_clean()/ob_end_flush() on the stack before this theme's handler
+// runs, it pops this buffer's raw content without ever invoking the nonce
+// regex, and this handler's own ob_get_clean() afterward just gets back
+// `false` (no buffer left), which the old code silently treated as a
+// no-op. Exactly what was observed live.
+//
+// Fixed by using PHP's callback form of ob_start() instead of manually
+// pairing start/end hooks: ob_start( $callback ) attaches the callback TO
+// the buffer itself, so it fires automatically whenever that buffer is
+// flushed by ANYONE -- WordPress core's own end-of-request
+// wp_ob_end_flush_all() (hooked to 'shutdown' specifically to flush any
+// buffer a theme/plugin left open), another plugin's ob_end_flush(), or
+// this buffer's own natural end -- removing the dependency on hook-
+// priority ordering against code this repo has no visibility into.
+// PERFORMANCE (S138): Download Monitor enqueues its 26KB frontend stylesheet
+// (handle 'dlm-frontend') as render-blocking CSS on every page. S107 left it
+// alone because a download block can sit anywhere in ACF flexible content.
+// This handles that concern exactly: every selector in that file was checked
+// and each one requires a dlm class or ID (.dlm-*, #dlm_login_form,
+// #dlm-no-access-modal) to match anything. So the stylesheet is removed only
+// when the final page markup, ignoring <script> and <link> tags, contains no
+// "dlm" at all. On any page that does render Download Monitor markup, the
+// stylesheet stays exactly as before. Pages without it cannot change visually.
+function adapt_strip_unused_dlm_css( $html ) {
+    if ( false === strpos( $html, "id='dlm-frontend-css'" ) ) {
+        return $html;
+    }
+    $markup = preg_replace( array( '#<script\b[^>]*>.*?</script>#is', '#<link\b[^>]*>#i' ), '', $html );
+    if ( null === $markup || false !== stripos( $markup, 'dlm' ) ) {
+        return $html;
+    }
+    $stripped = preg_replace( "#<link\b[^>]*\bid='dlm-frontend-css'[^>]*>\s*#i", '', $html, 1 );
+    return ( null === $stripped ) ? $html : $stripped;
+}
+
+function adapt_start_script_nonce_buffer() {
+    ob_start( 'adapt_apply_script_nonce_buffer' );
+}
+function adapt_apply_script_nonce_buffer( $html ) {
+    if ( '' === $html ) {
+        return $html;
+    }
+    $html  = adapt_strip_unused_dlm_css( $html );
+    $nonce = esc_attr( adapt_csp_nonce() );
+    return preg_replace_callback(
+        '/<script(?![^>]*\bnonce=)([^>]*)>/i',
+        function ( $matches ) use ( $nonce ) {
+            return '<script nonce="' . $nonce . '"' . $matches[1] . '>';
+        },
+        $html
+    );
+}
+add_action( 'template_redirect', 'adapt_start_script_nonce_buffer', 0 );
+
+// SECURITY 2026-09-24 (S95 -- switching to ENFORCING): after S90-S94's
+// investigation and live verification -- frame-src (app.formcrafts.com),
+// connect-src (g.clarity.ms), and the full-page script-src nonce buffer
+// (S91 through S93, S93 being the version that actually works, confirmed
+// live in S94 on two different template types with no corruption found,
+// including a direct JSON-LD parse check) -- switching this header from
+// Content-Security-Policy-Report-Only to the enforcing
+// Content-Security-Policy. This is a real behavior change: browsers that
+// honor this header will now actually block anything that doesn't match
+// the policy below, not just log it.
+//
+// Known, deliberately accepted residual risk, not closed by this work and
+// not closeable from this repo: (1) plugin-injected inline scripts that
+// live nowhere in this theme (HubSpot's own dataLayer bootstrap, Facebook
+// Pixel base code, and similar -- documented in S90); (2) the nonce-buffer
+// regex (below, adapt_apply_script_nonce_buffer) can't distinguish a real
+// <script> tag from the literal text "<script" inside a JS string or JSON
+// value elsewhere on some page nobody has specifically checked -- reduced,
+// not eliminated, by the live checks in S94. If either of these ever
+// surfaces as real breakage, the fastest safe rollback is reverting this
+// header back to Content-Security-Policy-Report-Only (one-line change),
+// which immediately stops blocking anything while this gets investigated.
+function adapt_csp_header() {
+    // S123 fix -- this header was firing on every request via send_headers,
+    // including /wp-admin/ and /wp-login.php, but adapt_apply_script_nonce_buffer
+    // (the thing that adds the matching nonce= to <script> tags so this
+    // policy's strict-dynamic/nonce requirement doesn't just block them) only
+    // runs on template_redirect, a front-end-only hook. Confirmed live: this
+    // was silently blocking wp-admin's own scripts (Query Monitor's JS, and
+    // almost certainly whatever inline script WordPress core or a plugin
+    // outputs on wp-login.php for autofocus/layout), with no protective
+    // benefit there since this policy was only ever designed and verified
+    // against this theme's own front-end template output (S90-S95). Scoping
+    // it to the front end only, same as the nonce buffer already is.
+    if ( is_admin() || 'wp-login.php' === $GLOBALS['pagenow'] ) {
+        return;
+    }
+
+    // SECURITY 2026-11-04 (CSP fix): live-checked on the adapt-intelligence
+    // #bookdemo HubSpot form embed and found three gaps the S90-S95 allowlist
+    // missed, all confirmed via actual browser console CSP violations rather
+    // than guessed from the theme's own source -- that grep-based method
+    // can't see what HubSpot's own hosted form JS pulls in at runtime once
+    // it's loaded:
+    // (1) connect-src was missing formcrafts.com itself (only script-src and
+    //     frame-src had it) -- the embed's own JS fetches its sourcemap
+    //     (embed.js.map) via XHR/fetch, which is a connect-src check, not
+    //     script-src.
+    // (2) connect-src was missing static.hsappstatic.net -- HubSpot's ads
+    //     pixel script loader (loaded from an already-allowed HubSpot host)
+    //     fetches its own sourcemap from this separate static asset host.
+    // (3) frame-src was missing forms-ap1.hsforms.com -- the AP1-region
+    //     HubSpot form embed renders inside an iframe from this host
+    //     (distinct from forms.hsforms.com, which was already allowed
+    //     nowhere in frame-src either, and is also added here since any
+    //     non-AP1-region form embed would hit the same gap).
+    $csp = "default-src 'self'; "
+        . "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'strict-dynamic' 'nonce-" . adapt_csp_nonce() . "' https://cdnjs.cloudflare.com https://unpkg.com https://js.hsforms.net https://js.hs-scripts.com https://www.googletagmanager.com https://formcrafts.com; "
+        . "style-src 'self' 'unsafe-inline'; "
+        . "img-src 'self' data: https:; "
+        . "font-src 'self' data: https://fonts.gstatic.com; "
+        . "media-src 'self' https://player.vimeo.com https://*.vimeocdn.com; "
+        . "frame-src 'self' https://player.vimeo.com https://vimeo.com https://formcrafts.com https://app.formcrafts.com https://www.googletagmanager.com https://forms-ap1.hsforms.com https://forms.hsforms.com; "
+        . "connect-src 'self' https://js.hsforms.net https://forms.hsforms.com https://forms-ap1.hsforms.com https://formcrafts.com https://static.hsappstatic.net https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://analytics.google.com https://www.google-analytics.com https://px.ads.linkedin.com https://pixel-config.reddit.com https://alb.reddit.com https://*.clarity.ms https://content.hotjar.io https://vc.hotjar.io https://metrics.hotjar.io wss://ws.hotjar.com https://api-ap1.hubapi.com https://cta-ap1.hubspot.com https://forms-ap1.hscollectedforms.net;";
+    header( "Content-Security-Policy: {$csp}" );
+}
+add_action( 'send_headers', 'adapt_csp_header' );
 ?>

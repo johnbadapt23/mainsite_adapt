@@ -516,7 +516,7 @@ section.webinar-article {
                             float: left;
                             width: 100%;
                             padding-top: 0px;
-                            margin-top: 25px;
+                            margin-top: 50px;
                             position: relative;
                             background-color: #fff;
                             -webkit-box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.12);
@@ -1723,6 +1723,18 @@ section.webinar-article {
     }
 }
 
+// Force full-width stacking and flex layout for the speaker-popup
+// trigger link specifically (the nested .speaker rule above floats
+// it at 50% two-up, and .speaker-container-inner only flexes when
+// the .flex-container modifier class is present).
+.webinar-article a.speaker-popup .speaker {
+    width: 100% !important;
+}
+
+.webinar-article a.speaker-popup .speaker-container-inner {
+    display: flex !important;
+}
+
 section.topicBanner.webinarBanner {
     .container {
         .column {
@@ -1777,6 +1789,13 @@ section.topicBanner.webinarBanner {
             background-color: rgba(0,0,0,0.5);
         }
     }
+}
+
+// Keep the tag visible as inline-block regardless of the
+// float-grid-conversion override generated elsewhere in this file
+// from the nested .roundtable rule above.
+.topicBanner span.roundtable {
+    display: inline-block !important;
 }
 
 section.registration-agenda-block {
@@ -4198,6 +4217,14 @@ section.registration-agenda-block.registration-agenda-block .container.container
     section.webinar-register-form.webinar-register-form .container.container .column.column.second-column.second-column.right-column.right-column {
         float: none;
     }
+
+// Stretch the right column to match the first column's flex-row height,
+// scoped to webinar-article only (not the other 5 section roots sharing
+// the float-none conversion above -- the user asked for this section
+// specifically).
+.webinar-article .container .column.right-column {
+    align-self: stretch;
+}
 
 @media only screen and (max-width: 767px) {
         section.registration-agenda-block.registration-agenda-block .container.container .column.column.second-column.second-column.right-column.right-column,

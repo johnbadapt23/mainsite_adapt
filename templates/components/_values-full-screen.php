@@ -28,7 +28,7 @@ if (is_array($locations)) {
                                             <lottie-player loop speed="1" id="<?php echo $animation_id; ?>" src="<?php echo $animation_json['url']; ?>" background="transparent" style="width: 100%; height: auto"></lottie-player>
                                         </span>
                                     </span>
-                                    <script>
+                                    <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                                         LottieInteractivity.create({
                                             player:'#<?php echo $animation_id; ?>',
                                             mode:"scroll",

@@ -3,7 +3,7 @@ main.thank-you.registration {
 }
 
 section.thank-you-banner.resources-banner {
-    float: left;
+    float: none;
     width: 100%;
     position: relative;
     padding: 110px 0;
@@ -55,6 +55,7 @@ section.thank-you-banner.resources-banner {
     }
 
     .container {
+        display: flex;
         .column {
             &.image-column {
                 padding-left: 0px;
@@ -68,7 +69,7 @@ section.thank-you-banner.resources-banner {
                     width: 100%;
                     padding-top: 58.75%;
                     position: relative;
-                    float: left;
+                    float: none;
                     border-radius: 10px;
                     -webkit-box-shadow: 0px 15px 40px 0px rgba(0,0,0,0.26);
                     -moz-box-shadow: 0px 15px 40px 0px rgba(0,0,0,0.26);
@@ -118,7 +119,7 @@ section.thank-you-banner.resources-banner {
                 }
 
                 .text-inner {
-                    float: left;
+                    float: none;
                     width: 100%;
                     max-width: 415px;
 
@@ -135,7 +136,7 @@ section.thank-you-banner.resources-banner {
                     text-transform: none;
                     font-weight: bold;
                     margin-bottom: 50px;
-                    float: left;
+                    float: none;
                     width: 100%;
 
                     @include responsive(1023) {
@@ -149,7 +150,7 @@ section.thank-you-banner.resources-banner {
                 }
 
                 .text-details-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     max-width: 350px;
                     text-align: left;
@@ -170,7 +171,7 @@ section.thank-you-banner.resources-banner {
                         color: #000;
                         font-weight: bold;
                         margin-bottom: 10px;
-                        float: left;
+                        float: none;
                         width: 100%;
 
                         @include responsive(767) {
@@ -180,7 +181,7 @@ section.thank-you-banner.resources-banner {
                     }
 
                     .date {
-                        float: left;
+                        float: none;
                         width: 100%;
                         font-family: $font-base;
                         font-size: 14px;
@@ -190,12 +191,12 @@ section.thank-you-banner.resources-banner {
                 }
 
                 .button-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-top: 20px;
 
                     .std-button {
-                        float: left;
+                        float: none; display: inline-block;
                         margin-right: 20px;
                         margin-top: 20px;
 
@@ -275,12 +276,18 @@ section.resources-content {
     }
 
     .container {
+        display: flex;
+        flex-direction: row-reverse;
+
+        @include responsive(767) {
+            flex-direction: column;
+        }
         strong {
             font-weight: 700;
         }
 
         .column {
-            float: left;
+            float: none;
 
             &.first-column {
                 width: calc(100% - 400px);
@@ -317,27 +324,28 @@ section.resources-content {
                 }
 
                 &.right-column {
-                    float: right;
+                    float: none;
 
                     @include responsive(767) {
-                        float: left;
+                        float: none;
                     }
                 }
 
                 .speaker {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 20px;
 
                     .authorSingle {
-                        float: left;
+                        display: flex;
+                        float: none;
                         width: 100%;
                         margin-right: 0px;
                         margin-bottom: 20px;
                     }
 
                     .authorImage {
-                        float: left;
+                        float: none;
                         width: 65px;
                         height: 70px;
                         border-radius: 3px;
@@ -348,7 +356,7 @@ section.resources-content {
                     }
 
                     .authorText {
-                        float: left;
+                        float: none;
                         padding-top: 15px;
                         margin-bottom: 0px;
                         width: calc(100% - 92px);
@@ -359,7 +367,7 @@ section.resources-content {
                         }
 
                         .authorName {
-                            float: left;
+                            float: none;
                             clear: both;
                             font-family: $font-base;
                             font-weight: bold;
@@ -373,7 +381,7 @@ section.resources-content {
                         }
 
                         .authorDescription {
-                            float: left;
+                            float: none;
                             clear: both;
                             font-family: $font-base;
                             font-size: 12px;
@@ -425,7 +433,7 @@ section.resources-content {
             font-size: 20px;
             line-height: 1.4;
             font-weight: 700;
-            float: left;
+            float: none;
             width: 100%;
             margin-bottom: 40px;
 
@@ -437,7 +445,7 @@ section.resources-content {
 }
 
 section.download-block.resources-block {
-    float: left;
+    float: none;
     background-color: #fafafa;
     padding: 80px 0;
     color: #000;
@@ -448,7 +456,7 @@ section.download-block.resources-block {
 
     .container {
         .download-block-title {
-            float: left;
+            float: none;
             width: 100%;
             margin-bottom: 50px;
             color: #000;
@@ -468,7 +476,7 @@ section.download-block.resources-block {
         }
 
         .resources-container {
-            float: left;
+            float: none;
             width: 100%;
             color: #000;
 
@@ -486,9 +494,10 @@ section.download-block.resources-block {
             }
 
             &.two-column {
+                display: flex;
                 .column {
                     width: 50%;
-                    float: left;
+                    float: none;
 
                     &:first-child {
                         padding-right: 50px;
@@ -520,7 +529,7 @@ section.download-block.resources-block {
             }
 
             .resources-image-container {
-                float: left;
+                float: none;
                 width: 100%;
                 padding-top: 57%;
                 margin-bottom: 15px;
@@ -611,13 +620,13 @@ section.download-block.resources-block {
                 font-weight: 500;
                 font-family: $font-medium;
                 line-height: 28px;
-                float: left;
+                float: none;
                 width: 100%;
                 margin-bottom: 10px;
             }
 
             span.type {
-                float: left;
+                float: none;
                 width: 100%;
                 font-family: $font-base;
                 font-weight: bold;
@@ -717,36 +726,36 @@ section.download-block.resources-block {
             .container {
                 background-color: #fff;
                 padding: 70px;
-                float: left;
+                float: none;
 
                 @media (max-width: 1023px) {
                     padding: 50px 30px;
                 }
 
                 .resources-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     display: flex;
 
                     @media (max-width: 1023px) {
-                        display: block;
+                        flex-direction: column;
                     }
                 }
 
                 .preview-container {
                     width: calc(100% - 260px);
-                    float: left;
+                    float: none;
                     padding-right: 48px;
 
                     @media (max-width: 1023px) {
                         width: 100%;
-                        float: left;
+                        float: none;
                         padding-right: 0px;
                     }
 
                     .download-image-container {
                         width: 100%;
-                        float: left;
+                        float: none;
 
                         .resources-image-container {
                             position: relative;
@@ -758,7 +767,7 @@ section.download-block.resources-block {
 
                 .download-container {
                     width: 260px;
-                    float: right;
+                    float: none;
                     background-color: #fff;
                     padding: 0px;
                     text-align: left;
@@ -766,12 +775,12 @@ section.download-block.resources-block {
 
                     @media (max-width: 1023px) {
                         width: 100%;
-                        float: left;
+                        float: none;
                         margin-top: 30px;
                     }
 
                     .download-title {
-                        float: left;
+                        float: none;
                         width: 100%;
                         text-align: left;
                         font-family: $font-base;
@@ -792,7 +801,7 @@ section.download-block.resources-block {
                     }
 
                     .downloads {
-                        float: left;
+                        float: none;
                         width: 100%;
                         position: absolute;
                         bottom: 0px;
@@ -807,11 +816,11 @@ section.download-block.resources-block {
                             width: 120px;
                             height: 52px;
                             display: none;
-                            float: left;
+                            float: none; display: inline-block;
                             margin-right: 10px;
 
                             @media (max-width: 1023px) {
-                                float: right;
+                                float: none;
                                 width: calc(50% - 10px);
                                 margin-right: 0px;
                                 margin-left: 10px;
@@ -827,7 +836,7 @@ section.download-block.resources-block {
                             height: 52px;
                             line-height: 52px;
                             margin-bottom: 10px;
-                            float: left;
+                            float: none;
                             padding: 0;
                             font-family: $font-medium;
                             font-weight: 500;
@@ -838,7 +847,7 @@ section.download-block.resources-block {
                             position: relative;
                             height: 52px;
                             width: 130px;
-                            float: left;
+                            float: none; display: inline-block;
 
                             @media (max-width: 1023px) {
                                 width: 50%;
@@ -874,7 +883,7 @@ section.download-block.resources-block {
                             }
 
                             li {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 list-style: none;
                                 display: none;
@@ -885,7 +894,7 @@ section.download-block.resources-block {
                                     line-height: 50px;
                                     font-size: 14px;
                                     color: #000;
-                                    float: left;
+                                    float: none;
                                     width: 100%;
                                     padding: 0px 13px;
                                 }
@@ -893,7 +902,7 @@ section.download-block.resources-block {
                                 span.download-switch-span {
                                     line-height: 50px;
                                     padding: 0px 13px;
-                                    float: left;
+                                    float: none;
                                     width: 100%;
                                     font-size: 14px;
                                     color: #000;
@@ -963,7 +972,7 @@ section.download-block.resources-block {
 }
 
 section.resources-cta-block {
-    float: left;
+    float: none;
     width: 100%;
     background-color: $color-background-black;
     padding: 90px 0 0;
@@ -975,6 +984,7 @@ section.resources-cta-block {
 
     .container {
         .cta-content {
+            display: flex;
             .column.text-column {
                 padding-top: 20px;
 
@@ -985,7 +995,7 @@ section.resources-cta-block {
                 }
 
                 .cta-title {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: left;
                     padding-right: 100px;
@@ -1016,7 +1026,7 @@ section.resources-cta-block {
                 }
 
                 .text {
-                    float: left;
+                    float: none;
                     width: 100%;
                     max-width: 350px;
                     margin-bottom: 20px;
@@ -1043,7 +1053,7 @@ section.resources-cta-block {
                 }
 
                 .button-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     text-align: left;
                     margin-top: 20px;
@@ -1063,18 +1073,18 @@ section.resources-cta-block {
                 }
 
                 .main-image-container {
-                    float: left;
+                    float: none;
                     width: calc(100% + 150px);
                     margin-right: -150px;
 
                     @include responsive(1023) {
-                        float: right;
+                        margin-left: auto;
                         width: calc(100% + 100px);
                         margin-bottom: -80px;
                     }
 
                     img {
-                        float: left;
+                        float: none;
                         width: 100%;
                         -webkit-box-shadow: 0px 15px 15px 0px rgba(0,0,0,0.1);
                         -moz-box-shadow: 0px 15px 15px 0px rgba(0,0,0,0.1);
@@ -1099,7 +1109,7 @@ section.resources-cta-block {
                     }
 
                     img {
-                        float: left;
+                        float: none;
                         width: 100%;
                         -webkit-box-shadow: 0px 10px 15px 5px rgba(0,0,0,0.1);
                         -moz-box-shadow: 0px 10px 15px 5px rgba(0,0,0,0.1);
@@ -1126,508 +1136,3 @@ body.template-resources {
         }
     }
 }
-
-
-// =====================================================================
-// Float -> Flexbox modernization pass, folded in from the formerly
-// ?dev=true-gated source/scss/sections/_dev-float-refactor.scss
-// (deleted; gate mechanism removed from functions.php) on 2026-09-14.
-// Pixel-parity verified against the gated build before this merge --
-// see SESSION-HANDOFF.md (search "gate removal" / the numbered section
-// dated 2026-09-14) for the full audit trail, per-rule provenance, and
-// the isolated-build diff used to confirm this file's compiled output
-// is unchanged from the pre-merge gated build.
-// =====================================================================
-// line 6
-
-section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
-                float: none;
-        }
-
-// line 71
-
-section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
-                .container.container {
-                        .column.column {
-                                &.image-column.image-column {
-                                        .image-container.image-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 121
-
-section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
-                .container.container {
-                        .column.column {
-                                &.text-column.text-column {
-                                        .text-inner.text-inner {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 138
-
-section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
-                .container.container {
-                        .column.column {
-                                &.text-column.text-column {
-                                        h2 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 152
-
-section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
-                .container.container {
-                        .column.column {
-                                &.text-column.text-column {
-                                        .text-details-container.text-details-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 173
-
-section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
-                .container.container {
-                        .column.column {
-                                &.text-column.text-column {
-                                        .text-details-container.text-details-container {
-                                                .subtitle.subtitle {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 183
-
-section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
-                .container.container {
-                        .column.column {
-                                &.text-column.text-column {
-                                        .text-details-container.text-details-container {
-                                                .date.date {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 193
-
-section.thank-you-banner.thank-you-banner.resources-banner.resources-banner {
-                .container.container {
-                        .column.column {
-                                &.text-column.text-column {
-                                        .button-container.button-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 328
-
-section.resources-content.resources-content {
-                .container.container {
-                        .column.column {
-                                &.second-column.second-column {
-                                        .speaker.speaker {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 333
-
-section.resources-content.resources-content {
-                .container.container {
-                        .column.column {
-                                &.second-column.second-column {
-                                        .speaker.speaker {
-                                                .authorSingle.authorSingle {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 428
-
-section.resources-content.resources-content {
-                .container.container {
-                        .resources-subtitle.resources-subtitle {
-                                float: none;
-                        }
-                }
-        }
-
-// line 451
-
-section.download-block.download-block.resources-block.resources-block {
-                .container.container {
-                        .download-block-title.download-block-title {
-                                float: none;
-                        }
-                }
-        }
-
-// line 471
-
-section.download-block.download-block.resources-block.resources-block {
-                .container.container {
-                        .resources-container.resources-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 523
-
-section.download-block.download-block.resources-block.resources-block {
-                .container.container {
-                        .resources-container.resources-container {
-                                .resources-image-container.resources-image-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 614
-
-section.download-block.download-block.resources-block.resources-block {
-                .container.container {
-                        .resources-container.resources-container {
-                                span.listing-title.listing-title {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 620
-
-section.download-block.download-block.resources-block.resources-block {
-                .container.container {
-                        .resources-container.resources-container {
-                                span.type.type {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 727
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .resources-container.resources-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 738
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .preview-container.preview-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 743
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .preview-container.preview-container {
-                                                @media (max-width: 1023px) {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 749
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .preview-container.preview-container {
-                                                .download-image-container.download-image-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 769
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .download-container.download-container {
-                                                @media (max-width: 1023px) {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 774
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .download-container.download-container {
-                                                .download-title.download-title {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 795
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .download-container.download-container {
-                                                .downloads.downloads {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 830
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .download-container.download-container {
-                                                .downloads.downloads {
-                                                        a.download-link.download-link {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 877
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .download-container.download-container {
-                                                .downloads.downloads {
-                                                        .download-switch-container.download-switch-container {
-                                                                li {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 888
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .download-container.download-container {
-                                                .downloads.downloads {
-                                                        .download-switch-container.download-switch-container {
-                                                                li {
-                                                                        a {
-                                                                                float: none;
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 896
-
-.mfp-wrap.mfp-wrap.download-container.download-container {
-                .mfp-content.mfp-content {
-                        .resourcesPopup.resourcesPopup {
-                                .container.container {
-                                        .download-container.download-container {
-                                                .downloads.downloads {
-                                                        .download-switch-container.download-switch-container {
-                                                                li {
-                                                                        span.download-switch-span.download-switch-span {
-                                                                                float: none;
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 966
-
-section.resources-cta-block.resources-cta-block {
-                float: none;
-        }
-
-// line 988
-
-section.resources-cta-block.resources-cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                .column.column.text-column.text-column {
-                                        .cta-title.cta-title {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1019
-
-section.resources-cta-block.resources-cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                .column.column.text-column.text-column {
-                                        .text.text {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1046
-
-section.resources-cta-block.resources-cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                .column.column.text-column.text-column {
-                                        .button-container.button-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1066
-
-section.resources-cta-block.resources-cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                .column.column.image-column.image-column {
-                                        .main-image-container.main-image-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1077
-
-section.resources-cta-block.resources-cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                .column.column.image-column.image-column {
-                                        .main-image-container.main-image-container {
-                                                img {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1102
-
-section.resources-cta-block.resources-cta-block {
-                .container.container {
-                        .cta-content.cta-content {
-                                .column.column.image-column.image-column {
-                                        .overlay-image-container.overlay-image-container {
-                                                img {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-@media (max-width: 767px) {
-        section.registration-two-column-block.registration-two-column-block .container.container .column-container.column-container {
-            display: block;
-        }
-    }

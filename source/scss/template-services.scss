@@ -1,0 +1,21 @@
+/* Services template CSS split (S103): moved out of main-nofooter.scss's
+   templates glob (the "templates" directory import) so it stops shipping
+   on every page. Verified exhaustively before moving: every top-level
+   selector in _services.scss is nested under one of 8 wrapper selectors
+   (section.events-title-block.services-introduction,
+   section.services-two-column-image-text, section.three-column-icon-services,
+   section.services-cards-module, section.two-column-switch-module,
+   section.background-image-stats, section.two-column-acordion,
+   section.animation-icon-module), and every one of those 8 wrapper class
+   combinations was confirmed, by exact class-token search across every
+   other non-services PHP template in the repo, to appear nowhere outside
+   templates/services-components. So nothing in this file can ever match
+   an element on a non-services page -- the whole file moves as one unit,
+   no per-selector surgery needed.
+   Depends only on global mixins (responsive, transition) and global
+   variables -- confirmed via grep, same as footer-only.scss's precedent
+   for a standalone split bundle. */
+@import 'global/_mixins';
+@import 'global/_variables';
+
+@import "templates-split/_services.scss";

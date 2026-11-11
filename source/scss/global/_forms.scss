@@ -923,6 +923,10 @@ span.select2 {
 	
 }
 
+.hsfc-Step__Content label {
+	display: inline-block !important;
+}
+
 .hsfc-Form textarea,
 .hsfc-Form select,
 .hsfc-Form input[type="text"],
@@ -990,8 +994,9 @@ span.select2 {
 		font-size: 14px !important;
 		color: #000;
 		font-weight: 500 !important;
-		height: 18px !important;
-		line-height: 18px !important;
+		padding: 0 10px !important;
+		height: 38px !important;
+		line-height: 38px !important;
 		background-color: #f5f8fa !important;
 	}
 }
@@ -1983,6 +1988,21 @@ input.hs-input {
 	}
 }
 
+.hsfc-CheckboxFieldGroup .hsfc-CheckboxFieldGroup__Options,
+.hsfc-CheckboxFieldGroup .hsfc-RadioFieldGroup__Options,
+.hsfc-RadioFieldGroup .hsfc-CheckboxFieldGroup__Options,
+.hsfc-RadioFieldGroup .hsfc-RadioFieldGroup__Options {
+	margin-bottom: 0;
+}
+
+.hsfc-CheckboxFieldGroup {
+	margin-bottom: 0;
+}
+
+.hsfc-RadioFieldGroup {
+	margin-top: 15px;
+}
+
 .hsfc-PostSubmit {
 	.hs-form-html .hsfc-RichText {
 		p {
@@ -2107,6 +2127,11 @@ footer {
                 label {
                         float: none;
                 }
+        }
+
+.hs-form-html.hs-form-html .hsfc-TextField label,
+.hs-form-html.hs-form-html .hsfc-TextareaField label {
+                display: inline-block;
         }
 
 // line 1217

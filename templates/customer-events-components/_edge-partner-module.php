@@ -109,7 +109,7 @@
                                                     </span>
                                                     <span class="text">
                                                         <h2><?php the_title(); ?></h2>                                                    
-                                                        <a class="website" href="<?php echo get_field('website_url'); ?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/website.svg" alt="Website" width="28" /></a>
+                                                        <a class="website" href="<?php echo esc_url( get_field('website_url') ); ?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" class="linkedin-icon" src="<?php echo get_template_directory_uri(); ?>/assets/images/website.svg" alt="Website" width="28" /></a>
                                                     </span>
                                                 </span>
                                                 <span class="bio-bottom">
@@ -197,7 +197,7 @@
 }
 
 </style>
-<script>
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 document.addEventListener("DOMContentLoaded", function () {
     // Get modal and close button
     var modal = document.getElementById("formModal");

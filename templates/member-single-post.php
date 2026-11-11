@@ -7,13 +7,13 @@
             $allowed_host = 'adapt.com.au';
             $host = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
             if(substr($host, 0 - strlen($allowed_host)) == $allowed_host) { ?>
-                <script>
+                <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 
                 function goBack() {
                     window.history.back()
                 }
                 </script>
-                <a class="back-button" onclick="goBack()">Back</a>
+                <a class="back-button" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="goBack()">Back</a>
             <?php } else { ?>
                 <a class="back-button" href="<?php echo esc_url( home_url( '/' ) ); ?>/adapt-insights/">Back</a>
              <?php } ?>

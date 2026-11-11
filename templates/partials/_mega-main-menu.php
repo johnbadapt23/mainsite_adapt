@@ -1,4 +1,4 @@
-<div class="main-nav">
+<div class="main-nav" role="navigation" aria-label="Main menu">
     <ul>
         <?php if ( have_rows( 'it_leaders', 'options' ) ) : ?>
             <?php while ( have_rows( 'it_leaders', 'options' ) ) : the_row(); ?>

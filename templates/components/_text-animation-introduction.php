@@ -88,7 +88,7 @@
                             </span>
                         </apan>
                     </span>
-                   <script>
+                   <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                         window.addEventListener("message", function(event) {
                             // Only accept messages from HubSpot forms
                             if (!event.data || !event.data.formGuid || !event.data.accepted) {

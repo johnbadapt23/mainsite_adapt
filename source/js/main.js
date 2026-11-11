@@ -20,6 +20,198 @@
 		};
 	}
 
+	// Counts a stat element (e.g. "80,000+", "66%", "15") up from 0 to its
+	// real value once it scrolls into view, instead of it just appearing
+	// already at full value. Reads the target straight out of the
+	// element's own text rather than needing a separate data attribute in
+	// the markup -- splits off any leading/trailing non-numeric characters
+	// ("+", "%", etc.) so they're preserved untouched throughout and
+	// re-applied to the final value, and keeps the thousands separator
+	// (",") if the original text had one.
+	function animateCountUp($el, duration) {
+		var original = $.trim($el.text());
+		var match = original.match(/^(\D*)([\d,]*\d(?:\.\d+)?)(\D*)$/);
+		if (!match) {
+			return; // Not a recognisable number -- leave the text as-is.
+		}
+
+		var prefix = match[1];
+		var numberText = match[2];
+		var suffix = match[3];
+		var hasThousandsSeparator = numberText.indexOf(',') !== -1;
+		var decimalMatch = numberText.match(/\.(\d+)$/);
+		var decimalPlaces = decimalMatch ? decimalMatch[1].length : 0;
+		var target = parseFloat(numberText.replace(/,/g, ''));
+
+		if (isNaN(target)) {
+			return;
+		}
+
+		duration = duration || 1500;
+
+		function formatValue(value) {
+			var formatted = value.toFixed(decimalPlaces);
+			if (hasThousandsSeparator) {
+				var parts = formatted.split('.');
+				parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+				formatted = parts.join('.');
+			}
+			return formatted;
+		}
+
+		var startTime = null;
+
+		function step(timestamp) {
+			if (startTime === null) {
+				startTime = timestamp;
+			}
+			var progress = Math.min((timestamp - startTime) / duration, 1);
+			// easeOutQuad: fast start, gentle settle -- reads better than a
+			// flat linear count for this kind of "counting up" stat.
+			var eased = 1 - (1 - progress) * (1 - progress);
+			$el.text(prefix + formatValue(target * eased) + suffix);
+			if (progress < 1) {
+				window.requestAnimationFrame(step);
+			}
+		}
+
+		window.requestAnimationFrame(step);
+	}
+
+	// Wires up animateCountUp() for the Map with Numbers stats
+	// (templates/gtm-components/_numbers-map.php), triggering each one
+	// the first time it scrolls into view. Kept independent of the AOS
+	// library already used for this section's fade-up (rather than
+	// hooking into it) since this AOS build doesn't expose an "entered
+	// view" event to hook into -- only CSS class toggling.
+	function initNumbersCountUp() {
+		var $numbers = $('.map-with-numbers .numbers-text');
+		if (!$numbers.length) {
+			return;
+		}
+
+		if (!('IntersectionObserver' in window)) {
+			return; // Leave the static values as-is on unsupported browsers.
+		}
+
+		var observer = new IntersectionObserver(function(entries) {
+			entries.forEach(function(entry) {
+				if (entry.isIntersecting) {
+					animateCountUp($(entry.target), 1500);
+					observer.unobserve(entry.target);
+				}
+			});
+		}, { threshold: 0.5 });
+
+		$numbers.each(function() {
+			observer.observe(this);
+		});
+	}
+
+	// HubSpot's new-style embedded forms (the ones that render hsfc-*
+	// classes, as opposed to the older hbspt.forms.create() widget) draw
+	// the phone field's country flag as a literal emoji character (e.g.
+	// "\ud83c\uddf5\ud83c\udded") inside .hsfc-PhoneInput__FlagAndCaret__Flag,
+	// not an image or CSS background-sprite. Windows has no built-in
+	// colour font for regional-indicator flag emoji (macOS/iOS/Android
+	// do), so on Windows that span renders as a blank box or nothing at
+	// all -- this isn't a CSS bug, there's no flag glyph installed to draw.
+	// HubSpot's React widget re-renders the flag span's text (not just its
+	// image) whenever the visitor changes the selected country, so a
+	// MutationObserver re-parses the span on every change rather than
+	// running once on load.
+	function initHubspotPhoneFlags() {
+		// Dependency-free flag renderer: converts the regional-indicator-symbol
+		// emoji text HubSpot renders into an <img> pointing at Twemoji's SVG CDN,
+		// computed from the characters' Unicode codepoints. This deliberately
+		// avoids loading the twemoji.js script -- after extensive live-site
+		// debugging, script-src (strict-dynamic + per-request nonce
+		// enforcement, WP Rocket's JS pipeline, CSP) proved to be an unreliable
+		// path for this one external script. img-src is far more permissive
+		// ('self' data: https:) and needs no nonce, so sourcing only an image
+		// asset sidesteps the entire problem.
+		var TWEMOJI_SVG_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/';
+
+		function codePointsToTwemojiFilename(text) {
+			var codePoints = [];
+			for (var i = 0; i < text.length; i++) {
+				var codePoint = text.codePointAt(i);
+				if (codePoint > 0xFFFF) {
+					i++; // surrogate pair consumes two UTF-16 units
+				}
+				codePoints.push(codePoint.toString(16));
+			}
+			if (!codePoints.length) {
+				return null;
+			}
+			return codePoints.join('-');
+		}
+
+		function renderFlag(el) {
+			if (!el || el.getAttribute('data-flag-rendered') === 'true') {
+				return;
+			}
+			var text = (el.textContent || '').trim();
+			if (!text) {
+				return;
+			}
+			var filename = codePointsToTwemojiFilename(text);
+			if (!filename) {
+				return;
+			}
+			var img = document.createElement('img');
+			img.src = TWEMOJI_SVG_BASE + filename + '.svg';
+			img.alt = el.getAttribute('aria-label') || 'flag';
+			img.setAttribute('draggable', 'false');
+			img.style.width = '1em';
+			img.style.height = '1em';
+			img.style.verticalAlign = 'middle';
+			el.setAttribute('data-flag-rendered', 'true');
+			el.textContent = '';
+			el.appendChild(img);
+		}
+
+		document.querySelectorAll('.hsfc-PhoneInput__FlagAndCaret__Flag').forEach(renderFlag);
+
+		if (!('MutationObserver' in window)) {
+			return; // Flags present on initial load are still fixed above --
+			        // only the re-render-on-country-change case is skipped.
+		}
+
+		var observer = new MutationObserver(function(mutations) {
+			mutations.forEach(function(mutation) {
+				var target = mutation.target;
+				var flagEl = null;
+
+				if (target.nodeType === 1 && target.classList && target.classList.contains('hsfc-PhoneInput__FlagAndCaret__Flag')) {
+					flagEl = target;
+				} else if (target.parentElement && target.parentElement.classList && target.parentElement.classList.contains('hsfc-PhoneInput__FlagAndCaret__Flag')) {
+					flagEl = target.parentElement;
+				}
+
+				if (flagEl) {
+					flagEl.removeAttribute('data-flag-rendered');
+					renderFlag(flagEl);
+				}
+
+				mutation.addedNodes.forEach(function(node) {
+					if (node.nodeType !== 1) {
+						return;
+					}
+					if (node.classList && node.classList.contains('hsfc-PhoneInput__FlagAndCaret__Flag')) {
+						renderFlag(node);
+					}
+					if (node.querySelectorAll) {
+						node.querySelectorAll('.hsfc-PhoneInput__FlagAndCaret__Flag').forEach(renderFlag);
+					}
+				});
+			});
+		});
+
+		observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+	}
+
+
 	// The homepage's HubSpot popup form (#animationForm) used to have its
 	// HubSpot embed snippet (a <script src="//js.hsforms.net/..."> plus a
 	// hbspt.forms.create() call) echoed straight into the live page HTML,
@@ -167,6 +359,79 @@
 		});
 	}
 
+	// 2026-09-17: autoplay hero/background videos (.bg-container > video[loop
+	// muted playsinline]) used to hardcode their real file URL in the
+	// <source src> the server output, so every visitor's browser started
+	// fetching the full file immediately on page load regardless of network
+	// conditions or motion preference -- Lighthouse flagged this as a
+	// multi-MB "enormous network payload" on pages using the pattern (e.g.
+	// the homepage's Vimeo hero, ~4MB). The real URL now ships as
+	// data-autoplay-src instead of src, and the <video> tag no longer
+	// carries the autoplay attribute in the markup -- this decides,
+	// client-side, whether to actually wire up the source and start
+	// playback. This has to be client-side rather than a PHP-side
+	// Save-Data/etc. check: the whole site is served through WP Rocket's
+	// full-page cache, so a server-side check would just get baked into
+	// whichever visitor's request happened to prime the cache and get
+	// served to everyone else regardless of their own actual
+	// header/preference.
+	function adaptGateAutoplayVideos() {
+		var saveData = !!(navigator.connection && navigator.connection.saveData);
+		var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		if (saveData || reducedMotion) {
+			// Leave the poster image showing -- data-autoplay-src is never
+			// touched, so the browser never fetches the video file at all.
+			return;
+		}
+
+		function loadAndPlay($video) {
+			var $source = $video.find('source[data-autoplay-src]');
+			$source.attr('src', $source.attr('data-autoplay-src'));
+			$video.get(0).load();
+			$video.attr('autoplay', 'autoplay');
+			var playPromise = $video.get(0).play();
+			if (playPromise && typeof playPromise.catch === 'function') {
+				playPromise.catch(function () {
+					// Autoplay blocked (e.g. low-power mode) -- the poster
+					// image stays as the fallback, same as before this change.
+				});
+			}
+		}
+
+		var $videos = $('.bg-container > video > source[data-autoplay-src]').map(function () {
+			return $(this).closest('video').get(0);
+		});
+
+		if (!('IntersectionObserver' in window)) {
+			// No IntersectionObserver support -- fall back to the previous
+			// eager-on-load behaviour rather than never loading the video.
+			$videos.each(function () {
+				loadAndPlay($(this));
+			});
+			return;
+		}
+
+		// Only fetch each background video once it is within 200px of the
+		// viewport, instead of every one of them downloading in full the
+		// moment the page loads regardless of scroll position. Above-the-
+		// fold instances still trigger effectively immediately since they
+		// are already inside that margin on load.
+		var observer = new IntersectionObserver(function (entries, obs) {
+			entries.forEach(function (entry) {
+				if (!entry.isIntersecting) {
+					return;
+				}
+				loadAndPlay($(entry.target));
+				obs.unobserve(entry.target);
+			});
+		}, { rootMargin: '200px 0px' });
+
+		$videos.each(function () {
+			observer.observe(this);
+		});
+	}
+
 	$(document).ready(function (){
 
 		// STANDARD
@@ -175,6 +440,9 @@
 		match();
 		outsideContainer();
 		aos();
+		initNumbersCountUp();
+		initHubspotPhoneFlags();
+		adaptGateAutoplayVideos();
 
 		if($('.progress-container').length ){
 			scrollProgressBar();
@@ -2497,6 +2765,45 @@
 			$(this).addClass('active');
 		});
 
+		// ADAPT Intelligence "Use Case by Function" tabs
+		// (templates/intelligence-components/_use-case-tabs.php). Own
+		// class names and listener, not reusing .module-switch-button /
+		// .switch-content-container above -- that one targets
+		// 'a.module-switch-button' while its own template renders a
+		// <button>, so it never actually attaches/fires anywhere it's
+		// used today. Scoping this to its own classes gets a working
+		// tab switcher without changing that pre-existing (broken)
+		// behaviour on other pages.
+		$('.intelligence-tab-button').on( 'click', function(e){
+			e.preventDefault();
+			var $index = $(this).index();
+			var $buttons = $('.intelligence-tab-button');
+			var $panels = $('.intelligence-tab-panel');
+			var $currentPanel = $panels.filter('.active');
+			var $nextPanel = $panels.eq($index);
+
+			if ($(this).hasClass('active') || $currentPanel.is($nextPanel)) {
+				return;
+			}
+
+			$buttons.removeClass('active');
+			$(this).addClass('active');
+
+			// Softens the tab switch: the outgoing panel fades out first
+			// (tab-panel-leaving, see _intelligence.scss) instead of being
+			// yanked straight to display:none the instant a new tab is
+			// clicked, which read as an abrupt hard cut. The timeout below
+			// matches that fade-out's duration.
+			if ($currentPanel.length) {
+				$currentPanel.removeClass('tab-panel-entering').addClass('tab-panel-leaving');
+			}
+
+			setTimeout(function() {
+				$panels.removeClass('active tab-panel-leaving tab-panel-entering');
+				$nextPanel.addClass('active tab-panel-entering');
+			}, 200);
+		});
+
 
 		if($('.scrolling-card').length){
 			$(window).on('scroll', rafThrottle(function() {
@@ -4145,15 +4452,30 @@ function animateOverlappingCards() {
     var spacing = 25;   // vertical offset between cards
     var maxShrink = 0.08; // maximum shrink per card
 
-    $cards.each(function(i) {
-        var $card = $(this).find('.overlapping-card');
+    // 2026-09-17: this used to call $nextCard.offset() (a forced synchronous
+    // layout read) and $(window).height() inside a nested loop that ALSO
+    // wrote $card.css('transform', ...) once per outer iteration -- reads
+    // and writes interleaved across ~n^2 iterations, which forces the
+    // browser to recompute layout on every single read instead of batching
+    // it once. Flagged by Lighthouse as "Forced reflow", attributed to
+    // jQuery/this function (~94-98ms per run, on scroll/resize + once on
+    // page load). Fix: read every card's offset (and the window height)
+    // once up front, do all the math from those cached values, then apply
+    // every transform in a separate pass at the end -- same output, but the
+    // browser only has to lay out once instead of n times.
+    var winHeight = $(window).height();
+    var viewportTrigger = winHeight / 2; // start shrinking when next card is halfway in view
+    var offsets = $cards.map(function() {
+        return $(this).offset().top; // absolute offset
+    }).get();
+
+    var scales = [];
+    for (var i = 0; i < $cards.length; i++) {
         var scale = 1;
 
         // Loop through all following cards to determine how much to shrink previous ones
         for (var j = i + 1; j < $cards.length; j++) {
-            var $nextCard = $cards.eq(j);
-            var nextOffset = $nextCard.offset().top; // absolute offset
-            var viewportTrigger = $(window).height() / 2; // start shrinking when next card is halfway in view
+            var nextOffset = offsets[j];
 
             // progress: 0 → 1 as next card approaches stickyTop
             var progress = Math.min(Math.max((viewportTrigger - (nextOffset - scrollTop)) / viewportTrigger, 0), 1);
@@ -4162,11 +4484,16 @@ function animateOverlappingCards() {
             scale -= maxShrink * progress;
         }
 
+        scales.push(scale);
+    }
+
+    $cards.each(function(i) {
+        var $card = $(this).find('.overlapping-card');
+
         // Offset each card vertically by spacing
         var yOffset = spacing * i;
 
-        $card.css('transform', 'translateY(' + yOffset + 'px) scale(' + scale + ')');
-
+        $card.css('transform', 'translateY(' + yOffset + 'px) scale(' + scales[i] + ')');
     });
 }
 
@@ -4251,5 +4578,52 @@ if ($('.overlapping-card-wrapper').length && $(window).width() > 767) {
     $(window).on("load", function() {
         adaptActivateEmbeddedTemplate('animationFormEmbed', '#animationForm .form');
     });
+
+
+	// GLOBAL SMOOTH SCROLL FOR HASH LINKS
+	// Intercepts clicks on any link pointing to "#section-id". If that
+	// section exists on the current page, smooth-scrolls to it instead of
+	// jumping instantly. If it doesn't exist on this page (or the link
+	// points to a different page), the click is left alone so normal
+	// browser navigation still happens. Vanilla JS -- no jQuery dependency.
+	document.addEventListener('DOMContentLoaded', function () {
+
+		document.addEventListener('click', function (e) {
+			var link = e.target.closest('a[href*="#"]');
+			if (!link) return;
+
+			var href = link.getAttribute('href');
+			if (!href || href === '#') return;
+
+			var hashIndex = href.indexOf('#');
+			var path = href.substring(0, hashIndex);
+			var hash = href.substring(hashIndex + 1);
+
+			if (!hash) return;
+
+			// Only intercept same-page links
+			var isSamePage = path === '' || path === window.location.pathname || path === window.location.href.split('#')[0];
+			if (!isSamePage) return;
+
+			var target = document.getElementById(hash) || document.querySelector('[name="' + hash + '"]');
+
+			// Section not on this page -- let the browser handle it normally
+			if (!target) return;
+
+			e.preventDefault();
+
+			target.scrollIntoView({
+				behavior: 'smooth',
+				block: 'start'
+			});
+
+			if (history.pushState) {
+				history.pushState(null, '', '#' + hash);
+			} else {
+				window.location.hash = hash;
+			}
+		});
+
+	});
 
 })(window.jQuery);

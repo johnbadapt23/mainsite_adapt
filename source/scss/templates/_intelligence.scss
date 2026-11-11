@@ -1,0 +1,1078 @@
+// ADAPT Intelligence template (templates/template-adapt-intelligence.php)
+// and its section partials under templates/intelligence-components/.
+// Functional starting-point styling, not a pixel-exact match of the
+// Figma file -- layout/behaviour only (spacing, colours, type scale
+// still need a pass against the actual design tokens before ship).
+
+section.intro-statement {
+    padding: 50px 0;
+    text-align: center;
+
+    .text-container {
+        width: 100%;
+        max-width: 760px;
+        margin: 0 auto;
+
+        h1 {
+            margin-bottom: 15px;
+
+            strong {
+                font-weight: 400;
+                color: rgb(231, 83, 79) !important;
+            }
+        }
+
+        .sub-text {
+            display: block;
+            width: 100%;
+            color: #5F5F5F;
+            margin-bottom: 30px;
+            font-size: 20px;
+            max-width: 653px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+}
+
+// "Add Image" toggle on the Intro Statement layout
+// (templates/intelligence-components/_intro-statement.php) -- full-
+// bleed 50/50 split instead of the centred text-only version above.
+// No fixed height: the row stretches to whatever the text column's
+// content needs (align-items: stretch), and the image column fills
+// that same height via position:absolute + object-fit:cover, same
+// technique as a flexible hero rather than a fixed 100vh block so it
+// can sit anywhere on the page, not just as the very first section.
+section.intro-statement.intro-statement-split {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    padding: 0;
+    text-align: left;
+    min-height: 620px;
+
+    @include responsive(767) {
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .split-text-column {
+        flex: 0 0 50%;
+        max-width: 50%;
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        // Left inset matches where .container's left edge actually
+        // falls (container is centred with a $site-max-width cap),
+        // not a flat padding value, so the heading lines up with the
+        // logo/nav above it instead of looking randomly indented.
+        padding: 80px 72px 80px max(20px, calc((100vw - #{$site-max-width}) / 2));
+
+        @include responsive(1200) {
+            padding-top: 64px;
+            padding-bottom: 64px;
+            padding-right: 40px;
+        }
+
+        @include responsive(767) {
+            flex: 1 1 100%;
+            max-width: 100%;
+            padding: 48px 24px;
+        }
+
+        .text-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0;
+
+            h1 {
+                margin-bottom: 24px;
+            }
+
+            .sub-text {
+                display: block;
+                width: 100%;
+                color: #5F5F5F;
+                margin-bottom: 40px;
+                font-size: 20px;
+                max-width: none;
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+    }
+
+    .split-image-column {
+        flex: 0 0 50%;
+        max-width: 50%;
+        position: relative;
+        min-height: 400px;
+
+        @include responsive(767) {
+            flex: 1 1 100%;
+            max-width: 100%;
+            min-height: 320px;
+        }
+
+        img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+    }
+}
+
+section.intelligence-hero {
+    // Figma shows the browser-window screenshot floating inside a red
+    // section (padding on all sides, rounded corners, drop shadow) and
+    // bleeding down into the white section below it -- the red is this
+    // section's own background colour (background_colour sub field,
+    // default background-red), not part of the uploaded image. The
+    // overlap is the same technique already used on the Careers page
+    // (section.introduction-block.background-black in
+    // _flexible.scss): the section is coloured across its top portion
+    // only, a white rectangle covers its own bottom portion via
+    // :before, and the image straddles that boundary.
+    position: relative;
+    padding: 100px 0 0;
+    overflow: visible;
+
+    &.background-white {
+        background-color: #fff;
+    }
+
+    &.background-red {
+        &:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 220px;
+            background-color: #fff;
+
+            @include responsive(1023) {
+                height: 140px;
+            }
+
+            @include responsive(767) {
+                height: 80px;
+            }
+        }
+    }
+
+    .container {
+        position: relative;
+        z-index: 1;
+        max-width: 1160px;
+    }
+
+    // CSS-only monitor frame around the product GIF: a dark bezel
+    // "case" (background + padding on .hero-image itself, same
+    // no-extra-asset approach as .image-column .device-frame on
+    // section.intelligence-use-case above), a soft diagonal glass
+    // glare over the screen area (:before, pointer-events disabled so
+    // it never blocks the GIF), and a simple stand beneath the frame
+    // (:after) so the screenshot reads as content playing inside a
+    // physical display rather than a flat rounded image. Per explicit
+    // request: "style it like the image is playing inside a computer
+    // screen."
+    .hero-image {
+        display: block;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(180deg, #2E2E2E 0%, #121212 100%);
+        border-radius: 20px;
+        padding: 18px 18px 52px;
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+
+        @include responsive(767) {
+            padding: 12px 12px 36px;
+            border-radius: 14px;
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        // Glass glare across the "screen".
+        &:before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            right: 18px;
+            bottom: 52px;
+            z-index: 2;
+            border-radius: 8px;
+            background: linear-gradient(115deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 16%, rgba(255, 255, 255, 0) 36%);
+            pointer-events: none;
+
+            @include responsive(767) {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                bottom: 36px;
+            }
+        }
+
+        // Monitor stand (neck + foot), sitting just below the frame.
+        &:after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -34px;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 34px;
+            z-index: 0;
+            background: linear-gradient(180deg, #1C1C1C 0%, #0A0A0A 100%);
+            clip-path: polygon(44% 0%, 56% 0%, 56% 70%, 100% 70%, 100% 100%, 0% 100%, 0% 70%, 44% 70%);
+
+            @include responsive(767) {
+                display: none;
+            }
+        }
+    }
+}
+
+// Requested override: the section itself stays white (not full red),
+// and the :before overlap strip is near-black (#0A0A0A, matching the
+// Animated Text with Logos ticker directly below it) rather than red
+// or white, with no extra top padding.
+section.intelligence-hero.background-red::before {
+    background: #0A0A0A;
+}
+
+section.intelligence-hero {
+    background: white;
+    padding-top: 0;
+}
+
+// Restyled to match section.three-column-video-gtm.three-column-icon-
+// text-ecosystems.three-column-partnered-research (see _gtm.scss --
+// that's the component live on adapt.com.au/services/technology-vendors)
+// per explicit request: same background colour and column layout
+// (centred header, wide column gap, thin vertical divider between
+// columns instead of this section's previous individual bordered/
+// rounded cards), minus that component's video/image block, which this
+// section never had. Content and copy are unchanged -- still the
+// number-container 01/02/03 markup from templates/intelligence-
+// components/_pain-vs-promise.php, not that component's icon-container,
+// since no icon assets were part of this request. The bespoke type
+// sizes below (h2, .labelXL, p.p-small) are this section's own
+// previously Figma-sourced values, kept as-is -- only layout/colour
+// changed, not typography.
+section.pain-vs-promise {
+    background-color: #F8F8F8;
+    padding: 144px 0;
+
+    @media (max-width: 767px) {
+        padding: 80px 0;
+    }
+
+    .title-container {
+        width: 100%;
+        text-align: center;
+        max-width: 795px;
+        margin: 0 auto 32px;
+
+        h2.bold-red {
+            color: $heading-color;
+            font-size: 52px;
+            line-height: 62px;
+        }
+    }
+
+    // Per explicit request: aligns the pink .prompt-point boxes across
+    // the three columns so each row (number, heading, first prompt,
+    // second prompt) starts at the same height, without touching the
+    // copy itself. A flex column naturally stacks each card
+    // independently, so a longer heading or prompt line in one column
+    // (they're different lengths and always will be) pushed that
+    // column's boxes down relative to the others. CSS Grid with
+    // subgrid gives the three columns a shared set of row tracks
+    // instead -- each row's height comes from whichever column's
+    // content is tallest in that row, so every column's number sits on
+    // the same row, every heading on the same row, and so on, and the
+    // pink boxes end up the same height within a row too (grid items
+    // stretch to fill their row by default) instead of just lining up
+    // at the top with empty space below the shorter ones.
+    .column-container {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        // 4 shared rows: number, heading, first prompt pill, second
+        // prompt pill -- matches this section's content today (every
+        // column currently has exactly two prompt lines).
+        grid-template-rows: repeat(4, auto);
+        margin-bottom: 0;
+        column-gap: 80px;
+        row-gap: 0;
+
+        @media (max-width: 767px) {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 40px;
+        }
+
+        .column.one-third {
+            // No width here on purpose: grid-template-columns above
+            // already divides .column-container into three equal
+            // tracks with the column-gap between them, so a leftover
+            // flex-era width (33.333% of the full row) was computing
+            // 33% of this column's own 1/3-width track on top of that
+            // -- about a 1/9-width column -- instead of filling it.
+            width: 100%;
+            display: grid;
+            grid-template-rows: subgrid;
+            grid-row: 1 / 5;
+            text-align: left;
+            position: relative;
+
+            @media (max-width: 767px) {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
+                gap: 40px;
+            }
+
+            // Vertical divider between columns, matching the reference
+            // component's &:after treatment, instead of this section's
+            // previous per-column border/radius/padding box.
+            &:not(:last-child):after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: -40px;
+                bottom: 0;
+                width: 1px;
+                background: linear-gradient(180deg, #E4E4E4 0, #E4E4E4 50%, #E4E4E4 100%);
+
+                @include responsive(767) {
+                    display: none;
+                }
+            }
+
+            .number-container {
+                width: 100%;
+                // Replaces the old flex `gap: 40px` between this and
+                // .text-container, now that the parent grid's own
+                // row-gap is 0 (a shared row-gap would add the same
+                // space between every row, not just after this one).
+                margin-bottom: 40px;
+
+                @media (max-width: 767px) {
+                    margin-bottom: 0;
+                }
+
+                .number {
+                    display: block;
+                    color: $color-medium-grey;
+                    font-size: 16px;
+                    line-height: 19px;
+                    font-weight: 400;
+                    margin-bottom: 8px;
+
+                    // Figma specs this divider as a dark rule (#0A0A0A),
+                    // not the light card-border grey -- it reads as a
+                    // deliberate black tick mark under the number.
+                    &:after {
+                        content: '';
+                        display: block;
+                        width: 20px;
+                        border-top: 1px solid $heading-color;
+                        margin-top: 8px;
+                    }
+                }
+            }
+
+            .text-container {
+                // Hoists .labelXL and .prompt-points up to be direct
+                // subgrid items of .column.one-third (rather than
+                // nested inside this wrapper), so each lands on its own
+                // shared row instead of being sized within whatever
+                // space is left in .number-container's row.
+                display: contents;
+
+                @media (max-width: 767px) {
+                    display: block;
+                    text-align: left;
+                    float: none;
+                    width: 100%;
+                }
+
+                // .labelXL has no colour of its own in the global
+                // typography styles (source/scss/global/_styles.scss)
+                // -- it inherits from the page body, which on this
+                // template resolves to white, so it needs its own
+                // explicit colour. Font-size/weight/line-height are left
+                // unset here on purpose, same as the reference component
+                // (section.three-column-icon-text-ecosystems on
+                // adapt.com.au/services/technology-vendors doesn't
+                // override them either) -- both fall back to the global
+                // .labelXL default (20px/500/24.42px), confirmed against
+                // that page's live computed styles.
+                .labelXL {
+                    display: block;
+                    color: $heading-color;
+                    max-width: 265px;
+                    margin-bottom: 16px;
+                }
+
+                // Reference component's p.p-small is likewise unstyled
+                // beyond layout -- falls back to the global 16px/28px,
+                // confirmed against the live page's computed styles.
+                p.p-small {
+                    margin-bottom: 0;
+                    width: 100%;
+                    float: none;
+                }
+
+                // Per explicit request: the column's "Text" content (the
+                // prompt examples moved over from the old Sticky Text
+                // Image Columns section, see
+                // adapt_pain_vs_promise_prompt_list() in
+                // templates/intelligence-components/_pain-vs-promise.php)
+                // renders as its own rounded pill per line -- same
+                // #FDF1F1/8px-radius/16-20px-padding treatment as
+                // .prompt-example on section.intelligence-use-case and
+                // .text-point on the old sticky cards section -- instead
+                // of one plain paragraph.
+                .prompt-points {
+                    // Same hoisting as .text-container above, so each
+                    // .prompt-point pill becomes its own subgrid item
+                    // (its own shared row) instead of both pills being
+                    // sized together as one block within a single row.
+                    display: contents;
+
+                    @media (max-width: 767px) {
+                        display: block;
+                        width: 100%;
+                    }
+                }
+
+                .prompt-point {
+                    display: block;
+                    width: 100%;
+                    background-color: #FDF1F1;
+                    border-radius: 8px;
+                    padding: 16px 20px;
+                    font-size: 17px;
+                    text-align: left;
+                    margin-bottom: 16px;
+                    color: #0A0A0A;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+            }
+
+            // Matches the reference component's last-column treatment --
+            // nothing to the right to make room for, so the heading can
+            // use the column's full width.
+            &:last-child {
+                .text-container {
+                    .labelXL {
+                        max-width: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Chained on both classes (the section's actual markup is
+// <section class="three-column-video-gtm pain-vs-promise ...">, see
+// templates/intelligence-components/_pain-vs-promise.php) rather than
+// wrapped in body.template-adapt-intelligence -- .pain-vs-promise is
+// already unique to this template (only used via that one component),
+// same reasoning as section.pain-vs-promise above, and chaining on
+// three-column-video-gtm too keeps this from ever matching the bare
+// shared .three-column-video-gtm wrapper class on its own.
+.three-column-video-gtm.pain-vs-promise {
+
+    .title-container {
+        margin-bottom: 100px;
+    }
+}
+
+section.intelligence-use-case {
+    // The section's own class switched from background-white to
+    // background-lightest-grey (see _use-case-tabs.php) to match the
+    // Figma background colour -- that global class only sets a
+    // background-color, not the color:#000!important that
+    // .background-white provides, so this needs its own explicit
+    // text colour or it falls back to the template body's white.
+    padding: 100px 0;
+    color: $heading-color;
+
+    .top-block {
+        margin-bottom: 40px;
+
+        .title-switcher-container {
+            display: block;
+            width: 100%;
+
+            h2.title.bold-red {
+                color: $heading-color;
+                font-size: 52px;
+                line-height: 62px;
+                margin-bottom: 12px;
+            }
+
+            .sub-title {
+                display: block;
+                color: #5f5f5f;
+                margin-bottom: 100px;
+                font-size: 20px;
+            }
+        }
+    }
+
+    // Figma uses plain text tabs on a shared bottom rule, not the
+    // bordered pill/button look -- the active tab is bold with its own
+    // red underline.
+    .intelligence-tab-bar {
+        display: flex;
+        gap: 32px;
+        border-bottom: 1px solid $color-medium-light-grey;
+
+        .intelligence-tab-button {
+            color: #5f5f5f;
+            padding: 0 0 12px;
+            margin: 0;
+            font-size: 16px;
+            line-height: 19px;
+            font-weight: 400;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+
+            &.active {
+                color: $heading-color;
+                font-weight: 700;
+                border-bottom-color: $color-red;
+            }
+        }
+    }
+
+    .intelligence-tab-panel {
+        width: 100%;
+        display: none;
+        padding-top: 40px;
+
+        &.active {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: unset;
+            // align-items: center;
+
+            @media (max-width: 767px) {
+                flex-direction: column-reverse;
+                gap: 30px;
+            }
+        }
+
+        // AOS only computes an element's position once -- it can't see this
+        // panel while it's display:none, so it would never fire for
+        // anything but the first (already-active) tab. These are plain CSS
+        // entrance/exit animations instead, applied as their own classes by
+        // the tab-switch script (main.js) rather than tied directly to
+        // .active, so the outgoing panel gets a chance to fade out first
+        // instead of being yanked straight to display:none -- a softer,
+        // less abrupt switch than an instant cut.
+        &.tab-panel-entering {
+            animation: tab-panel-fade-in 0.45s ease-out forwards;
+        }
+
+        &.tab-panel-leaving {
+            animation: tab-panel-fade-out 0.2s ease-in forwards;
+        }
+
+        .column.one-half {
+            flex: 1;
+
+            &.text-column{
+                flex: 0 0 45%;
+
+                @media (max-width: 767px) {
+                    flex: 1 1 100%;
+                }
+            }
+
+            @media (max-width: 767px) {
+                flex: 1 1 100%;
+            }
+        }
+
+        .text-column {
+            padding-right: 40px;
+
+            @media (max-width: 767px) {
+                padding-right: 0;
+                margin-bottom: 24px;
+            }
+
+            // Figma repeats the module's own name ("Sales") as a large
+            // heading at the top of its panel, separate from and above
+            // the smaller grey question (panel_heading).
+            .panel-title {
+                display: block;
+                width: 100%;
+                font-weight: 700;
+                font-size: 34px;
+                line-height: 42px;
+                color: $heading-color;
+                margin-bottom: 12px;
+            }
+
+            .panel-heading {
+                display: block;
+                width: 100%;
+                font-weight: 400;
+                font-size: 20px;
+                line-height: 24px;
+                color: #5f5f5f;
+                margin-bottom: 27px;
+            }
+
+            .prompt-examples {
+                display: block;
+                width: 100%;
+
+                // These are <span> tags (see the ACF repeater markup),
+                // which default to display:inline -- width/margin have
+                // no effect on an inline box, which is why the two
+                // examples were previously running together on one
+                // line instead of stacking as separate pill cards.
+                // Text is left-aligned per updated spec (originally
+                // centred to match an earlier Figma pass) -- regular
+                // (non-italic) weight either way, the quote marks around
+                // the text are what signal it's a prompt example.
+                .prompt-example {
+                    display: block;
+                    width: 100%;
+                    background-color: #FDF1F1;
+                    border-radius: 8px;
+                    padding: 16px 20px;
+                    font-size: 17px;
+                    text-align: left;
+                    margin-bottom: 16px;
+                    color: #0A0A0A;
+                }
+            }
+        }
+
+        .image-column {
+            // CSS-only device frame (Figma shows the screenshot inset
+            // in a laptop-style black bezel) so this doesn't depend on
+            // a separate bezel image asset.
+            .device-frame {
+                display: block;
+                width: 100%;
+                background-color: #000;
+                border-radius: 16px;
+                padding: 14px 14px 22px;
+            }
+
+            .image-container {
+                display: block;
+                width: 100%;
+                border-radius: 4px;
+                overflow: hidden;
+
+                .bg-container{
+                    position: unset;
+                }
+
+                // The ACF image field renders a <picture><img> pair
+                // (see _use-case-tabs.php), both inline by default --
+                // without this they collapse to 0 height and the
+                // device-frame never shows the screenshot at all.
+                img,
+                picture {
+                    display: block;
+                    width: 100%;
+                    height: auto;
+                }
+            }
+        }
+    }
+
+    .footer-note {
+        display: block;
+        width: 100%;
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid $color-medium-light-grey;
+        color: #0a0a0a;
+        font-size: 20px;
+    }
+}
+
+section.closing-cta-form {
+    padding: 100px 0;
+
+    &.background-red {
+        background-color: $color-red;
+
+        h2, .sub-text, .follow-us-label {
+            color: #fff;
+        }
+    }
+
+    .cta-column-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px;
+        align-items: center;
+
+        @media (max-width: 767px) {
+            display: block;
+        }
+    }
+
+    .text-column {
+        flex: 1 1 45%;
+    }
+
+    .sub-text {
+        display: block;
+        margin: 16px 0 32px;
+    }
+
+    .follow-us {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .follow-us-label {
+            font-weight: bold;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+        }
+    }
+
+    .form-column {
+        flex: 1 1 45%;
+
+        .form-container {
+            display: block;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 32px;
+        }
+    }
+}
+
+// Entrance/exit animations for .intelligence-tab-panel -- see the
+// .tab-panel-entering / .tab-panel-leaving rules above for why these
+// can't just be AOS data-aos attributes.
+@keyframes tab-panel-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes tab-panel-fade-out {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+}
+
+// templates/gtm-components/_large-testimonials.php and
+// templates/customer-events-components/_form-module.php are shared
+// components -- the former also renders on template-gtm.php, the
+// latter on a dozen other page templates (see functions.php's
+// get_template_part() calls). Scoped to body.template-adapt-intelligence
+// here rather than editing those shared partials, so neither change
+// leaks onto any other page that reuses the same component. This
+// matches the same body.template-X scoping convention already used
+// for .expanding-form-module on other templates (see
+// body.template-benchmarking in _benchmarking.scss).
+body.template-adapt-intelligence {
+    .large-testimonial-slider {
+        // #121212 per design -- not the sitewide .background-true-black
+        // utility class's pure #000 (see $color-black in
+        // _variables.scss), and not added as a class to the shared PHP
+        // partial, which would also affect template-gtm.php's
+        // testimonial slider.
+        background: #121212;
+    }
+
+    .expanding-form-module {
+        padding-top: 150px;
+    }
+
+    // templates/customer-events-components/_animated-text-logos.php is
+    // another shared component (reused on template-gtm.php and others --
+    // see the grep-confirmed template list above). Widened here, scoped to
+    // this template only, same rationale as .large-testimonial-slider and
+    // .expanding-form-module above.
+    section.animated-text .container .inner .animated-text-container {
+        max-width: 780px;
+    }
+
+    // templates/gtm-components/_numbers-map.php is also shared (reused on
+    // template-gtm.php and template-market-buyer.php too -- see the
+    // grep-confirmed template list above), so this shift is scoped to this
+    // template only, same rationale as the overrides above. Desktop-only
+    // on purpose: the mobile layout (see _gtm.scss's existing
+    // @media (max-width: 767px) override on this same img, which switches
+    // object-fit/object-position) already repositions this image
+    // differently, and this nudge isn't wanted there.
+    @media (min-width: 768px) {
+        section.map-with-numbers .container .map-outer .background-container img {
+            transform: translateX(70px);
+        }
+    }
+
+}
+
+// The tag field (e.g. "Interactive") moves from above the quote to sit
+// beside the name/role block, restyled from the shared partial's
+// uppercase/red-bullet label into a small bordered box, per the updated
+// design -- the PHP partial only renders the tag in this alternate
+// position when $is_adapt_intelligence_template is true (see
+// templates/gtm-components/_large-testimonials.php). The selector below
+// repeats the shared partial's full nesting chain from _gtm.scss (with
+// body.template-adapt-intelligence prefixed) rather than a shorter one,
+// so this reliably outranks _gtm.scss's own .quote-container .tag-container
+// rule on specificity -- the two rules tie on class count otherwise, which
+// made the override lose silently depending on @import glob order.
+body.template-adapt-intelligence .large-testimonial-slider .container .large-quote-slide-container .slide .slide-inner .name-image-container .tag-container {
+    float: none;
+    display: inline-block;
+    width: auto;
+    margin-bottom: 0;
+    padding: 6px 12px;
+    border: 1px solid #FFFFFF;
+    border-radius: 0;
+    min-width: 140px;
+    font-family: 'Helvetica Neue';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 13px;
+    letter-spacing: normal;
+    text-transform: none;
+    text-align: center;
+    color: #FFFFFF;
+    white-space: nowrap;
+}
+
+body.template-adapt-intelligence .large-testimonial-slider .container .large-quote-slide-container .slide .slide-inner .name-image-container .tag-container:before {
+    content: none;
+}
+
+// The "Cards" layout (templates/gtm-components/_cards-dark.php, registered
+// as layout_0da62bb93485 on this template's flexible content field) is the
+// real, shared GTM Cards component reused as-is -- same partial, same
+// fields, same markup -- not an imitation. The partial itself now renders
+// this section with the real "background-white" class (instead of its
+// default "background-black") when $is_adapt_intelligence_template is true
+// -- see _cards-dark.php -- so this follows another black section (Map
+// with Numbers) without two black sections running back to back. That
+// class swap is what gets the background/base text color for free from
+// the site's existing .background-white utility (global/_styles.scss);
+// everything below here just covers what .background-white doesn't reach.
+
+// All three overrides below key off the real .background-white class
+// itself (which _cards-dark.php only ever outputs on this template, see
+// above) rather than the body/template scope, so they apply exactly when
+// this instance is background-white and never when it's background-black
+// -- including on template-gtm.php, which always keeps background-black.
+
+// The title (h2.bold-grey) carries the shared partial's .text-white class,
+// which would otherwise leave it light-grey even on background-white
+// (.text-white sets its own color directly on the h2, so it isn't
+// overridden by the inherited color .background-white puts on the
+// section). Repainted the same way .text-black already does sitewide (see
+// global/_styles.scss).
+section.cards-module.gtm-cards-module.background-white .top-content h2.bold-grey {
+    color: #000;
+
+    p {
+        color: #000;
+    }
+}
+
+// The dark .card tiles are left untouched -- they already read fine
+// against a white page background. But .card-title.labelXL's own hover
+// state (in _gtm.scss) turns it black, on the assumption the card itself
+// flips to a light background on hover; here the card stays dark, so black
+// text on hover would disappear. Keep it white instead.
+section.cards-module.gtm-cards-module.background-white .card-container .card:hover .card-title.labelXL {
+    color: #fff;
+}
+
+// The "anywhere but here" <strong> inside that h2 should read as brand
+// red rather than the component's own default grey (#9A9A9A, set by
+// ".container .top-content h2 p strong" in _gtm.scss), same pattern as
+// this page's own pain-vs-promise h2.bold-red. ".container" is repeated
+// here (even though the selector doesn't need it to match) purely to match
+// that rule's class count and come out ahead on specificity, the same
+// approach used elsewhere in this file (see the large-testimonial-slider
+// tag-container override above) rather than relying on source order or
+// !important.
+section.cards-module.gtm-cards-module.background-white .container .top-content h2 p strong {
+    color: $color-red;
+}
+
+// The global `body { overflow-x: hidden; }` rule in global/_base.scss
+// establishes a non-"visible" overflow on <body>, which breaks
+// `position: sticky` for any descendant (including the shared
+// Sticky Text Image Columns / Sticky Cards component used on this
+// template) regardless of which axis is hidden. The Benchmarking
+// template already overrides this for the same reason (see
+// `body.template-benchmarking` in _benchmarking.scss) -- this page
+// needs the identical override so its sticky image-overlap effect
+// works the same way.
+body.template-adapt-intelligence {
+    overflow-x: initial;
+
+    @media (max-width: 767px) {
+        overflow-x: hidden;
+    }
+}
+
+// "Text" field content on the shared Sticky Text Image Columns component
+// (templates/benchmark-components/_sticky-cards.php): on this page it's a
+// set of short prompt examples rather than a paragraph of prose, so
+// adapt_sticky_card_prompt_list() in that template renders each line as
+// its own pill -- same #FDF1F1 background/padding/radius as the
+// .prompt-example chips above, for a consistent "prompt example" look
+// between the two sections. Scoped to this page's body class since the
+// component is shared with the Benchmarking template, where the "Text"
+// field is a single paragraph and keeps its original <p> styling
+// untouched.
+body.template-adapt-intelligence .benchmarking-sticky-cards {
+    .text-points {
+        display: block;
+        width: 100%;
+    }
+
+    .text-point {
+        display: block;
+        width: 100%;
+        background-color: #FDF1F1;
+        border-radius: 8px;
+        padding: 16px 20px;
+        font-size: 17px;
+        text-align: left;
+        margin-bottom: 16px;
+        color: #0A0A0A;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+// The reused "Image or Video Block" component
+// (templates/market-buyer-components/_video-block.php, registered as
+// layout_71a3f1744b3c on this template's flexible content field) keeps
+// its default contained width here -- the sitewide .container max-width
+// + side padding from global/_base.scss, same as every other section.
+// Made edge-to-edge for this page instead, per request, the same way
+// template-market-buyer.php's own copy of this component already goes
+// full width (see .container { max-width: 1920px; padding: 0; } under
+// body.template-market-buyer in _market-buyer.scss) -- scoped to this
+// page's body class only, so the Market & Buyer page's own video block
+// section is untouched.
+body.template-adapt-intelligence section.video-module {
+    // Removes the shared component's own top/bottom padding (45px,
+    // 40px on mobile -- see the base `section.video-module` rule in
+    // _events.scss) so this section touches the hero image above and
+    // the next section below instead of leaving a gap, per request.
+    // template-market-buyer.php's own instance already sets its own
+    // padding: 0 directly (see _market-buyer.scss), so this mirrors
+    // that for this page without touching the shared base rule itself.
+    padding: 0;
+
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    // The shared component's pause/play button (.pause-autoplay) is
+    // only styled inside template-market-buyer.php's own scoped rules
+    // in _market-buyer.scss, so it renders unstyled here. Same
+    // treatment, repeated flat (not nested under .bg-container) since
+    // that's all this page's copy needs.
+    button.pause-autoplay {
+        width: 40px;
+        height: 40px;
+        background-image: url('../images/market-play-pause.svg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        -webkit-appearance: none;
+        appearance: none;
+        cursor: pointer;
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+
+        &.paused {
+            background-image: url('../images/gtm-play.svg');
+        }
+    }
+}
+
+// Per explicit request: fixes the HubSpot free-text form's (hsfc-*
+// classes, HubSpot's newer "Free CMS" form renderer) label alignment
+// and text-field alignment inside the Intro Statement popup form
+// (templates/intelligence-components/_intro-statement.php's
+// .popupBlockOuter, rendered via the global .form-popup-button /
+// magnificPopup wiring in source/js/main.js) -- scoped to this
+// template only, same body.template-adapt-intelligence pattern used
+// for the video-module rules above.
+body.template-adapt-intelligence {
+    .hsfc-FormWrapper label {
+        align-self: left !important;
+        display: inline-block !important;
+        left: 0;
+    }
+
+    .hsfc-FormWrapper .hsfc-TextField, .hsfc-FormWrapper .hsfc-EmailField {
+        text-align: left;
+    }
+}

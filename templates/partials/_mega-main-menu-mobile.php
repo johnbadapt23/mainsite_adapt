@@ -1,4 +1,4 @@
-<div class="main-nav-mobile">
+<div class="main-nav-mobile" role="navigation" aria-label="Main menu (mobile)">
     <ul>
         <div class="services-container">
             <span class="mobile-services-dropdown">

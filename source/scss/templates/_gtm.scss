@@ -36,7 +36,7 @@ section.left-text-links.gtm-map-block.left-text-links-image {
         .column-container {
             .column.text-column {
                 .inner-text {
-                    float: left;
+                    float: none;
                     width: 100%;
                     max-width: 540px;
 
@@ -106,11 +106,11 @@ section.left-text-links.gtm-map-block.left-text-links-image {
             .column.image-column {
                 .map-container {
                     position: relative;
-                    float: left;
+                    float: none;
                     width: 100%;
 
                     img {
-                        float: left;
+                        float: none;
                         width: 100%;                        
                     }
 
@@ -257,7 +257,7 @@ section.left-text-links.gtm-map-block.left-text-links-image {
                     }
 
                     span {
-                        float: left;
+                        float: none;
                         width: 100%;
                     }
                 }
@@ -281,7 +281,7 @@ section.left-text-links.gtm-map-block.left-text-links-image {
 
                         .icon {
                             width: 12px;
-                            float: left;
+                            float: none;
                             margin-right: 4px;
 
                             @media (max-width:767px) {
@@ -326,7 +326,7 @@ section.left-text-links.gtm-map-block.left-text-links-image {
                             }
 
                             .detail-title {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 font-size: 10px;
                                 line-height: 1.2;
@@ -338,7 +338,7 @@ section.left-text-links.gtm-map-block.left-text-links-image {
                             }
 
                             .detail-text {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 font-size: 14px;
                                 line-height: 1.2;
@@ -500,7 +500,7 @@ section.stats {
                         }
 
                         img {
-                            float: left;
+                            float: none;
                             width: auto;
                             height: 100%;
                         }
@@ -516,7 +516,7 @@ section.stats {
                     }
 
                     .headerLarge {
-                        float: left;
+                        float: none;
                         width: 100%;
                         max-width: 500px; 
 
@@ -583,7 +583,7 @@ section.overlapping-cards {
 
     .container {
         .title-container {
-            float: left;
+            float: none;
             width: 100%;
             margin-bottom: 56px;
             text-align: center;
@@ -599,7 +599,7 @@ section.overlapping-cards {
                 max-width: 856px;
 
                 h2 {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 32px;
 
@@ -608,7 +608,7 @@ section.overlapping-cards {
                     }
 
                     p {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 0px;
                     }
@@ -626,13 +626,13 @@ section.overlapping-cards {
         .overlapping-cards-container {
             position: relative;
             width: 100%;
-            float:left;
+            float: none;
         }
 
         .overlapping-card-wrapper {
             position: sticky;
             width: 100%;
-            float: left;
+            float: none;
             margin-bottom: 40px;
             z-index: 1;
             top: 56px;
@@ -651,7 +651,7 @@ section.overlapping-cards {
             box-shadow: 0 -2px 5px rgba(33, 33, 33, 0.08);
             border-radius: 8px;
             width: 100%;
-            float:left;
+            float: none;
             margin-bottom: 40px;
             transition: transform 0.2s ease;
             transform-origin: top center;   
@@ -684,12 +684,12 @@ section.overlapping-cards {
                     }
 
                     .text-inner {
-                        float: left;
+                        float: none;
                         width: 100%;
                         max-width: 480px;
 
                         h2 {
-                            float: left;
+                            float: none;
                             width: 100%;
                             max-width: 338px;
                             margin-bottom: 32px;
@@ -713,7 +713,7 @@ section.overlapping-cards {
                         }
 
                         .text {
-                            float: left;
+                            float: none;
                             width: 100%; 
                             
                             @media (max-width:767px) {
@@ -751,6 +751,14 @@ section.overlapping-cards {
 }
 
 section.large-testimonial-slider {
+    // Fallback colour behind the quote -- the quote/name text is set
+    // (white) assuming a dark background_image always covers this
+    // section. When no background_image is uploaded for a slide there
+    // is nothing behind the text at all, so it renders white-on-white.
+    // This fallback never conflicts with a real image: the image sits
+    // on top of it via .background-container (absolute, inset 0).
+    background-color: $color-black;
+
     .container {
         .background-container {
             position: absolute;
@@ -788,13 +796,13 @@ section.large-testimonial-slider {
             }
 
             .slide {
-                float: left;
+                float: none;
                 width: 100%;                
                 display: flex;
                 align-items: stretch;
 
                 .slide-inner {
-                    float: left;
+                    float: none;
                     width: 100%;
                     display: flex;
                     flex-direction: column;
@@ -814,13 +822,42 @@ section.large-testimonial-slider {
                         img {
                             height: 100%;
                             width: auto;
-                            float: left;
+                            float: none;
                         }
                     }
 
                     .quote-container {
+                        position: relative;
+                        // Figma shows a decorative open-quote mark above the
+                        // testimonial text. This matches the same
+                        // background-image convention already used for the
+                        // quote-slider-inner::before in _market-buyer.scss.
+                        padding-top: 56px;
+
+                        &:before {
+                            content: '';
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            width: 40px;
+                            height: 34px;
+                            background-size: 40px 34px;
+                            background-image: url(../images/red-quote-open.svg);
+                            background-repeat: no-repeat;
+                        }
+
+                        @media (max-width:767px) {
+                            padding-top: 40px;
+
+                            &:before {
+                                width: 28px;
+                                height: 24px;
+                                background-size: 28px 24px;
+                            }
+                        }
+
                         .tag-container {
-                            float: left;
+                            float: none;
                             width: 100%;
                             margin-bottom: 24px;
                             padding-left: 16px;
@@ -830,6 +867,7 @@ section.large-testimonial-slider {
                             letter-spacing: 0.24em;
                             text-transform: uppercase;
                             color: #9a9a9a;
+                            display: block;
 
                             &:before {
                                 content: '';
@@ -852,8 +890,9 @@ section.large-testimonial-slider {
                         }
                     }
                     .quote {
-                        float: left;
+                        float: none;
                         width: 100%;
+                        display: block;
                         margin-bottom: 64px;
 
                         @media (max-width:1023px) {
@@ -868,7 +907,7 @@ section.large-testimonial-slider {
                     }
 
                     .name-image-container {
-                        float: left;
+                        float: none;
                         width: 100%;
                         display: flex;
                         gap: 24px;
@@ -884,7 +923,7 @@ section.large-testimonial-slider {
                             max-width: 96px;
 
                             img {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 border-radius: 4px;
                                 border: 1px solid #222222;
@@ -1002,7 +1041,7 @@ section.large-testimonial-slider {
     }
 
     .quote-slider-timer {
-        float: left;
+        float: none;
         width: 100%;
         height: 1px;
         position: relative;
@@ -1011,7 +1050,7 @@ section.large-testimonial-slider {
         .quote-slider-timer-inner {
             height: 1px;
             background-color: #fff;
-            float: left;
+            float: none;
         }
     }
 }
@@ -1032,7 +1071,7 @@ section.cards-module.gtm-cards-module {
         }
 
          .card-container {
-            float: left;
+            float: none;
             width: 100%;
             display: flex;
             flex-wrap: wrap;
@@ -1057,7 +1096,7 @@ section.cards-module.gtm-cards-module {
                 }
 
                 .icon-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 48px;
 
@@ -1086,7 +1125,7 @@ section.cards-module.gtm-cards-module {
                 }
 
                 .content-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     position: relative;
                     text-align: left;
@@ -1097,7 +1136,7 @@ section.cards-module.gtm-cards-module {
                         padding-bottom: 0;
 
                         .card-title {
-                            float: left;
+                            float: none;
                             width: 100%;
                             margin-bottom: 24px;
                             font-size: 24px;
@@ -1105,7 +1144,7 @@ section.cards-module.gtm-cards-module {
                         }
 
                         .card-text {
-                            float: left;
+                            float: none;
                             width: 100%;
                             color: #9a9a9a !important;
                             font-size: 18px;
@@ -1212,7 +1251,7 @@ section.cards-module.gtm-cards-module {
             }
     
             .icon-slide-link-container {
-                float: left;
+                float: none;
                 width: 100%;
                 padding: 0 0px;
                 margin-bottom: 40px;
@@ -1262,7 +1301,7 @@ section.cards-module.gtm-cards-module {
             }
     
             .gtm-icon-slider {
-                float: left;
+                float: none;
                 width: calc(100% + 64px);
                 margin-left: -32px;
     
@@ -1347,11 +1386,11 @@ section.cards-module.gtm-cards-module {
             padding-top: 24px;
 
             .gtm-icon-accordion {
-                float: left;
+                float: none;
                 width: 100%;
 
                 .gtm-icon-accordion-item {
-                    float: left;
+                    float: none;
                     width: 100%;
                     border-top: 1px solid #222;
                     padding-top: 32px;
@@ -1363,7 +1402,7 @@ section.cards-module.gtm-cards-module {
                     }
 
                     .gtm-icon-title {
-                        float: left;
+                        float: none;
                         width: 100%;
                         position: relative;
 
@@ -1391,19 +1430,19 @@ section.cards-module.gtm-cards-module {
                     }
 
                     .gtm-icon-answer {
-                        float: left;
+                        float: none;
                         width: 100%;
                         display: none;
                         text-align: left;
 
                         .icon-column-container {
-                            float: left;
+                            float: none;
                             width: 100%;
                             display: flex;
                             flex-direction: column;                            
 
                             .gtm-icon-column {
-                                float: left;
+                                float: none;
                                 width: 100%;
                                 display: flex;
                                 gap: 8px;
@@ -1411,12 +1450,12 @@ section.cards-module.gtm-cards-module {
                                 margin-top: 16px;
 
                                 .icon-container {
-                                    float: left;
+                                    float: none;
                                     width: 40px;
                                     height: 40px;
 
                                     img {
-                                        float: left;
+                                        float: none;
                                         width: 100%;
                                         height: auto;
                                     }
@@ -1500,20 +1539,20 @@ section.three-column-video-gtm.three-column-icon-text-ecosystems.three-column-pa
             }
 
             .icon-container img {
-                float: left;
+                float: none;
                 height: 100%;
                 width: auto;
             }
 
             .text-container, .link-container {
                 text-align: left;
-                float: left;
+                float: none;
                 width: 100%;
 
                 p {
                     margin-bottom: 0px;
                     width: 100%;
-                    float: left;
+                    float: none;
                 }
 
                 .labelXL {
@@ -1532,7 +1571,7 @@ section.three-column-video-gtm.three-column-icon-text-ecosystems.three-column-pa
         }
 
         .image-video-container {
-            float: left;
+            float: none;
             width: 100%;
             margin-bottom: 80px;
             text-align: center;
@@ -1624,12 +1663,13 @@ section.map-with-numbers {
 
     .container {
         .title-container {
-            float: left;
+            float: none;
             width: 100%;
             margin-bottom: 40px;
+            display: block;
 
             .labelXXL {
-                float: left;
+                float: none;
                 width: 100%;
 
                 @media (max-width: 767px) { 
@@ -1638,10 +1678,21 @@ section.map-with-numbers {
                     }
                 }
             }
+
+            .sub-text {
+                display: block;
+                width: 100%;
+                margin-top: 11px;
+                color: #9A9A9A;
+                font-size: 18px;
+                line-height: 21px;
+                font-weight: 400;
+            }
         }
 
         .map-outer {
-            float: left;
+            display: block;
+            float: none;
             width: 100%;
             position: relative;
             padding: 140px 0;
@@ -1682,7 +1733,7 @@ section.map-with-numbers {
                 width: 100%;
                 display: flex;
                 max-width: 1080px;
-                float: left;
+                float: none;
                 flex-direction: row;
                 flex-wrap: wrap;
                 gap: 100px 33px;
@@ -1704,12 +1755,17 @@ section.map-with-numbers {
                     }
 
                     .numbers-text {
-                        float: left;
+                        float: none;
                         width: 100%;
                         margin-bottom: 8px;
                         font-size: 80px;
                         line-height: 1;
                         font-weight: 300;
+                        // Keeps digit widths consistent while the count-up
+                        // script (initNumbersCountUp in main.js) ticks the
+                        // value up from 0, so the text doesn't jitter
+                        // sideways as it counts.
+                        font-variant-numeric: tabular-nums;
 
                         @media (max-width: 1023px) {
                             font-size: 32px;
@@ -1718,7 +1774,7 @@ section.map-with-numbers {
                     }
 
                     .labelMedium {
-                        float: left;
+                        float: none;
                         width: 100%;
 
                         @media (max-width: 1023px) {
@@ -1763,6 +1819,11 @@ section.map-with-numbers {
     }
 }
 
+.map-with-numbers .primary-white strong {
+    color: #e7534f !important;
+    font-weight: 400;
+}
+
 section.repeatable-image-text {
     padding: 0;
 
@@ -1770,7 +1831,7 @@ section.repeatable-image-text {
         position: relative;
 
         .inner {
-            float: left;
+            float: none;
             max-width: 100%;
             width: 100%;
             position: relative;
@@ -1813,7 +1874,7 @@ section.repeatable-image-text {
     }
 
     .title-container {
-        float: left;
+        float: none;
         width: 100%;
         margin-bottom: 80px;
         text-align: center;
@@ -1852,7 +1913,7 @@ section.repeatable-image-text {
     }
 
     .cards {
-        float: left;
+        float: none;
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -1888,11 +1949,11 @@ section.repeatable-image-text {
 
                 &.image-column {
                     position: relative;
-                    float: left;
+                    float: none;
 
                     .image-container {
                         position: relative;
-                        float: left;
+                        float: none;
                         width: 100%;
 
                         img {
@@ -1952,7 +2013,7 @@ section.repeatable-image-text {
                     }
 
                     .button-container {
-                        float: left;
+                        float: none;
                         width: 100%;
                         text-align: center;
                         margin-top: 24px;
@@ -1978,624 +2039,3 @@ section.repeatable-image-text {
 // the isolated-build diff used to confirm this file's compiled output
 // is unchanged from the pre-merge gated build.
 // =====================================================================
-// line 39
-
-section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.text-column.text-column {
-                                        .inner-text.inner-text {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 109
-
-section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.image-column.image-column {
-                                        .map-container.map-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 113
-
-section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column.image-column.image-column {
-                                        .map-container.map-container {
-                                                img {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 260
-
-section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
-                .container.container {
-                        .column-container.column-container {
-                                .card-inner.card-inner {
-                                        .card-top.card-top {
-                                                span {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 329
-
-section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
-                .container.container {
-                        .column-container.column-container {
-                                .card-inner.card-inner {
-                                        .bottom-details.bottom-details {
-                                                .bottom-detail.bottom-detail {
-                                                        .detail.detail {
-                                                                .detail-title.detail-title {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 341
-
-section.left-text-links.left-text-links.gtm-map-block.gtm-map-block.left-text-links-image.left-text-links-image {
-                .container.container {
-                        .column-container.column-container {
-                                .card-inner.card-inner {
-                                        .bottom-details.bottom-details {
-                                                .bottom-detail.bottom-detail {
-                                                        .detail.detail {
-                                                                .detail-text.detail-text {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 519
-
-section.stats.stats {
-                .container.container {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.quote-column.quote-column {
-                                                .headerLarge.headerLarge {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 586
-
-section.overlapping-cards.overlapping-cards {
-                .container.container {
-                        .title-container.title-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 602
-
-section.overlapping-cards.overlapping-cards {
-                .container.container {
-                        .title-container.title-container {
-                                .inner-text.inner-text {
-                                        h2 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 611
-
-section.overlapping-cards.overlapping-cards {
-                .container.container {
-                        .title-container.title-container {
-                                .inner-text.inner-text {
-                                        h2 {
-                                                p {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 629
-
-section.overlapping-cards.overlapping-cards {
-                .container.container {
-                        .overlapping-cards-container.overlapping-cards-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 635
-
-section.overlapping-cards.overlapping-cards {
-                .container.container {
-                        .overlapping-card-wrapper.overlapping-card-wrapper {
-                                float: none;
-                        }
-                }
-        }
-
-// line 654
-
-section.overlapping-cards.overlapping-cards {
-                .container.container {
-                        .overlapping-card.overlapping-card {
-                                float: none;
-                        }
-                }
-        }
-
-// line 687
-
-section.overlapping-cards.overlapping-cards {
-                .container.container {
-                        .overlapping-card.overlapping-card {
-                                .column-container.column-container {
-                                        .text-column.text-column {
-                                                .text-inner.text-inner {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 692
-
-section.overlapping-cards.overlapping-cards {
-                .container.container {
-                        .overlapping-card.overlapping-card {
-                                .column-container.column-container {
-                                        .text-column.text-column {
-                                                .text-inner.text-inner {
-                                                        h2 {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 716
-
-section.overlapping-cards.overlapping-cards {
-                .container.container {
-                        .overlapping-card.overlapping-card {
-                                .column-container.column-container {
-                                        .text-column.text-column {
-                                                .text-inner.text-inner {
-                                                        .text.text {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1035
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                &.static-cards.static-cards {
-                        .card-container.card-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1060
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                &.static-cards.static-cards {
-                        .card-container.card-container {
-                                .static-card.static-card {
-                                        .icon-container.icon-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1089
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                &.static-cards.static-cards {
-                        .card-container.card-container {
-                                .static-card.static-card {
-                                        .content-container.content-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1100
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                &.static-cards.static-cards {
-                        .card-container.card-container {
-                                .static-card.static-card {
-                                        .content-container.content-container {
-                                                .content-container-inner.content-container-inner {
-                                                        .card-title.card-title {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1108
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                &.static-cards.static-cards {
-                        .card-container.card-container {
-                                .static-card.static-card {
-                                        .content-container.content-container {
-                                                .content-container-inner.content-container-inner {
-                                                        .card-text.card-text {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1350
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                .container.container {
-                        .icon-accordion.icon-accordion {
-                                .gtm-icon-accordion.gtm-icon-accordion {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 1354
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                .container.container {
-                        .icon-accordion.icon-accordion {
-                                .gtm-icon-accordion.gtm-icon-accordion {
-                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1366
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                .container.container {
-                        .icon-accordion.icon-accordion {
-                                .gtm-icon-accordion.gtm-icon-accordion {
-                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
-                                                .gtm-icon-title.gtm-icon-title {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1394
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                .container.container {
-                        .icon-accordion.icon-accordion {
-                                .gtm-icon-accordion.gtm-icon-accordion {
-                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
-                                                .gtm-icon-answer.gtm-icon-answer {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1400
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                .container.container {
-                        .icon-accordion.icon-accordion {
-                                .gtm-icon-accordion.gtm-icon-accordion {
-                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
-                                                .gtm-icon-answer.gtm-icon-answer {
-                                                        .icon-column-container.icon-column-container {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1406
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                .container.container {
-                        .icon-accordion.icon-accordion {
-                                .gtm-icon-accordion.gtm-icon-accordion {
-                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
-                                                .gtm-icon-answer.gtm-icon-answer {
-                                                        .icon-column-container.icon-column-container {
-                                                                .gtm-icon-column.gtm-icon-column {
-                                                                        float: none;
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1419
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module {
-                .container.container {
-                        .icon-accordion.icon-accordion {
-                                .gtm-icon-accordion.gtm-icon-accordion {
-                                        .gtm-icon-accordion-item.gtm-icon-accordion-item {
-                                                .gtm-icon-answer.gtm-icon-answer {
-                                                        .icon-column-container.icon-column-container {
-                                                                .gtm-icon-column.gtm-icon-column {
-                                                                        .icon-container.icon-container {
-                                                                                img {
-                                                                                        float: none;
-                                                                                }
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1510
-
-section.three-column-video-gtm.three-column-video-gtm.three-column-icon-text-ecosystems.three-column-icon-text-ecosystems.three-column-partnered-research.three-column-partnered-research {
-                .container.container {
-                        .column-container.column-container .column.column {
-                                .text-container.text-container, .link-container.link-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 1516
-
-section.three-column-video-gtm.three-column-video-gtm.three-column-icon-text-ecosystems.three-column-icon-text-ecosystems.three-column-partnered-research.three-column-partnered-research {
-                .container.container {
-                        .column-container.column-container .column.column {
-                                .text-container.text-container, .link-container.link-container {
-                                        p {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1535
-
-section.three-column-video-gtm.three-column-video-gtm.three-column-icon-text-ecosystems.three-column-icon-text-ecosystems.three-column-partnered-research.three-column-partnered-research {
-                .container.container {
-                        .image-video-container.image-video-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1627
-
-section.map-with-numbers.map-with-numbers {
-                .container.container {
-                        .title-container.title-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1632
-
-section.map-with-numbers.map-with-numbers {
-                .container.container {
-                        .title-container.title-container {
-                                .labelXXL.labelXXL {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 1644
-
-section.map-with-numbers.map-with-numbers {
-                .container.container {
-                        .map-outer.map-outer {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1685
-
-section.map-with-numbers.map-with-numbers {
-                .container.container {
-                        .map-outer.map-outer {
-                                .column-container.column-container {
-                                        float: none;
-                                }
-                        }
-                }
-        }
-
-// line 1707
-
-section.map-with-numbers.map-with-numbers {
-                .container.container {
-                        .map-outer.map-outer {
-                                .column-container.column-container {
-                                        .column.column {
-                                                .numbers-text.numbers-text {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1721
-
-section.map-with-numbers.map-with-numbers {
-                .container.container {
-                        .map-outer.map-outer {
-                                .column-container.column-container {
-                                        .column.column {
-                                                .labelMedium.labelMedium {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1773
-
-section.repeatable-image-text.repeatable-image-text {
-                .container.container {
-                        .inner.inner {
-                                float: none;
-                        }
-                }
-        }
-
-// line 1816
-
-section.repeatable-image-text.repeatable-image-text {
-                .title-container.title-container {
-                        float: none;
-                }
-        }
-
-// line 1855
-
-section.repeatable-image-text.repeatable-image-text {
-                .cards.cards {
-                        float: none;
-                }
-        }
-
-// line 1895
-
-section.repeatable-image-text.repeatable-image-text {
-                .cards.cards {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.image-column.image-column {
-                                                .image-container.image-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 1955
-
-section.repeatable-image-text.repeatable-image-text {
-                .cards.cards {
-                        .column-container.column-container {
-                                .column.column {
-                                        &.text-column.text-column {
-                                                .button-container.button-container {
-                                                        float: none;
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-
-section.cards-module.cards-module.gtm-cards-module.gtm-cards-module.static-cards.static-cards .card-container.card-container {
-        float: none;
-    }
-
-section.map-with-numbers.map-with-numbers .container.container .title-container.title-container {
-        display: block;
-    }
-
-section.overlapping-cards.overlapping-cards .container.container .title-container.title-container {
-        display: block;
-    }
-
-section.three-column-icon-text.three-column-icon-text .container.container .title-container.title-container {
-        display: block;
-    }
-
-section.three-column-icon-text-ecosystems.three-column-icon-text-ecosystems.three-column-partnered-research.three-column-partnered-research .container.container .title-container.title-container {
-        display: block;
-    }

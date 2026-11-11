@@ -18,7 +18,7 @@
     width: 100%;
     height: auto;
     min-height: 100dvh;
-    transform: translateY(-110px);
+    transform: translateY(-140px);
 }
 
 .art-wrap:after {
@@ -32,7 +32,7 @@
 }
 section.text-animation-introduction.text-animation-introduction-v2{
     height: auto;
-    padding-bottom: 0;
+    /*padding-bottom: 0;*/
 }
 .text-animation-introduction-v2 .introduction-content-container{
     justify-content: center;
@@ -71,9 +71,9 @@ section.text-animation-introduction-v2 .container .introduction-content-containe
 .heading-v2 span s svg{
     position: absolute;
     top: 50%;
-    left: 10px;
+    left: 20px;
     transform: translateY(-50%);
-    width: 100%;
+    width: 85%;
 }
 section.logo-ticker-tape .band-container-backwards:before, section.logo-ticker-tape .band-container-backwards:after {
     content: '';
@@ -124,6 +124,11 @@ section.logo-ticker-tape .band-container-backwards:after {
 
     .text-animation-introduction-v2 .introduction-content-container {
         padding-top: 20dvh;
+    }
+
+    .heading-v2 span s svg {
+        left: 14px;
+        width: 80%;
     }
 }
 </style>
@@ -510,7 +515,7 @@ section.logo-ticker-tape .band-container-backwards:after {
                             </span>
                         </apan>
                     </span>
-                   <script>
+                   <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                         window.addEventListener("message", function(event) {
                             // Only accept messages from HubSpot forms
                             if (!event.data || !event.data.formGuid || !event.data.accepted) {
@@ -580,9 +585,21 @@ section.logo-ticker-tape .band-container-backwards:after {
         </div>
     </div>
 </section>
-<script nowprocket>
+<script nowprocket nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 (function () {
+  // S128 fix -- this loop used to call requestAnimationFrame(tick) forever,
+  // unconditionally, from the moment the page loaded, reading scroll
+  // position and writing style.transform on every single frame even while
+  // this section was scrolled far off-screen. That's exactly what
+  // Lighthouse's forced-reflow audit was pointing at. Now: skip it
+  // entirely for prefers-reduced-motion, and only run the loop while the
+  // art is actually visible, pausing it via IntersectionObserver rather
+  // than burning a frame budget and forcing scroll reads indefinitely.
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var orbits = document.querySelectorAll('.orbit-circle');
+  if (reducedMotion || !orbits.length) {
+    return;
+  }
 
   var rotation = 0;          // current angle, degrees
   var idleSpeed = 0.0011;     // deg/ms — baseline speed when idle, clockwise (~1.1 deg/sec)
@@ -590,9 +607,18 @@ section.logo-ticker-tape .band-container-backwards:after {
   var scrollKick = 0.0011;   // deg/ms of boost added per px scrolled (either direction)
   var maxBoost = 0.008;       // cap so a huge flick-scroll doesn't spin it out of control
   var boostHalfLife = 400;   // ms for the boost to decay back toward 0 once scrolling stops
+  var running = false;
 
   function getScrollY() {
-    return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    // S129 fix -- the previous `window.pageYOffset || document.documentElement.scrollTop || ...`
+    // chain treats 0 as falsy, so at scroll position 0 (exactly where Lighthouse audits: page
+    // just loaded, never scrolled) it fell through to document.documentElement.scrollTop and
+    // document.body.scrollTop -- both classic forced-synchronous-layout properties -- on every
+    // single animation frame, right after the previous frame's style.transform write. That was
+    // the actual forced-reflow source (not fixed by the IntersectionObserver visibility gating
+    // alone, since this hero section is visible immediately with zero scroll). pageYOffset alone
+    // is universally supported and does not force layout.
+    return window.pageYOffset || 0;
   }
 
   var lastScrollY = getScrollY();
@@ -634,6 +660,10 @@ section.logo-ticker-tape .band-container-backwards:after {
   }
 
   function tick(now) {
+    if (!running) {
+      return;
+    }
+
     var dt = Math.min(now - lastTime, 100); // clamp huge gaps (tab switch, etc.)
     lastTime = now;
 
@@ -651,6 +681,33 @@ section.logo-ticker-tape .band-container-backwards:after {
 
     requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick);
+
+  function start() {
+    if (running) {
+      return;
+    }
+    running = true;
+    lastTime = performance.now();
+    requestAnimationFrame(tick);
+  }
+
+  var visibilityTarget = document.querySelector('.art-wrap');
+  if ('IntersectionObserver' in window && visibilityTarget) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          start();
+        } else {
+          running = false;
+        }
+      });
+    });
+    observer.observe(visibilityTarget);
+  } else {
+    // No IntersectionObserver support, or the container wasn't found --
+    // fall back to the previous always-on behaviour rather than never
+    // animating at all.
+    start();
+  }
 })();
 </script>

@@ -140,7 +140,7 @@ get_header();
                                     <?php if ( get_field( 'ticket_link' )) { ?>
                                         <a class="button ticket buttonTicket" href="<?php the_field( 'ticket_link' ); ?>" target="_blank" rel="noopener noreferrer">Purchase Tickets</a>
                                     <?php } ?>
-                                    <a class="button print buttonPrint" id="print" onclick="window.print()">Print Agenda</a>
+                                    <a class="button print buttonPrint" id="print" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="window.print()">Print Agenda</a>
                                 </span>
                             </div>
                             <div class="bottom">

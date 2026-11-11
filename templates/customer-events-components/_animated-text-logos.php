@@ -1,6 +1,6 @@
 <section class="animated-text animated-text-logos <?php if(get_sub_field('background_colour')){ ?><?php echo get_sub_field('background_colour'); ?><?php } else { ?>background-true-black<?php }?>" <?php if(get_sub_field('id')){ ?> id="<?php echo get_sub_field('id');?>"<?php } ?>>
     <div class="container">
-        <div class="inner">
+        <div class="inner" data-aos="fade-up" data-aos-duration="600">
             <div class="animated-text-container">
                 <span id="animatedText"><?php echo get_sub_field( 'text' ); ?></span>
             </div>

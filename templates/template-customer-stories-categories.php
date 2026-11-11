@@ -30,7 +30,7 @@ if ($q && $q->parent != 0) {
 
 ?>
 <?php if ( $filterType || $keyword ) : ?>
-  <script>
+  <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
     document.addEventListener('DOMContentLoaded', function() {
       const target = document.querySelector('#storiesListing');
       if (target) {
@@ -344,7 +344,7 @@ if ($q && $q->parent != 0) {
                                                         <span class="share-links-container">
                                                             <span class="copy-link share">
                                                                 <input type="text" value="<?php echo get_term_link( $q );?>?story=<?php echo $slug; ?>" id="postLink" style="display: none;">
-                                                                <a onclick="copyJobLink()">
+                                                                <a nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="copyJobLink()">
                                                                     <span class="image-icon-container">
                                                                         <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
                                                                         <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
@@ -352,7 +352,7 @@ if ($q && $q->parent != 0) {
                                                                     </span>
                                                                 </a>
                                                             </span>
-                                                            <script>
+                                                            <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                                                                 function copyJobLink() {
                                                                     // Get the text field
                                                                     var copyText = document.getElementById("postLink");
@@ -845,7 +845,7 @@ if ($q && $q->parent != 0) {
                                                 <span class="share-links-container">
                                                     <span class="copy-link share">
                                                         <input type="text" value="<?php echo get_term_link( $q );?>?story=<?php echo $slug; ?>" id="postLink" style="display: none;">
-                                                        <a onclick="copyJobLink()">
+                                                        <a nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="copyJobLink()">
                                                             <span class="image-icon-container">
                                                                 <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
                                                                 <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
@@ -853,7 +853,7 @@ if ($q && $q->parent != 0) {
                                                             </span>
                                                         </a>
                                                     </span>
-                                                    <script>
+                                                    <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                                                         function copyJobLink() {
                                                             // Get the text field
                                                             var copyText = document.getElementById("postLink");

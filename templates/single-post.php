@@ -303,7 +303,7 @@ foreach( $theTerms1 as $theTerm ){
                                     <?php } ?>
 		                        </a>
 							</span>
-	                        <script>
+	                        <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 	                            const shareButton = document.querySelector('.share-button');
 	                            const emailButton = document.querySelector('.emailShare');
 	                            shareButton.addEventListener('click', event => {
@@ -580,7 +580,7 @@ foreach( $theTerms1 as $theTerm ){
                         <span class="current-time">0:00</span> / <span class="duration">0:00</span>
                     </div>
 
-                    <script>
+                    <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
                     (function () {
                         function initPlayers() {
                             document.querySelectorAll('.audio-player:not([data-player-initialized])').forEach(function (el) {
@@ -790,7 +790,7 @@ foreach( $theTerms1 as $theTerm ){
                 <div class="titleBlock">
                     <h3 role="heading" aria-level="2">Access the full article.</h3>
                     <div class="portal-link-container">
-                        <a class="std-button red-button portal-link" href="<?php echo get_field( 'portal_url' ); ?>" target="_blank">Article</a>
+                        <a class="std-button red-button portal-link" href="<?php echo esc_url( get_field( 'portal_url' ) ); ?>" target="_blank">Article</a>
                     </div>
                 </div>
                 </div>
@@ -832,8 +832,10 @@ foreach( $theTerms1 as $theTerm ){
                             </div>                       
                         </div>
                     <?php } ?>
+                    <!-- DEBUGMARKER-CONTENTBLOCKS-CHECK:<?php echo have_rows( "content_blocks" ) ? "true" : "false"; ?> -->
                     <?php if ( have_rows( 'content_blocks' ) ): ?>
                         <?php while ( have_rows( 'content_blocks' ) ) : the_row(); ?>
+                        <!-- DEBUGMARKER-ROW-LAYOUT:<?php echo esc_html( get_row_layout() ); ?> -->
                             <?php if ( get_row_layout() == 'article_content' ) : ?>
                                 <?php get_template_part( 'templates/post-components/_post-content' ); ?>
                             <?php elseif ( get_row_layout() == 'background_colour_list' ) : ?>
@@ -850,6 +852,9 @@ foreach( $theTerms1 as $theTerm ){
                                 <?php get_template_part( 'templates/post-components/_infogram' ); ?>
                             <?php elseif ( get_row_layout() == 'video_block' ) : ?>
                                 <?php get_template_part( 'templates/post-components/_video-block' ); ?>
+                            <?php elseif ( get_row_layout() == 'cta_box' ) : ?>
+                                <!-- DEBUGMARKER-CTABOX-SINGLEPOST -->
+                                <?php get_template_part( 'templates/post-components/_cta-box' ); ?>
                             <?php endif; ?>
                         <?php endwhile; ?>
                     <?php else: ?>

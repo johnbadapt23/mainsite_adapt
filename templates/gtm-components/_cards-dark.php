@@ -1,4 +1,16 @@
-<section class="cards-module gtm-cards-module background-black" <?php if(get_sub_field('id')){ ?> id="<?php echo get_sub_field('id');?>"<?php } ?>>
+<?php
+// Whether this section should render with a white background instead of
+// the component's default black (ADAPT Intelligence only, so the Cards
+// section doesn't follow another black section back to back). Mirrors the
+// same _wp_page_template postmeta check used for
+// $is_adapt_intelligence_template in _large-testimonials.php, so this stays
+// scoped to this one template and never changes the Cards section on
+// template-gtm.php or any other template reusing this partial.
+global $post;
+$is_adapt_intelligence_template = $post && get_post_meta( $post->ID, '_wp_page_template', true ) === 'templates/template-adapt-intelligence.php';
+$cards_background_class = $is_adapt_intelligence_template ? 'background-white' : 'background-black';
+?>
+<section class="cards-module gtm-cards-module <?php echo $cards_background_class; ?>" <?php if(get_sub_field('id')){ ?> id="<?php echo get_sub_field('id');?>"<?php } ?>>
 	<div class="container">
 		<div class="top-content">
 			<h2 class="text-white bold-grey"><?php echo get_sub_field( 'title' ); ?></h2>

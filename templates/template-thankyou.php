@@ -1,6 +1,12 @@
 <?php
 /**
- * Template Name: Thank You Template
+ * Template Name: Thank You Template (2)
+ *
+ * Renamed so this is distinguishable from templates/template-thank-you.php
+ * in the wp-admin page-template dropdown -- both previously declared the
+ * identical "Thank You Template" name (the two files are byte-identical
+ * apart from whitespace), making it impossible to tell them apart when
+ * assigning a page template. No functional change.
  */
 
 get_header();

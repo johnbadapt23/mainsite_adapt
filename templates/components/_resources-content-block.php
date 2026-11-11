@@ -8,7 +8,7 @@
 					<?php setup_postdata ( $post ); ?>
                     <span class="speaker">
                         <span class="authorSingle">
-                            <span class="authorImage" style="background-image: url(<?php echo get_field( 'speaker_image' ); ?>);">
+                            <span class="authorImage" style="background-image: url(<?php echo esc_url( get_field( 'speaker_image' ) ); ?>);">
                             </span>
                             <span class="authorText">
                                 <span class="authorName">

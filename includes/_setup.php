@@ -34,6 +34,23 @@ function theme_setup() {
 	// calls requesting this size actually serve the smaller file instead
 	// of silently falling back to 'full'.
 	add_image_size( 'adapt-optimized', 2000, 2000, false );
+
+	// Card/listing-thumbnail contexts (the resources/articles landing
+	// page's "featured block" cards, video posters in those same cards)
+	// were also requesting 'adapt-optimized' (2000px max) despite
+	// rendering at a measured max of ~744px wide on a 1600px desktop
+	// viewport (live-measured via the actual served <img> elements on
+	// /all-resources/, not guessed) -- up to ~140x the rendered pixel
+	// area for some author-photo/thumbnail images. This registers a
+	// smaller size for exactly those card contexts. 1500px covers the
+	// measured 744px max even at ~2x pixel density with headroom;
+	// crop stays false for the same reason as 'adapt-optimized' above
+	// (preserve aspect ratio, let the theme's own CSS fit/cover it).
+	//
+	// Same regeneration caveat as 'adapt-optimized': only affects new
+	// uploads until existing media is regenerated (Tools > Regenerate
+	// Thumbnails, already installed) for this size specifically.
+	add_image_size( 'adapt-card-thumb', 1500, 1000, false );
 	// Lets WordPress core inject the <title> tag itself (via wp_head()),
 	// instead of the theme hardcoding a <title> tag that calls wp_title().
 	// Without this, Yoast SEO's title customization (per-page SEO titles,

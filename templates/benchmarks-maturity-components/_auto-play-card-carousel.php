@@ -69,7 +69,7 @@
         </div>             
     </div>
 </section>
- <script>
+ <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
     document.addEventListener('DOMContentLoaded', function(){
         const wrapper = document.querySelector('.auto-card-container-inner .slide-wrapper');
         if(!wrapper) return;

@@ -7,6 +7,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <?php
+// `nowprocket` (2026-09-28): WP Rocket's "Delay JavaScript execution" was
+// rewriting this script to type="text/rocketlazyloadscript" for logged-out
+// visitors, so the capture-phase listener below was not registered until
+// the first user interaction. By then every preload+as=style <link>
+// (footer.min.css, skelet-icons, wp-pagenavi, cookie-notice) had already
+// fired its one-off 'load' event, so none of them were ever promoted to
+// rel="stylesheet" and the footer rendered unstyled. Logged-in admin views
+// are not optimised by WP Rocket, which is why S97's live check passed.
+// Same exclusion pattern as _text-animation-introduction-v2.php.
+?>
+<script nowprocket nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
+// CSP-safe replacement for the inline onload="this.onload=null;this.rel=
+// 'stylesheet'" swap used on preload+as=style <link> tags (skelet-icons
+// below, wp-pagenavi and footer-styles from adapt_defer_pagenavi_css()/
+// adapt_defer_footer_css() in functions.php). A matching nonce on the
+// <link> element does not authorize that element's own inline event
+// handler attributes under enforcing CSP (script-src-attr falls back to
+// script-src, which requires 'unsafe-hashes' for attribute execution even
+// with a matching nonce -- nonces only cover elements like <script>, not
+// event handler attributes). A first attempt (S96) moved the swap into an
+// addEventListener call placed after wp_head(), but that is still a race:
+// 'load' events on <link> elements don't bubble, and for an already-cached
+// resource the load can fire before that later script tag is even parsed,
+// which is exactly what was observed live -- the preload never promoted,
+// and Chrome logged "preloaded ... but not used" for every one of them.
+// This listener is registered here instead, as early in <head> as
+// possible and before any preload+as=style link exists anywhere on the
+// page, using the capture phase: capture-phase listeners fire top-down
+// regardless of bubbling, so a single delegated listener on `document`
+// catches every current and future preload-css load event with no race
+// window at all. Confirmed live (S97) after the S96 version failed --
+// see SESSION-HANDOFF.md.
+document.addEventListener( 'load', function ( e ) {
+    var t = e.target;
+    if ( t && t.tagName === 'LINK' && t.rel === 'preload' && t.getAttribute( 'as' ) === 'style' ) {
+        t.rel = 'stylesheet';
+    }
+}, true );
+</script>
+
+<?php
     // The homepage's LCP element is a CSS background-image (not an <img>),
     // set via inline style in templates/components/_two-column-text-home-v2.php
     // (rendered as content_blocks row 3, id="home-two-column-text-3").
@@ -51,7 +92,7 @@
      requests" audit) -- icon glyphs are never above-the-fold-critical the way
      main-nofooter.min.css is, so the standard preload+onload swap defers it off
      the blocking path. The <noscript> fallback keeps icons working with JS disabled. -->
-<link rel="preload" as="style" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" as="style" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>" nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
 <noscript><link rel="stylesheet" href="<?php echo esc_url( $adapt_skelet_icons_css ); ?>"></noscript>
 <link rel="apple-touch-icon" sizes="180x180" href="<?php echo get_template_directory_uri(); ?>/assets/images/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="<?php echo get_template_directory_uri(); ?>/assets/images/favicon-32x32.png">
@@ -121,7 +162,7 @@
 <?php wp_head(); ?>
 
 <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
@@ -129,8 +170,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 
 <!-- Google tag ga4 (gtag.js) --> 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-J1TXH5MDSE"></script> 
-<script>
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" async src="https://www.googletagmanager.com/gtag/js?id=G-J1TXH5MDSE"></script> 
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
     window.dataLayer = window.dataLayer || [];   
     function gtag(){dataLayer.push(arguments);}   
     gtag('js', new Date());   gtag('config', 'G-J1TXH5MDSE'); 
@@ -143,13 +184,117 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 ?>
 <?php if ( is_page_template('templates/template-thank-you-new.php') || is_page_template('templates/template-thank-you.php') ) { ?>
     <!-- Event snippet for Form Submits | All Forms conversion page --> 
-    <script> gtag('event', 'conversion', {'send_to': 'AW-769682308/TFnsCK6mn80ZEITXge8C'});</script>
+    <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>"> gtag('event', 'conversion', {'send_to': 'AW-769682308/TFnsCK6mn80ZEITXge8C'});</script>
 <?php } ?>
 <!-- Start of HubSpot Embed Code -->
-<script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/8336221.js"></script>
+<script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/8336221.js"></script>
 <!-- End of HubSpot Embed Code -->
+
+
+
+<?php if( get_field('simple_footer') == 'yes' ) : ?>
+<style>
+    body header .header-inner .headerRight {
+        display: none !important;
+    }
+    body footer .footer-top .footer-column:not(:last-child),
+    body footer .footer-subscribe-container,
+    body footer .footer-top .footer-column:last-child .footer-column-group > *:not(.socials-container),
+    body footer .footer-bottom .back-to-top,
+    body footer .footer-bottom .footer-bottom-right a:not(:first-child):not(:last-child) {
+        display: none !important;
+    }
+
+    body footer .footer-top {
+        padding-bottom: 0 !important;
+    }
+
+    body footer .footer-top > .footer-column-container {
+        width: 100% !important;
+        justify-content: flex-end !important;
+        margin-bottom: 0 !important;
+    }
+
+    body footer .footer-top .footer-column:last-child .footer-column-group .socials-container .follow-us-title {
+        display: none !important;
+    }
+
+    body footer .footer-top .footer-column:last-child .footer-column-group .socials-container {
+        text-align: right !important;
+        position: relative !important;
+        top: 35px !important;
+        z-index: 2;
+    }
+
+    @media (max-width: 767px){
+        footer .container .footer-top .footer-column-container .column.one-third .socials-container .social-links{
+            position: relative;
+            top: 15px;
+        }
+    }
+</style>
+<?php endif; ?>
+
+<?php if(get_field('hide_header_menu') == 'yes') : ?>
+<style>
+
+body header span.headerRight {
+    display: none;
+}
+</style>
+<?php endif; ?>
 </head>
 <body <?php body_class(''); ?> data-page-id="<?= the_ID(); ?>" rel="<?php if ( is_404() ): echo 'notFound'; endif; ?>">
+    <?php
+    // A11Y 2026-09-23: skip-to-content link (WCAG 2.4.1 Bypass Blocks --
+    // confirmed via a live DOM audit that no page offered any way for a
+    // keyboard/screen-reader user to skip the header/nav and jump straight
+    // to #main). Visually hidden off-screen until it receives keyboard
+    // focus, so this has zero visual-layout impact on any template. Styled
+    // inline here rather than added to the SCSS build so it needs no
+    // rebuild step and can't interact with anything else in main.min.css.
+    // #main exists on effectively every template (confirmed by grep across
+    // templates/); on the rare template without it, the link is simply a
+    // harmless no-op instead of erroring.
+    ?>
+    <a class="adapt-skip-link" href="#main">Skip to main content</a>
+    <style>
+        .adapt-skip-link {
+            position: absolute;
+            top: -999px;
+            left: 0;
+            z-index: 10000;
+            padding: 12px 20px;
+            background: #000;
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .adapt-skip-link:focus {
+            top: 0;
+        }
+        /* Visually hidden, still read by screen readers and counted in the
+           link's text. Used to give generic CTA links ("Learn More",
+           "Read More") descriptive text. Lighthouse's link-text audit reads
+           the link's own text and ignores aria-label, so the earlier
+           aria-label approach did not clear it. */
+        .adapt-sr-only {
+            position: absolute !important;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            clip-path: inset(50%);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+
+
+
+
     <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NHF4ZRS"
         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

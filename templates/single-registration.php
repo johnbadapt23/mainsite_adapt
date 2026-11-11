@@ -182,7 +182,7 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 														<h3 role="heading" aria-level="2" class="title">
 															<?php the_title(); ?>
 															<?php if ( get_field('linked_in_url')) { ?>
-																<a class="linkedin-link" href="<?php echo get_field('linked_in_url');?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" alt="LinkedIn" width="20"/></a>
+																<a class="linkedin-link" href="<?php echo esc_url( get_field('linked_in_url') ); ?>" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="<?php echo get_template_directory_uri(); ?>/assets/images/round-linkedin.svg" alt="LinkedIn" width="20"/></a>
 															<?php } ?>
 														</h3>
 														<p class="job-title"><?php echo get_field( 'speaker_description' ); ?></p>
@@ -336,6 +336,17 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
  				 <?php } ?>
 				<?php if ( get_sub_field( 'marketing' ) == 1 ) { ?>
 					<span class="marketing-text"><?php echo get_sub_field( 'marketing_text' ); ?></span>
+					<?php if( get_sub_field('hide_checkbox_marketing') == 1 ) : ?>
+					<style>
+						.hs_single_client_opt_in {
+							pointer-events: none;
+						}
+						.hs_single_client_opt_in input + span::before,
+						.hs_single_client_opt_in input + span::after{
+							display: none !important;
+						}
+					</style>
+					<?php endif;?>
 				<?php } else { ?>
 					<style>
 						.hs_single_client_opt_in {

@@ -7,7 +7,7 @@ section.roundtable-card-slider-module {
 
     .container {
         .top-content {
-            float: left;
+            float: none;
             width: 100%;
             margin-bottom: 76px;
 
@@ -16,7 +16,7 @@ section.roundtable-card-slider-module {
             }
 
             .title {
-                float: left;
+                float: none;
                 width: 100%;
                 max-width: 860px;
                 margin-bottom: 0px;
@@ -44,7 +44,7 @@ section.roundtable-card-slider-module {
     }
 
     .roundtable-card-slider {
-        float: left;
+        float: none;
         width: calc(100% + 32px);
         margin-left: -16px;
 
@@ -73,7 +73,7 @@ section.roundtable-card-slider-module {
             }
 
             .slide-inner {
-                float: left;
+                float: none;
                 width: 100%;
                 padding: 40px;
                 padding-bottom: 110px;
@@ -86,7 +86,7 @@ section.roundtable-card-slider-module {
                 }
 
                 .slide-tag-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 60px;
 
@@ -95,7 +95,8 @@ section.roundtable-card-slider-module {
                     }
 
                     .tag {
-                        float: left;
+                        float: none;
+                        display: inline-block;
                         font-size: 18px;
                         line-height: 28px;
                         padding: 8px 18px;
@@ -111,13 +112,13 @@ section.roundtable-card-slider-module {
                 }
 
                 .slide-image-container {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 50px;
                 }
 
                 .image-container {
-                    float: left;
+                    float: none;
                     width: 180px;
                     height: 164px;
                 }
@@ -135,7 +136,7 @@ section.roundtable-card-slider-module {
                     }
 
                     .slide-text {
-                        float: left;
+                        float: none;
                         width: 100%;
                         color: #fff;
                         font-size: 20px;
@@ -376,11 +377,11 @@ section.experience-module {
 
     .container {
         .experience-title-container {
-            float: left;
+            float: none;
             width: 100%;
 
             .column.one-half {
-                float: left;
+                float: none;
                 width: 50%;
                 margin-bottom: 120px;
                 position: relative;
@@ -394,7 +395,7 @@ section.experience-module {
                 }
 
                 h2 {
-                    float: left;
+                    float: none;
                     width: 100%;
                     margin-bottom: 0px;
                 }
@@ -402,11 +403,17 @@ section.experience-module {
         }
 
         .experience-container {
-            float: left;
+            float: none;
             width: 100%;
+            display: flex;
+            flex-direction: row-reverse;
+
+            @media (max-width:767px) {
+                flex-direction: column;
+            }
 
             .experience-text-column {
-                float: left;
+                float: none;
                 width: 50%;
 
                 @media (max-width:767px) {
@@ -414,16 +421,21 @@ section.experience-module {
                 }
 
                 .experience-text-container {
-                    float: left;
+                    float: none;
                     width: 100%;
+                    display: flex;
                     border-bottom: 1px solid $color-medium-light-grey;
                     padding-top: 32px;
                     padding-bottom: 32px;
                     cursor: pointer;
                     color:  #000;
 
+                    @media (max-width:1023px) {
+                        flex-direction: column;
+                    }
+
                     .title {
-                        float: left;
+                        float: none;
                         width: 50%;
                         padding-right: 32px;
                         padding-left: 36px;
@@ -491,7 +503,7 @@ section.experience-module {
                     }
 
                     .text {
-                        float: left;
+                        float: none;
                         width: 50%;
                         font-size: 18px;
                         line-height: 28px;
@@ -548,7 +560,7 @@ section.experience-module {
             }
 
             .experience-image-container {
-                float: right;
+                float: none;
                 width: 50%;
                 padding-left: 170px;
 
@@ -558,7 +570,7 @@ section.experience-module {
 
                 @media (max-width:767px) {
                     width: 100%;
-                    float: left;
+                    float: none;
                     padding-right: 100px;
                     max-width: 400px;
                     margin-bottom: 32px;
@@ -566,7 +578,7 @@ section.experience-module {
                 }
 
                 .experience-image-inner {
-                    float: left;
+                    float: none;
                     width: 100%;
                     position: relative;
                     padding-top: 110%;
@@ -617,7 +629,7 @@ section.experience-module {
                         }
 
                         .image-container {
-                            float: left;
+                            float: none;
                             width: 100%;
                             padding-top: 110%;
                         }
@@ -638,8 +650,16 @@ section.experience-module {
 // dated 2026-09-14) for the full audit trail, per-rule provenance, and
 // the isolated-build diff used to confirm this file's compiled output
 // is unchanged from the pre-merge gated build.
+//
+// 2026-09-21 float-grid redesign pass: every entry in this gate that
+// simply collapsed a declaration to `float: none` has now been folded
+// directly into the source above (the gate was provably a no-op for
+// those -- production already computed float:none via this section).
+// The two entries below are kept verbatim and are NOT float-collapse
+// no-ops: `.cards-progress` is a deliberate, measured exception (see
+// its own comment), and the final `.slide-image-container` rule is an
+// unrelated display:flex fix, not a float fix. Both stay untouched.
 // =====================================================================
-// line 344
 
 .cards-progress.cards-progress {
                 float: none;
@@ -764,100 +784,6 @@ section.experience-module {
 .cards-progress.cards-progress.cards-progress.cards-progress {
         float: left;
     }
-
-// line 379
-
-section.experience-module.experience-module {
-                .container.container {
-                        .experience-title-container.experience-title-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 397
-
-section.experience-module.experience-module {
-                .container.container {
-                        .experience-title-container.experience-title-container {
-                                .column.column.one-half.one-half {
-                                        h2 {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 405
-
-section.experience-module.experience-module {
-                .container.container {
-                        .experience-container.experience-container {
-                                float: none;
-                        }
-                }
-        }
-
-// line 417
-
-section.experience-module.experience-module {
-                .container.container {
-                        .experience-container.experience-container {
-                                .experience-text-column.experience-text-column {
-                                        .experience-text-container.experience-text-container {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 561
-
-section.experience-module.experience-module {
-                .container.container {
-                        .experience-container.experience-container {
-                                .experience-image-container.experience-image-container {
-                                        @media (max-width:767px) {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 569
-
-section.experience-module.experience-module {
-                .container.container {
-                        .experience-container.experience-container {
-                                .experience-image-container.experience-image-container {
-                                        .experience-image-inner.experience-image-inner {
-                                                float: none;
-                                        }
-                                }
-                        }
-                }
-        }
-
-// line 620
-
-section.experience-module.experience-module {
-                .container.container {
-                        .experience-container.experience-container {
-                                .experience-image-container.experience-image-container {
-                                        .experience-image-inner.experience-image-inner {
-                                                .experience-image.experience-image {
-                                                        .image-container.image-container {
-                                                                float: none;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
 
 section.roundtable-card-slider-module.roundtable-card-slider-module .roundtable-card-slider.roundtable-card-slider .slide.slide .slide-inner.slide-inner .slide-image-container.slide-image-container {
         display: flex !important;

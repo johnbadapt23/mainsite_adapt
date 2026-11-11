@@ -960,6 +960,32 @@ section.animated-text-logos.animated-text {
     }
 }
 
+// Requested override: on the true-black ticker usage (e.g. the ADAPT
+// Intelligence page), match the mask gradient to the actual #0A0A0A
+// background under it instead of this component's default rgb(18,18,18)
+// (a visibly lighter grey against a true-black section).
+//
+// Scoped with :not(.background-white) -- this was originally a bare
+// section.animated-text-logos.animated-text selector with no
+// scoping, which has higher specificity than the generic
+// .background-white utility class (two classes vs one) and so won
+// on every page using this component, even instances where the
+// editor explicitly chose a white background (e.g.
+// template-benchmarking.php, template-gtm.php). Restricting it to
+// the true-black case it was actually meant for fixes those pages
+// without touching the ADAPT Intelligence usage this was written for.
+section.animated-text-logos.animated-text:not(.background-white) {
+    background: #0A0A0A;
+}
+
+section.animated-text-logos.animated-text:not(.background-white) .container .inner .logo-container-inner .pre-mask {
+    background: linear-gradient(90deg, rgb(10 10 10) 0px, rgba(10, 10, 10, 0) 100%);
+}
+
+section.animated-text-logos.animated-text:not(.background-white) .container .inner .logo-container-inner .post-mask {
+    background: linear-gradient(270deg, rgb(10, 10, 10) 0px, rgba(10, 10, 10, 0) 100%);
+}
+
 section.fixed-scroller {
     position: relative;
     min-height: 100svh;
@@ -2211,7 +2237,7 @@ section.speaker-module {
                                     }
 
                                     .text-container {
-                                        background-color: #000;
+                                        // background-color: #000;
                                         transition: background-color 350ms cubic-bezier(0.22, 0.61, 0.36, 1);
 
                                         .learn-more {
@@ -5888,7 +5914,11 @@ section.expanding-form-module {
                 }
 
                 &.info-column {
+                    height: auto;
+                    margin: -20px 0;
+                    padding-top: 70px;
                     padding-right: 60px;
+                    padding-bottom: 70px;
 
                     @media (max-width:1023px) {
                         padding-right: 24px;
@@ -5897,6 +5927,10 @@ section.expanding-form-module {
                     @media (max-width:767px) {
                         padding-right: 0px;
                     }
+                }
+
+                &.form-column {
+                    align-self: stretch;
                 }
 
                 .form-embed {
@@ -10376,17 +10410,6 @@ section.stories-hero-slider.stories-hero-slider {
         display: flow-root;
     }
 
-section.story-categories-slider-module.story-categories-slider-module {
-        // templates/customer-story-components/_category-slider.php --
-        // wraps .category-slider-container (Slick). This selector also
-        // has its own explicit float:left in base CSS (_customer-
-        // stories.scss), but the gate's `body.dev-float-refactor
-        // section{float:none}` (0,1,1 specificity, element+ancestor
-        // class) beats the base rule's `.story-categories-slider-module
-        // {float:left}` (0,1,0, single class) regardless -- same
-        // mechanism documented throughout this file.
-        display: flow-root;
-    }
 
 section.two-column-services.two-column-services.landing-two-column-slider.landing-two-column-slider {
         // templates/landing-components/_two-column-slider.php -- wraps
@@ -10567,8 +10590,15 @@ section.roundtable-card-slider-module.roundtable-card-slider-module {
 
 // §11, not a new bug).
 
-section.sponsor-block.sponsor-block .container.container .table-block.table-block.mobile.mobile {
-        display: flow-root;
+// 2026-09-28: scoped to the mobile breakpoint. Unscoped, this
+// display: flow-root also overrode _landing.scss's `.table-block.mobile
+// { display: none }` on desktop, so the sponsorship packages showed both
+// the desktop table and the mobile card slider at once (live on
+// /become-a-partner/ and the */become-a-partner/ event pages).
+@media (max-width: 767px) {
+        section.sponsor-block.sponsor-block .container.container .table-block.table-block.mobile.mobile {
+            display: flow-root;
+        }
     }
 
 // section.two-column-logo-carousel: .text-inner/.button-container are
