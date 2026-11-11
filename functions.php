@@ -876,8 +876,27 @@ function filter_speakers_callback() {
                     // array(15788, 15789) -- term_id is a per-environment
                     // DB value, not portable to production. Resolved
                     // dynamically by slug via adapt_get_expertise_term_ids().
+                    //
+                    // BUGFIX 2026-11-11: operator was 'IN', which REQUIRES
+                    // every matched post to be tagged adapt-analysts or
+                    // adapt-advisors -- backwards from 2f17faf's original
+                    // intent ("Replace adapt_analyst meta_query with
+                    // expertise taxonomy EXCLUSION"), which this clause's
+                    // own name (expertise taxonomy exclusion) and
+                    // _advisors-carousel.php's still-correct NOT IN copy of
+                    // this exact clause both confirm. No executive_advisor
+                    // or speaker post is actually tagged adapt-analysts/
+                    // adapt-advisors (confirmed via the REST API), so with
+                    // 'IN' this branch always matched zero posts --
+                    // reproduced live as "No speakers found." on
+                    // /executive-advisors/ with any real filter selection
+                    // that mixes a topical term with a non-topical one (the
+                    // $only_known_terms branch above was unaffected, since
+                    // it's a separate single-clause path). Round 23 only
+                    // swapped the hardcoded IDs for this dynamic lookup; it
+                    // didn't touch (or introduce) the operator itself.
                     'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
-                    'operator' => 'IN',
+                    'operator' => 'NOT IN',
                 ),
             );
         }
@@ -891,8 +910,13 @@ function filter_speakers_callback() {
                 'field'    => 'term_id',
                 // FIX 2026-09-03 (round 23): see comment above -- dynamic,
                 // not hardcoded.
+                //
+                // BUGFIX 2026-11-11: same operator bug as the clause above
+                // -- 'IN' required the analysts/advisors tag instead of
+                // excluding it, so this safety-net branch (no filter
+                // selection at all) also always matched zero posts.
                 'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
-                'operator' => 'IN',
+                'operator' => 'NOT IN',
             ),
         );
     }
