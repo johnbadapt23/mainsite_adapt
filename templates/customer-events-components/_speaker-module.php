@@ -142,17 +142,25 @@
                                 'paged'         => isset($_POST['paged']) ? intval($_POST['paged']) : 1,
                                 'tax_query'      => array(
                                     'relation' => 'AND',
-                                    // array(
-                                    //     'taxonomy' => 'expertise',
-                                    //     'field'    => 'term_id',
-                                    //     'terms'    => $expertise_ids,
-                                    //     'operator' => 'IN',
-                                    // ),
                                     array(
                                         'taxonomy' => 'expertise',
                                         'field'    => 'term_id',
-                                        'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
+                                        'terms'    => $expertise_ids,
                                         'operator' => 'IN',
+                                    ),
+                                    // BUGFIX 2026-11-11: same regression and same fix as
+                                    // _advisor-module.php -- restored to NOT IN (2f17faf's
+                                    // original intent), restored the real $expertise_ids
+                                    // filter (an Aug 24 'update'/'updates' commit had
+                                    // flipped the operator to IN and commented this out),
+                                    // and switched the hardcoded term_id literals to
+                                    // adapt_get_expertise_term_ids() for portability
+                                    // (matching functions.php's round-23 fix).
+                                    array(
+                                        'taxonomy' => 'expertise',
+                                        'field'    => 'term_id',
+                                        'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
+                                        'operator' => 'NOT IN',
                                     ),
                                 ),
                                 // Replaced by the expertise tax_query exclusion above.

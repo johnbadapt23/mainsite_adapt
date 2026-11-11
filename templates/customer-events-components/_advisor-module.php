@@ -57,17 +57,34 @@
                                 'paged'         => isset($_POST['paged']) ? intval($_POST['paged']) : 1,
                                 'tax_query'      => array(
                                     'relation' => 'AND',
-                                    // array(
-                                    //     'taxonomy' => 'expertise',
-                                    //     'field'    => 'term_id',
-                                    //     'terms'    => $expertise_ids,
-                                    //     'operator' => 'IN',
-                                    // ),
                                     array(
                                         'taxonomy' => 'expertise',
                                         'field'    => 'term_id',
-                                        'terms'    => array( 15788, 15789 ), // adapt-analysts, adapt-advisors
+                                        'terms'    => $expertise_ids,
                                         'operator' => 'IN',
+                                    ),
+                                    // BUGFIX 2026-11-11: restored this exclusion to the
+                                    // NOT IN it was originally written as (2f17faf) --
+                                    // an Aug 24 'update'/'updates' commit (d5fe510/
+                                    // 8418b67) silently flipped it to IN and commented
+                                    // out the real $expertise_ids filter above, which
+                                    // made this module require posts to be tagged
+                                    // adapt-analysts/adapt-advisors -- a tag no
+                                    // executive_advisor post actually carries (confirmed
+                                    // via REST API), so the query always returned zero
+                                    // results ("No speakers found." on /executive-advisors/,
+                                    // reproduced live on both staging and the prod theme
+                                    // preview). Also switched the hardcoded term_id
+                                    // literals to adapt_get_expertise_term_ids() (same
+                                    // helper functions.php's AJAX handler already uses,
+                                    // added there in round 23 for the same reason): a
+                                    // literal term_id is a per-environment DB value, not
+                                    // portable to production.
+                                    array(
+                                        'taxonomy' => 'expertise',
+                                        'field'    => 'term_id',
+                                        'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
+                                        'operator' => 'NOT IN',
                                     ),
                                 ),
                                 // Replaced by the expertise tax_query exclusion above.
