@@ -32,11 +32,11 @@ get_header();
     <?php if ( have_rows( 'content_blocks' ) ): ?>
 	<?php while ( have_rows( 'content_blocks' ) ) : the_row(); ?>
         <?php if ( get_row_layout() == 'introduction_with_text_animation' ) : ?>
-            <?php get_template_part( 'templates/components/_text-animation-introduction-v2' ); ?>
+            <?php get_template_part( 'templates/components/_text-animation-introduction' ); ?>
         <?php elseif ( get_row_layout() == 'logo_ticker_tape' ) : ?>
-            <?php get_template_part( 'templates/components/_logo-ticker-v2' ); ?>
+            <?php get_template_part( 'templates/components/_logo-ticker' ); ?>
         <?php elseif ( get_row_layout() == 'two_column_text' ) : ?>
-            <?php get_template_part( 'templates/components/_two-column-text-home-v2' ); ?>
+            <?php get_template_part( 'templates/components/_two-column-text-home' ); ?>
         <?php elseif ( get_row_layout() == 'video_block' ) : ?>
             <?php get_template_part( 'templates/event-components/_video-block' ); ?>
         <?php elseif ( get_row_layout() == 'list_cards' ) : ?>
