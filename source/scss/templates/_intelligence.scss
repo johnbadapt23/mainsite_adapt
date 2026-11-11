@@ -1059,23 +1059,19 @@ body.template-adapt-intelligence section.video-module {
 
 // Per explicit request: fixes the HubSpot free-text form's (hsfc-*
 // classes, HubSpot's newer "Free CMS" form renderer) label alignment
-// and text-field alignment inside the Intro Statement popup form
+// inside the Intro Statement popup form
 // (templates/intelligence-components/_intro-statement.php's
 // .popupBlockOuter, rendered via the global .form-popup-button /
 // magnificPopup wiring in source/js/main.js) -- scoped to this
 // template only, same body.template-adapt-intelligence pattern used
-// for the video-module rules above.
+// for the video-module rules above. (The form's own text-align is now
+// reset globally in global/_styles.scss, next to .mfp-content.)
 body.template-adapt-intelligence {
     .hsfc-FormWrapper label {
         align-self: left !important;
         display: inline-block !important;
         left: 0;
     }
-
-    .hsfc-FormWrapper .hsfc-TextField, .hsfc-FormWrapper .hsfc-EmailField {
-        text-align: left;
-    }
-
     // The bare `label` rule above also matches each individual
     // checkbox/radio OPTION's label (e.g. the "Before you go" /
     // persona-targeting step), since HubSpot gives those the same
