@@ -1012,6 +1012,19 @@ span.select2 {
 	margin-bottom: 0px !important;
 }
 
+// The margin-bottom: 0 !important above is meant to stop a field's own
+// Row from adding bottom space when it's the LAST row before the
+// button/legal text (e.g. .hsfc-CheckboxFieldGroup's own
+// margin-bottom: 0 further down). It also zeroes out the gap BETWEEN
+// stacked rows though, so two consecutive field rows (e.g. the
+// "Before you go" checkbox group followed by the "how did you hear
+// about ADAPT" textarea) render back-to-back with no breathing room.
+// Restore it with margin-top instead, since that property isn't
+// touched by the rule above and so doesn't need !important to win.
+.hs-form-html .hsfc-Step__Content .hsfc-Row + .hsfc-Row {
+	margin-top: 20px;
+}
+
 // Hides the UTM hidden-field rows on embedded HubSpot forms as a CSS-only
 // fallback/backstop for utm-form-fields.js (which hides them via inline
 // style once populated) -- covers the brief flash before the script runs
@@ -1986,6 +1999,7 @@ input.hs-input {
 			align-items: center;
 			gap: $checkbox-padding-left;
 			padding: 4px 0;
+			top: 0;
 
 			input[type="checkbox"],
 			input[type="radio"] {
