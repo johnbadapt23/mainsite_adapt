@@ -291,6 +291,22 @@ section.pain-vs-promise {
             font-size: 52px;
             line-height: 62px;
         }
+
+        // BUGFIX 2026-11-11: .sub-title had no rule at all in this
+        // light-background restyle, so it fell through to the theme's
+        // global `body { color: white; }` default (meant for this
+        // component's usual dark/true-black background) and the base
+        // 14px body font-size -- rendering as near-invisible white
+        // text on the #F8F8F8 background instead of visible copy.
+        // Matches the sibling component's own .sub-title treatment
+        // (section.three-column-video-gtm.three-column-icon-text-
+        // ecosystems.three-column-partnered-research in _gtm.scss),
+        // which this section was explicitly restyled to match.
+        .sub-title {
+            display: block;
+            color: #5F5F5F;
+            font-size: 18px;
+        }
     }
 
     // Per explicit request: aligns the pink .prompt-point boxes across
