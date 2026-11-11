@@ -1072,4 +1072,27 @@ body.template-adapt-intelligence {
         display: inline-block !important;
         left: 0;
     }
+
+    // The bare `label` rule above also matches each individual
+    // checkbox/radio OPTION's label (e.g. the "Before you go" /
+    // persona-targeting step), since HubSpot gives those the same
+    // .hsfc-FieldLabel class as the plain text-field labels this rule
+    // was written for. Its `display: inline-block !important` squishes
+    // the checkbox against its text and breaks vertical alignment. Win
+    // back flex layout here with higher specificity (global/_forms.scss
+    // already sets this generically, but this template-scoped rule
+    // compiles after it and has higher specificity, so it was winning).
+    .hsfc-FormWrapper .hsfc-CheckboxFieldGroup__Options label,
+    .hsfc-FormWrapper .hsfc-RadioFieldGroup__Options label {
+        display: flex !important;
+        align-items: center;
+        gap: $checkbox-padding-left;
+        padding: 4px 0;
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            flex-shrink: 0;
+            margin: 0;
+        }
+    }
 }
