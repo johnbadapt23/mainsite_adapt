@@ -212,20 +212,16 @@ add_action('template_redirect', function() {
 // unnecessarily in that rare case is a much smaller cost than risking a
 // false negative that silently drops a real animation on a live page.
 function adapt_page_needs_lottie() {
-    // template-home.php has an unconditional loading-screen <lottie-player>
-    // at the top of the template, independent of any ACF content_blocks
-    // row -- it was commented out for a while (commit 0c04931, "disalbed
-    // lottie animation"), which is why this function's special case for it
-    // was removed at the same time in favour of just the content_blocks
-    // table below. The markup was restored directly in the template, so
-    // the special case is restored here too -- otherwise the loading
-    // screen's <lottie-player> renders with no JS behind it (the
-    // lottie-player custom element script is never enqueued) and just
-    // sits inert in the DOM instead of animating.
-    if ( is_page_template( 'templates/template-home.php' ) ) {
-        return true;
-    }
-
+    // template-home.php's loading-screen <lottie-player> is NOT handled
+    // here: it's gated by its own ADAPT_HOME_LOADING_LOTTIE constant,
+    // defined inside the template itself (before get_header()) so it can
+    // be flipped there directly -- but this function runs on
+    // wp_enqueue_scripts, which fires before the template's own body (and
+    // that define()) ever executes, so the constant isn't readable yet at
+    // this point. It's enqueued separately instead, on wp_footer, once the
+    // constant is actually known -- see adapt_enqueue_home_loading_lottie()
+    // below.
+    //
     // IMPORTANT: this runs on wp_enqueue_scripts, i.e. BEFORE the page
     // template's own body/loop executes -- and every field below
     // ('content_blocks' or 'content') is the SAME field each of these
@@ -240,11 +236,9 @@ function adapt_page_needs_lottie() {
     // an entire flexible-content section from a live page). get_field()
     // returns the raw row array and never touches that shared loop state,
     // so it can't have this side effect.
-    // template-home.php is handled by the early return above (its
-    // unconditional loading-screen <lottie-player>), so it's deliberately
-    // left out of this table now -- it would otherwise never be reached.
     $field_by_template = array(
         'templates/template-flexible.php'      => array( 'content_blocks', array( 'introduction_with_animation', 'values_full_screen_blocks' ) ),
+        'templates/template-home.php'          => array( 'content_blocks', array( 'introduction_with_animation', 'values_full_screen_blocks' ) ),
         'templates/template-gtm.php'           => array( 'content', array( 'stats_card' ) ),
         'templates/template-market-buyer.php'  => array( 'content_blocks', array( 'two_column_animation_and_icons' ) ),
         'templates/template-services.php'      => array( 'content_blocks', array( 'two_column_animation_and_icons' ) ),
@@ -488,6 +482,31 @@ function my_enqueue_scripts() {
     ));
 }
 add_action('wp_enqueue_scripts', 'my_enqueue_scripts');
+
+// Companion to the ADAPT_HOME_LOADING_LOTTIE note in adapt_page_needs_lottie()
+// above: template-home.php's loading-screen <lottie-player> is gated by that
+// constant, which the template only defines right before get_header() --
+// too late for wp_enqueue_scripts (my_enqueue_scripts() above), which has
+// already run by then. Hooked to wp_footer instead, at a priority ahead of
+// core's own wp_print_footer_scripts (priority 20), so by the time this
+// runs the whole template body -- including that define() -- has already
+// executed, and the scripts (loaded in the footer, hence `true`) still get
+// printed before the page finishes. wp_script_is(...,'enqueued') guards
+// against double-enqueuing in the (unlikely) case this page also has a
+// content_blocks row that already triggered my_enqueue_scripts()'s own
+// adapt_page_needs_lottie() check.
+function adapt_enqueue_home_loading_lottie() {
+    if ( ! defined( 'ADAPT_HOME_LOADING_LOTTIE' ) || ! ADAPT_HOME_LOADING_LOTTIE ) {
+        return;
+    }
+    if ( ! wp_script_is( 'lottie-player', 'enqueued' ) ) {
+        wp_enqueue_script('lottie-player', 'https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js', array(), '2.0.12', true);
+    }
+    if ( ! wp_script_is( 'lottie-interactivity', 'enqueued' ) ) {
+        wp_enqueue_script('lottie-interactivity', 'https://unpkg.com/@lottiefiles/lottie-interactivity@1.6.2/dist/lottie-interactivity.min.js', array(), '1.6.2', true);
+    }
+}
+add_action('wp_footer', 'adapt_enqueue_home_loading_lottie', 1);
 
 // WP-PageNavi's stylesheet (registered handle 'wp-pagenavi' -- WP's
 // style_loader_tag filter is passed the raw handle, NOT the "{handle}-css"
