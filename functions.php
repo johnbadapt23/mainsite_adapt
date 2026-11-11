@@ -212,14 +212,16 @@ add_action('template_redirect', function() {
 // unnecessarily in that rare case is a much smaller cost than risking a
 // false negative that silently drops a real animation on a live page.
 function adapt_page_needs_lottie() {
-    // template-home.php used to have an unconditional loading-screen
-    // <lottie-player> at the top of the template regardless of ACF content,
-    // which is why this function special-cased it to always return true.
-    // That block was commented out directly in the template (commit
-    // 0c04931, "disalbed lottie animation") -- template-home.php now only
-    // renders a <lottie-player> the same way template-flexible.php does,
-    // through its own content_blocks flexible-content field, so it's
-    // handled by the same table below instead of a hardcoded special case.
+    // template-home.php's loading-screen <lottie-player> is NOT handled
+    // here: it's gated by its own ADAPT_HOME_LOADING_LOTTIE constant,
+    // defined inside the template itself (before get_header()) so it can
+    // be flipped there directly -- but this function runs on
+    // wp_enqueue_scripts, which fires before the template's own body (and
+    // that define()) ever executes, so the constant isn't readable yet at
+    // this point. It's enqueued separately instead, on wp_footer, once the
+    // constant is actually known -- see adapt_enqueue_home_loading_lottie()
+    // below.
+    //
     // IMPORTANT: this runs on wp_enqueue_scripts, i.e. BEFORE the page
     // template's own body/loop executes -- and every field below
     // ('content_blocks' or 'content') is the SAME field each of these
@@ -480,6 +482,31 @@ function my_enqueue_scripts() {
     ));
 }
 add_action('wp_enqueue_scripts', 'my_enqueue_scripts');
+
+// Companion to the ADAPT_HOME_LOADING_LOTTIE note in adapt_page_needs_lottie()
+// above: template-home.php's loading-screen <lottie-player> is gated by that
+// constant, which the template only defines right before get_header() --
+// too late for wp_enqueue_scripts (my_enqueue_scripts() above), which has
+// already run by then. Hooked to wp_footer instead, at a priority ahead of
+// core's own wp_print_footer_scripts (priority 20), so by the time this
+// runs the whole template body -- including that define() -- has already
+// executed, and the scripts (loaded in the footer, hence `true`) still get
+// printed before the page finishes. wp_script_is(...,'enqueued') guards
+// against double-enqueuing in the (unlikely) case this page also has a
+// content_blocks row that already triggered my_enqueue_scripts()'s own
+// adapt_page_needs_lottie() check.
+function adapt_enqueue_home_loading_lottie() {
+    if ( ! defined( 'ADAPT_HOME_LOADING_LOTTIE' ) || ! ADAPT_HOME_LOADING_LOTTIE ) {
+        return;
+    }
+    if ( ! wp_script_is( 'lottie-player', 'enqueued' ) ) {
+        wp_enqueue_script('lottie-player', 'https://unpkg.com/@lottiefiles/lottie-player@2.0.12/dist/lottie-player.js', array(), '2.0.12', true);
+    }
+    if ( ! wp_script_is( 'lottie-interactivity', 'enqueued' ) ) {
+        wp_enqueue_script('lottie-interactivity', 'https://unpkg.com/@lottiefiles/lottie-interactivity@1.6.2/dist/lottie-interactivity.min.js', array(), '1.6.2', true);
+    }
+}
+add_action('wp_footer', 'adapt_enqueue_home_loading_lottie', 1);
 
 // WP-PageNavi's stylesheet (registered handle 'wp-pagenavi' -- WP's
 // style_loader_tag filter is passed the raw handle, NOT the "{handle}-css"

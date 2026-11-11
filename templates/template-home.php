@@ -4,10 +4,20 @@
  * Template Name: Home Template
  */
 
+// Toggle for the loading-screen Lottie animation just below: flip to
+// false to turn it off entirely on this page -- doing so also skips
+// enqueueing the lottie-player/lottie-interactivity scripts for this
+// page (adapt_enqueue_home_loading_lottie(), hooked to wp_footer in
+// functions.php, reads this same constant), rather than just hiding
+// markup that's still pulling in an unused ~150-200KB third-party
+// bundle.
+define( 'ADAPT_HOME_LOADING_LOTTIE', true );
+
 get_header();
 
 ?>
-<!-- <span class="loading-animation">
+<?php if ( ADAPT_HOME_LOADING_LOTTIE ) { ?>
+<span class="loading-animation">
     <span class="v-wrap">
         <span class="v-box">
             <span class="animator-player">
@@ -15,7 +25,8 @@ get_header();
             </span>
         </span>
     </span>
-</span> -->
+</span>
+<?php } ?>
 
 <main class="page flexible" id="main">
     <?php if ( have_rows( 'content_blocks' ) ): ?>
