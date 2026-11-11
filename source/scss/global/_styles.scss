@@ -2663,6 +2663,19 @@ hr {
 	border-radius: 3px;
 }
 
+// The centered text-align above is meant for simple popups (image/video
+// lightboxes, speaker bios, etc). It also centers the inside of any popup
+// FORM opened through the same magnificPopup .mfp-content wrapper (the
+// global a.form-popup-button / .popupBlockOuter wiring in
+// source/js/main.js, used by the Intro Statement and CTA Box popup forms
+// and any future one), which breaks form field/label layout. Reset it
+// back to left for form content specifically, site-wide, instead of
+// per-template.
+.mfp-content .popupBlockOuter,
+.mfp-content .hsfc-FormWrapper {
+	text-align: left;
+}
+
 a.button.pdf {
 	padding: 0 40px 0 20px;
 	position: relative;
