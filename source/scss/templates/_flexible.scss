@@ -4078,8 +4078,14 @@ section.text-animation-introduction {
                                             }
 
                                             .hsfc-EmailField {
+                                                // !important needed: the global .hsfc-Step__Content
+                                                // label { display: inline-block !important; } rule
+                                                // (global/_forms.scss) otherwise wins and re-shows this
+                                                // intentionally-hidden label (confirmed live on
+                                                // adapt.com.au's current homepage hero, which still uses
+                                                // this non-v2 section -- see d04aa7d).
                                                 label {
-                                                    display: none;
+                                                    display: none !important;
                                                 }
 
                                                 input {
