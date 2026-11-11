@@ -1971,9 +1971,35 @@ input.hs-input {
 		display: flex;
 		flex-direction: column;
 		margin-bottom: 12px;
+
+		// Each individual checkbox/radio option's label shares HubSpot's
+		// own .hsfc-FieldLabel class with the group's question label above,
+		// so it must be styled here (scoped under __Options), not via the
+		// bare `> label` rule below, which only targets the question label.
+		// Flex + gap replaces the browser's baseline-aligned, unspaced
+		// default checkbox/text layout. display needs !important to beat
+		// the blanket `.hsfc-Step__Content label { display: inline-block
+		// !important; }` rule above (further up this file), which otherwise
+		// squishes every option label back to inline-block.
+		label {
+			display: flex !important;
+			align-items: center;
+			gap: $checkbox-padding-left;
+			padding: 4px 0;
+
+			input[type="checkbox"],
+			input[type="radio"] {
+				flex-shrink: 0;
+				margin: 0;
+			}
+		}
 	}
 
-	label {
+	// The group's own question label (e.g. "Which personas are you
+	// interested in targeting?") -- a direct child of the field group,
+	// not the per-option labels nested inside __Options above, which get
+	// their own rule so the checkbox/radio isn't squished against its text.
+	> label {
 		padding: 0px;
 		left: 0px;
 		top: 0px;
