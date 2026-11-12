@@ -1235,6 +1235,19 @@ input.hs-input {
 		float: left;
 		width: 100%;
 		margin-top: 50px;
+		// BUGFIX 2026-11-12: these fields show a required-field error
+		// (label.hs-error-msg, positioned absolute/bottom:-12px relative
+		// to this wrapper -- see the shared `label { &.hs-error-msg }`
+		// rule above) when left empty on submit. With zero reserved
+		// space below the wrapper, that error label's text overlapped
+		// directly on top of the very next field's own label (e.g. the
+		// critical-issue textarea's "What is your most critical issue
+		// ..." label), rendering as garbled double-exposed text.
+		// margin-bottom reserves enough clearance (error label's own
+		// ~12px offset + its line height) so the error message always
+		// has room before the next field begins, regardless of error
+		// state.
+		margin-bottom: 24px;
 
 		> label {
 			width: 100%!important;
