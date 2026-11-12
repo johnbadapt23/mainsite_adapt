@@ -1430,6 +1430,35 @@ function adapt_rucss_safelist( $safelist ) {
 		'(.*).mfp-(.*)',
 		'(.*).form-container-inner(.*)',
 		'(.*).form-popup(.*)',
+		// 2026-11-12: same crawler-visibility problem as the HubSpot popup
+		// above, this time for the header's "mega menu" dropdowns
+		// (.megaMenu, one per nav item: servicesMenu/howHelpMenu/
+		// whoHelpMenu/eventsMenu/resourcesMenu/customerMenu/adaptMenu --
+		// see templates/partials/_mega-main-menu.php and
+		// templates/partials/_header.php) and the sticky-header resources
+		// menu/search dropdown. These only reveal on hover/JS-toggled
+		// state, so RUCSS's crawler doesn't see them as "used" and strips
+		// their base positioning/hidden-by-default CSS -- confirmed on
+		// https://staging.adapt.com.au/private-events-partnership/ as a
+		// logged-out visitor: the Resources dropdown rendered permanently
+		// expanded, unstyled, and overlapping the hero content, while it
+		// looked fine logged in (WP Rocket excludes logged-in users from
+		// RUCSS entirely). Since the header is shared site-wide, this
+		// wasn't limited to that one page. Same leading-wildcard
+		// duplication as above: the theme's own menu CSS is written as
+		// long descendant chains (e.g. "header .container .headerRight
+		// .menu .main-nav ul li .megaMenu ..."), so the bare patterns
+		// alone wouldn't match.
+		'.megaMenu(.*)',
+		'.dropdown(.*)',
+		'.main-nav(.*)',
+		'.resources-sticky-menu(.*)',
+		'.search-dropdown(.*)',
+		'(.*).megaMenu(.*)',
+		'(.*).dropdown(.*)',
+		'(.*).main-nav(.*)',
+		'(.*).resources-sticky-menu(.*)',
+		'(.*).search-dropdown(.*)',
 	);
 
 	return array_values( array_unique( array_merge( (array) $safelist, $patterns ) ) );
