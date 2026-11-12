@@ -4627,6 +4627,46 @@ header .resources-sticky-menu.resources-sticky-menu .container.container .resour
         float: none;
     }
 
+// BUGFIX 2026-11-12: .megaMenu.topicsMenu (the Resources Sticky Menu's
+// "Topics" dropdown, templates/partials/_header.php, the
+// .resources-sticky-menu > .container > .resources-sticky-inner >
+// .resources-nav > ul > li.dropdown.topics-menu > .megaMenu.topicsMenu
+// structure) had NO hide/show CSS anywhere in the codebase at all --
+// confirmed zero matches for "topicsMenu" in this entire file and in
+// the compiled stylesheet, on both staging and production. The generic
+// .megaMenu hide-by-default / reveal-on-.dropdown.active rule earlier in
+// this file only targets elements under .main-nav (the primary header
+// nav), which this sticky-menu structure is not -- so this dropdown has
+// apparently never been hidden by default, ever, independent of RUCSS
+// or this migration. The JS toggle itself is already generic and
+// working (source/js/main.js ~line 763, $('.dropdown').on('click', ...)
+// adds/removes .active on any li.dropdown, this one included) -- only
+// the CSS to hide it by default and reveal it on .active was missing.
+// Mirrors the generic .megaMenu rule's own visual recipe (position,
+// background, shadow, opacity/visibility toggle) so it looks consistent
+// with the rest of the site's dropdowns once opened.
+header .resources-sticky-menu .resources-nav li.dropdown .megaMenu.topicsMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 1000px;
+    background-color: #fff;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    border-radius: 3px;
+    padding: 40px 20px 40px;
+    box-shadow: 0px 5px 10px rgba(71, 71, 71, 0.11);
+    z-index: 101;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+header .resources-sticky-menu .resources-nav li.dropdown.active .megaMenu.topicsMenu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
 .search-dropdown.search-dropdown .container.container {
         display: flex;
         align-items: flex-start;
