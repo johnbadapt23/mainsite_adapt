@@ -1454,11 +1454,24 @@ function adapt_rucss_safelist( $safelist ) {
 		'.main-nav(.*)',
 		'.resources-sticky-menu(.*)',
 		'.search-dropdown(.*)',
+		// 2026-11-12 (follow-up): .resources-nav is a SEPARATE wrapper class
+		// from .resources-sticky-menu above (both exist in
+		// templates/partials/_header.php, at different places -- one for the
+		// normal header's Resources nav item, one for the sticky/shrunk
+		// header state) and wasn't covered by the pattern above. Same
+		// RUCSS crawler-visibility gap: confirmed on
+		// https://staging.adapt.com.au/private-events-partnership/ as a
+		// logged-out visitor -- the inner .megaMenu.topicsMenu dropdown
+		// inside .resources-nav rendered permanently expanded, unstyled,
+		// and overlapping the hero content, with zero rules for it at all
+		// in WP Rocket's cached Used CSS for that page.
+		'.resources-nav(.*)',
 		'(.*).megaMenu(.*)',
 		'(.*).dropdown(.*)',
 		'(.*).main-nav(.*)',
 		'(.*).resources-sticky-menu(.*)',
 		'(.*).search-dropdown(.*)',
+		'(.*).resources-nav(.*)',
 	);
 
 	return array_values( array_unique( array_merge( (array) $safelist, $patterns ) ) );
