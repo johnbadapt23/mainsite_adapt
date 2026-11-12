@@ -1466,12 +1466,24 @@ function adapt_rucss_safelist( $safelist ) {
 		// and overlapping the hero content, with zero rules for it at all
 		// in WP Rocket's cached Used CSS for that page.
 		'.resources-nav(.*)',
+		// 2026-11-12 (follow-up): same crawler-visibility problem again, this
+		// time for AOS ("Animate On Scroll", source/components/aos) --
+		// elements using data-aos="fade-up" etc. only get their reveal rule
+		// (the combined selector ending in .aos-animate) applied once AOS's
+		// JS adds that class on scroll-into-view, which RUCSS's static
+		// crawl never triggers. The base hidden-by-default rule
+		// ([data-aos^=fade]{opacity:0}, no .aos-animate in the selector) is
+		// safe -- it genuinely applies to the static DOM at crawl time, so
+		// RUCSS correctly keeps it either way. Only the .aos-animate reveal
+		// rule itself needs safelisting.
+		'.aos-animate(.*)',
 		'(.*).megaMenu(.*)',
 		'(.*).dropdown(.*)',
 		'(.*).main-nav(.*)',
 		'(.*).resources-sticky-menu(.*)',
 		'(.*).search-dropdown(.*)',
 		'(.*).resources-nav(.*)',
+		'(.*).aos-animate(.*)',
 	);
 
 	return array_values( array_unique( array_merge( (array) $safelist, $patterns ) ) );
