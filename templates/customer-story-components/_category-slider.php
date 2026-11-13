@@ -228,7 +228,7 @@
                                             <span class="share-links-container">
                                                 <span class="copy-link share">
                                                     <input type="text" value="<?php echo get_term_link( $q );?>?story=<?php echo $slug; ?>" id="postLink" style="display: none;">
-                                                    <a nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="copyJobLink()">
+                                                    <a>
                                                         <span class="image-icon-container">
                                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
                                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
@@ -237,7 +237,19 @@
                                                     </a>
                                                 </span>
                                                 <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
-                                                    function copyJobLink() {
+                                                    // BUGFIX 2026-11-13: two compounding issues fixed here:
+                                                    // (1) this used to be a plain `function copyJobLink(){}` declaration,
+                                                    // which the site's JS-defer optimization wraps in a DOMContentLoaded
+                                                    // listener, scoping it to that closure instead of window -- assigning
+                                                    // to window.copyJobLink explicitly fixes that regardless of wrapping.
+                                                    // (2) the onclick="copyJobLink()" attribute that used to be on the <a>
+                                                    // above is blocked outright by the site's enforcing Content-Security-
+                                                    // Policy header: a nonce on an element authorizes that element itself
+                                                    // (this <script> tag), it does NOT extend to another element's own
+                                                    // inline event-handler attribute (see SESSION-HANDOFF.md §96). Binding
+                                                    // the click here instead, inside this already-nonce-authorized
+                                                    // <script>, is not subject to that restriction.
+                                                    window.copyJobLink = function() {
                                                         // Get the text field
                                                         var copyText = document.getElementById("postLink");
 
@@ -249,7 +261,9 @@
                                                         navigator.clipboard.writeText(copyText.value);
                                                         jQuery('.copy-link .job-link-text').html('Copied');
                                                         jQuery('.copy-link .job-link-text').addClass('text-red');
-                                                    }
+                                                    };
+
+                                                    jQuery('.copy-link.share > a').off('click.copyJobLink').on('click.copyJobLink', window.copyJobLink);
                                                 </script>
                                                 <span class="share-linked-in share">
                                                     <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php echo get_term_link( $q );?>?story=<?php echo $slug; ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
