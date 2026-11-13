@@ -1196,7 +1196,7 @@
 			if($('.marketing-text').length ){
 				var marketingOptIn = $('.marketing-text').html();
 				setTimeout(function(){
-					$('.webinar-register-form .form-container form').find('.hs_single_client_opt_in').children('.input').children('ul').children('li').children('label').children('span').html(marketingOptIn);
+					$('.webinar-register-form .form-container form').find('.hs_single_client_opt_in, .hs_to_maintain_the_integrity_of_this_exclusive_event__please_confirm_that_you_intend_to_remain_with_yo').children('.input').children('ul').children('li').children('label').children('span').html(marketingOptIn);
 				}, 2000);
 			}
 
@@ -1217,14 +1217,14 @@
 			if($('.umbrella-help-text').length ){
 				var umbrellaHelp = $('.umbrella-help-text').html();
 				setTimeout(function(){
-					$('.webinar-register-form .form-container form').find('.hs_client_communication_opt_in').children('legend.hs-field-desc').html(umbrellaHelp);
+					$('.webinar-register-form .form-container form').find('.hs_client_communication_opt_in, .hs_LEGAL_CONSENT\\.subscription_type_10982092').children('legend.hs-field-desc').html(umbrellaHelp);
 				}, 2000);
 			}
 
 			if($('.umbrella-text').length ){
 				var umbrellaOptIn = $('.umbrella-text').html();
 				setTimeout(function(){
-					$('.webinar-register-form .form-container form').find('.hs_client_communication_opt_in').children('.input').children('ul').children('li').children('label').children('span').html(umbrellaOptIn);
+					$('.webinar-register-form .form-container form').find('.hs_client_communication_opt_in, .hs_LEGAL_CONSENT\\.subscription_type_10982092').children('.input').children('ul').children('li').children('label').children('span').html(umbrellaOptIn);
 				}, 2000);
 			}
 
@@ -2544,7 +2544,7 @@
 			if($('.marketing-text').length ){
 				var marketingOptIn = $('.marketing-text').html();
 				setTimeout(function(){
-					$('.webinar-register-form .form-container form').find('.hs_single_client_opt_in').children('.input').children('ul').children('li').children('label').children('span').html(marketingOptIn);
+					$('.webinar-register-form .form-container form').find('.hs_single_client_opt_in, .hs_to_maintain_the_integrity_of_this_exclusive_event__please_confirm_that_you_intend_to_remain_with_yo').children('.input').children('ul').children('li').children('label').children('span').html(marketingOptIn);
 				}, 2000);
 			}
 
@@ -2565,14 +2565,14 @@
 			if($('.umbrella-help-text').length ){
 				var umbrellaHelp = $('.umbrella-help-text').html();
 				setTimeout(function(){
-					$('.webinar-register-form .form-container form').find('.hs_client_communication_opt_in').children('legend.hs-field-desc').html(umbrellaHelp);
+					$('.webinar-register-form .form-container form').find('.hs_client_communication_opt_in, .hs_LEGAL_CONSENT\\.subscription_type_10982092').children('legend.hs-field-desc').html(umbrellaHelp);
 				}, 2000);
 			}
 
 			if($('.umbrella-text').length ){
 				var umbrellaOptIn = $('.umbrella-text').html();
 				setTimeout(function(){
-					$('.webinar-register-form .form-container form').find('.hs_client_communication_opt_in').children('.input').children('ul').children('li').children('label').children('span').html(umbrellaOptIn);
+					$('.webinar-register-form .form-container form').find('.hs_client_communication_opt_in, .hs_LEGAL_CONSENT\\.subscription_type_10982092').children('.input').children('ul').children('li').children('label').children('span').html(umbrellaOptIn);
 				}, 2000);
 			}
 
