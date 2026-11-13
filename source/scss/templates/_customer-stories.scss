@@ -24,6 +24,8 @@ section.customer-stories {
             text-align: left;
 
             .back-container {
+                // BUGFIX 2026-11-13: <span>, inline by default; reverted-float pattern.
+                display: block;
                 float: none;
                 width: 100%;
                 margin-bottom: 80px;
@@ -33,6 +35,11 @@ section.customer-stories {
                 }
 
                 .back {
+                    // BUGFIX 2026-11-13: <a>, inline by default; the ::before arrow icon
+                    // is absolutely positioned against this element, so it needs a
+                    // non-static box. Reverted-float pattern.
+                    display: flex;
+                    align-items: center;
                     float: none;
                     width: auto;
                     position: relative;
@@ -264,6 +271,8 @@ section.customer-stories {
                         }
 
                         .labelMedium {
+                            // BUGFIX 2026-11-13: reverted-float pattern.
+                            display: block;
                             float: none;
                             width: 100%;
                             margin-bottom: 8px;
@@ -275,6 +284,8 @@ section.customer-stories {
 
                         .form-popup-container.with-arrow,
                         .form-popup-text-link-container.with-arrow {
+                            // BUGFIX 2026-11-13: reverted-float pattern.
+                            display: block;
                             float: none;
                             width: 100%;
                             margin-top: 8px;
@@ -294,11 +305,18 @@ section.customer-stories {
                         }
 
                         .link-outer {
+                            // BUGFIX 2026-11-13: reverted-float pattern.
+                            display: block;
                             float: none;
                             width: 100%;                            
                             margin-top: 8px;
 
                             a.text-link {
+                                // BUGFIX 2026-11-13: reverted-float pattern; also needed
+                                // as a block/flex box for the absolutely-positioned
+                                // ::before arrow icon to anchor against.
+                                display: flex;
+                                align-items: center;
                                 color: #5f5f5f;
                                 position: relative;
                                 padding-left: 24px;
@@ -498,6 +516,8 @@ section.customer-stories {
                             }
                     
                             .labelMedium {
+                                // BUGFIX 2026-11-13: reverted-float pattern.
+                                display: block;
                                 float: none;
                                 width: 100%;
                                 margin-bottom: 8px;
@@ -509,6 +529,8 @@ section.customer-stories {
                     
                             .form-popup-container.with-arrow,
                             .form-popup-text-link-container.with-arrow {
+                                // BUGFIX 2026-11-13: reverted-float pattern.
+                                display: block;
                                 float: none;
                                 width: 100%;
                                 margin-top: 8px;
@@ -528,12 +550,19 @@ section.customer-stories {
                             }
                     
                             .link-outer {
+                                // BUGFIX 2026-11-13: reverted-float pattern.
+                                display: block;
                                 float: none;
                                 width: 100%;
                                 margin-bottom: 8px;
                                 margin-top: 8px;
                     
                                 a.text-link {
+                                    // BUGFIX 2026-11-13: reverted-float pattern; also needed
+                                    // as a block/flex box for the absolutely-positioned
+                                    // ::before arrow icon to anchor against.
+                                    display: flex;
+                                    align-items: center;
                                     color: #5f5f5f;
                                     position: relative;
                                     padding-left: 24px;
@@ -604,6 +633,9 @@ section.customer-stories {
                         justify-content: space-between;
 
                         .name-role {
+                            // BUGFIX 2026-11-13: <span>, inline by default; reverted-float pattern.
+                            display: flex;
+
                             @media (max-width: 1023px) {
                                 width: 75%;
                                 float: none;
@@ -703,6 +735,8 @@ section.customer-stories {
                     }
 
                     .text-content {
+                        // BUGFIX 2026-11-13: <span>, inline by default; reverted-float pattern.
+                        display: block;
                         width: 100%;
                         float: none;
                         margin-bottom: 80px;
@@ -744,6 +778,9 @@ section.customer-stories {
                     }
 
                     .quote {
+                        // BUGFIX 2026-11-13: <span>, inline by default; the border-left
+                        // and width need a block box. Reverted-float pattern.
+                        display: block;
                         float: none;
                         width: 100%;
                         padding-left: 24px;
@@ -755,6 +792,8 @@ section.customer-stories {
                     }
 
                     .image-content-container {
+                        // BUGFIX 2026-11-13: <span>, inline by default; reverted-float pattern.
+                        display: block;
                         width: 100%;
                         float: none;
                         margin-bottom: 80px;
@@ -2936,6 +2975,8 @@ section.customer-stories-title {
                                     flex-direction: column;
             
                                     .name-role {
+                                        // BUGFIX 2026-11-13: <span>, inline by default; reverted-float pattern.
+                                        display: flex;
                                         float: none;
                                         position: relative;
             
@@ -3265,6 +3306,8 @@ section.customer-stories-title {
                                     display: flex;
             
                                     .name-role {
+                                        // BUGFIX 2026-11-13: <span>, inline by default; reverted-float pattern.
+                                        display: flex;
                                         float: none;
                                         position: relative;
             
