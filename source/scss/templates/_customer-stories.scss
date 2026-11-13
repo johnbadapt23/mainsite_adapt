@@ -3550,6 +3550,9 @@ body.customer_stories {
         }
 
         .event-name {
+            // BUGFIX 2026-11-13: hide the event name in the slide-out
+            // story panel per request.
+            display: none;
             float: none;
             width: 100%;
             margin-bottom: 32px;
