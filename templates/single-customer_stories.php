@@ -152,7 +152,16 @@ $displayed_posts[] = get_the_ID();
                                     </a>
                                 </span>
                                 <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
-                                    function copyJobLink() {
+                                    // BUGFIX 2026-11-13: declared as a plain function here, this gets
+                                    // wrapped in a DOMContentLoaded listener by the site's JS-defer
+                                    // optimization, which scopes it to that closure instead of
+                                    // window -- so the onclick="copyJobLink()" attribute handler
+                                    // (which only resolves names on window/global scope) throws
+                                    // "copyJobLink is not defined" and the Copy Link button silently
+                                    // does nothing. Assigning to window.copyJobLink explicitly makes
+                                    // it reachable from the inline onclick regardless of what scope
+                                    // the declaration itself ends up wrapped in.
+                                    window.copyJobLink = function() {
                                         // Get the text field
                                         var copyText = document.getElementById("postLink");
 
@@ -164,7 +173,7 @@ $displayed_posts[] = get_the_ID();
                                         navigator.clipboard.writeText(copyText.value);
                                         jQuery('.copy-link .job-link-text').html('Copied');
                                         jQuery('.copy-link .job-link-text').addClass('text-red');
-                                    }
+                                    };
                                 </script>
                                 <span class="share-linked-in share">
                                     <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
@@ -360,7 +369,16 @@ $displayed_posts[] = get_the_ID();
                                     </a>
                                 </span>
                                 <script nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>">
-                                    function copyJobLink() {
+                                    // BUGFIX 2026-11-13: declared as a plain function here, this gets
+                                    // wrapped in a DOMContentLoaded listener by the site's JS-defer
+                                    // optimization, which scopes it to that closure instead of
+                                    // window -- so the onclick="copyJobLink()" attribute handler
+                                    // (which only resolves names on window/global scope) throws
+                                    // "copyJobLink is not defined" and the Copy Link button silently
+                                    // does nothing. Assigning to window.copyJobLink explicitly makes
+                                    // it reachable from the inline onclick regardless of what scope
+                                    // the declaration itself ends up wrapped in.
+                                    window.copyJobLink = function() {
                                         // Get the text field
                                         var copyText = document.getElementById("postLink");
 
@@ -372,7 +390,7 @@ $displayed_posts[] = get_the_ID();
                                         navigator.clipboard.writeText(copyText.value);
                                         jQuery('.copy-link .job-link-text').html('Copied');
                                         jQuery('.copy-link .job-link-text').addClass('text-red');
-                                    }
+                                    };
                                 </script>
                                 <span class="share-linked-in share">
                                     <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
