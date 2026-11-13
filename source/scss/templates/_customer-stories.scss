@@ -598,6 +598,21 @@ section.customer-stories {
                     }
 
                     .video-image-container {
+                        // BUGFIX 2026-11-13: this is a <span> (inline by default). The
+                        // padding-top:56.25% aspect-ratio box technique below needs a
+                        // block-level box to take effect -- on an inline element,
+                        // percentage padding-top has no effect on layout height, so this
+                        // collapsed to 0 height and the hero video thumbnail disappeared
+                        // entirely. Almost certainly this rule was `float: left;` before
+                        // the sitewide float->flexbox modernization pass (floating an
+                        // inline element implicitly blockifies it per the CSS spec, which
+                        // is what made the padding-top trick work originally); the float
+                        // was changed to `none` without adding the equivalent explicit
+                        // `display: block;` it had been relying on. Same root-cause
+                        // pattern as the `.post-text li` bullet-marker fix elsewhere in
+                        // this repo, and the display-reconciliation fixes documented in
+                        // sections/_flex-override-fix.scss.
+                        display: block;
                         width: 100%;
                         position: relative;
                         padding-top: 56.25%;
