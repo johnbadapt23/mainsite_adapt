@@ -151,6 +151,11 @@ section.customer-stories {
                     }
 
                     .sticky-container {
+                        // BUGFIX 2026-11-13: <span>, inline by default. position:sticky
+                        // and width:100% need a block box to behave correctly on an
+                        // inline element. Same reverted-float pattern as elsewhere in
+                        // this file -- see .video-image-container above.
+                        display: block;
                         position: sticky;
                         float: none;
                         width: 100%;
@@ -158,6 +163,9 @@ section.customer-stories {
                     }
 
                     .divider-line {
+                        // BUGFIX 2026-11-13: <span>, inline by default; width/padding/
+                        // border-bottom need a block box. Reverted-float pattern.
+                        display: block;
                         width: 100%;
                         float: none;
                         padding: 40px 0 0;  
@@ -186,6 +194,18 @@ section.customer-stories {
 
                         .share-title {
                             width: auto;
+                        }
+
+                        // BUGFIX 2026-11-13: .share-links-container (<span>) has no rule
+                        // of its own anywhere in this codebase -- it was relying on being
+                        // an inline span inside a flex container and never got explicit
+                        // layout. Added explicit display:flex to match the live manual
+                        // patch that was urgently applied to fix this on production.
+                        .share-links-container {
+                            display: flex;
+                            align-items: center;
+                            flex-wrap: wrap;
+                            gap: 8px;
                         }
 
                         span.share {
@@ -368,6 +388,9 @@ section.customer-stories {
                         }
                     
                         .divider-line {
+                            // BUGFIX 2026-11-13: <span>, inline by default; width/padding/
+                            // border-bottom need a block box. Reverted-float pattern.
+                            display: block;
                             width: 100%;
                             float: none;
                             padding: 24px 0 0;
@@ -408,6 +431,15 @@ section.customer-stories {
                     
                             .share-title {
                                 width: auto;
+                            }
+
+                            // BUGFIX 2026-11-13: see matching comment on the sidebar-column
+                            // copy of this block above -- .share-links-container had no rule.
+                            .share-links-container {
+                                display: flex;
+                                align-items: center;
+                                flex-wrap: wrap;
+                                gap: 8px;
                             }
                     
                             span.share {
