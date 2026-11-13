@@ -164,6 +164,41 @@ function wpb_track_post_views ($post_id) {
 }
 add_action( 'wp_head', 'wpb_track_post_views');
 
+// BUGFIX 2026-11-13: expose the post_views_count meta (already tracked
+// above via wpb_track_post_views) as a sortable "Views" column on the
+// Posts list in wp-admin -- previously the only way to see it was
+// opening each post and enabling the Custom Fields panel.
+function adapt_add_views_column( $columns ) {
+    $columns['post_views_count'] = 'Views';
+    return $columns;
+}
+add_filter( 'manage_post_posts_columns', 'adapt_add_views_column' );
+
+function adapt_render_views_column( $column, $post_id ) {
+    if ( $column === 'post_views_count' ) {
+        $views = get_post_meta( $post_id, 'post_views_count', true );
+        echo esc_html( $views !== '' ? number_format_i18n( (int) $views ) : '0' );
+    }
+}
+add_action( 'manage_post_posts_custom_column', 'adapt_render_views_column', 10, 2 );
+
+function adapt_sortable_views_column( $columns ) {
+    $columns['post_views_count'] = 'post_views_count';
+    return $columns;
+}
+add_filter( 'manage_edit-post_sortable_columns', 'adapt_sortable_views_column' );
+
+function adapt_views_column_orderby( $query ) {
+    if ( ! is_admin() || ! $query->is_main_query() ) {
+        return;
+    }
+    if ( $query->get( 'orderby' ) === 'post_views_count' ) {
+        $query->set( 'meta_key', 'post_views_count' );
+        $query->set( 'orderby', 'meta_value_num' );
+    }
+}
+add_action( 'pre_get_posts', 'adapt_views_column_orderby' );
+
 // password protected posts
 function gettext_pp( $translation, $text ) {
     if ( $text == 'There is no excerpt because this is a protected post.' ) {
