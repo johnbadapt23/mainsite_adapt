@@ -338,18 +338,22 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 					<span class="marketing-text"><?php echo get_sub_field( 'marketing_text' ); ?></span>
 					<?php if( get_sub_field('hide_checkbox_marketing') == 1 ) : ?>
 					<style>
-						.hs_single_client_opt_in {
+						.hs_single_client_opt_in,
+						.hs_to_maintain_the_integrity_of_this_exclusive_event__please_confirm_that_you_intend_to_remain_with_yo {
 							pointer-events: none;
 						}
 						.hs_single_client_opt_in input + span::before,
-						.hs_single_client_opt_in input + span::after{
+						.hs_single_client_opt_in input + span::after,
+						.hs_to_maintain_the_integrity_of_this_exclusive_event__please_confirm_that_you_intend_to_remain_with_yo input + span::before,
+						.hs_to_maintain_the_integrity_of_this_exclusive_event__please_confirm_that_you_intend_to_remain_with_yo input + span::after{
 							display: none !important;
 						}
 					</style>
 					<?php endif;?>
 				<?php } else { ?>
 					<style>
-						.hs_single_client_opt_in {
+						.hs_single_client_opt_in,
+						.hs_to_maintain_the_integrity_of_this_exclusive_event__please_confirm_that_you_intend_to_remain_with_yo {
 							display: none;
 						}
 					</style>
@@ -361,7 +365,8 @@ $date = DateTime::createFromFormat('Ymd', $date_string);
 					<?php
 				} else { ?>
 					<style>
-						.hs_client_communication_opt_in {
+						.hs_client_communication_opt_in,
+						.hs_LEGAL_CONSENT\.subscription_type_10982092 {
 							display: none;
 						}
 					</style>
