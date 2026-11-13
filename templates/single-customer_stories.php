@@ -143,7 +143,7 @@ $displayed_posts[] = get_the_ID();
                             <span class="share-links-container">
                                 <span class="copy-link share">
                                     <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
-                                    <a nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="copyJobLink()">
+                                    <a>
                                         <span class="image-icon-container">
                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
@@ -174,6 +174,20 @@ $displayed_posts[] = get_the_ID();
                                         jQuery('.copy-link .job-link-text').html('Copied');
                                         jQuery('.copy-link .job-link-text').addClass('text-red');
                                     };
+
+                                    // BUGFIX 2026-11-13: the onclick="copyJobLink()" attribute
+                                    // that used to be on the <a> above is blocked by the
+                                    // enforcing Content-Security-Policy header -- a nonce on an
+                                    // element authorizes that element itself (this <script> tag),
+                                    // but does NOT extend to another element's own inline
+                                    // event-handler attribute, so the onclick never ran (see
+                                    // SESSION-HANDOFF.md §96 for the same issue on other
+                                    // elements). Binding the click here instead, inside this
+                                    // already-nonce-authorized <script>, is not subject to that
+                                    // restriction. .off()/.on() with a namespace keeps this
+                                    // idempotent even though this same script block appears
+                                    // twice on the page (desktop + mobile copies).
+                                    jQuery('.copy-link.share > a').off('click.copyJobLink').on('click.copyJobLink', window.copyJobLink);
                                 </script>
                                 <span class="share-linked-in share">
                                     <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
@@ -360,7 +374,7 @@ $displayed_posts[] = get_the_ID();
                             <span class="share-links-container">
                                 <span class="copy-link share">
                                     <input type="text" value="<?php echo the_permalink(); ?>" id="postLink" style="display: none;">
-                                    <a nonce="<?php echo esc_attr( adapt_csp_nonce() ); ?>" onclick="copyJobLink()">
+                                    <a>
                                         <span class="image-icon-container">
                                             <img loading="lazy" class="standard" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link.svg" alt="Copy link" width="24px"/>
                                             <img loading="lazy" class="hover" src="<?php echo get_template_directory_uri(); ?>/assets/images/copy-link-hover.svg" alt="Copy link" width="24px"/>
@@ -391,6 +405,20 @@ $displayed_posts[] = get_the_ID();
                                         jQuery('.copy-link .job-link-text').html('Copied');
                                         jQuery('.copy-link .job-link-text').addClass('text-red');
                                     };
+
+                                    // BUGFIX 2026-11-13: the onclick="copyJobLink()" attribute
+                                    // that used to be on the <a> above is blocked by the
+                                    // enforcing Content-Security-Policy header -- a nonce on an
+                                    // element authorizes that element itself (this <script> tag),
+                                    // but does NOT extend to another element's own inline
+                                    // event-handler attribute, so the onclick never ran (see
+                                    // SESSION-HANDOFF.md §96 for the same issue on other
+                                    // elements). Binding the click here instead, inside this
+                                    // already-nonce-authorized <script>, is not subject to that
+                                    // restriction. .off()/.on() with a namespace keeps this
+                                    // idempotent even though this same script block appears
+                                    // twice on the page (desktop + mobile copies).
+                                    jQuery('.copy-link.share > a').off('click.copyJobLink').on('click.copyJobLink', window.copyJobLink);
                                 </script>
                                 <span class="share-linked-in share">
                                     <a class="liShare" href="https://www.linkedin.com/shareArticle?url=<?php the_permalink(); ?>&title=<?php the_title(); ?>&summary=<?php the_excerpt(); ?>" target="_blank" rel="noopener noreferrer">
