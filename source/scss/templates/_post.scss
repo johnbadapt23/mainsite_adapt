@@ -2507,6 +2507,7 @@ section.post-article-container.post-article-container {
                                         .post-text.post-text {
                                                 li {
                                                         float: none;
+                                                        display: list-item; // 2026-11-13: explicit, so fix-float-none-display.js (gulp) leaves this alone instead of overwriting it with display:block, which kills the <li> marker/bullet (list-item is li's real default; block is only correct for inline-default tags like span/a). See SESSION-HANDOFF.md.
                                                 }
                                         }
                                 }
