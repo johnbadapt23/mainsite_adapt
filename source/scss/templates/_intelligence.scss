@@ -245,6 +245,14 @@ section.intelligence-hero {
     }
 }
 
+// Scoped to the ADAPT Intelligence template explicitly (this is already
+// template-adapt-intelligence.php-only content, but naming it in the
+// selector keeps it obvious and consistent with the matching
+// animated-text-logos override in _customer-events.scss).
+body.template-adapt-intelligence section.intelligence-hero.background-red::before {
+    background: #0A0A0A;
+}
+
 section.intelligence-hero {
     background: white;
     padding-top: 0;

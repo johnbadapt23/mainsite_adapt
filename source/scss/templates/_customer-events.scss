@@ -960,6 +960,24 @@ section.animated-text-logos.animated-text {
     }
 }
 
+// Scoped to the ADAPT Intelligence template only -- this was previously
+// a bare (then :not(.background-white)-scoped) selector that still bled
+// into other pages using this ticker component (template-benchmarking.php,
+// template-gtm.php) wherever an editor had deliberately chosen a white
+// background. Matches the true-black #0A0A0A background used on that
+// template's intelligence-hero section above it.
+body.template-adapt-intelligence section.animated-text-logos.animated-text {
+    background: #0A0A0A;
+}
+
+body.template-adapt-intelligence section.animated-text-logos.animated-text .container .inner .logo-container-inner .pre-mask {
+    background: linear-gradient(90deg, rgb(10 10 10) 0px, rgba(10, 10, 10, 0) 100%);
+}
+
+body.template-adapt-intelligence section.animated-text-logos.animated-text .container .inner .logo-container-inner .post-mask {
+    background: linear-gradient(270deg, rgb(10, 10, 10) 0px, rgba(10, 10, 10, 0) 100%);
+}
+
 section.fixed-scroller {
     position: relative;
     min-height: 100svh;
