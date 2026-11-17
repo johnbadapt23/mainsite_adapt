@@ -1286,7 +1286,7 @@
 				tl.to($scrollContainer[0], { x: -endScroll, ease: 'none' });
 
 				// Horizontal scroll scene
-				new ScrollMagic.Scene({
+				var horizontalScene = new ScrollMagic.Scene({
 					triggerElement: $featuredContainerOuter[0],
 					triggerHook: 0,
 					duration: endScroll
@@ -1295,14 +1295,57 @@
 				.setTween(tl)
 				.addTo(controllerTeam);
 
-				// Vertical scroll continuation
-				new ScrollMagic.Scene({
-					triggerElement: $featuredContainerOuter[0],
-					triggerHook: 0,
-					duration: $(window).height()
-				})
-				.setTween(gsap.to($featuredContainer[0], { height: 'auto', ease: 'none' }))  // GSAP 3 syntax
-				.addTo(controllerTeam);
+				// 2026-11-17: this scene's triggerElement offset/duration are
+				// measured once, here, synchronously. If anything shifts this
+				// section's position in the document afterwards (a lazy-loaded
+				// image finishing late, a web font swap, WP Rocket's "Optimize CSS
+				// Delivery" loading the non-critical stylesheet remainder async
+				// after first paint -- the case that actually surfaced this bug on
+				// production), the pin can get stuck mid-pin instead of releasing
+				// cleanly once a visitor scrolls past it (.fixed-scroller-container
+				// left as position:fixed with a stale `top`, well off-screen,
+				// leaving a large empty gap where the cards should be). Forcing a
+				// refresh once every image inside this section has actually
+				// finished loading re-measures the trigger against the real,
+				// settled layout instead of trusting the synchronous initial one.
+				var $sectionImages = $featuredContainerOuter.find('img');
+				if ($sectionImages.length) {
+					var imagesRemaining = $sectionImages.length;
+					var onSectionImageSettled = function() {
+						imagesRemaining--;
+						if (imagesRemaining <= 0) {
+							horizontalScene.refresh();
+						}
+					};
+					$sectionImages.each(function() {
+						if (this.complete) {
+							onSectionImageSettled();
+						} else {
+							$(this).one('load error', onSectionImageSettled);
+						}
+					});
+				}
+
+				// 2026-11-17: removed a second ScrollMagic.Scene that used to sit
+				// here, pinned to this SAME triggerElement (.fixed-scroller) but with
+				// a different duration ($(window).height() instead of endScroll) --
+				// tweening $featuredContainer's height to 'auto'. Two scenes sharing
+				// one trigger element with mismatched durations corrupts ScrollMagic's
+				// offset/duration bookkeeping for that element: once any late layout
+				// shift happens after the scenes are created (a lazy-loaded image, a
+				// web font swap, or -- the case that actually surfaced this on
+				// production -- WP Rocket's "Optimize CSS Delivery" loading the
+				// non-critical remainder of the stylesheet asynchronously after first
+				// paint), the horizontal-scroll pin scene above stops releasing its
+				// pin cleanly: .fixed-scroller-container gets stuck as
+				// position:fixed with a stale `top` offset from earlier in the
+				// scroll, leaving a large empty gap where the pinned cards should be
+				// (verified live via a scrolled-position getBoundingClientRect() on
+				// production: top:-956px while scrollY was 4797px). This second
+				// scene didn't appear to do anything visually load-bearing (tweening
+				// a pinned, fixed-width horizontal scroller's height to 'auto'), so
+				// it's removed rather than reworked. If a real use for it resurfaces,
+				// give it its own triggerElement/duration instead of reusing this one.
 			});
 
 			// Handle window resize to destroy scenes if width drops below 767px
