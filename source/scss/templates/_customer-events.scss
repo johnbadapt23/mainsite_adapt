@@ -1793,6 +1793,10 @@ body.template-ecosystem-consulting {
     section.fixed-scroller {
         background: #121212;
         background: radial-gradient(50% 50% at 50% 50%, #1C1C1C 0%, #121212 100%);
+        // Reduce the base 100px bottom padding (see base section.fixed-scroller rule above)
+        // on this template family only: the dark-to-white hard cut here made the default
+        // spacing read as a large empty gap. Matches the existing <=1023px value.
+        padding-bottom: 50px;
     }
 
     section.speaker-text-carousel .container .container-inner .title-container .column-container {
