@@ -28,12 +28,19 @@
                     // array_diff(). See the query below for why that
                     // mattered.
                     $expertise_ids_original = $expertise_ids;
+
+                    // FIX 2026-11-19: resolved dynamically (same helper used
+                    // in functions.php's AJAX callbacks) instead of the
+                    // hardcoded 15788/15789 literals this file used below --
+                    // those are per-environment term_id values, not portable
+                    // between staging and production.
+                    $analyst_advisor_term_ids = adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) );
                 ?>
                 <div class="position-sticky filter-container sticky-filter-container">
-                    
+
                     <div>
                         <form id="speakerFilter">
-                            <?php if( in_array(15788,$expertise_ids) || in_array(15789,$expertise_ids)) : ?>
+                            <?php if( array_intersect( $analyst_advisor_term_ids, $expertise_ids ) ) : ?>
                             <div class="analyst-advisor-checkboxes" style="padding-bottom: 20px;">
                                     <?php
                                         if ( $expertise_ids && ! empty( $expertise_ids ) ) {
@@ -41,7 +48,7 @@
                                             $expertise_terms = get_terms( array(
                                                 'taxonomy' => 'expertise',
                                                 'hide_empty' => false,
-                                                'include' => array(15788, 15789), // Only include terms with these IDs
+                                                'include' => $analyst_advisor_term_ids, // Only include terms with these IDs
                                             ) );
 
                                             if ( ! empty( $expertise_terms ) && ! is_wp_error( $expertise_terms ) ) {
@@ -72,8 +79,8 @@
                                 if ( $expertise_ids && ! empty( $expertise_ids ) ) {
                                     // Get terms for the selected expertise IDs
 
-                                    if( in_array(15788,$expertise_ids) || in_array(15789,$expertise_ids)) {
-                                        $expertise_ids = array_diff($expertise_ids, [15788, 15789]);
+                                    if( array_intersect( $analyst_advisor_term_ids, $expertise_ids ) ) {
+                                        $expertise_ids = array_diff($expertise_ids, $analyst_advisor_term_ids);
                                         $expertise_ids = array_values($expertise_ids);
                                     }
 
@@ -134,35 +141,57 @@
                         // leaving case (2)'s "not configured at all" instances
                         // rendering nothing, same as before.
                         if ( $expertise_ids_original ) {
+                            // FIX 2026-11-19: previously this module always
+                            // excluded ADAPT Analysts/Advisors-tagged speakers
+                            // from its default view, even when the module's
+                            // own Expertise field had "ADAPT Analysts" and/or
+                            // "ADAPT Advisors" explicitly checked (as this
+                            // instance does, alongside every topical
+                            // category) -- contradicting the admin's own
+                            // selection. Now: when Analysts/Advisors ARE
+                            // selected for this module, match the full
+                            // original expertise list directly (so
+                            // analyst/advisor-tagged speakers can match via
+                            // this IN clause too) and skip the exclusion
+                            // below; when they're NOT selected, keep the
+                            // previous topical-only IN + analyst/advisor
+                            // NOT IN behavior unchanged.
+                            $has_analyst_or_advisor_selected = (bool) array_intersect( $analyst_advisor_term_ids, $expertise_ids_original );
+
+                            $speaker_tax_query = array(
+                                'relation' => 'AND',
+                                array(
+                                    'taxonomy' => 'expertise',
+                                    'field'    => 'term_id',
+                                    'terms'    => $has_analyst_or_advisor_selected ? $expertise_ids_original : $expertise_ids,
+                                    'operator' => 'IN',
+                                ),
+                            );
+
+                            if ( ! $has_analyst_or_advisor_selected ) {
+                                // BUGFIX 2026-11-11: same regression and same fix as
+                                // _advisor-module.php -- restored to NOT IN (2f17faf's
+                                // original intent), restored the real $expertise_ids
+                                // filter (an Aug 24 'update'/'updates' commit had
+                                // flipped the operator to IN and commented this out),
+                                // and switched the hardcoded term_id literals to
+                                // adapt_get_expertise_term_ids() for portability
+                                // (matching functions.php's round-23 fix).
+                                $speaker_tax_query[] = array(
+                                    'taxonomy' => 'expertise',
+                                    'field'    => 'term_id',
+                                    'terms'    => $analyst_advisor_term_ids,
+                                    'operator' => 'NOT IN',
+                                );
+                            }
+
                             // Set up the query arguments
                             $args = array(
                                 'post_type'      => 'speaker',
                                 'posts_per_page' => $posts_per_page,
                                 'offset' => $offset,
                                 'paged'         => isset($_POST['paged']) ? intval($_POST['paged']) : 1,
-                                'tax_query'      => array(
-                                    'relation' => 'AND',
-                                    array(
-                                        'taxonomy' => 'expertise',
-                                        'field'    => 'term_id',
-                                        'terms'    => $expertise_ids,
-                                        'operator' => 'IN',
-                                    ),
-                                    // BUGFIX 2026-11-11: same regression and same fix as
-                                    // _advisor-module.php -- restored to NOT IN (2f17faf's
-                                    // original intent), restored the real $expertise_ids
-                                    // filter (an Aug 24 'update'/'updates' commit had
-                                    // flipped the operator to IN and commented this out),
-                                    // and switched the hardcoded term_id literals to
-                                    // adapt_get_expertise_term_ids() for portability
-                                    // (matching functions.php's round-23 fix).
-                                    array(
-                                        'taxonomy' => 'expertise',
-                                        'field'    => 'term_id',
-                                        'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
-                                        'operator' => 'NOT IN',
-                                    ),
-                                ),
+                                'tax_query'      => $speaker_tax_query,
                                 // Replaced by the expertise tax_query exclusion above.
                                 // 'meta_query'     => array(
                                 //     'relation' => 'OR',
