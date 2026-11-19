@@ -1629,11 +1629,10 @@
 			fetchSpeakers(1); // Fetch speakers with selected filters (starting from page 1)
 		});
 
-		// Function to get selected filters. Only looks at the checkboxes
-		// inside .expertise-group under .expertise-checkbox -- the ADAPT
-		// Analysts/Advisors checkboxes live in a separate
-		// .analyst-advisor-checkboxes wrapper and are intentionally
-		// excluded here.
+		// Function to get selected filters. When something is actually
+		// checked, only those checkboxes are used (can include the ADAPT
+		// Analysts/Advisors checkboxes from .analyst-advisor-checkboxes,
+		// same as everything else in this form).
 		//
 		// If nothing is checked, falls back to every checkbox actually
 		// offered on this page (these are ACF-configured per module
@@ -1645,12 +1644,22 @@
 		// terms) for the fallback. Without that distinction, sending every
 		// term with an AND operator would match zero posts, since no single
 		// post is tagged with every expertise term.
+		//
+		// FIX 2026-11-19: the fallback used to only include
+		// .expertise-group .expertise-checkbox input, deliberately leaving
+		// out .analyst-advisor-checkboxes -- so the "no selection" AJAX
+		// request could never tell the server whether this module instance
+		// had ADAPT Analysts/Advisors configured at all. functions.php's
+		// filter_speakers_callback() now needs that (to gate its own
+		// analyst/advisor exclusion on whether those terms are part of
+		// this module's own selection, matching _speaker-module.php's
+		// initial render), so the fallback includes both groups now.
 		function getSelectedFilters() {
 			var checkedExpertise = $('#speakerFilter input:checked');
 			var hasSelection = checkedExpertise.length > 0;
 			var selectedExpertise = hasSelection
 				? checkedExpertise
-				: $('#speakerFilter .expertise-group .expertise-checkbox input');
+				: $('#speakerFilter .expertise-group .expertise-checkbox input, #speakerFilter .analyst-advisor-checkboxes input');
 
 			return {
 				values: selectedExpertise.map(function() {

@@ -936,31 +936,11 @@ function filter_speakers_callback() {
             );
         }
     } else {
-        // Safety net: no slugs at all (e.g. this page renders zero
-        // expertise checkboxes). Still exclude untagged posts rather than
-        // skipping tax_query entirely.
-        $args['tax_query'] = array(
-            'relation' => 'AND',
-            array(
-                'taxonomy' => 'expertise',
-                'field'    => 'term_id',
-                // FIX 2026-09-03 (round 23): see comment above -- dynamic,
-                // not hardcoded.
-                //
-                // BUGFIX 2026-11-11: same operator bug as the clause above
-                // -- 'IN' required the analysts/advisors tag instead of
-                // excluding it, so this safety-net branch (no filter
-                // selection at all) also always matched zero posts.
-                'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
-                'operator' => 'NOT IN',
-            ),
-        );
-
-        // BUGFIX 2026-11-19: this branch used to stop at the NOT IN clause
-        // above, which has no idea which module instance is asking --
-        // it matches every non-analyst/advisor speaker site-wide. But
-        // $expertise_slugs here is never actually empty in this branch:
-        // per getSelectedFilters()'s fallback in main.js, when nothing is
+        // BUGFIX 2026-11-19: this branch used to stop at a NOT IN clause
+        // that has no idea which module instance is asking -- it matches
+        // every non-analyst/advisor speaker site-wide. But $expertise_slugs
+        // here is never actually empty in this branch: per
+        // getSelectedFilters()'s fallback in main.js, when nothing is
         // checked it sends every expertise checkbox THIS module instance
         // rendered (the same ACF-configured list _speaker-module.php's
         // initial PHP render scopes its own query to). Dropping that value
@@ -971,12 +951,44 @@ function filter_speakers_callback() {
         // filter). Restoring the same scoping the initial page load uses
         // makes "clear filter" match the page's actual default speakers
         // again, instead of a different, much larger set.
+        $args['tax_query'] = array( 'relation' => 'AND' );
+
         if ( ! empty( $expertise_slugs ) ) {
             $args['tax_query'][] = array(
                 'taxonomy' => 'expertise',
                 'field'    => 'slug',
                 'terms'    => $expertise_slugs,
                 'operator' => 'IN',
+            );
+        }
+
+        // FIX 2026-11-19: gate the analyst/advisor exclusion the same way
+        // _speaker-module.php's initial render now does -- only exclude
+        // adapt-analysts/adapt-advisors-tagged posts when this module
+        // instance's own configured Expertise field does NOT include
+        // those two terms. getSelectedFilters()'s fallback (main.js) now
+        // includes the module's .analyst-advisor-checkboxes slugs (not
+        // just .expertise-group) in $expertise_slugs when that block is
+        // rendered, so checking for their presence here tells us whether
+        // the admin explicitly selected Analysts/Advisors for this
+        // module. When they did, the IN clause above already covers
+        // analyst/advisor-tagged posts directly -- forcibly excluding
+        // them here too would contradict the admin's own selection.
+        $known_expertise_terms           = array( 'adapt-analysts', 'adapt-advisors' );
+        $has_analyst_or_advisor_selected = (bool) array_intersect( $known_expertise_terms, $expertise_slugs );
+
+        if ( ! $has_analyst_or_advisor_selected ) {
+            // BUGFIX 2026-11-11: same operator bug as the clauses above --
+            // 'IN' required the analysts/advisors tag instead of excluding
+            // it, so this safety-net branch (no filter selection at all)
+            // also always matched zero posts.
+            $args['tax_query'][] = array(
+                'taxonomy' => 'expertise',
+                'field'    => 'term_id',
+                // FIX 2026-09-03 (round 23): see comment above -- dynamic,
+                // not hardcoded.
+                'terms'    => adapt_get_expertise_term_ids( $known_expertise_terms ),
+                'operator' => 'NOT IN',
             );
         }
     }
