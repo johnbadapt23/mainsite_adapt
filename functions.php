@@ -793,65 +793,111 @@ function adapt_get_expertise_term_ids( array $slugs ) {
 }
 
 /**
- * ADDED 2026-11-19: pins a module's admin-picked "Promoted Speakers" to the
- * front of an already-fetched set of posts, used by both
- * _speaker-module.php's initial render and filter_speakers_callback()'s "no
- * selection" branch below, so the behavior (and the ordering rule) is
- * defined in exactly one place.
- *
- * Deliberately does NOT run its own query -- it only reorders posts that
- * were already fetched by the caller's own (correctly-scoped) WP_Query. A
- * promoted post that doesn't actually match that query's tax_query (e.g. an
- * admin picked a speaker who isn't tagged with any of this module's
- * selected Expertise terms) simply isn't in $posts at all, so it's silently
- * dropped here rather than forced in -- this is what keeps promotion
- * scoped to "as long as they belong to the selected available filters"
- * without needing to validate the ACF field's picks against the module's
- * config anywhere else.
- *
- * Only reorders within the page of posts it's given -- a promoted speaker
- * who would normally land on page 2+ of the default view isn't pulled
- * forward onto page 1, just moved to the front of whichever page they'd
- * already be on.
- *
- * @param WP_Post[] $posts        Posts from the caller's own WP_Query (one page's worth).
- * @param array     $promoted_ids Post IDs from the 'promoted_speakers' ACF field, in pick order.
- * @return WP_Post[] $posts, reordered: promoted posts first (in pick order), then the rest unchanged.
+ * FIX 2026-11-19 (promoted speakers across pages): originally this reordered
+ * whichever ONE page of posts the caller's own paginated WP_Query happened
+ * to return. Live-verified broken on /analyst-presentations/: a promoted
+ * pick ("Jim Berry") whose normal sort position put him on page 4 of this
+ * module's results never got pulled forward onto page 1 -- reordering
+ * within a single already-paginated page can't do that, by definition.
+ * Replaced by three small ID-level helpers below
+ * (adapt_get_ordered_post_ids / adapt_pin_promoted_ids / adapt_query_posts_page)
+ * that reorder the FULL matching set first and then re-paginate from that,
+ * so a promoted pick actually lands on page 1 regardless of where it would
+ * otherwise sort.
  */
-function adapt_pin_promoted_posts( array $posts, array $promoted_ids ) {
-    if ( empty( $promoted_ids ) || empty( $posts ) ) {
-        return $posts;
+
+/**
+ * Runs $args (the same tax_query/orderby a caller already built for its own
+ * paginated WP_Query) with pagination stripped out, to get every matching
+ * post ID in full query order -- the "whole list" that pinning and
+ * re-pagination below both need.
+ *
+ * @param array $args WP_Query args (post_type, tax_query, orderby, etc).
+ * @return int[] All matching post IDs, in this query's normal order.
+ */
+function adapt_get_ordered_post_ids( array $args ) {
+    unset( $args['posts_per_page'], $args['offset'], $args['paged'], $args['fields'] );
+    $args['fields']          = 'ids';
+    $args['posts_per_page']  = -1;
+    $query = new WP_Query( $args );
+    return array_map( 'intval', $query->posts );
+}
+
+/**
+ * Pins admin-picked "Promoted" post IDs to the front of a full ordered ID
+ * list. A promoted ID that isn't in $ids at all (e.g. an admin picked a
+ * speaker who isn't tagged with any of this module's selected Expertise
+ * terms) is silently skipped rather than forced in -- this is what keeps
+ * promotion scoped to "as long as they belong to the selected available
+ * filters" without needing to validate the ACF field's picks anywhere else.
+ *
+ * @param int[] $ids          Full ordered list of matching post IDs (adapt_get_ordered_post_ids()).
+ * @param array $promoted_ids Post IDs from a 'promoted_speakers'-style ACF field, in pick order.
+ * @return int[] $ids, reordered: promoted IDs first (in pick order), then the rest in their original order.
+ */
+function adapt_pin_promoted_ids( array $ids, array $promoted_ids ) {
+    if ( empty( $promoted_ids ) || empty( $ids ) ) {
+        return $ids;
     }
 
+    $ids          = array_map( 'intval', $ids );
     $promoted_ids = array_map( 'intval', $promoted_ids );
-
-    $by_id = array();
-    foreach ( $posts as $post ) {
-        $by_id[ $post->ID ] = $post;
-    }
+    $id_lookup    = array_flip( $ids ); // id => original position, for O(1) presence checks.
 
     $pinned = array();
     foreach ( $promoted_ids as $id ) {
-        if ( isset( $by_id[ $id ] ) ) {
-            $pinned[] = $by_id[ $id ];
-            unset( $by_id[ $id ] );
+        if ( isset( $id_lookup[ $id ] ) ) {
+            $pinned[] = $id;
         }
     }
 
     if ( empty( $pinned ) ) {
-        // None of the promoted picks are actually in this result set --
-        // nothing to reorder.
-        return $posts;
+        // None of the promoted picks are actually in this list -- nothing to reorder.
+        return $ids;
     }
 
-    $rest = array();
-    foreach ( $posts as $post ) {
-        if ( isset( $by_id[ $post->ID ] ) ) {
-            $rest[] = $post;
-        }
-    }
+    $pinned_lookup = array_flip( $pinned );
+    $rest          = array_values( array_filter( $ids, function ( $id ) use ( $pinned_lookup ) {
+        return ! isset( $pinned_lookup[ $id ] );
+    } ) );
 
     return array_merge( $pinned, $rest );
+}
+
+/**
+ * Builds a WP_Query for exactly one page of an already-ordered (and
+ * possibly promotion-reordered) ID list, with pagination metadata
+ * (found_posts/max_num_pages) overridden to reflect the FULL list rather
+ * than just this page's post__in slice -- a post__in query otherwise
+ * computes those from the slice alone, which would silently break
+ * wp_pagenavi()/paginate_links() (e.g. always showing "page 1 of 1").
+ *
+ * @param int[]  $ordered_ids    Full ordered (and/or promotion-pinned) list of matching post IDs.
+ * @param int    $posts_per_page Posts per page.
+ * @param int    $offset         Offset into $ordered_ids for the current page.
+ * @param string $post_type      Post type to query (must match $ordered_ids' own post type).
+ * @return WP_Query
+ */
+function adapt_query_posts_page( array $ordered_ids, $posts_per_page, $offset, $post_type ) {
+    $total    = count( $ordered_ids );
+    $page_ids = array_slice( $ordered_ids, $offset, $posts_per_page );
+
+    $query = new WP_Query( array(
+        'post_type'           => $post_type,
+        // array(0) is a deliberately-unmatchable ID: an empty post__in is
+        // ignored by WP_Query (no restriction at all), which would return
+        // unrelated posts instead of "no results" once $offset runs past
+        // the end of $ordered_ids.
+        'post__in'            => ! empty( $page_ids ) ? $page_ids : array( 0 ),
+        'orderby'             => 'post__in',
+        'posts_per_page'      => $posts_per_page > 0 ? $posts_per_page : -1,
+        'ignore_sticky_posts' => true,
+    ) );
+
+    $query->found_posts   = $total;
+    $query->max_num_pages = $posts_per_page > 0 ? (int) ceil( $total / $posts_per_page ) : 1;
+
+    return $query;
 }
 
 // Speaker Ajax filtering
@@ -1112,17 +1158,23 @@ function filter_speakers_callback() {
     // structurally regardless of whether Auto Apply Sort is actually
     // turned on for it -- less precise, and not what the admin's toggle
     // means.
-    $speakers_query = new WP_Query($args);
+    // FIX 2026-11-19: pin this module's Promoted Speakers to the front of
+    // the default (no-filter) view -- same rule, and same full-list/
+    // re-paginate approach, as _speaker-module.php's initial render (see
+    // adapt_get_ordered_post_ids()/adapt_pin_promoted_ids()/
+    // adapt_query_posts_page() just above). Reordering only the current
+    // page's own WP_Query results isn't enough -- a promoted pick whose
+    // normal sort position puts it on page 2+ would never get pulled
+    // forward, same bug as _speaker-module.php had. Skipped entirely once
+    // a real filter selection is active ($has_selection true), since
+    // promotion is only meant for the "nothing selected" default state.
+    if ( ! $has_selection && ! empty( $promoted_speaker_ids ) ) {
+        $all_matching_ids = adapt_get_ordered_post_ids( $args );
+        $all_matching_ids = adapt_pin_promoted_ids( $all_matching_ids, $promoted_speaker_ids );
 
-    // ADDED 2026-11-19: pin this module's Promoted Speakers to the front of
-    // the default (no-filter) view -- same rule as _speaker-module.php's
-    // initial render. Skipped entirely once a real filter selection is
-    // active ($has_selection true), since promotion is only meant for the
-    // "nothing selected" default state. See adapt_pin_promoted_posts() for
-    // why a promoted pick that doesn't match this query is simply dropped
-    // rather than forced in.
-    if ( ! $has_selection && ! empty( $promoted_speaker_ids ) && $speakers_query->have_posts() ) {
-        $speakers_query->posts = adapt_pin_promoted_posts( $speakers_query->posts, $promoted_speaker_ids );
+        $speakers_query = adapt_query_posts_page( $all_matching_ids, $posts_per_page, $offset, $post_type );
+    } else {
+        $speakers_query = new WP_Query($args);
     }
 
     ob_start();
