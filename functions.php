@@ -792,6 +792,68 @@ function adapt_get_expertise_term_ids( array $slugs ) {
     return $term_ids;
 }
 
+/**
+ * ADDED 2026-11-19: pins a module's admin-picked "Promoted Speakers" to the
+ * front of an already-fetched set of posts, used by both
+ * _speaker-module.php's initial render and filter_speakers_callback()'s "no
+ * selection" branch below, so the behavior (and the ordering rule) is
+ * defined in exactly one place.
+ *
+ * Deliberately does NOT run its own query -- it only reorders posts that
+ * were already fetched by the caller's own (correctly-scoped) WP_Query. A
+ * promoted post that doesn't actually match that query's tax_query (e.g. an
+ * admin picked a speaker who isn't tagged with any of this module's
+ * selected Expertise terms) simply isn't in $posts at all, so it's silently
+ * dropped here rather than forced in -- this is what keeps promotion
+ * scoped to "as long as they belong to the selected available filters"
+ * without needing to validate the ACF field's picks against the module's
+ * config anywhere else.
+ *
+ * Only reorders within the page of posts it's given -- a promoted speaker
+ * who would normally land on page 2+ of the default view isn't pulled
+ * forward onto page 1, just moved to the front of whichever page they'd
+ * already be on.
+ *
+ * @param WP_Post[] $posts        Posts from the caller's own WP_Query (one page's worth).
+ * @param array     $promoted_ids Post IDs from the 'promoted_speakers' ACF field, in pick order.
+ * @return WP_Post[] $posts, reordered: promoted posts first (in pick order), then the rest unchanged.
+ */
+function adapt_pin_promoted_posts( array $posts, array $promoted_ids ) {
+    if ( empty( $promoted_ids ) || empty( $posts ) ) {
+        return $posts;
+    }
+
+    $promoted_ids = array_map( 'intval', $promoted_ids );
+
+    $by_id = array();
+    foreach ( $posts as $post ) {
+        $by_id[ $post->ID ] = $post;
+    }
+
+    $pinned = array();
+    foreach ( $promoted_ids as $id ) {
+        if ( isset( $by_id[ $id ] ) ) {
+            $pinned[] = $by_id[ $id ];
+            unset( $by_id[ $id ] );
+        }
+    }
+
+    if ( empty( $pinned ) ) {
+        // None of the promoted picks are actually in this result set --
+        // nothing to reorder.
+        return $posts;
+    }
+
+    $rest = array();
+    foreach ( $posts as $post ) {
+        if ( isset( $by_id[ $post->ID ] ) ) {
+            $rest[] = $post;
+        }
+    }
+
+    return array_merge( $pinned, $rest );
+}
+
 // Speaker Ajax filtering
 add_action('wp_ajax_filter_speakers', 'filter_speakers_callback');
 add_action('wp_ajax_nopriv_filter_speakers', 'filter_speakers_callback');
@@ -808,6 +870,16 @@ function filter_speakers_callback() {
     // per module instance, so we can't infer "no selection" just by
     // comparing $expertise_slugs against some fixed list here).
     $has_selection = ! empty( $_POST['hasSelection'] );
+
+    // ADDED 2026-11-19: this module's own 'promoted_speakers' ACF field
+    // (post IDs), passed through by main.js as a data attribute on
+    // #speakerFilter -- see _speaker-module.php's data-promoted-ids and
+    // fetchSpeakers() in main.js. Only used below when there's no real
+    // filter selection: promotion is a "default view" feature, not a
+    // filtering rule, per the standing requirement that it only applies
+    // on page load / when no filter is selected.
+    $promoted_speaker_ids = array_map( 'intval', explode( ',', (string) ( $_POST['promotedIds'] ?? '' ) ) );
+    $promoted_speaker_ids = array_filter( $promoted_speaker_ids );
 
     $referer = wp_get_referer();
 
@@ -1041,6 +1113,17 @@ function filter_speakers_callback() {
     // turned on for it -- less precise, and not what the admin's toggle
     // means.
     $speakers_query = new WP_Query($args);
+
+    // ADDED 2026-11-19: pin this module's Promoted Speakers to the front of
+    // the default (no-filter) view -- same rule as _speaker-module.php's
+    // initial render. Skipped entirely once a real filter selection is
+    // active ($has_selection true), since promotion is only meant for the
+    // "nothing selected" default state. See adapt_pin_promoted_posts() for
+    // why a promoted pick that doesn't match this query is simply dropped
+    // rather than forced in.
+    if ( ! $has_selection && ! empty( $promoted_speaker_ids ) && $speakers_query->have_posts() ) {
+        $speakers_query->posts = adapt_pin_promoted_posts( $speakers_query->posts, $promoted_speaker_ids );
+    }
 
     ob_start();
 

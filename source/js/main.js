@@ -1678,7 +1678,14 @@
 				nonce: ajaxobject.nonce,
 				paged: page, // Pass paged as parameter
 				expertise: filters.values,
-				hasSelection: filters.hasSelection ? 1 : 0
+				hasSelection: filters.hasSelection ? 1 : 0,
+				// ADDED 2026-11-19: this module's Promoted Speakers (ACF
+				// field, rendered server-side into this data attribute by
+				// _speaker-module.php) so filter_speakers_callback() can
+				// pin the same speakers to the front of the "clear filter"
+				// default view too -- see adapt_pin_promoted_posts() in
+				// functions.php.
+				promotedIds: $('#speakerFilter').data('promotedIds') || ''
 			};
 
 			// AJAX request to fetch filtered speakers
