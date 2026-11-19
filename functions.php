@@ -940,6 +940,7 @@ function filter_speakers_callback() {
         // expertise checkboxes). Still exclude untagged posts rather than
         // skipping tax_query entirely.
         $args['tax_query'] = array(
+            'relation' => 'AND',
             array(
                 'taxonomy' => 'expertise',
                 'field'    => 'term_id',
@@ -954,6 +955,30 @@ function filter_speakers_callback() {
                 'operator' => 'NOT IN',
             ),
         );
+
+        // BUGFIX 2026-11-19: this branch used to stop at the NOT IN clause
+        // above, which has no idea which module instance is asking --
+        // it matches every non-analyst/advisor speaker site-wide. But
+        // $expertise_slugs here is never actually empty in this branch:
+        // per getSelectedFilters()'s fallback in main.js, when nothing is
+        // checked it sends every expertise checkbox THIS module instance
+        // rendered (the same ACF-configured list _speaker-module.php's
+        // initial PHP render scopes its own query to). Dropping that value
+        // meant clearing a filter replaced the page's own curated speaker
+        // set with every speaker on the site -- reproduced live on
+        // /analyst-presentations-sales-kick-off/ (4 configured speakers on
+        // load, dozens of unrelated ones after checking then unchecking a
+        // filter). Restoring the same scoping the initial page load uses
+        // makes "clear filter" match the page's actual default speakers
+        // again, instead of a different, much larger set.
+        if ( ! empty( $expertise_slugs ) ) {
+            $args['tax_query'][] = array(
+                'taxonomy' => 'expertise',
+                'field'    => 'slug',
+                'terms'    => $expertise_slugs,
+                'operator' => 'IN',
+            );
+        }
     }
 
     // REMOVED 2026-09-03 (round 23): this used to hardcode
