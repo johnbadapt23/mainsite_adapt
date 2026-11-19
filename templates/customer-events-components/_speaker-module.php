@@ -35,11 +35,27 @@
                     // those are per-environment term_id values, not portable
                     // between staging and production.
                     $analyst_advisor_term_ids = adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) );
+
+                    // ADDED 2026-11-19: this module's admin-picked "Promoted
+                    // Speakers" (ACF relationship field, return_format=id,
+                    // so this is already a plain array of post IDs). Pinned
+                    // to the front of the default (no-filter) view below --
+                    // see adapt_pin_promoted_posts() in functions.php for
+                    // the shared reordering logic and why a pick that
+                    // doesn't match this module's own Expertise selection
+                    // is silently dropped rather than forced in. Passed
+                    // through to filter_speakers_callback() via the
+                    // data-promoted-ids attribute on #speakerFilter below,
+                    // so "clear filter" pins the same speakers again.
+                    $promoted_speaker_ids = get_sub_field( 'promoted_speakers' );
+                    if ( ! is_array( $promoted_speaker_ids ) ) {
+                        $promoted_speaker_ids = array();
+                    }
                 ?>
                 <div class="position-sticky filter-container sticky-filter-container">
 
                     <div>
-                        <form id="speakerFilter">
+                        <form id="speakerFilter" data-promoted-ids="<?php echo esc_attr( implode( ',', $promoted_speaker_ids ) ); ?>">
                             <?php if( array_intersect( $analyst_advisor_term_ids, $expertise_ids ) ) : ?>
                             <div class="analyst-advisor-checkboxes" style="padding-bottom: 20px;">
                                     <?php
@@ -229,6 +245,17 @@
 
                             // Run the query
                             $speakers_query = new WP_Query( $args );
+
+                            // ADDED 2026-11-19: pin Promoted Speakers to the
+                            // front of this page's results -- this file's
+                            // whole render IS the "no filter selected"
+                            // default view, so no $has_selection gate is
+                            // needed here (unlike functions.php's AJAX
+                            // callback, which also handles real filter
+                            // selections). See adapt_pin_promoted_posts().
+                            if ( ! empty( $promoted_speaker_ids ) && $speakers_query->have_posts() ) {
+                                $speakers_query->posts = adapt_pin_promoted_posts( $speakers_query->posts, $promoted_speaker_ids );
+                            }
 
                             // Check if there are posts
                             if ( $speakers_query->have_posts() ) {

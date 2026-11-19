@@ -1363,6 +1363,32 @@
                             "multiple": 0,
                             "allow_null": 0,
                             "bidirectional_target": []
+                        },
+                        {
+                            "key": "field_ac54db6f854a4",
+                            "label": "Promoted Speakers",
+                            "name": "promoted_speakers",
+                            "aria-label": "",
+                            "type": "relationship",
+                            "instructions": "Optional. These speakers are pinned to the front of the list on initial page load and whenever no filter is selected (e.g. after a visitor clears a filter) \u2014 as long as they already match this module's own Expertise selection above. Has no effect once a visitor actually applies a filter.",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "post_type": [
+                                "speaker"
+                            ],
+                            "taxonomy": [],
+                            "filters": [
+                                "search"
+                            ],
+                            "elements": [],
+                            "min": "",
+                            "max": "",
+                            "return_format": "id"
                         }
                     ],
                     "min": "",
