@@ -243,18 +243,27 @@
                                 $args['orderby'] = array( 'menu_order' => 'ASC' );
                             }
 
-                            // Run the query
-                            $speakers_query = new WP_Query( $args );
+                            // FIX 2026-11-19 (promoted speakers across pages): pinning
+                            // promoted picks only within whatever page WP_Query happened
+                            // to hand back isn't enough -- live-verified on
+                            // /analyst-presentations/ (Jim Berry, promoted, was sitting
+                            // on page 4 of this module's normal order and never got
+                            // pulled forward). To actually promote a pick to the front of
+                            // the DEFAULT view, we need the full ordered ID list across
+                            // every page, reorder THAT, then re-paginate from the
+                            // reordered list -- not just reorder whatever one page's
+                            // WP_Query returned. adapt_get_ordered_post_ids() (new helper
+                            // in functions.php) runs the same tax_query/orderby as above
+                            // with no pagination to get that full list; it's then passed
+                            // through adapt_pin_promoted_ids() and sliced for this page.
+                            if ( ! empty( $promoted_speaker_ids ) ) {
+                                $all_matching_ids = adapt_get_ordered_post_ids( $args );
+                                $all_matching_ids = adapt_pin_promoted_ids( $all_matching_ids, $promoted_speaker_ids );
 
-                            // ADDED 2026-11-19: pin Promoted Speakers to the
-                            // front of this page's results -- this file's
-                            // whole render IS the "no filter selected"
-                            // default view, so no $has_selection gate is
-                            // needed here (unlike functions.php's AJAX
-                            // callback, which also handles real filter
-                            // selections). See adapt_pin_promoted_posts().
-                            if ( ! empty( $promoted_speaker_ids ) && $speakers_query->have_posts() ) {
-                                $speakers_query->posts = adapt_pin_promoted_posts( $speakers_query->posts, $promoted_speaker_ids );
+                                $speakers_query = adapt_query_posts_page( $all_matching_ids, $posts_per_page, $offset, $args['post_type'] );
+                            } else {
+                                // Run the query
+                                $speakers_query = new WP_Query( $args );
                             }
 
                             // Check if there are posts
