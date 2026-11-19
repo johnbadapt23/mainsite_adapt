@@ -904,7 +904,21 @@ function filter_speakers_callback() {
                     'terms'    => $expertise_slugs,
                     'operator' => 'AND',
                 ),
-                array(
+            );
+
+            // FIX 2026-11-19: this used to add the NOT IN clause below
+            // unconditionally, even when the user's own selection ($expertise_slugs,
+            // required via the AND clause above) explicitly included
+            // adapt-advisors/adapt-analysts -- e.g. checking "ADAPT Advisors" plus
+            // any topical Expertise box. The AND clause then required the post be
+            // tagged adapt-advisors while this clause excluded exactly that,
+            // guaranteeing zero results ("returns empty" whenever Advisors/Analysts
+            // was combined with a topical term). Gated the same way as the
+            // $only_known_terms branch above and the no-selection branch below: only
+            // exclude adapt-analysts/adapt-advisors when the user's own selection
+            // does NOT already include them.
+            if ( ! array_intersect( $known_expertise_terms, $expertise_slugs ) ) {
+                $args['tax_query'][] = array(
                     'taxonomy' => 'expertise',
                     'field'    => 'term_id',
                     // FIX 2026-09-03 (round 23): was a hardcoded
@@ -930,10 +944,10 @@ function filter_speakers_callback() {
                     // it's a separate single-clause path). Round 23 only
                     // swapped the hardcoded IDs for this dynamic lookup; it
                     // didn't touch (or introduce) the operator itself.
-                    'terms'    => adapt_get_expertise_term_ids( array( 'adapt-analysts', 'adapt-advisors' ) ),
+                    'terms'    => adapt_get_expertise_term_ids( $known_expertise_terms ),
                     'operator' => 'NOT IN',
-                ),
-            );
+                );
+            }
         }
     } else {
         // BUGFIX 2026-11-19: this branch used to stop at a NOT IN clause
